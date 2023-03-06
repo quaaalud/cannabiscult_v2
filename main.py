@@ -6,6 +6,31 @@ Created on Sun Mar  5 21:13:44 2023
 @author: dale
 """
 
+import sys
+from pathlib import Path
+
+MAIN_DIR = Path(__file__).parent
+BACKEND_DIR = Path(MAIN_DIR, 'backend')
+API_DIR = Path(BACKEND_DIR, 'apis')
+CORE_DIR = Path(BACKEND_DIR, 'core')
+TEMPLATES_DIR = Path(BACKEND_DIR, 'templates')
+
+if str(MAIN_DIR) not in sys.path:
+    sys.path.append(str(MAIN_DIR))
+    
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.append(str(BACKEND_DIR))
+    
+if str(API_DIR) not in sys.path:
+    sys.path.append(str(API_DIR))
+    
+if str(CORE_DIR) not in sys.path:
+    sys.path.append(str(CORE_DIR))
+    
+if str(TEMPLATES_DIR) not in sys.path:
+    sys.path.append(str(TEMPLATES_DIR))
+    
+
 from fastapi import FastAPI
 from core.config import settings
 from apis.general_pages.route_homepage import general_pages_router
@@ -21,5 +46,5 @@ def start_application():
 	return app 
 
 
-if __name__ == '__main__':
-    app = start_application()
+app = start_application()
+    
