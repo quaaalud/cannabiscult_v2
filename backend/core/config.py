@@ -7,7 +7,7 @@ Created on Sun Mar  5 21:17:34 2023
 """
 
 class Settings:
-    PROJECT_NAME:str = "Job Board"
+    PROJECT_NAME:str = "Cannabis Cult"
     PROJECT_VERSION: str = "1.0.0"
 
 settings = Settings()
