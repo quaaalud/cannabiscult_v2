@@ -6,21 +6,29 @@ Created on Fri Mar 10 21:36:01 2023
 @author: dale
 """
 
-from fastapi import APIRouter
 import sys
 from pathlib import Path
 
-api_dir = Path(__file__).parent
-version_1_dir = Path(api_dir, 'version1')
+apis_dir = Path(__file__).parents[0]
+backend_dir = Path(__file__).parents[1]
+main_dir = Path(__file__).parents[2]
+version_dir = Path(apis_dir, 'version1')
 
-if str(api_dir) not in sys.path:
-    sys.path.append(str(api_dir))
+if str(main_dir) not in sys.path:
+    sys.path.append(str(main_dir)) 
     
-if str(version_1_dir) not in sys.path:
-    sys.path.append(str(version_1_dir))
+if str(backend_dir) not in sys.path:
+    sys.path.append(str(backend_dir)) 
+    
+if str(apis_dir) not in sys.path:
+    sys.path.append(str(apis_dir)) 
+    
+if str(version_dir) not in sys.path:
+    sys.path.append(str(version_dir)) 
 
-from apis.version1 import route_general_pages
-from apis.version1 import route_users
+from fastapi import APIRouter
+import route_general_pages
+import route_users
 
 
 api_router = APIRouter()
