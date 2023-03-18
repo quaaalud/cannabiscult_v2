@@ -1,25 +1,39 @@
 <footer class="footer mt-auto py-3 bg-light">
   <div class="container text-center">
+    <span class="text-muted">
+      Vist our social media pages and connect with us today
+    </span>
     <div class="row align-items-center">
       <div class="col">
         <a href="https://www.facebook.com/100089202138069">
-          <img src="https://raw.githubusercontent.com/quaaalud/cannabiscult_v2/master/backend/static/images/Facebook.png?token=GHSAT0AAAAAACAE3ZSZQY6E2OAKNRRPVM2QZAVGMFQ">
+          <img 
+            src="{{ url_for('static', path='images/Facebook.png') }}"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
         </a>
       </div>
       <div class="col">
         <a href="https://www.instagram.com/missouricannabisreviews/">
-          <img src="https://raw.githubusercontent.com/quaaalud/cannabiscult_v2/master/backend/static/images/Instagram.png?token=GHSAT0AAAAAACAE3ZSYTSJODY6ID7E34O7EZAVGQOQ">
+          <img 
+            src="{{ url_for('static', path='images/Instagram.png') }}"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
         </a>
       </div>
       <div class="col">
         <a href="https://twitter.com/TheCannabisCvlt">
-          <img src="https://raw.githubusercontent.com/quaaalud/cannabiscult_v2/master/backend/static/images/Twitter.png?token=GHSAT0AAAAAACAE3ZSZWSWRTECW5J7T2S32ZAVGQ3A">
+          <img 
+            src="{{ url_for('static', path='images/Twitter.png') }}"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
         </a>
       </div>
     </div>
-    <span class="text-muted">Vist our social media pages and connect with us today</span>
   </div>
-  <div class="container">
+  <div class="container text-center">
     <span class="text-muted">© 2023 All Rights Reserved</span>
   </div>
 </footer>

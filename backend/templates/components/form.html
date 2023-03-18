@@ -1,24 +1,34 @@
-<div class="card text-bg-light" style="width: 20rem;">
-  <div class="card-body"
+<div class="card text-bg-light" style="max-width: 80rem;">
+  <div class="card-body text-center">
     <form method="post" action="/submit">
-      <div class="row g-2">
-        <div class="col-md-6 mb-1">
-          <label for="name">Name:</label>
-          <input type="text" class="form-control form-control-sm" id="name" name="name">
+      <div class="col-md-4">
+      </div>
+      <div class="row g-1">
+        <div class="col-md-6 mb-2">
+          <input 
+            type="text" class="form-control form-control-sm" 
+            id="name" name="name" placeholder="Your Name Here"
+          >
         </div>
-        <div class="col-md-6">
-          <label for="email">Email:</label>
-          <input type="email" class="form-control form-control-sm" id="email" name="email" required>
+        <div class="col-md-6 mb-2">
+          <input 
+            type="email" class="form-control form-control-sm" 
+            id="email" name="email" placeholder="Email Address Required" required
+          >
         </div>
       </div>
-      <div class="row g-2">
-        <div class="col-md-6">
-          <label for="phone">Phone:</label>
-          <input type="tel" class="form-control form-control-sm" id="phone" name="phone">
+      <div class="row g-1">
+        <div class="col-md-6 mb-2">
+          <input 
+            type="tel" class="form-control form-control-sm" 
+            id="phone" name="phone" placeholder="Phone Number"
+          >
         </div>
-        <div class="col-md-6">
-          <label for="zip_code">Zip:</label>
-          <input type="text" class="form-control form-control-sm" id="zip_code" name="zip_code">
+        <div class="col-md-6 mb-2">
+          <input 
+            type="text" class="form-control form-control-sm" 
+            id="zip_code" name="zip_code" placeholder="Zip Code"
+          >
         </div>
       </div>
       <div class="col-md-12" style="padding-top:10px">
@@ -26,4 +36,4 @@
       </div>
     </form>
   </div>
-<div>
+</div>

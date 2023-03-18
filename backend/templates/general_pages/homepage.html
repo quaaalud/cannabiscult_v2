@@ -7,8 +7,15 @@
 {% endblock %} 
 
 {% block content %} 
-  <div class="container">
-    <h1 class="display-4">Cannabis Cult</h1>
+<div style="padding:15px">
+  <div class="container-fluid text-center">
+    <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
   </div>
+</div>
+<div class="container">
+  <span class="text-center">
+    {% include "components/form.html"  %}
+  </span>
+</div>
 {% endblock %} 
 </html>
