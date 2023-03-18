@@ -26,6 +26,7 @@ general_pages_router = APIRouter()
 
 @general_pages_router.get("/")
 async def home(request: Request):
+    partner_data = await get_current_partner_data()
     return templates.TemplateResponse(
         str(
             Path(
@@ -33,7 +34,10 @@ async def home(request: Request):
                 'homepage.html'
             )
         ), 
-        {"request":request},
+        {
+            "request": request,
+            "dispensaries": partner_data,
+        },
     )
 
 
@@ -102,3 +106,23 @@ async def submit_form(request: Request,
             "zip_code": zip_code
         }
     )
+
+
+async def get_current_partner_data():
+    import get_partner_gsheet.get_gsheet_pandas as get_gsheet
+    return get_gsheet._get_deal_workbook_and_return_dict()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    

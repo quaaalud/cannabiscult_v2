@@ -1,0 +1,12 @@
+{% for dispensary, info in dispensaries.items() %}
+<div class="container text-center" style="color:#301934">
+  <h1><b>{{ dispensary }}</b></h1>
+  <h3><b>Contact:</b> {{ info['Contact'] }}</h3>
+  <h3><b>Address:</b> {{ info['Address'] }}</b></h3>
+  <h3><b>A Cult Favorite:</b> {{ info['A Cult Favorite'] }}</h3>
+  <h3><b>Specials:</b> {{ info['Specials'] }}</h3>
+  <div style="padding-bottom:55px">
+    <img src="{{ info['Image'] }}" style="max-width: 60vw" alt="{{ dispensary }}">
+  </div>
+</div>
+{% endfor %}
