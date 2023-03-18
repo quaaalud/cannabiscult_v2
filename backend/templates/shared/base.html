@@ -9,8 +9,8 @@
     {% block title %}
     {% endblock %}
 </head>
+<body background="{{ url_for('static', path='images/giveaway_bg.png') }}">
 
-<body>
     {% include "components/navbar.html" %}
     {% block content %}
     {% endblock %}
@@ -19,7 +19,6 @@
     {% block scripts %}
     {% endblock %}
 
-
-</body>
     {% include "components/footer.html" %}
+</body>
 </html>
