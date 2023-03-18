@@ -9,8 +9,7 @@
     {% block title %}
     {% endblock %}
 </head>
-<body background="{{ url_for('static', path='images/giveaway_bg.png') }}; background-size: cover;">
-
+<body style="background-image: url({{ url_for('static', path='images/giveaway_bg.png') }}); background-size: cover;">
     {% include "components/navbar.html" %}
     {% block content %}
     

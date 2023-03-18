@@ -49,6 +49,9 @@ def _get_company_info_dict(vals_array: array) -> dict:
         'A Cult Favorite': vals_array[0][2],
         'Specials': vals_array[0][3],
         'Image': vals_array[0][4],
+        'Main_Url': vals_array[0][5],
+        'Specials_Url': vals_array[0][6],
+        'Favorites_Url': vals_array[0][7],
         }
 
 
