@@ -6,9 +6,11 @@ Created on Sun Mar  5 21:10:59 2023
 @author: dale
 """
 
+import os
+import pandas as pd
+from datetime import datetime
 from pathlib import Path
-from fastapi import APIRouter
-from fastapi import Request
+from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -32,4 +34,71 @@ async def home(request: Request):
             )
         ), 
         {"request":request},
+    )
+
+
+@general_pages_router.get("/form", response_class=HTMLResponse)
+async def form(request: Request):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'components',
+                'form.html'
+            )
+        ),
+        {
+            "request": request
+        }
+    )
+
+
+@general_pages_router.post("/submit", response_model=None)
+async def submit_form(request: Request,
+                      name: str = Form(...),
+                      email: str = Form(...),
+                      phone: str = Form(...),
+                      zip_code: str = Form(...)
+                      ) -> templates.TemplateResponse:
+    # Create DataFrame
+    data = {
+        'Name': [name],
+        'Email': [email],
+        'Phone': [phone],
+        'Zip Code': [zip_code],
+        'Timestamp': [str(datetime.now())]
+    }
+    df = pd.DataFrame(data)
+    data_path = Path(
+        '.',
+        'backend',
+        'db',
+        'emails_db',
+        'data.csv'
+    )
+    if os.path.exists(str(data_path)):
+        df = pd.concat(
+            [
+                pd.read_csv(str(data_path)).copy(),
+                df.copy()
+            ],
+            axis=0
+        )
+    # Save to CSV file
+    df.to_csv(str(data_path), index=False)
+
+    # Render success template
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'success.html'
+            )
+        ),
+        {
+            "request": request,
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "zip_code": zip_code
+        }
     )

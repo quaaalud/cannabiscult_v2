@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Data files to be ignored
+*.csv
+*.db
+*.json
+
 # C extensions
 *.so
 
