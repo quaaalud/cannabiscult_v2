@@ -8,7 +8,7 @@
 
 {% block content %} 
 <div style="padding:5px">
-  <div class="container-fluid text-center">
+  <div class="container-fluid text-center" style="padding:2em">
     <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
   </div>
 </div>
@@ -17,12 +17,12 @@
     {% include "components/form.html"  %}
   </span>
 </div>
-<div class="container text-center" style="height:500px; width:400px">
+<div class="container text-center" style="height:450px; width:400px">
   <div style="padding-top:50px;">
     {% include "components/partner_carousel.html" %}
   </div>
 </div>
-<div class="container-fluid text center">
+<div class="container-fluid text center" style="padding:5px">
   {% include "components/display_partner_deals.html" %}
 </div>
 {% endblock %} 
