@@ -1,39 +1,93 @@
-<div background="{{ url_for('static', path='images/giveaway_bg.png') }}" class="card" style="max-width: 80rem;">
+<style>
+  .card {
+    background-color: transparent;
+  }
+  .card-body {
+    background-color: transparent;
+  }
+  #form-input {
+    background-color: transparent;
+  }
+  #form-row {
+    background-color: transparent;
+  }
+  #form-col {
+    background-color: transparent;
+  }
+  #form-input::placeholder {
+  color: #301934; 
+}
+</style>
+<div class="card" style="max-width: 80rem;" id="subscribe-form">
   <div class="card-body text-center">
     <form method="post" action="/submit">
-      <div class="col-md-4">
+      <div class="col-md-4" id="form-col">
       </div>
-      <div class="row g-1">
-        <div class="col-md-6 mb-2">
+      <div class="row g-1" id="form-row">
+        <div class="col-md-6 mb-2" id="form-col">
           <input 
+            id="form-input"
             type="text" class="form-control form-control-sm" 
             id="name" name="name" placeholder="Your Name Here"
           >
         </div>
-        <div class="col-md-6 mb-2">
+        <div class="col-md-6 mb-2" id="form-col">
           <input 
+            id="form-input"
             type="email" class="form-control form-control-sm" 
             id="email" name="email" placeholder="Email Address Required" required
           >
         </div>
       </div>
-      <div class="row g-1">
-        <div class="col-md-6 mb-2">
+      <div class="row g-1" id="form-row">
+        <div class="col-md-6 mb-2" id="form-col">
           <input 
+            id="form-input"
             type="tel" class="form-control form-control-sm" 
             id="phone" name="phone" placeholder="Phone Number"
           >
         </div>
-        <div class="col-md-6 mb-2">
+        <div class="col-md-6 mb-2" id="form-col">
           <input 
+            id="form-input"
             type="text" class="form-control form-control-sm" 
             id="zip_code" name="zip_code" placeholder="Zip Code"
           >
         </div>
       </div>
-      <div class="col-md-12" style="padding-top:10px">
-        <button type="submit" class="btn btn-primary">Submit</button>
+      <div class="row g-1" id="form-row">
+        <div class="col-md-3 mb-2" id="form-col">
+          <div class="form-check" style="color:#301934">
+          <b>
+            <input class="form-check-input" type="checkbox" id="agree" required>
+            <label class="form-check-label" for="agree"> I am 21 years old.
+            </label>
+          </b>
+          </div>
+        </div>
+        <div class="col-md-8" "mb-2" id="form-col">
+          <h4>
+          <b>
+            By subscribing, you agree to the Cannabis Cult
+            <a href="/terms-of-use" style="color:#301934"> User Agreement</a> and 
+            <a href="/privacy-policy" style="color:#301934"> Privacy Statement </a>
+            , and that you are at least 21 years old.
+          </b>
+          </h4>
+        </div>
+      </div>
+      <div class="col-md-12" style="padding-top:10px" id="form-col">
+        <button type="submit" id="submit-btn" class="btn btn-primary" disabled>Submit</button>
       </div>
     </form>
   </div>
 </div>
+
+<script>
+  const agreeCheckbox = document.getElementById('agree');
+  const submitButton = document.getElementById('submit-btn');
+
+  agreeCheckbox.addEventListener('change', (event) => {
+    submitButton.disabled = !event.target.checked;
+  });
+</script>
