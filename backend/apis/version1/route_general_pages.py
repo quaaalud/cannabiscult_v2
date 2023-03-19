@@ -103,7 +103,7 @@ async def submit_form(request: Request,
             "name": name,
             "email": email,
             "phone": phone,
-            "zip_code": zip_code
+            "zip_code": zip_code,
         }
     )
 
@@ -112,9 +112,37 @@ async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
     return get_gsheet._get_deal_workbook_and_return_dict()
     
+
+@general_pages_router.get("/privacy-policy")
+async def privacy_policy(request: Request):
     
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages', 
+                'privacy_policy.html'
+            )
+        ), 
+        {
+            "request": request,
+        },
+    )    
     
+
+@general_pages_router.get("/terms-and-conditions")
+async def terms_and_conditions(request: Request):
     
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages', 
+                'terms_and_conditions.html'
+            )
+        ), 
+        {
+            "request": request,
+        },
+    )  
     
     
     
