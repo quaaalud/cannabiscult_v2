@@ -129,7 +129,7 @@ async def privacy_policy(request: Request):
     )    
     
 
-@general_pages_router.get("/terms-and-conditions")
+@general_pages_router.get("/terms-of-use")
 async def terms_and_conditions(request: Request):
     
     return templates.TemplateResponse(
