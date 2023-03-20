@@ -8,7 +8,7 @@
     {% block title %}
     {% endblock %}
 </head>
-<style>
+<style>    
     body {
         background-position: center;
         background-repeat: no-repeat;
@@ -19,18 +19,21 @@
         background-repeat: no-repeat;
         color: #301934;
     }
+    {% include "shared/css/random_gradient_bg.css" %}
 </style>
 
-<body class="bg-image">
+<body class="stage">
     {% include "components/navbar.html" %}
-    {% block content %}
     
+    {% block content %}
     {% endblock %}
+    
     {% block footer %}
     {% include "components/footer.html" %}
     {% endblock %}
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+    <script>{% include "shared/js/random_gradient_bg.js" %}</script>
     {% block scripts %}
     {% endblock %}
 

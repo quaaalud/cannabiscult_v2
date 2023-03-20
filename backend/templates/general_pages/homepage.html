@@ -7,15 +7,35 @@
 {% endblock %} 
 
 {% block content %} 
+<style>
+  #formAccordion {
+    background-color: transparent;
+  }
+  #formAccordionItem{
+    background-color: transparent;
+  }
+  #formAccordionHeader {
+    background-color: transparent;
+  }
+  #collapseOne {
+    background-color: transparent;
+  }
+  .accordion-header {
+    background-color: transparent;
+  }
+  .accordion-button:not(.collapsed) {
+    background-color: transparent;
+  }
+</style>
 <div style="padding:5px">
   <div class="container-fluid text-center" style="padding:2em">
     <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
   </div>
 </div>
-<div class="container container-sm" style="max-width: 75rem">
-  <div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-      <h2 class="accordion-header" id="headingOne">
+<div class="container container-sm" style="max-width: 75rem; background-color: transparent;">
+  <div class="accordion" id="fromAccordion">
+    <div class="accordion-item" id="fromAccordionItem">
+      <h2 class="accordion-header" id="formAccordionHeader" style="color:#301934">
         <button 
           class="accordion-button" 
           type="button" 
@@ -27,7 +47,7 @@
           ENTER THE CURRENT GIVEAWAY AND GET TO KNOW OUR PARTNERS
         </button>
       </h2>
-      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="formAccordionHeader" data-bs-parent="#formAccordion">
         <div class="accordion-body">
           <div class="container">
             <span class="text-center">
