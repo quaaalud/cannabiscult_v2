@@ -1,11 +1,15 @@
 <!DOCTYPE html>
-<html>
 
-<head>
-    <title dir="ltr" style="line-height:1.2;margin-left: -36pt;margin-right: -36pt;text-align: justify;margin-top:0pt;margin-bottom:14.15pt;"><span style="font-size:11.5pt;font-family:Arial;color:#000000;background-color:transparent;font-weight:700;font-style:normal;font-variant:normal;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;">THE SOCIAL OUTFIT LLC Terms of Use</span></title>
-</head>
-   
-   </header><p>THE SOCIAL OUTFIT LLC. PRIVACY POLICY</p>
+{% block title %} 
+  <title dir="ltr" style="line-height:1.2;margin-left: -26pt;margin-right: -36pt;text-align: justify;margin-top:0pt;margin-bottom:14.15pt;">THE SOCIAL OUTFIT LLC Privacy Policy</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+{% endblock %}
+{% block content %} 
+  {% include "components/navbar.html" %}
+   <head>
+   </head>
+  <div style="padding:2em">
+   <p>THE SOCIAL OUTFIT LLC. PRIVACY POLICY</p>
    
    <p>Effective 20 January 2023</p>
    
@@ -74,5 +78,7 @@
    <p>If you have any questions regarding this Privacy Policy or the practices of this Site, please contact us by sending an email to contact@thesocialoutfitus.com.</p>
    
    <p>Last Updated: This Privacy Policy was last updated on 20 January 2023.</p>
-   
-   <footer></footer></div>
+  </div>
+  {% include "components/footer.html" %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+{% endblock %} 
