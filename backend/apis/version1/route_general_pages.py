@@ -10,7 +10,7 @@ import os
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, responses
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -30,10 +30,10 @@ async def home(request: Request):
     return templates.TemplateResponse(
         str(
             Path(
-                'general_pages', 
+                'general_pages',
                 'homepage.html'
             )
-        ), 
+        ),
         {
             "request": request,
             "dispensaries": partner_data,
@@ -105,50 +105,87 @@ async def submit_form(request: Request,
             "phone": phone,
             "zip_code": zip_code,
         }
-    )   
+    )
+
 
 @general_pages_router.get("/privacy-policy")
 async def privacy_policy(request: Request):
-    
+
     return templates.TemplateResponse(
         str(
             Path(
-                'general_pages', 
+                'general_pages',
                 'privacy_policy.html'
             )
-        ), 
+        ),
         {
             "request": request,
         },
-    )    
-    
+    )
+
 
 @general_pages_router.get("/terms-of-use")
 async def terms_and_conditions(request: Request):
-    
+
     return templates.TemplateResponse(
         str(
             Path(
-                'general_pages', 
+                'general_pages',
                 'terms_and_conditions.html'
             )
-        ), 
+        ),
         {
             "request": request,
         },
-    )  
-    
+    )
+
+
+@general_pages_router.get("/unsubscribe", response_class=HTMLResponse)
+async def unsubscribe(request: Request):
+
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'unsub_form.html'
+            )
+        ),
+        {
+            "request": request,
+        },
+    )
+
+
+@general_pages_router.post("/unsubscribe-submit", response_model=None)
+async def submit_unsubscribe_form(request: Request,
+                                  email: str = Form(...),
+                                  ) -> templates.TemplateResponse:
+    data_path = Path(
+        '.',
+        'backend',
+        'db',
+        'emails_db',
+        'data.csv'
+    )
+    if os.path.exists(str(data_path)):
+        df = pd.read_csv(str(data_path))
+        new_df = df.copy()[df['Email'].str.casefold() != (str(email).casefold())]
+        new_df.to_csv(str(data_path), index=False)
+    partner_data = await get_current_partner_data()
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'homepage.html'
+            )
+        ),
+        {
+            "request": request,
+            "dispensaries": partner_data,
+        },
+    )
+
 
 async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
     return get_gsheet._get_deal_workbook_and_return_dict()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
