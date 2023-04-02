@@ -1,3 +1,5 @@
+{% block footer %}
+
 <footer class="footer mt-auto py-3 bg-light">
   <div class="container text-center">
     <span class="text-muted" style="padding-bottom: 1em">
@@ -39,6 +41,14 @@
         <span class="text-muted">© 2023 The Social Outfit. All Rights Reserved</span>
       </div>
       <div class="col-3">
-        <a href="/unsubscribe" class="text-muted">Unsubscribe</a>
+        <a href="/unsubscribe" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           class="text-muted">
+           Unsubscribe
+        </a>
+      </div>
+    </div>
   </div>
 </footer>
+{% endblock %}
