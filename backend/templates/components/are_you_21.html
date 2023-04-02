@@ -1,0 +1,41 @@
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Are you 21?</h5>
+      </div>
+      <div class="modal-body">
+        <p>Please confirm that you are 21 years of age or older to view this content.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="no-btn" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary" id="age-confirm-btn">I am 21+</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    if (localStorage.getItem("ageConfirmed") !== "true") {
+      $('html, body').css({
+        'overflow': 'hidden',
+        'height': '100%'
+      });
+      $('#staticBackdrop').modal('show');
+    }
+
+    $('#age-confirm-btn').click(function() {
+      localStorage.setItem("ageConfirmed", "true");
+      $('html, body').css({
+        'overflow': 'auto',
+        'height': 'auto'
+      });
+      $('#staticBackdrop').modal('hide');
+    });
+
+    $('#no-btn').click(function() {
+      window.location.href = "https://www.google.com";
+    });
+  });
+</script>
