@@ -1,0 +1,58 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Cannabis Cult</title>
+{% endblock %} 
+
+{% block content %} 
+{% include "components/navbar.html" %}
+
+{% block content %} 
+<br><br><br><br><br>
+<section class="contact d-flex justify-cntent-center align-items-center">
+  <div class="container container-md wrapper">
+    <div class="card align-items-center">
+      <div class="card-body text-center">
+        <h2 style="text-align: center">
+          You are unsubscribing from<br>The Cannabis Cult<br><br>
+        </h2>
+        <h6 style="text-align: center">
+            To proceed, enter your email address and click "Opt Out"<br><br>
+          </h6>
+        </div>
+        <form method="post" action="/unsubscribe-submit">
+          <div class="row g-2" id="unsub-row">
+            <div class="col-md-9 mb-2" id="form-col">
+              <input 
+                id="form-input"
+                type="email" class="form-control form-control-sm" 
+                id="unsub_email" name="email" placeholder="Email Address Required" required
+              >
+            </div>
+            <div class="col-md-3 mb-2" id="form-col">
+              <button type="submit" id="submit-btn" class="btn btn-secondary">Opt Out</button>
+            </div>
+          </div>
+        </form>
+        <div>
+          <h4 style="text-align: center">
+            We are sad to see you go.<br><br>
+            Send us a message at <a href="mailto: contacts@thesocialoutfitus.com"> 
+            contacts@thesocialoutfitus.com</a> to let us know how to get you back
+          </h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %} 
+
+{% block footer %}
+
+{% include "components/footer.html" %}
+
+{% endblock %} 
+
+{% block scripts %}
+{% endblock %} 
+
