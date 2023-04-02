@@ -5,9 +5,7 @@
 {% endblock %} 
 
 {% block content %} 
-{% include "components/navbar.html" %}
 
-{% block content %} 
 <br><br><br><br><br>
 <section class="contact d-flex justify-cntent-center align-items-center">
   <div class="container container-md wrapper">
@@ -17,20 +15,19 @@
           You are unsubscribing from<br>The Cannabis Cult<br><br>
         </h2>
         <h6 style="text-align: center">
-            To proceed, enter your email address and click "Opt Out"<br><br>
+            To proceed, enter your email address and click "Opt-Out"<br><br>
           </h6>
-        </div>
         <form method="post" action="/unsubscribe-submit">
-          <div class="row g-2" id="unsub-row">
-            <div class="col-md-9 mb-2" id="form-col">
+          <div class="row g-0 justify-content-center text-center" id="unsub-row">
+            <div class="col-9 col-md-8 mb-2" id="form-col">
               <input 
                 id="form-input"
                 type="email" class="form-control form-control-sm" 
                 id="unsub_email" name="email" placeholder="Email Address Required" required
               >
             </div>
-            <div class="col-md-3 mb-2" id="form-col">
-              <button type="submit" id="submit-btn" class="btn btn-secondary">Opt Out</button>
+            <div class="col-3 col-md-4 mb-2" id="form-col">
+              <button type="submit" id="submit-btn" class="btn btn-secondary btn-sm">Opt-Out</button>
             </div>
           </div>
         </form>
@@ -48,7 +45,13 @@
 {% endblock %} 
 
 {% block footer %}
-
+<style>
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+</style>
 {% include "components/footer.html" %}
 
 {% endblock %} 

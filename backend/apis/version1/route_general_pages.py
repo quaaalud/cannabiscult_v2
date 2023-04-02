@@ -165,7 +165,7 @@ async def unsubscribe(
         str(
             Path(
                 'general_pages',
-                'unsub_form.html'
+                'unsubscribe.html'
             )
         ),
         {
