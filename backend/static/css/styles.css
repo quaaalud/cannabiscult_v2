@@ -23,13 +23,13 @@
 
 .container-glass h1{
   font-family: 'Righteous', sans-serif;
-  color: rgba(0,0,0,0.98);
+  color: "#301934";
   text-transform: uppercase;
   font-size: 2.4rem;
 }
 
 .container-glass h4 {
-  color: rgba(0,0,0,0.98);
+  color: "#301934";
   font-family: 'Lato', sans-serif;
   text-align: center;
   text-transform: uppercase;
