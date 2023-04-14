@@ -7,7 +7,7 @@
   background-color: rgba(255, 255, 255, 0.25);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.125);  
-  padding: 38px;  
+  padding: 1px;  
   filter: drop-shadow(0 30px 10px rgba(0,0,0,0.125));
 }
 
@@ -26,6 +26,15 @@
   color: "#301934";
   text-transform: uppercase;
   font-size: 2.4rem;
+}
+
+.map-locator h1{
+  font-family: 'Righteous', sans-serif;
+  color: "#301934";
+  text-transform: uppercase;
+  font-size: clamp(1rem,
+                   3rem + 1vw, 
+                   6rem);
 }
 
 .container-glass h4 {

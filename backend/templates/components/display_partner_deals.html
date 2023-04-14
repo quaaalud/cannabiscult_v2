@@ -3,11 +3,11 @@
     {% for dispensary, info in dispensaries.items() %}
       <div class="col container-glass rounded-9">
         <div class="card-body wrapper-glass">
-          <h1><b><a style="color:black" href="{{ info['Main_Url'] }}" target="_blank" rel="noopener noreferrer">{{ dispensary }}</a></b></h1>
+          <h1><b><a style="color:#301934" href="{{ info['Main_Url'] }}" target="_blank" rel="noopener noreferrer">{{ dispensary }}</a></b></h1>
           <h4><b>{{ info['Contact'] }}</b></h4>
           <h4><b>{{ info['Address'] }}</b></h4>
-          <h4><b><a href="{{ info['Favorites_Url'] }}" target="_blank" rel="noopener noreferrer" style="color:#301934"> {{ info['A Cult Favorite'] }}</b></a></h4>
-          <h4><b><a href="{{ info['Specials_Url'] }}" target="_blank" rel="noopener noreferrer" style="color:#301934"> {{ info['Specials'] }}</b></a></h4>
+          <h4><a href="{{ info['Favorites_Url'] }}" target="_blank" rel="noopener noreferrer" style="color:#301934"><b>{{ info['A Cult Favorite'] }}</b></a></h4>
+          <h4><a href="{{ info['Specials_Url'] }}" target="_blank" rel="noopener noreferrer" style="color:#301934"><b>{{ info['Specials'] }}</b></a></h4>
           <div class="container rounded-9">
             <div class="card-body col banner-image">
               <img src="{{ info['Image'] }}" class="img-fluid rounded-9" alt="{{ dispensary }}">
