@@ -1,96 +1,138 @@
-<!DOCTYPE html>
-  {% extends "shared/base.html" %}
+{% extends "shared/base.html" %}
 
-  {% block title %} 
-    <title>Cannabis Cult</title>
-  {% endblock %} 
+{% block title %} 
+  <title>Cannabis Cult</title>
+{% endblock %} 
 
-  {% block content %} 
+{% block header %}
+<meta 
+  property="og:image" 
+  content="{{ url_for('static', path='images/black_cc_logo.png') }}"
+  alt="Cannabis Cult Main Logo with Brain"
+/>
+<meta 
+  content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices." 
+  name="description"
+/>
+<meta 
+  property="og:description" 
+  content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+/>
+<meta 
+  property="og:title" 
+  content="The Cannabis Cult"
+/>
+<meta 
+  name="twitter:card" 
+  content="summary_large_image"
+/>
+<meta 
+  property="twitter:url" 
+  content="https://cannabiscult.co"
+/>
+<meta 
+  property="twitter:title" 
+  content="The Cannabis Cult"
+/>
+<meta 
+  property="twitter:description" 
+  content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+/>
+<meta 
+  name="twitter:site" 
+  content="https://cannabiscult.co/"
+/>
+<meta 
+  property="twitter:image" 
+  content="{{ url_for('static', path='images/black_cc_logo.png') }}"
+  alt="Cannabis Cult Main Logo with Brain"
+/>
+{% endblock %}
 
-    <style>
-      #formAccordion {
-        background-color: transparent;
-      }
-      #formAccordionItem{
-        background-color: transparent;
-      }
-      #formAccordionHeader {
-        background-color: transparent;
-      }
-      #collapseOne {
-        background-color: transparent;
-      }
-      .accordion-header {
-        background-color: transparent;
-      }
-      .accordion-button:not(.collapsed) {
-        background-color: transparent;
-      }
-    </style>
-    
-    {% include "components/are_you_21.html" %}
+{% block content %} 
 
-    <div class="text-center bg-light">
-      <div class="container-fluid text-center" style="padding:2em">
-        <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
-      </div>
+  <style>
+    #formAccordion {
+      background-color: transparent;
+    }
+    #formAccordionItem{
+      background-color: transparent;
+    }
+    #formAccordionHeader {
+      background-color: transparent;
+    }
+    #collapseOne {
+      background-color: transparent;
+    }
+    .accordion-header {
+      background-color: transparent;
+    }
+    .accordion-button:not(.collapsed) {
+      background-color: transparent;
+    }
+  </style>
+  
+  {% include "components/are_you_21.html" %}
+
+  <div class="text-center bg-light">
+    <div class="container-fluid text-center" style="padding:2em">
+      <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
     </div>
-    <div class="container container-sm" style="max-width: 75rem; background-color: transparent;">
-      <div class="accordion" id="fromAccordion">
-        <div class="accordion-item" id="fromAccordionItem">
-          <h2 class="accordion-header" id="formAccordionHeader" style="color:#301934">
-            <button 
-              class="accordion-button" 
-              type="button" 
-              data-bs-toggle="collapse" 
-              data-bs-target="#collapseOne" 
-              aria-expanded="true" 
-              aria-controls="collapseOne"
-            >
-              ENTER THE CURRENT GIVEAWAY AND GET TO KNOW OUR PARTNERS
-            </button>
-          </h2>
-          <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="formAccordionHeader" data-bs-parent="#formAccordion">
-            <div class="accordion-body">
-              <div class="container">
-                <span class="text-center">
-                  {% include "components/form.html"  %}
-                </span>
-              </div>
+  </div>
+  <div class="container container-sm" style="max-width: 75rem; background-color: transparent;">
+    <div class="accordion" id="fromAccordion">
+      <div class="accordion-item" id="fromAccordionItem">
+        <h2 class="accordion-header" id="formAccordionHeader" style="color:#301934">
+          <button 
+            class="accordion-button" 
+            type="button" 
+            data-bs-toggle="collapse" 
+            data-bs-target="#collapseOne" 
+            aria-expanded="true" 
+            aria-controls="collapseOne"
+          >
+            ENTER THE CURRENT GIVEAWAY AND GET TO KNOW OUR PARTNERS
+          </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="formAccordionHeader" data-bs-parent="#formAccordion">
+          <div class="accordion-body">
+            <div class="container">
+              <span class="text-center">
+                {% include "components/form.html"  %}
+              </span>
             </div>
-              <div class="row justify-content-center">
-                <div class="col-9 text-center">
-                  <p class="row">
-                    Potential customers should be reminded that the possession, distribution, and cultivation of cannabis is still prohibited under US federal law. 
-                    Medical decisions should not be based on advertising.
-                    Consult a physician of the benefits and risks of of particular medical marijuana products. 
-                  </p>
-                </div>  
-              </div>
+          </div>
+            <div class="row justify-content-center">
+              <div class="col-9 text-center">
+                <p class="row">
+                  Potential customers should be reminded that the possession, distribution, and cultivation of cannabis is still prohibited under US federal law. 
+                  Medical decisions should not be based on advertising.
+                  Consult a physician of the benefits and risks of of particular medical marijuana products. 
+                </p>
+              </div>  
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="container text-center" style="height:450px; width:400px">
-      <div style="padding-top:50px;">
-        {% include "components/partner_carousel.html" %}
-      </div>
+  </div>
+  <div class="container text-center" style="height:450px; width:400px">
+    <div style="padding-top:50px;">
+      {% include "components/partner_carousel.html" %}
     </div>
-    <div class="map-locator col">
-      <div class="row text-center">
-        <h1><b>Cannabis Dispensary Locator</b></h1>
-      </div>
-      <div class="row container-fluid text-center">
-        <div id="zenlocator-map-pg2vvfnw"></div><script type="text/javascript" src="https://js.zenlocator.com/xhtkvgxg.min.js" async></script>
-      </div>
+  </div>
+  <div class="map-locator col">
+    <div class="row text-center">
+      <h1><b>Cannabis Dispensary Locator</b></h1>
     </div>
-    <div class="container-fluid text center" style="padding:5px">
-      {% include "components/display_partner_deals.html" %}
+    <div class="row container-fluid text-center">
+      <div id="zenlocator-map-pg2vvfnw"></div><script type="text/javascript" src="https://js.zenlocator.com/xhtkvgxg.min.js" async></script>
     </div>
-  {% endblock %}  
-    
-  {% block scripts %}  
-  {% endblock %}
-
-</html>
+  </div>
+  <div class="container-fluid text center" style="padding:5px">
+    {% include "components/display_partner_deals.html" %}
+  </div>
+{% endblock %}  
+  
+{% block scripts %}  
+{% endblock %}
