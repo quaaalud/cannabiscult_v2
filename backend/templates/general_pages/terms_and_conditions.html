@@ -1,14 +1,15 @@
-<!DOCTYPE html>
+{% extends "shared/base.html" %}
 
 {% block title %} 
-  <title dir="ltr" style="line-height:1.2;margin-left: -26pt;margin-right: -36pt;text-align: justify;margin-top:0pt;margin-bottom:14.15pt;">THE SOCIAL OUTFIT LLC Terms of Use</title>
-{% endblock %} 
+<title dir="ltr" style="line-height:1.2;margin-left: -26pt;margin-right: -36pt;text-align: justify;margin-top:0pt;margin-bottom:14.15pt;">The Cannabis Cult Terms of Use</title>
+{% endblock %}
+
+{% block header %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+{% endblock %}
+
 {% block content %} 
-  {% include "components/navbar.html" %}
-   <head>
-   </head>
-  <div style="padding:2em">
+  <div class="container" style="padding:2em">
    
    </header><p>THE SOCIAL OUTFIT LLC Terms of Use</p>
    
@@ -199,8 +200,13 @@
    <p>We may assign or delegate these Terms of Service and/or our Privacy Policy, in whole or in part, to any person or entity at any time with or without your consent. You may not assign or delegate any rights or obligations under the Terms of Service or Privacy Policy without our prior written consent, and any unauthorized assignment or delegation by you is void.</p>
    
    <p>YOU ACKNOWLEDGE THAT YOU HAVE READ THESE TERMS OF USE, UNDERSTAND THE TERMS OF USE, AND WILL BE BOUND BY THESE TERMS AND CONDITIONS. YOU FURTHER ACKNOWLEDGE THAT THESE TERMS OF USE, TOGETHER WITH THE PRIVACY POLICY, REPRESENT THE COMPLETE AND EXCLUSIVE STATEMENT OF THE AGREEMENT BETWEEN US AND THAT IT SUPERSEDES ANY PROPOSAL OR PRIOR AGREEMENT ORAL OR WRITTEN, AND ANY OTHER COMMUNICATIONS BETWEEN US RELATING TO THE SUBJECT MATTER OF THIS AGREEMENT.</p>
-   
-</div>
+  </div>
+{% endblock %}
+
+{% block footer %}
   {% include "components/footer.html" %}
+{% endblock %}
+
+{% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
 {% endblock %} 
