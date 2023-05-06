@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Fri May  5 22:09:26 2023
+
+@author: dale
+"""
+
 from sqlalchemy.orm import Session
 from schemas.subscribers import SubscriberCreate
 from db.models.subscribers import Subscriber
