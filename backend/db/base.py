@@ -7,5 +7,6 @@ Created on Fri Mar 10 20:48:11 2023
 """
 
 from db.base_class import Base
-from db.models.sponsors import Sponsors 
+from db.models.blogs import Blogs 
 from db.models.users import User
+from db.models.subscribers import Subscriber

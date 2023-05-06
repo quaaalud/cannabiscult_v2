@@ -10,9 +10,13 @@ import os
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException, Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
+from route_subscribers import create_subscriber, remove_subscriber
+from schemas.subscribers import SubscriberCreate
+from db.session import get_db
 
 
 templates_dir = Path(
@@ -20,9 +24,7 @@ templates_dir = Path(
     'templates',
 )
 
-templates = Jinja2Templates(
-    directory=str(templates_dir)
-)
+templates = Jinja2Templates(directory=str(templates_dir))
 general_pages_router = APIRouter()
 
 
@@ -46,9 +48,7 @@ async def home(
 
 
 @general_pages_router.get("/form", response_class=HTMLResponse)
-async def form(
-    request: Request
-):
+async def form(request: Request):
     return templates.TemplateResponse(
         str(
             Path(
@@ -57,25 +57,26 @@ async def form(
             )
         ),
         {
-            "request": request
+            "request": request,
+            
         }
     )
 
 
 @general_pages_router.post("/submit", response_model=None)
-async def submit_form(
-    request: Request,
-    name: str = Form(...),
-    email: str = Form(...),
-    phone: str = Form(...),
-    zip_code: str = Form(...)
-) -> templates.TemplateResponse:
+async def submit_form(request: Request,
+                      name: str = Form(...),
+                      email: str = Form(...),
+                      subject: str = Form(...),
+                      message: str = Form(...),
+                      db: Session = Depends(get_db),
+                      ) -> templates.TemplateResponse:
     # Create DataFrame
     data = {
-        'Name': [name],
-        'Email': [email],
-        'Phone': [phone],
-        'Zip Code': [zip_code],
+        'Name': [str(name)],
+        'Email': [str(email)],
+        'Subject': [str(subject)],
+        'Message': [str(message)],
         'Timestamp': [str(datetime.now())]
     }
     df = pd.DataFrame(data)
@@ -84,38 +85,43 @@ async def submit_form(
         'backend',
         'db',
         'emails_db',
-        'giveaway_subscribers.csv'
+        'subscribers.csv'
     )
     if os.path.exists(str(data_path)):
         df = pd.concat(
             [
-                pd.read_csv(
-                    str(data_path)
-                ).copy(),
+                pd.read_csv(str(data_path)).copy(),
                 df.copy()
             ],
             axis=0
         )
-    # Save to CSV file
-    df.to_csv(
-        str(data_path),
-        index=False
+        
+    # Drop duplicates
+    df = df.copy().drop_duplicates(
+        subset=[
+            'Email', 
+            'Message',
+        ],
+        ignore_index=True,
     )
+    
+    # Save to CSV file
+    df.to_csv(str(data_path), index=False)
+    subscriber_data = SubscriberCreate(email=email)
+    create_subscriber(subscriber=subscriber_data, db=db)
 
     # Render success template
+    
     return templates.TemplateResponse(
         str(
             Path(
-                'general_pages',
+                'components',
                 'success.html'
             )
         ),
         {
             "request": request,
             "name": name,
-            "email": email,
-            "phone": phone,
-            "zip_code": zip_code,
         }
     )
 
@@ -156,11 +162,82 @@ async def terms_and_conditions(
     )
 
 
+@general_pages_router.get("/email-form", response_class=HTMLResponse)
+async def email_form(request: Request):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'components',
+                'email-form.html'
+            )
+        ),
+        {
+            "request": request,
+        }
+    )
+
+
+@general_pages_router.post("/submit-email", response_model=None)
+async def submit_email_form(request: Request,
+                            email: str = Form(...),
+                            db: Session = Depends(get_db),
+                            ) -> templates.TemplateResponse:
+    # Create DataFrame
+    data = {
+        'Name': ['None'],
+        'Email': [str(email)],
+        'Subject': ['None'],
+        'Message': ['None'],
+        'Timestamp': [str(datetime.now())]
+    }
+    df = pd.DataFrame(data)
+    data_path = Path(
+        '.',
+        'backend',
+        'db',
+        'emails_db',
+        'subscribers.csv'
+    )
+    if os.path.exists(str(data_path)):
+        df = pd.concat(
+            [
+                pd.read_csv(str(data_path)).copy(),
+                df.copy()
+            ],
+            axis=0
+        )
+        
+    # Drop duplicates
+    df = df.copy().drop_duplicates(
+        subset=[
+            'Email', 
+            'Message',
+        ],
+        ignore_index=True,
+    )
+    df.to_csv(str(data_path), index=False)
+
+    subscriber_data = SubscriberCreate(email=email)
+    create_subscriber(subscriber=subscriber_data, db=db)
+    
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'components',
+                'success.html'
+            )
+        ),
+        {
+            "request": request,
+            "name": email,
+        }
+    )
+
+
 @general_pages_router.get("/unsubscribe", response_class=HTMLResponse)
 async def unsubscribe(
     request: Request
 ):
-
     return templates.TemplateResponse(
         str(
             Path(
@@ -178,13 +255,14 @@ async def unsubscribe(
 async def submit_unsubscribe_form(
     request: Request,
     email: str = Form(...),
+    db: Session = Depends(get_db)
 ) -> templates.TemplateResponse:
     data_path = Path(
         '.',
         'backend',
         'db',
         'emails_db',
-        'data.csv'
+        'subscribers.csv'
     )
     if os.path.exists(str(data_path)):
         df = pd.read_csv(str(data_path))
@@ -192,6 +270,7 @@ async def submit_unsubscribe_form(
             df['Email'].str.casefold() != (str(email).casefold())
         ]
         new_df.to_csv(str(data_path), index=False)
+    remove_subscriber(email, db=db)
     partner_data = await get_current_partner_data()
     return templates.TemplateResponse(
         str(
