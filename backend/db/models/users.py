@@ -1,36 +1,33 @@
-from sqlalchemy.orm import Session
-from schemas.subscribers import SubscriberCreate
-from db.models.subscribers import Subscriber
-from datetime import datetime
+from sqlalchemy import Column, Integer, String, Boolean
+
+from db.base_class import Base
 
 
-def create_new_subscriber(
-        subscriber:SubscriberCreate,
-        db:Session):
-    subscriber = Subscriber(
-        email = subscriber.email,
-        agree_tos=True,
-        date_posted=datetime.now()
+class User(Base):
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True
     )
-    try:
-        db.add(subscriber)
-    except:
-        db.rollback()
-    else:
-        db.commit()
-        db.refresh(subscriber)
-    finally:
-        return subscriber
-
-
-def remove_subscriber(
-        subscriber_email: str,
-        db:Session):
-    subscriber = db.query(
-        Subscriber
-    ).filter(Subscriber.email == subscriber_email).first()
-
-    if subscriber:
-        db.delete(subscriber)
-        db.commit()
-        return {"email": subscriber_email}
+    username = Column(
+        String,unique=True,
+        nullable=False
+    )
+    email = Column(
+        String,
+        nullable=False,
+        unique=True,
+        index=True
+    )
+    hashed_password = Column(
+        String,
+        nullable=False
+    )
+    is_active = Column(
+        Boolean(),
+        default=True
+    )
+    is_superuser = Column(
+        Boolean(),
+        default=False
+    )
