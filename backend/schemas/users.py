@@ -6,8 +6,7 @@ Created on Fri Mar 10 20:51:36 2023
 @author: dale
 """
 
-from typing import Optional
-from pydantic import BaseModel,EmailStr
+from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
@@ -24,3 +23,4 @@ class ShowUser(BaseModel):
 
     class Config():
         orm_mode = True
+
