@@ -1,0 +1,76 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Voting Home - Cannabis Cult</title>
+{% endblock %} 
+
+{% block head %}
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<main class="container-fluid">
+<div class="text-center">
+  <div class="container-fluid text-center" style="padding:2em">
+    <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col mx-auto m-5">
+      {% include "components/vote-template.html" %}
+    </div>
+  </div>
+</div>
+<div class="container container-sm" style="max-width: 75rem; background-color: transparent;">
+  <div class="accordion" id="fromAccordion">
+    <div class="accordion-item" id="fromAccordionItem">
+      <h2 class="accordion-header" id="formAccordionHeader" style="color:#301934">
+        <button 
+          class="accordion-button" 
+          type="button" 
+          data-bs-toggle="collapse" 
+          data-bs-target="#collapseOne" 
+          aria-expanded="true" 
+          aria-controls="collapseOne"
+        >
+          ENTER THE CURRENT GIVEAWAY AND GET TO KNOW OUR PARTNERS
+        </button>
+      </h2>
+      <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="formAccordionHeader" data-bs-parent="#formAccordion">
+        <div class="accordion-body">
+          <div class="container">
+            <span class="text-center">
+              {% include "components/form.html"  %}
+            </span>
+          </div>
+        </div>
+          <div class="row justify-content-center">
+            <div class="col-9 text-center">
+              <p class="row">
+                Potential customers should be reminded that the possession, distribution, and cultivation of cannabis is still prohibited under US federal law. 
+                Medical decisions should not be based on advertising.
+                Consult a physician of the benefits and risks of of particular medical marijuana products. 
+              </p>
+            </div>  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container text-center" style="height:450px; width:400px">
+  <div style="padding-top:50px;">
+    {% include "components/partner_carousel.html" %}
+  </div>
+</div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

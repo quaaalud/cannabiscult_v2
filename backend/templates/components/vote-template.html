@@ -1,0 +1,51 @@
+<div class="container text-center d-flex">
+  <div class="row mx-auto g-3">
+    <div class="col-12 mx-auto g-3">
+        <img 
+          src="https://via.placeholder.com/350x350" 
+          alt="Placeholder Image"
+        >
+    </div>
+    <div class="col-12 mx-auto g-3">
+      <div class="row mx-auto">
+        <div class="col-9 mx-auto">
+          <span class="star" data-rating="*"></span>
+          <span class="star" data-rating="*"></span>
+          <span class="star" data-rating="**"></span>
+          <span class="star" data-rating="***"></span>
+          <span class="star" data-rating="****"></span>
+          <span class="star" data-rating="*****"></span>
+          <input type="hidden" name="rating" class="rating-value" value="0">
+        </div>
+      </div>
+      <div class="row mx-auto">
+        <div class="col-sm-10 col-md-9 col-lg-8 mx-auto">
+          <select class="form-select" aria-label="Default select example">
+            <option selected>Cast Your Vote</option>
+            <option value="0"> </option>
+            <option value="1">*</option>
+            <option value="2">**</option>
+            <option value="3">***</option>
+            <option value="4">****</option>
+            <option value="5">*****</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mx-auto g-3 m-1">
+        <div class="col-sm-8 col-md-7 col-lg-6 mx-auto g-3">
+          <button type="submit" class="btn btn-primary">Vote</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+      $(document).ready(function() {
+          $('.star').on('click', function() {
+              $(this).parent().children('.star').removeClass('selected');
+              $(this).addClass('selected');
+              var ratingValue = parseInt($(this).data('rating'));
+              $(this).parent().children('.rating-value').val(ratingValue);
+          });
+      });
+  </script>
+</div>

@@ -4,7 +4,7 @@
   <title>Cannabis Cult</title>
 {% endblock %} 
 
-{% block header %}
+{% block head %}
 <meta 
   property="og:image" 
   content="{{ url_for('static', path='images/black_cc_logo.png') }}"
@@ -47,6 +47,9 @@
   content="{{ url_for('static', path='images/black_cc_logo.png') }}"
   alt="Cannabis Cult Main Logo with Brain"
 />
+{% endblock %}
+
+{% block header %}
 {% endblock %}
 
 {% block content %} 

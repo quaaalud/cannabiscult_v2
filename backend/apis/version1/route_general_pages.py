@@ -49,6 +49,23 @@ async def home(
     )
 
 
+@general_pages_router.get("/voting-home")
+async def voting_home(
+    request: Request
+):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'voting-home.html'
+            )
+        ),
+        {
+            "request": request,
+        },
+    )
+
+
 @general_pages_router.get("/form", response_class=HTMLResponse)
 async def form(
     request: Request

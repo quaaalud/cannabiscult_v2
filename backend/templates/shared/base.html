@@ -6,11 +6,10 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="Cannabis Cult" content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices.">
     <meta content="Missouri, Kansas, Saint Louis, Cannabis, Marijuana, Weed, Pot, Dispensary, Dispensaries Near Me, Weed Near Me, Cultivator, Leafly, Weedmaps, Weed Maps," name="keywords">
-    {% block title %}
-    {% endblock %}
-    <!-- MDB icon -->
-    {% block header %}
+    
+    {% block head %}
     {%  endblock %}
+    
     <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
@@ -25,18 +24,22 @@
       crossorigin="anonymous">
     <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block title %}
+    {% endblock %}
   </head>
-
+  {% include "components/navbar.html" %}
+  
+  {% block header %}
+  {%  endblock %}
+  
   <body class="stage">
-    {% include "components/navbar.html" %}
-    
+  
     {% block content %}
     {% endblock %}
     
     {% block footer %}
-      {% include "components/footer.html" %}
     {% endblock %}
-
+    {% include "components/footer.html" %}
     <!-- MDB -->
     <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
     <!-- Custom scripts -->
