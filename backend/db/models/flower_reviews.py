@@ -53,3 +53,7 @@ class FlowerReview(Base):
         Integer,
         nullable=False
     )
+    card_path = Column(
+        String,
+        nullable=True
+    )

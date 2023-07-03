@@ -9,6 +9,29 @@ Created on Sun Jul  2 23:18:56 2023
 from sqlalchemy.orm import Session
 from db.models.flower_reviews import FlowerReview
 
+
+def get_review_data_and_path(
+        db: Session,
+        cultivator_select: str=None,
+        strain_select: str=None) -> FlowerReview:
+    if cultivator_select and strain_select:
+        review = db.query(
+            FlowerReview
+        ).filter(
+            (FlowerReview.cultivator == cultivator_select) &
+            (FlowerReview.strain == strain_select)
+        ).first()
+        if review:
+            return {
+                'review_obj': review
+            }
+        else:
+            return {
+                'strain': strain_select,
+                'message': 'Review not found'
+            }
+
+
 def append_to_arrays(
         review_id: int,
         structure_value: int,
