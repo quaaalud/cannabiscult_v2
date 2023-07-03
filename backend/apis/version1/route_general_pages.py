@@ -10,7 +10,8 @@ import os
 import pandas as pd
 from datetime import datetime
 from pathlib import Path
-from fastapi import APIRouter, Request, Form, HTTPException, Depends
+from fastapi import APIRouter, Request, Form, Depends, HTTPException
+from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -231,6 +232,13 @@ async def submit_unsubscribe_form(
             "dispensaries": partner_data,
         },
     )
+
+
+@general_pages_router.get("/{subdomain}.cannabiscult.co")
+async def redirect_to_auth_provider(subdomain: str, auth_url: str=None):
+    if not auth_url:
+        raise HTTPException(status_code=400, detail="auth_provider_url must be provided")
+    return RedirectResponse(url=auth_url)
 
 
 async def get_current_partner_data():
