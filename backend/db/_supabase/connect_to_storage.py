@@ -10,14 +10,13 @@ from db._supabase import supa_client
 
 
 def get_reviews_list() -> list[dict]:    
-    bucket = supa_client.get_no_chalk_bucket()
+    bucket = supa_client.get_cc_bucket()
     folder_path = 'reviews'
     return bucket.list(path=folder_path)
        
 
-def get_image_from_results(file_name: str):
-    file_path=f"reviews/{file_name}"
-    bucket = supa_client.get_no_chalk_bucket()
+def get_image_from_results(file_path: str):
+    bucket = supa_client.get_cc_bucket()
     return bucket.download(
         path=file_path
     )

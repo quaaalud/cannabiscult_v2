@@ -23,6 +23,21 @@ class Subscriber(Base):
         unique=True,
         index=True
     )
+    name = Column(
+        String,
+        nullable=True,
+        unique=False,
+    )
+    zip_code = Column(
+        String,
+        nullable=True,
+        unique=False,
+    )
+    phone = Column(
+        String,
+        nullable=True,
+        unique=False,
+    )
     agree_tos = Column(
         Boolean(),
         default=True

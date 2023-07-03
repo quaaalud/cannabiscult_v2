@@ -55,7 +55,8 @@ def get_review_data_and_path_from_id(
 
 
 def append_votes_to_arrays(
-        review_id: int,
+        cultivator_select: str,
+        strain_select: str,
         structure_value: int,
         nose_value: int,
         flavor_value: int,
@@ -65,7 +66,8 @@ def append_votes_to_arrays(
     review = db.query(
         FlowerReview
     ).filter(
-        FlowerReview.id == review_id
+        (FlowerReview.strain == strain_select) &
+        (FlowerReview.cultivator == cultivator_select)
     ).first()
 
     if review:
@@ -80,11 +82,11 @@ def append_votes_to_arrays(
         except:
             db.rollback()
             return {
-                "review_id": review_id,
+                "strain": strain_select,
                 "message": "Failed to append values"
             }
     else:
         return {
-            "review_id": review_id,
+            "strain": strain_select,
             "message": "Review not found"
         }

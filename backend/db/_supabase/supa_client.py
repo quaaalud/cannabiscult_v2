@@ -16,8 +16,8 @@ def return_created_client(
     return create_client(url, key)
 
 
-def get_no_chalk_bucket():    
+def get_cc_bucket():    
     client = return_created_client()
     return client.storage.get_bucket(
-        settings.NO_CHALK_BUCKET, 
+        settings.POSTGRES_DB, 
     ) 

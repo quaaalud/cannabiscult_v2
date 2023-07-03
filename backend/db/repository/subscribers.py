@@ -17,6 +17,9 @@ def create_new_subscriber(
         db:Session):
     subscriber = Subscriber(
         email = subscriber.email,
+        name = subscriber.name,
+        zip_code = subscriber.zip_code,
+        phone = subscriber.phone,
         agree_tos=True,
         date_posted=datetime.now()
     )

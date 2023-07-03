@@ -1,0 +1,112 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 mx-auto">
+      <div class="text-center">
+        <div class="row mx-auto text-center">
+          <div class="col-12 mx-auto text-center pt-5">
+            <div class="card container">
+              <div class="card-body">
+                <h5 class="card-title">
+                  Get Cultivar Review
+                </h5>
+                <form method="POST" action="/get-review">
+                  <div class="row text-start align-content-start">
+                    <label class="form-label">
+                      Strain
+                    </label>
+                  </div>
+                  <div class="row">
+                    <select 
+                      class="form-select form-select-lg mb-3" multiple
+                      id="strain_selected" 
+                      name="strain_selected" 
+                      aria-label=".form-select-lg strain_selected"
+                    >
+                    </select>
+                  </div>
+                  <div class="row text-start align-content-start">
+                    <label class="form-label">
+                      Cultivator
+                    </label>
+                  </div>
+                  <div class="row">
+                    <select 
+                      class="form-select form-select-lg mb-3" multiple
+                      id="cultivator_selected" 
+                      name="cultivator_selected" 
+                      aria-label=".form-select-lg cultivator_selected"
+                    >
+                    </select>
+                  </div>
+                  <div class="row">
+                    <button 
+                      class="btn btn-primary"
+                      id="submit"
+                      type="submit" 
+                      value="Submit"
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+  <script>
+    window.addEventListener('DOMContentLoaded', function() {
+      var strainSelect = document.getElementById('strain_selected');
+      var cultivatorSelect = document.getElementById('cultivator_selected');
+      var submitButton = document.getElementById('submit');
+      
+      function updateButtonState() {
+        submitButton.disabled = !(strainSelect.value && cultivatorSelect.value);
+      }
+      
+      fetch('/get-all-strains')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(function(strain, index) {
+            var option = document.createElement('option');
+            option.text = strain;
+            option.value = strain;
+            if (index === 0) {
+              option.selected = true;
+            }
+            strainSelect.add(option);
+          });
+
+          var event = new Event('change');
+          strainSelect.dispatchEvent(event);
+        });
+
+      strainSelect.addEventListener('change', function(e) {
+        var strainSelected = e.target.value;
+
+        fetch('/get-cultivators-for-strain?strain_selected=' + strainSelected)
+          .then(response => response.json())
+          .then(data => {
+            cultivatorSelect.innerHTML = '';
+            data.forEach(function(cultivator) {
+              var option = document.createElement('option');
+              option.text = cultivator;
+              option.value = cultivator;
+              cultivatorSelect.add(option);
+            });
+            updateButtonState();
+          });
+      });
+
+      strainSelect.addEventListener('change', updateButtonState);
+      cultivatorSelect.addEventListener('change', updateButtonState);
+
+      updateButtonState();
+    });
+  </script>
+{% endblock %}

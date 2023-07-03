@@ -1,34 +1,49 @@
 <div class="container text-center d-flex">
   <div class="row mx-auto g-3">
     <div class="col-12 mx-auto g-3">
-        <img 
-          src="https://via.placeholder.com/350x350" 
-          alt="Placeholder Image"
-        >
-    </div>
-    <div class="col-12 mx-auto g-3">
-      <div class="row mx-auto">
-        <div class="col-9 mx-auto">
-          <span class="star" data-rating="*"></span>
-          <span class="star" data-rating="*"></span>
-          <span class="star" data-rating="**"></span>
-          <span class="star" data-rating="***"></span>
-          <span class="star" data-rating="****"></span>
-          <span class="star" data-rating="*****"></span>
-          <input type="hidden" name="rating" class="rating-value" value="0">
+      <div class="row mx-auto text-center"> 
+        <div class="col-auto mb-5 text-center mx-auto">
+          <div class="card">
+            <img 
+              src="data:image/png;base64, {{ card_path }}"
+              class="card-img-top" 
+              alt="{{ cultivator }} {{ strain }} Cultivar Review Card"
+            />
+            <div class="card-body">
+              <h4 class="card-title">
+                {{ strain }}
+              </h4>
+              <h5 class="card-subtitle mb-2 text-muted">
+                {{ cultivator }}
+              </h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Overall:{{ overall }}
+              </h6>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Structure:{{ structure }}
+              </h6>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Nose:{{ nose }}
+              </h6>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Flavor:{{ flavor }}
+              </h6>
+              <h6 class="card-subtitle mb-2 text-muted">
+                Effects: {{ effects }}
+              </h6>
+            </div>
+          </div>
         </div>
       </div>
+    </div>
       <div class="row mx-auto">
         <div class="col-sm-10 col-md-9 col-lg-8 mx-auto">
-          <select class="form-select" aria-label="Default select example">
-            <option selected>Cast Your Vote</option>
-            <option value="0"> </option>
-            <option value="1">*</option>
-            <option value="2">**</option>
-            <option value="3">***</option>
-            <option value="4">****</option>
-            <option value="5">*****</option>
-          </select>
+          <label for="customRange3" class="form-label">
+            Structure
+          </label>
+          <div class="range">
+            <input type="range" class="form-range" min="5" max="10" step="0.5" id="customRange3" />
+          </div>
         </div>
       </div>
       <div class="row mx-auto g-3 m-1">

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon Jul  3 16:36:02 2023
+Created on Mon Jul  3 17:52:14 2023
 
 @author: dale
 """
@@ -39,7 +39,7 @@ def get_all_cultivators_for_strain(
 def return_selected_review(
         strain_selected: str,
         cultivator_selected: str,
-        db: Session = Depends(get_db)
+        db: Session
         ):
     return get_review_data_and_path(
         db,
@@ -50,7 +50,7 @@ def return_selected_review(
 
 def return_selected_review_by_id(
         selected_id: str,
-        db: Session = Depends(get_db)):
+        db: Session):
     return get_review_data_and_path_from_id(
         db,
         selected_id
@@ -64,7 +64,7 @@ def add_new_votes_to_flower_strain(
         nose_value: int,
         flavor_value: int,
         effects_value: int,
-        db: Session = Depends(get_db)
+        db: Session
         ):
     return append_votes_to_arrays(
         cultivator_select,

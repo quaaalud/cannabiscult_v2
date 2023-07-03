@@ -14,11 +14,17 @@ load_dotenv()
 class Settings:
     PROJECT_NAME:str = "Cannabis Cult"
     PROJECT_VERSION: str = "2.0.0"
-    POSTGRES_USER : str = os.getenv('POSTGRES_USER')
-    POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-    POSTGRES_SERVER : str = os.getenv('POSTGRES_SERVER')
-    POSTGRES_PORT : str = os.getenv('POSTGRES_PORT')
-    POSTGRES_DB : str = os.getenv('POSTGRES_DB')
-    DATABASE_URL = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}'
+    POSTGRES_USER: str = os.getenv('POSTGRES_USER')
+    POSTGRES_PASSWORD: str = os.getenv('POSTGRES_PASSWORD')
+    POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER')
+    POSTGRES_PORT: str = os.getenv('POSTGRES_PORT')
+    POSTGRES_DB: str = os.getenv('POSTGRES_DB')
+    DATABASE_URL: str = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}'
+    
+    SUPA_ID:str = os.getenv('SUPA_ID')
+    SUPA_JWT:str = os.getenv('SUPA_JWT')
+    SUPA_PORT:str = os.getenv('SUPA_PORT')
+    SUPA_PASSWORD:str = os.getenv('SUPA_PASSWORD')
+    SUPA_URL: str = f'postgres://postgres:{SUPA_PASSWORD}@db.{SUPA_ID}.supabase.co:{SUPA_PORT}/postgres'
 
 settings = Settings()

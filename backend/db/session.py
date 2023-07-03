@@ -8,13 +8,10 @@ Created on Fri Mar 10 19:08:36 2023
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
 from core.config import settings
-
 from typing import Generator  
 
-SQLALCHEMY_DATABASE_URL = settings.DATABASE_URL
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(settings.SUPA_URL)
 
    
 SessionLocal = sessionmaker(
