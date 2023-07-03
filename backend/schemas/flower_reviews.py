@@ -20,8 +20,16 @@ class FlowerReviewCreate(BaseModel):
     vote_count: int
     card_path: str
     
+    
+class FlowerReviewUpdate(BaseModel):
+    review_id: int
+    structure: float
+    nose: float
+    flavor: float
+    effects: float
+    
 
-class ShowSubscriber(BaseModel):
+class ShowFlowerReview(BaseModel):
     cultivator: str
     strain: str
     overall: float

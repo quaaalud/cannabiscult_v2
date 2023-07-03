@@ -12,34 +12,56 @@ from db.models.flower_reviews import FlowerReview
 
 def get_review_data_and_path(
         db: Session,
-        cultivator_select: str=None,
-        strain_select: str=None) -> FlowerReview:
-    if cultivator_select and strain_select:
-        review = db.query(
-            FlowerReview
-        ).filter(
-            (FlowerReview.cultivator == cultivator_select) &
-            (FlowerReview.strain == strain_select)
-        ).first()
-        if review:
-            return {
-                'review_obj': review
-            }
-        else:
-            return {
-                'strain': strain_select,
-                'message': 'Review not found'
-            }
+        cultivator_select: str,
+        strain_select: str) -> FlowerReview:
+
+    review = db.query(
+        FlowerReview
+    ).filter(
+        (FlowerReview.cultivator == cultivator_select) &
+        (FlowerReview.strain == strain_select)
+    ).first()
+
+    if review:
+        return {
+            'review_obj': review
+        }
+    else:
+        return {
+            'strain': strain_select,
+            'message': 'Review not found'
+        }
 
 
-def append_to_arrays(
+def get_review_data_and_path_from_id(
+        db: Session,
+        id_selected: int) -> FlowerReview:
+
+    review = db.query(
+        FlowerReview
+    ).filter(
+        FlowerReview.id == id_selected
+    ).first()
+
+    if review:
+        return {
+            'review_obj': review
+        }
+    else:
+        return {
+            'review_id': id_selected,
+            'message': 'Review not found'
+        }
+
+
+def append_votes_to_arrays(
         review_id: int,
         structure_value: int,
         nose_value: int,
         flavor_value: int,
         effects_value: int,
         db: Session):
-    
+
     review = db.query(
         FlowerReview
     ).filter(
@@ -58,11 +80,11 @@ def append_to_arrays(
         except:
             db.rollback()
             return {
-                "review_id": review_id, 
+                "review_id": review_id,
                 "message": "Failed to append values"
             }
     else:
         return {
-            "review_id": review_id, 
+            "review_id": review_id,
             "message": "Review not found"
         }
