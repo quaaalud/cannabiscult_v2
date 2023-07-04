@@ -8,6 +8,7 @@ Created on Sun Jul  2 23:18:56 2023
 
 import base64
 from pathlib import Path
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from db.models.flower_reviews import FlowerReview
 from db._supabase.connect_to_storage import get_image_from_results 
@@ -45,8 +46,10 @@ def get_review_data_and_path(
             'message': 'Review not found'
         }
 
+
 def get_average_of_list(_list_of_floats: list[float]) -> float:
     return round(sum(_list_of_floats) / len(_list_of_floats) * 2) / 2
+
 
 def get_review_data_and_path_from_id(
         db: Session,
@@ -98,11 +101,14 @@ def append_votes_to_arrays(
     ).first()
 
     if review:
-        review.structure.append(structure_value)
-        review.nose.append(nose_value)
-        review.flavor.append(flavor_value)
-        review.effects.append(effects_value)
+        review.structure = func.array_append(FlowerReview.structure, structure_value)
+        review.nose = func.array_append(FlowerReview.nose, nose_value)
+        review.flavor = func.array_append(FlowerReview.flavor, flavor_value)
+        review.effects = func.array_append(FlowerReview.effects, effects_value)
+        review.vote_count = FlowerReview.vote_count + 1
+        print(review.vote_count)
         try:
+            db.flush()
             db.commit()
             db.refresh(review)
             results_bytes = get_image_from_results(
@@ -113,15 +119,16 @@ def append_votes_to_arrays(
                 'strain': review.strain,
                 'cultivator': review.cultivator,
                 'overall': review.overall,
-                'structure': review.structure,
-                'nose': review.nose,
-                'flavor': review.flavor,
-                'effects': review.effects,
+                'structure': get_average_of_list(review.structure),
+                'nose': get_average_of_list(review.nose),
+                'flavor': get_average_of_list(review.flavor),
+                'effects': get_average_of_list(review.effects),
                 'vote_count': review.vote_count,
                 'card_path': results_bytes,
             }
-        except:
+        except Exception as e:
             db.rollback()
+            print(f"Error: {e}")
             return {
                 "strain": strain_select,
                 "message": "Failed to append values"
@@ -132,6 +139,15 @@ def append_votes_to_arrays(
             "message": "Review not found"
         }
 
+
+def calculate_overall_score(
+        structure_val: float,
+        nose_val: float,
+        flavor_val: float,
+        effects_val: float,
+        ):
+    values_list = [structure_val, nose_val, flavor_val, effects_val]
+    return get_average_of_list(values_list)
 
 def convert_img_bytes_for_html(img_bytes):
     return base64.b64encode(img_bytes).decode()

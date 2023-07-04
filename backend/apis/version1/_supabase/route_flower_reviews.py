@@ -60,18 +60,18 @@ def return_selected_review_by_id(
 def add_new_votes_to_flower_strain(
         cultivator_select: str,
         strain_select: str,
-        structure_value: int,
-        nose_value: int,
-        flavor_value: int,
-        effects_value: int,
+        structure_vote: int,
+        nose_vote: int,
+        flavor_vote: int,
+        effects_vote: int,
         db: Session = Depends(get_supa_db)
         ):
     return append_votes_to_arrays(
         cultivator_select,
         strain_select,
-        structure_value,
-        nose_value,
-        flavor_value,
-        effects_value,
+        structure_vote,
+        nose_vote,
+        flavor_vote,
+        effects_vote,
         db,
     )

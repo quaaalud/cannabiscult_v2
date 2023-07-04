@@ -293,6 +293,54 @@ async def get_flower_review_voting_page(
                 "request": request,
             }
         )
+    
+    
+@general_pages_router.post("/submit-vote", response_model=List[str])
+async def submit_flower_review_vote(
+    request: Request,
+    strain_selected: str = Form(...),
+    cultivator_selected: str = Form(...),
+    structure_vote: str = Form(...),
+    nose_vote: str = Form(...),
+    flavor_vote: str = Form(...),
+    effects_vote: str = Form(...),
+    db: Session = Depends(get_supa_db),
+) -> templates.TemplateResponse:
+    try:
+        review_dict = add_new_votes_to_flower_strain(
+            cultivator_selected,
+            strain_selected,
+            structure_vote,
+            nose_vote,
+            flavor_vote,
+            effects_vote,
+            db
+        )
+        request_dict = {
+            "request": request,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting_home.html'
+                )
+            ),
+            response_dict
+        )
+    except:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting_home.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
 
 
 @general_pages_router.get("/{subdomain}.cannabiscult.co")
