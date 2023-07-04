@@ -25,6 +25,9 @@ class Settings:
     SUPA_JWT:str = os.getenv('SUPA_JWT')
     SUPA_PORT:str = os.getenv('SUPA_PORT')
     SUPA_PASSWORD:str = os.getenv('SUPA_PASSWORD')
-    SUPA_URL: str = f'postgres://postgres:{SUPA_PASSWORD}@db.{SUPA_ID}.supabase.co:{SUPA_PORT}/postgres'
+    SUPA_KEY: str = os.getenv('SUPA_KEY')
+    SUPA_PRIVATE_KEY: str = os.getenv('SUPA_PRIVATE_KEY')
+    SUPA_STORAGE_URL: str = os.getenv('SUPA_STORAGE_URL')
+    SUPA_URL: str = f'postgresql://postgres:{SUPA_PASSWORD}@db.{SUPA_ID}.supabase.co:{SUPA_PORT}/postgres'
 
 settings = Settings()

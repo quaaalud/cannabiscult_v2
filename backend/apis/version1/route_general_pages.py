@@ -19,7 +19,7 @@ from sqlalchemy.exc import IntegrityError
 from typing import List
 from route_subscribers import create_subscriber, remove_subscriber
 from schemas.subscribers import SubscriberCreate
-from db.session import get_db
+from db.session import get_db, get_supa_db
 from version1._supabase.route_flower_reviews import (
     get_all_strains,
     get_all_cultivators_for_strain,
@@ -66,7 +66,7 @@ async def voting_home(
         str(
             Path(
                 'general_pages',
-                'voting-home.html'
+                'voting_home.html'
             )
         ),
         {
@@ -241,44 +241,44 @@ async def submit_unsubscribe_form(
         },
     )
 
-return_selected_review,
-add_new_votes_to_flower_strain,
 
 @general_pages_router.get("/get-all-strains", response_model=List[str])
 def get_all_strains_route(
-        db: Session = Depends(get_db)) -> List[str]:
+        db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_strains(db)
 
 
 @general_pages_router.get("/get-cultivators-for-strain", response_model=List[str])
 def get_all_cultivators_for_strain_route(
         strain_selected: str = Query(...),
-        db: Session = Depends(get_db)) -> List[str]:
+        db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_cultivators_for_strain(strain_selected, db)
 
 
-@general_pages_router.post("/get-review")
-async def get_archived_result(
+@general_pages_router.post("/get-review", response_model=List[str])
+async def get_flower_review_voting_page(
     request: Request,
     strain_selected: str = Form(...),
     cultivator_selected: str = Form(...),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_supa_db),
 ) -> templates.TemplateResponse:
+    review_dict = return_selected_review(
+        strain_selected,
+        cultivator_selected,
+        db=db,
+    )
+    print(review_dict)
     try:
-        pick_dict = return_selected_review(
-            date_posted=date_posted,
-            track=track,
-            db=db,
-        )
+        
         request_dict = {
             "request": request,
         }
-        response_dict = {**request_dict, **pick_dict}
+        response_dict = {**request_dict, **review_dict}
         return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
-                    'results.html'
+                    'voting_home.html'
                 )
             ),
             response_dict
@@ -288,7 +288,7 @@ async def get_archived_result(
             str(
                 Path(
                     'general_pages',
-                    'results.html'
+                    'voting_home.html'
                 )
             ),
             {

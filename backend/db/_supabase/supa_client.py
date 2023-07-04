@@ -11,7 +11,7 @@ from supabase import create_client, Client
 
 
 def return_created_client(
-        url: str = settings.SUPABASE_URL,
+        url: str = settings.SUPA_STORAGE_URL,
         key: str = settings.SUPA_PRIVATE_KEY) -> Client:
     return create_client(url, key)
 

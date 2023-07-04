@@ -6,25 +6,37 @@ Created on Sun Jul  2 23:18:56 2023
 @author: dale
 """
 
+import base64
+from pathlib import Path
 from sqlalchemy.orm import Session
 from db.models.flower_reviews import FlowerReview
-
+from db._supabase.connect_to_storage import get_image_from_results 
 
 def get_review_data_and_path(
         db: Session,
         cultivator_select: str,
         strain_select: str) -> FlowerReview:
-
     review = db.query(
         FlowerReview
     ).filter(
         (FlowerReview.cultivator == cultivator_select) &
         (FlowerReview.strain == strain_select)
     ).first()
-
     if review:
+        results_bytes = get_image_from_results(
+            str(Path(review.card_path))
+        )
         return {
-            'review_obj': review
+            'id': review.id,
+            'strain': review.strain,
+            'cultivator': review.cultivator,
+            'overall': review.overall,
+            'structure': review.structure,
+            'nose': review.nose,
+            'flavor': review.flavor,
+            'effects': review.effects,
+            'vote_count': review.vote_count,
+            'card_path': results_bytes,
         }
     else:
         return {
@@ -42,10 +54,22 @@ def get_review_data_and_path_from_id(
     ).filter(
         FlowerReview.id == id_selected
     ).first()
-
+        
     if review:
+        results_bytes = get_image_from_results(
+            str(Path(review.card_path))
+        )
         return {
-            'review_obj': review
+            'id': review.id,
+            'strain': review.strain,
+            'cultivator': review.cultivator,
+            'overall': review.overall,
+            'structure': review.structure,
+            'nose': review.nose,
+            'flavor': review.flavor,
+            'effects': review.effects,
+            'vote_count': review.vote_count,
+            'card_path': results_bytes,
         }
     else:
         return {
@@ -78,7 +102,21 @@ def append_votes_to_arrays(
         try:
             db.commit()
             db.refresh(review)
-            return review
+            results_bytes = get_image_from_results(
+                str(Path(review.card_path))
+            )
+            return {
+                'id': review.id,
+                'strain': review.strain,
+                'cultivator': review.cultivator,
+                'overall': review.overall,
+                'structure': review.structure,
+                'nose': review.nose,
+                'flavor': review.flavor,
+                'effects': review.effects,
+                'vote_count': review.vote_count,
+                'card_path': results_bytes,
+            }
         except:
             db.rollback()
             return {
@@ -90,3 +128,8 @@ def append_votes_to_arrays(
             "strain": strain_select,
             "message": "Review not found"
         }
+
+
+def convert_img_bytes_for_html(img_bytes):
+    return base64.b64encode(img_bytes).decode()
+        
