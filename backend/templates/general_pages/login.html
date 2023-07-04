@@ -1,7 +1,7 @@
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Cannabis Cult</title>
+  <title>Cannabis Cult - Login</title>
 {% endblock %} 
 
 {% block head %}
@@ -20,7 +20,7 @@
 />
 <meta 
   property="og:title" 
-  content="The Cannabis Cult"
+  content="The Cannabis Cult - Login"
 />
 <meta 
   name="twitter:card" 
@@ -32,7 +32,7 @@
 />
 <meta 
   property="twitter:title" 
-  content="The Cannabis Cult"
+  content="The Cannabis Cult - Login"
 />
 <meta 
   property="twitter:description" 
@@ -53,7 +53,6 @@
 {% endblock %}
 
 {% block content %} 
-
   <style>
     #formAccordion {
       background-color: transparent;
@@ -74,15 +73,17 @@
       background-color: transparent;
     }
   </style>
-  
-  {% include "components/are_you_21.html" %}
-
   <div class="text-center">
     <div class="container-fluid text-center" style="padding:2em">
       <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
     </div>
   </div>
-  <div class="container container-sm" style="max-width: 75rem; background-color: transparent;">
+  <div class="text-center">
+    <div class="container-fluid text-center" style="padding:2em">
+      {% include "components/login-form.html"  %}
+    </div>
+  </div>
+  <div class="container container-sm p-5" style="max-width: 75rem; background-color: transparent;">
     <div class="accordion" id="fromAccordion">
       <div class="accordion-item" id="fromAccordionItem">
         <h2 class="accordion-header" id="formAccordionHeader" style="color:#301934">
@@ -94,10 +95,10 @@
             aria-expanded="true" 
             aria-controls="collapseOne"
           >
-            ENTER THE CURRENT GIVEAWAY AND GET TO KNOW OUR PARTNERS
+            ENTER THE CURRENT GIVEAWAY AND WIN YOURSELF SOMETHING NICE
           </button>
         </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="formAccordionHeader" data-bs-parent="#formAccordion">
+        <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="formAccordionHeader" data-bs-parent="#formAccordion">
           <div class="accordion-body">
             <div class="container">
               <span class="text-center">
@@ -105,42 +106,17 @@
               </span>
             </div>
           </div>
-            <div class="row justify-content-center">
-              <div class="col-9 text-center">
-                <p class="row">
-                  Potential customers should be reminded that the possession, distribution, and cultivation of cannabis is still prohibited under US federal law. 
-                  Medical decisions should not be based on advertising.
-                  Consult a physician of the benefits and risks of of particular medical marijuana products. 
-                </p>
-              </div>  
+          <div class="row justify-content-center">
+            <div class="col-9 text-center">
+              <p class="row">
+                Potential customers should be reminded that the possession, distribution, and cultivation of cannabis is still prohibited under US federal law. 
+                Medical decisions should not be based on advertising.
+                Consult a physician of the benefits and risks of of particular medical marijuana products. 
+              </p>  
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div style="padding-top:50px;">
-    {% include "components/flower_review_selector.html" %}
-  </div>
-  <div class="container text-center" style="height:450px; width:400px">
-    <div style="padding-top:50px;">
-      {% include "components/partner_carousel.html" %}
-    </div>
-  </div>
-  <div class="map-locator col">
-    <div class="row text-center">
-      <h1><b><u>Dispensaries Near Me</u></b></h1>
-    </div>
-    <div class="row container-fluid text-center">
-      <div id="zenlocator-map-pg2vvfnw"></div><script type="text/javascript" src="https://js.zenlocator.com/xhtkvgxg.min.js" async></script>
-    </div>
-  </div>
-  <div class="col">
-    <div class="container-fluid text center" style="padding:5px">
-      <div class="partners-header row text-center">
-        <h1><b><u>Cult Partners</u></b></h1>
-      </div>
-    {% include "components/display_partner_deals.html" %}
     </div>
   </div>
 {% endblock %}  

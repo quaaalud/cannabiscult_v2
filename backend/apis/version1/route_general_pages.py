@@ -92,6 +92,57 @@ async def form(
     )
 
 
+@general_pages_router.get("/login")
+async def login_form(
+    request: Request
+):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'login.html'
+            )
+        ),
+        {
+            "request": request,
+        }
+    )
+
+
+@general_pages_router.get("/sign-up")
+async def signup_form(
+    request: Request
+):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'sign_up.html'
+            )
+        ),
+        {
+            "request": request,
+        }
+    )
+
+
+@general_pages_router.get("/forgot-password")
+async def forgot_password_form(
+    request: Request
+):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'forgot-password.html'
+            )
+        ),
+        {
+            "request": request,
+        }
+    )
+
+
 @general_pages_router.post("/submit", response_model=None)
 async def submit_form(
     request: Request,
