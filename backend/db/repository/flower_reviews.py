@@ -23,18 +23,19 @@ def get_review_data_and_path(
         (FlowerReview.strain == strain_select)
     ).first()
     if review:
+        img_path = str(Path(review.card_path))
         results_bytes = get_image_from_results(
-            str(Path(review.card_path))
+            img_path
         )
         return {
             'id': review.id,
             'strain': review.strain,
             'cultivator': review.cultivator,
             'overall': review.overall,
-            'structure': review.structure,
-            'nose': review.nose,
-            'flavor': review.flavor,
-            'effects': review.effects,
+            'structure': get_average_of_list(review.structure),
+            'nose': get_average_of_list(review.nose),
+            'flavor': get_average_of_list(review.flavor),
+            'effects': get_average_of_list(review.effects),
             'vote_count': review.vote_count,
             'card_path': results_bytes,
         }
@@ -44,6 +45,8 @@ def get_review_data_and_path(
             'message': 'Review not found'
         }
 
+def get_average_of_list(_list_of_floats: list[float]) -> float:
+    return round(sum(_list_of_floats) / len(_list_of_floats) * 2) / 2
 
 def get_review_data_and_path_from_id(
         db: Session,
@@ -64,10 +67,10 @@ def get_review_data_and_path_from_id(
             'strain': review.strain,
             'cultivator': review.cultivator,
             'overall': review.overall,
-            'structure': review.structure,
-            'nose': review.nose,
-            'flavor': review.flavor,
-            'effects': review.effects,
+            'structure': get_average_of_list(review.structure),
+            'nose': get_average_of_list(review.nose),
+            'flavor': get_average_of_list(review.flavor),
+            'effects': get_average_of_list(review.effects),
             'vote_count': review.vote_count,
             'card_path': results_bytes,
         }

@@ -7,7 +7,7 @@ Created on Sun Jul  2 22:54:46 2023
 """
 
 from db._supabase import supa_client
-
+import base64
 
 def get_reviews_list() -> list[dict]:    
     bucket = supa_client.get_cc_bucket()
@@ -17,6 +17,7 @@ def get_reviews_list() -> list[dict]:
 
 def get_image_from_results(file_path: str):
     bucket = supa_client.get_cc_bucket()
-    return bucket.download(
+    img_bytes = bucket.download(
         path=file_path
     )
+    return base64.b64encode(img_bytes).decode()

@@ -243,13 +243,13 @@ async def submit_unsubscribe_form(
 
 
 @general_pages_router.get("/get-all-strains", response_model=List[str])
-def get_all_strains_route(
+async def get_all_strains_route(
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_strains(db)
 
 
 @general_pages_router.get("/get-cultivators-for-strain", response_model=List[str])
-def get_all_cultivators_for_strain_route(
+async def get_all_cultivators_for_strain_route(
         strain_selected: str = Query(...),
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_cultivators_for_strain(strain_selected, db)
@@ -267,9 +267,7 @@ async def get_flower_review_voting_page(
         cultivator_selected,
         db=db,
     )
-    print(review_dict)
     try:
-        
         request_dict = {
             "request": request,
         }
