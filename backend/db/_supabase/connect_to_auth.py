@@ -10,8 +10,17 @@ from db._supabase import supa_client
 import base64
 
 def get_reviews_list() -> list[dict]:    
-    bucket = supa_client.get_cc_bucket()
-    folder_path = 'reviews'
+    supa_client.return_created_client()
+    res = supabase.auth.sign_up({
+      "email": 'example@email.com',
+      "password": 'example-password',
+      "options": {
+        "data": {
+          "first_name": 'John',
+          "age": 27,
+        }
+      }
+    })
     return bucket.list(path=folder_path)
        
 

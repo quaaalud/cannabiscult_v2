@@ -12,13 +12,18 @@ from db.models.users import User
 from core.hashing import Hasher
 
 
-def create_new_user(user:UserCreate,db:Session):
+def create_new_user(user:UserCreate, db:Session):
     user = User(
-        username=user.username,
-        email = user.email,
-        hashed_password=Hasher.get_password_hash(user.password),
-        is_active=True,
-        is_superuser=False
+        username= user.username,
+        email= user.email,
+        name = user.name,
+        phone = user.phone,
+        zip_code = user.zip_code,
+        password = Hasher.get_password_hash(user.password),
+        agree_tos = True,
+        can_vote = False,
+        is_superuser = False
+
     )
     db.add(user)
     db.commit()

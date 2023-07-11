@@ -19,13 +19,29 @@ class User(Base):
         unique=True,
         index=True
     )
+    name = Column(
+        String,
+        nullable=False,
+    )
+    phone = Column(
+        String,
+        nullable=True
+    )
+    zip_code = Column(
+        String,
+        nullable=False,
+    )
     hashed_password = Column(
         String,
         nullable=False
     )
-    is_active = Column(
+    agree_tos = Column(
         Boolean(),
         default=True
+    )
+    is_active = Column(
+        Boolean(),
+        default=False
     )
     is_superuser = Column(
         Boolean(),
