@@ -19,7 +19,7 @@ def create_new_user(user:UserCreate, db:Session):
         name = user.name,
         phone = user.phone,
         zip_code = user.zip_code,
-        password = Hasher.get_password_hash(user.password),
+        hashed_password = Hasher.get_password_hash(user.password),
         agree_tos = True,
         can_vote = False,
         is_superuser = False

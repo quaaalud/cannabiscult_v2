@@ -7,26 +7,18 @@ Created on Sun Jul  2 22:54:46 2023
 """
 
 from db._supabase import supa_client
-import base64
 
-def get_reviews_list() -> list[dict]:    
-    supa_client.return_created_client()
-    res = supabase.auth.sign_up({
-      "email": 'example@email.com',
-      "password": 'example-password',
-      "options": {
-        "data": {
-          "first_name": 'John',
-          "age": 27,
-        }
-      }
-    })
-    return bucket.list(path=folder_path)
+class SupaAuth:
+    
+    _client = supa_client.return_created_client()
+
+    @classmethod
+    def create_new_supabase_user(cls, user_dict):    
+        return cls._client.auth.sign_up(user_dict)
+    
+    @classmethod
+    def refresh_current_user_session(cls):    
+        return cls._client.auth.refresh_session()
        
 
-def get_image_from_results(file_path: str):
-    bucket = supa_client.get_cc_bucket()
-    img_bytes = bucket.download(
-        path=file_path
-    )
-    return base64.b64encode(img_bytes).decode()
+print(SupaAuth._client)
