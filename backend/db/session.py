@@ -11,9 +11,7 @@ from sqlalchemy.orm import sessionmaker
 from core.config import settings
 from typing import Generator  
 
-engine = create_engine(settings.DATABASE_URL)
-
-   
+engine = create_engine(settings.DATABASE_URL)   
 SessionLocal = sessionmaker(
     autocommit=False,
     autoflush=False,
@@ -22,6 +20,8 @@ SessionLocal = sessionmaker(
 
 supa_engine = create_engine(settings.SUPA_URL)
 SupaLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
     bind=supa_engine
 )
 

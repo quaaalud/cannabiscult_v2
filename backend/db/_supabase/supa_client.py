@@ -21,3 +21,6 @@ def get_cc_bucket():
     return client.storage.get_bucket(
         settings.POSTGRES_DB, 
     ) 
+  
+if __name__ == '__main__':
+  pass

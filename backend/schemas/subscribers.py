@@ -10,7 +10,10 @@ from pydantic import BaseModel,EmailStr
 
 
 class SubscriberCreate(BaseModel):
-    email : EmailStr
+    email : EmailStr  
+    name : str
+    zip_code : str
+    phone : str
     
 
 class ShowSubscriber(BaseModel):

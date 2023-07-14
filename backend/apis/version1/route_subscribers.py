@@ -10,7 +10,7 @@ from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from fastapi import Depends
 
-from db.session import get_db
+from db.session import get_supa_db
 from schemas.subscribers import SubscriberCreate, ShowSubscriber
 from db.repository.subscribers import create_new_subscriber
 from db.models.subscribers import Subscriber
@@ -21,7 +21,7 @@ router = APIRouter()
 @router.post("/", response_model=ShowSubscriber)
 def create_subscriber(
     subscriber: SubscriberCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_supa_db)
 ):
     subscriber = create_new_subscriber(
         subscriber=subscriber,
@@ -31,7 +31,7 @@ def create_subscriber(
 
 
 def remove_subscriber(subscriber_email: str,
-                      db: Session = Depends(get_db)
+                      db: Session = Depends(get_supa_db)
                       ):
     subscriber = db.query(
         Subscriber

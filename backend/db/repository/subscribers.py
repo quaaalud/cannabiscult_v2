@@ -9,29 +9,31 @@ Created on Fri May  5 22:09:26 2023
 from sqlalchemy.orm import Session
 from schemas.subscribers import SubscriberCreate
 from db.models.subscribers import Subscriber
-from datetime import datetime
+import datetime
 
+
+def date_handler(obj):
+    if isinstance(obj, datetime.date):
+        return obj.isoformat()
+    else:
+        raise TypeError("Type %s not serializable" % type(obj))
 
 def create_new_subscriber(
         subscriber:SubscriberCreate,
         db:Session):
     subscriber = Subscriber(
-        email = subscriber.email,
-        name = subscriber.name,
-        zip_code = subscriber.zip_code,
-        phone = subscriber.phone,
+        email = str(subscriber.email),
+        name = str(subscriber.name),
+        zip_code = str(subscriber.zip_code),
+        phone = str(subscriber.phone),
         agree_tos=True,
-        date_posted=datetime.now()
+        date_posted=date_handler(datetime.datetime.now())
     )
-    try:
-        db.add(subscriber)
-    except:
-        db.rollback()
-    else:
-        db.commit()
-        db.refresh(subscriber)
-    finally:
-        return subscriber
+    print(dir(db))
+    db.add(subscriber)
+    db.commit()
+    db.refresh(subscriber)
+    return subscriber
 
 
 def remove_subscriber(

@@ -15,11 +15,10 @@ from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 from typing import List
 from route_subscribers import create_subscriber, remove_subscriber
 from schemas.subscribers import SubscriberCreate
-from db.session import get_db, get_supa_db
+from db.session import get_supa_db
 from version1._supabase.route_flower_reviews import (
     get_all_strains,
     get_all_cultivators_for_strain,
@@ -150,43 +149,17 @@ async def submit_form(
     email: str = Form(...),
     phone: str = Form(...),
     zip_code: str = Form(...),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_supa_db),
     ) -> templates.TemplateResponse:
-    # Create DataFrame
-    data = {
-        'Name': [name],
-        'Email': [email],
-        'Phone': [phone],
-        'Zip Code': [zip_code],
-        'Timestamp': [str(datetime.now())]
-    }
-    df = pd.DataFrame(data)
-    data_path = Path(
-        '.',
-        'backend',
-        'db',
-        'emails_db',
-        'giveaway_subscribers.csv'
+  
+    subscriber_data = SubscriberCreate(
+        email=email,
+        name=name,
+        zip_code=zip_code,
+        phone=phone,
     )
-    if os.path.exists(str(data_path)):
-        df = pd.concat(
-            [
-                pd.read_csv(
-                    str(data_path)
-                ).copy(),
-                df.copy()
-            ],
-            axis=0
-        )
-    # Save to CSV file
-    df.to_csv(
-        str(data_path),
-        index=False
-    )
-    subscriber_data = SubscriberCreate(email=email)
     create_subscriber(subscriber=subscriber_data, db=db)
 
-    # Render success template
     return templates.TemplateResponse(
         str(
             Path(
@@ -208,7 +181,6 @@ async def submit_form(
 async def privacy_policy(
     request: Request
 ):
-
     return templates.TemplateResponse(
         str(
             Path(
@@ -226,7 +198,6 @@ async def privacy_policy(
 async def terms_and_conditions(
     request: Request
 ):
-
     return templates.TemplateResponse(
         str(
             Path(
@@ -244,7 +215,6 @@ async def terms_and_conditions(
 async def unsubscribe(
     request: Request
 ):
-
     return templates.TemplateResponse(
         str(
             Path(
@@ -262,22 +232,11 @@ async def unsubscribe(
 async def submit_unsubscribe_form(
     request: Request,
     email: str = Form(...),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_supa_db)
     ) -> templates.TemplateResponse:
-    data_path = Path(
-        '.',
-        'backend',
-        'db',
-        'emails_db',
-        'data.csv'
-    )
-    if os.path.exists(str(data_path)):
-        df = pd.read_csv(str(data_path))
-        new_df = df.copy()[
-            df['Email'].str.casefold() != (str(email).casefold())
-        ]
-        new_df.to_csv(str(data_path), index=False)
+  
     remove_subscriber(email, db=db)
+    
     partner_data = await get_current_partner_data()
     return templates.TemplateResponse(
         str(
@@ -397,7 +356,10 @@ async def submit_flower_review_vote(
 @general_pages_router.get("/{subdomain}.cannabiscult.co")
 async def redirect_to_auth_provider(subdomain: str, auth_url: str=None):
     if not auth_url:
-        raise HTTPException(status_code=400, detail="auth_provider_url must be provided")
+        raise HTTPException(
+            status_code=400, 
+            detail="auth_provider_url must be provided"
+        )
     return RedirectResponse(url=auth_url)
 
 

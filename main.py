@@ -18,6 +18,7 @@ TEMPLATES_DIR = Path(BACKEND_DIR, 'templates')
 STATIC_DIR = Path(BACKEND_DIR, 'static')
 DB_DIR = Path(BACKEND_DIR, 'db')
 MODELS_DIR = Path(DB_DIR, 'models')
+SUPA_DB = Path(DB_DIR, '_supabase')
 
 
 if str(MAIN_DIR) not in sys.path:

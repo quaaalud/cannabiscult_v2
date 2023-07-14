@@ -21,4 +21,5 @@ class SupaAuth:
         return cls._client.auth.refresh_session()
        
 
-print(SupaAuth._client)
+if __name__ == '__main__':
+    print(SupaAuth._client)
