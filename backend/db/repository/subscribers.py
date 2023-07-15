@@ -29,11 +29,15 @@ def create_new_subscriber(
         agree_tos=True,
         date_posted=date_handler(datetime.datetime.now())
     )
-
-    db.add(subscriber)
-    db.commit()
-    db.refresh(subscriber)
-    return subscriber
+    try:
+        db.add(subscriber)
+    except:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(subscriber)
+    finally:
+        return subscriber
 
 
 def remove_subscriber(
