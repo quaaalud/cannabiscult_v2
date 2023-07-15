@@ -6,11 +6,44 @@ Created on Fri Mar 10 21:13:37 2023
 @author: dale
 """
 
+from supabase import Client
 from sqlalchemy.orm import Session
 from schemas.users import UserCreate
 from db.models.users import User
 from core.hashing import Hasher
 
+
+def add_user_to_supabase(user:UserCreate, _auth:Client):
+    user = User(
+        username= user.username,
+        email= user.email,
+        name = user.name,
+        phone = user.phone,
+        zip_code = user.zip_code,
+        hashed_password = Hasher.get_password_hash(user.password),
+        agree_tos = True,
+        can_vote = False,
+        is_superuser = False
+
+    )
+    res = _auth.auth.sign_up(
+        {
+            "email": user.email,
+            "password": user.hashed_password,
+            "options": {
+                "data": {
+                    "username": user.username,
+                    "name": user.name,
+                    "zip_code": user.zip_code,
+                    "agree_tos": user.agree_tos,
+                    "phone": user.phone,
+                    "can_vote": user.can_vote,
+                    "is_superuser": user.is_superuser,
+                }
+            }
+        }
+    )
+    return res
 
 def create_new_user(user:UserCreate, db:Session):
     user = User(
@@ -25,7 +58,12 @@ def create_new_user(user:UserCreate, db:Session):
         is_superuser = False
 
     )
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    return user
+    try:
+        db.add(user)
+    except:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(user)
+    finally:
+        return user

@@ -6,18 +6,20 @@ Created on Sun Mar  5 21:10:59 2023
 @author: dale
 """
 
-import os
-import pandas as pd
-from datetime import datetime
+
 from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
+from gotrue.errors import AuthApiError
 from typing import List
+
 from route_subscribers import create_subscriber, remove_subscriber
+from route_users import create_user, create_supa_user, login_supa_user
 from schemas.subscribers import SubscriberCreate
+from schemas.users import UserCreate, ShowUser, UserLogin
 from db.session import get_supa_db
 from version1._supabase.route_flower_reviews import (
     get_all_strains,
@@ -108,23 +110,6 @@ async def login_form(
     )
 
 
-@general_pages_router.get("/sign-up")
-async def signup_form(
-    request: Request
-):
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'general_pages',
-                'sign_up.html'
-            )
-        ),
-        {
-            "request": request,
-        }
-    )
-
-
 @general_pages_router.get("/forgot-password")
 async def forgot_password_form(
     request: Request
@@ -140,10 +125,103 @@ async def forgot_password_form(
             "request": request,
         }
     )
+  
+  
+@general_pages_router.post("/login-submit", response_model=ShowUser)
+async def submit_login_form(
+    request: Request,
+    login_email: str = Form(...),
+    login_password: str = Form(...),
+    ) -> templates.TemplateResponse:
+
+    user = UserLogin(
+        email=login_email,
+        password=login_password,
+    )
+    try:
+        login_supa_user(user=user)
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'success.html'
+                )
+            ),
+            {
+                "request": request,
+                "name": login_email,
+            }
+        )
+    except AuthApiError:
+        return templates.TemplatesResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'login.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
+
+
+@general_pages_router.post("/register", response_model=ShowUser)
+async def submit_register_form(
+    request: Request,
+    register_email: str = Form(...),
+    register_password: str = Form(...),
+    register_repeat_password: str = Form(...),
+    register_name: str = Form(...),
+    register_username: str = Form(...),
+    register_zip_code: str = Form(...),
+    register_phone: str = Form(...),
+    db: Session = Depends(get_supa_db),
+    ) -> templates.TemplateResponse:
+    if register_password == register_repeat_password:
+        user = UserCreate(
+            email=register_email,
+            password=register_password,
+            name=register_name,
+            username=register_username,
+            phone=register_phone,
+            zip_code=register_zip_code,
+            agree_tos=True,
+            can_vote=False,
+            is_superuser=False,
+        )
+        create_user(user=user, db=db)
+        create_supa_user(user=user)
+  
+  
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'success.html'
+                )
+            ),
+            {
+                "request": request,
+                "name": register_email,
+            }
+        )
+    else:
+        return templates.TemplatesResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'login.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
 
 
 @general_pages_router.post("/submit", response_model=None)
-async def submit_form(
+async def submit_subscriber_form(
     request: Request,
     name: str = Form(...),
     email: str = Form(...),

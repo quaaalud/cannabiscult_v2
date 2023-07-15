@@ -15,10 +15,15 @@ class UserCreate(BaseModel):
     password : str
     name: str
     zip_code: str
-    password : str
+    phone : str
     agree_tos = bool
     can_vote = bool
     is_superuser = bool
+    
+    
+class UserLogin(BaseModel):
+    email : EmailStr
+    password : str
     
 
 class ShowUser(BaseModel):

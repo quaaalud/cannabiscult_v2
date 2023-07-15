@@ -39,7 +39,7 @@ class User(Base):
         Boolean(),
         default=True
     )
-    is_active = Column(
+    can_vote = Column(
         Boolean(),
         default=False
     )

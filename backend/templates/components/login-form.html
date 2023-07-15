@@ -34,19 +34,19 @@
               <div class="col-6">
                 <div class="tab-content">
                   <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                    <form method="POST" action="/login">
+                    <form method="POST" action="/login-submit">
                       <div class="text-center mb-3">
                         <p>Sign in:</p>
                       </div>
                       <!-- Email input -->
                     <div class="form-outline mb-4">
-                      <input type="email" id="loginEmail" class="form-control" />
-                      <label class="form-label" for="loginEmail">Email</label>
+                      <input name="login_email" type="email" id="login_email" class="form-control" />
+                      <label class="form-label" for="login_email">Email</label>
                     </div>
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                      <input type="password" id="loginPassword" class="form-control" />
-                      <label class="form-label" for="loginPassword">Password</label>
+                      <input type="password" id="login_password" name="login_password" class="form-control" />
+                      <label class="form-label" for="login_password">Password</label>
                     </div>
                     <!-- 2 column grid layout -->
                     <div class="row mb-4">
@@ -60,63 +60,70 @@
                   
                       <div class="col-md-6 d-flex justify-content-center">
                         <!-- Simple link -->
-                        <a href="forgot-password">Forgot password?</a>
+                        <a href="/forgot-password">Forgot password?</a>
                       </div>
                     </div>
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
-                  
-                    <!-- Register buttons -->
-                    <div class="text-center">
-                      <p>Not a member? <a href="#!">Register</a></p>
-                    </div>
+                    <button name="login-submit" type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
                   </form>
                 </div>
                 <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
                   <form method="POST" action="/register" class="pb-5">
                     <div class="text-center mb-3">
                       <p>Sign up:</p>
-                    <!-- Name input -->
-                    <div class="form-outline mb-4">
-                      <input type="text" id="registerName" class="form-control" />
-                      <label class="form-label" for="registerName">Name</label>
-                    </div>
-                  
                     <!-- Username input -->
                     <div class="form-outline mb-4">
-                      <input type="text" id="registerPhone" class="form-control" />
-                      <label class="form-label" for="registerPhone">Phone</label>
+                      <input type="text" id="register_username" name="register_username" class="form-control" />
+                      <label class="form-label" for="register_username">Username</label>
                     </div>
-                  
+                    
                     <!-- Email input -->
                     <div class="form-outline mb-4">
-                      <input type="email" id="registerEmail" class="form-control" />
-                      <label class="form-label" for="registerEmail">Email</label>
+                      <input type="email" id="register_email" name="register_email" class="form-control" />
+                      <label class="form-label" for="register_email">Email</label>
+                    </div>
+                    
+                    <!-- Name input -->
+                    <div class="form-outline mb-4">
+                      <input type="text" id="register_name" name="register_name" class="form-control" />
+                      <label class="form-label" for="register_name">Name</label>
+                    </div>
+                    
+                    <!-- Zip Code input -->
+                    <div class="form-outline mb-4">
+                      <input type="text" id="register_zip_code" name="register_zip_code" class="form-control" />
+                      <label class="form-label" for="register_zip_code">Zip Code</label>
+                    </div>
+                  
+                  
+                    <!-- Phone input -->
+                    <div class="form-outline mb-4">
+                      <input type="text" id="register_phone" name="register_phone" class="form-control" />
+                      <label class="form-label" for="register_phone">Phone</label>
                     </div>
                   
                     <!-- Password input -->
                     <div class="form-outline mb-4">
-                      <input type="password" id="registerPassword" class="form-control" />
-                      <label class="form-label" for="registerPassword">Password</label>
+                      <input type="password" id="register_password" name="register_password" class="form-control" />
+                      <label class="form-label" for="register_password">Password</label>
                     </div>
                   
                     <!-- Repeat Password input -->
                     <div class="form-outline mb-4">
-                      <input type="password" id="registerRepeatPassword" class="form-control" />
-                      <label class="form-label" for="registerRepeatPassword">Repeat password</label>
+                      <input type="password" id="register_repeat_password" name="register_repeat_password" class="form-control" />
+                      <label class="form-label" for="register_repeat_password">Repeat password</label>
                     </div>
                   
                     <!-- Checkbox -->
                     <div class="form-check d-flex justify-content-center mb-4">
-                      <input class="form-check-input me-2" type="checkbox" value="" id="registerCheck" checked
+                      <input class="form-check-input me-2" type="checkbox" value="" id="register_check" name="register_check" checked
                         aria-describedby="registerCheckHelpText" />
-                      <label class="form-check-label" for="registerCheck">
+                      <label class="form-check-label" for="register_check">
                         I have read and agree to the terms
                       </label>
                     </div>
-                  
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-3">Sign Up</button>
+                    <button name="register-submit" type="submit" class="btn btn-primary btn-block mb-3">Sign Up</button>
                   </form>
                 </div>
               </div>
