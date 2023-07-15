@@ -31,7 +31,7 @@ class User(Base):
         String,
         nullable=False,
     )
-    hashed_password = Column(
+    password = Column(
         String,
         nullable=False
     )

@@ -20,7 +20,7 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
         name = user.name,
         phone = user.phone,
         zip_code = user.zip_code,
-        hashed_password = Hasher.get_password_hash(user.password),
+        password = Hasher.get_password_hash(user.password),
         agree_tos = True,
         can_vote = False,
         is_superuser = False
@@ -29,7 +29,7 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
     res = _auth.auth.sign_up(
         {
             "email": user.email,
-            "password": user.hashed_password,
+            "password": Hasher.get_password_hash(user.password),
             "options": {
                 "data": {
                     "username": user.username,
@@ -52,12 +52,13 @@ def create_new_user(user:UserCreate, db:Session):
         name = user.name,
         phone = user.phone,
         zip_code = user.zip_code,
-        hashed_password = Hasher.get_password_hash(user.password),
+        password = user.password,
         agree_tos = True,
         can_vote = False,
         is_superuser = False
 
     )
+    print(vars(user))
     db.add(user)
     db.commit()
     db.refresh(user)
