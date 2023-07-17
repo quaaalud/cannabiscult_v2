@@ -33,7 +33,7 @@ def create_supa_user(
     user: UserCreate,
     ) -> SupaAuth:
     try:
-        return SupaAuth.create_new_user(user=user)
+        return SupaAuth.create_new_supabase_user(user=user)
     except AuthApiError:
         return user
 

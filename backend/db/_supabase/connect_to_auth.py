@@ -6,7 +6,7 @@ Created on Sun Jul  2 22:54:46 2023
 @author: dale
 """
 
-from db._supabase import supa_client, connect_to_auth
+from db._supabase import supa_client
 from schemas.users import UserCreate, UserLogin
 from db.repository.users import add_user_to_supabase
 

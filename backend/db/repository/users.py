@@ -58,7 +58,6 @@ def create_new_user(user:UserCreate, db:Session):
         is_superuser = False
 
     )
-    print(vars(user))
     db.add(user)
     db.commit()
     db.refresh(user)
