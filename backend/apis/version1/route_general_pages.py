@@ -153,7 +153,7 @@ async def submit_login_form(
             }
         )
     except AuthApiError:
-        return templates.TemplatesResponse(
+        return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
@@ -207,7 +207,7 @@ async def submit_register_form(
             }
         )
     else:
-        return templates.TemplatesResponse(
+        return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
