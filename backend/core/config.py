@@ -8,6 +8,7 @@ Created on Sun Mar  5 21:17:34 2023
 
 import os
 from dotenv import load_dotenv
+from pydantic import BaseModel
 
 load_dotenv()
 
@@ -25,9 +26,15 @@ class Settings:
     SUPA_JWT:str = os.getenv('SUPA_JWT')
     SUPA_PORT:str = os.getenv('SUPA_PORT')
     SUPA_PASSWORD:str = os.getenv('SUPA_PASSWORD')
-    SUPA_KEY: str = os.getenv('SUPA_KEY')
     SUPA_PRIVATE_KEY: str = os.getenv('SUPA_PRIVATE_KEY')
+    SUPA_PUBLIC_KEY: str = os.getenv('SUPABASE_KEY')
     SUPA_STORAGE_URL: str = os.getenv('SUPA_STORAGE_URL')
     SUPA_URL: str = f'postgresql://postgres:{SUPA_PASSWORD}@db.{SUPA_ID}.supabase.co:{SUPA_PORT}/postgres'
+
+
+class Config(BaseModel):
+    SUPA_STORAGE_URL: str
+    SUPA_PUBLIC_KEY: str
+
 
 settings = Settings()

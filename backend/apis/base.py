@@ -29,7 +29,7 @@ if str(version_dir) not in sys.path:
 from fastapi import APIRouter
 import route_general_pages
 import route_subscribers
-
+import route_users
 
 api_router = APIRouter()
 api_router.include_router(
@@ -41,4 +41,9 @@ api_router.include_router(
     route_subscribers.router,
     prefix="/subscribers",
     tags=["subscriber"]
+)
+api_router.include_router(
+    route_users.router,
+    prefix="/users",
+    tags=["user"]
 )

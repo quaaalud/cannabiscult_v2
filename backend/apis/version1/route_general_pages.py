@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
 from typing import List
 
+from core.config import settings, Config
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import create_user, create_supa_user, login_supa_user
 from schemas.subscribers import SubscriberCreate
@@ -429,6 +430,14 @@ async def submit_flower_review_vote(
                 "request": request,
             }
         )
+      
+      
+@general_pages_router.get("/config")
+async def get_config():
+    return Config(
+        SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
+        SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
+    )
 
 
 @general_pages_router.get("/{subdomain}.cannabiscult.co")

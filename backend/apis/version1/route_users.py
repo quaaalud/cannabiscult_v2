@@ -42,4 +42,5 @@ def create_supa_user(
 def login_supa_user(
     user: UserLogin,
     ) -> SupaAuth:
-    return SupaAuth.login_supabase_user_with_password(user=user)
+    logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
+    return logged_in_user

@@ -47,7 +47,7 @@ if str(MODELS_DIR) not in sys.path:
     
 
 from fastapi import FastAPI
-from core.config import settings
+from core.config import Config, settings
 from apis.base import api_router
 from fastapi.staticfiles import StaticFiles
 from db.session import engine
@@ -70,8 +70,8 @@ def configure_static(app):
 def create_tables():
     print("create_tables")
     Base.metadata.create_all(bind=engine)
-
-
+    
+  
 def start_application():
     app = FastAPI(title=settings.PROJECT_NAME,version=settings.PROJECT_VERSION)
     include_router(app)
@@ -81,4 +81,3 @@ def start_application():
 
 
 app = start_application()
-    
