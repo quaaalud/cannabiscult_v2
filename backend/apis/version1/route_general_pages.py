@@ -151,6 +151,7 @@ async def submit_login_form(
             {
                 "request": request,
                 "name": login_email,
+                "pass": login_password,
             }
         )
     except AuthApiError:

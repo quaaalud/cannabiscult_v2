@@ -1,5 +1,6 @@
+var _supabase = supabase;
+
 fetch('/config')
-    var _supabase;
     .then(response => response.json())
     .then(data => {
         var SUPABASE_URL = data.SUPA_STORAGE_URL;
@@ -87,6 +88,9 @@ fetch('/config')
         document.querySelector('#refresh-token').value = response.session.refresh_token
         alert('Logged in as ' + response.user.email)
       }
+    }
+    function isLoggedIn() {
+      return !!supabase.auth.user();
     }
   }
 );
