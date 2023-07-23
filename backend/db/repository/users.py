@@ -67,3 +67,15 @@ def create_new_user(user:UserCreate, db:Session):
         db.refresh(user)
     finally:
         return user
+      
+      
+def get_user_by_email(
+        user_email: str,
+        db:Session):
+    user = db.query(
+        User
+    ).filter(User.email == user_email).first()
+    if user:
+        return user
+      
+      

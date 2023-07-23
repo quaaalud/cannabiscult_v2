@@ -81,13 +81,12 @@ fetch('/config')
     }
     
     function setToken(response) {
-      if (response.user.confirmation_sent_at && !response?.session?.access_token) {
-        alert('Confirmation Email Sent')
-      } else {
-        document.querySelector('#access-token').value = response.session.access_token
-        document.querySelector('#refresh-token').value = response.session.refresh_token
-        alert('Logged in as ' + response.user.email)
-      }
+        if (response.user.confirmation_sent_at && !response?.session?.access_token) {
+            alert('Confirmation Email Sent')
+        } else {
+            document.cookie = `access_token=${response.session.access_token}; Secure; HttpOnly; SameSite=Lax;`;
+            alert('Logged in as ' + response.user.email)
+        }
     }
     function isLoggedIn() {
       return !!supabase.auth.user();

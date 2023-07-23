@@ -30,11 +30,12 @@ class Settings:
     SUPA_PUBLIC_KEY: str = os.getenv('SUPABASE_KEY')
     SUPA_STORAGE_URL: str = os.getenv('SUPA_STORAGE_URL')
     SUPA_URL: str = f'postgresql://postgres:{SUPA_PASSWORD}@db.{SUPA_ID}.supabase.co:{SUPA_PORT}/postgres'
-
+    ALGO: str = os.getenv('ALGO')
 
 class Config(BaseModel):
     SUPA_STORAGE_URL: str
     SUPA_PUBLIC_KEY: str
+    ALGO: str
 
 
 settings = Settings()

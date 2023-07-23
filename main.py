@@ -47,7 +47,7 @@ if str(MODELS_DIR) not in sys.path:
     
 
 from fastapi import FastAPI
-from core.config import Config, settings
+from core.config import settings
 from apis.base import api_router
 from fastapi.staticfiles import StaticFiles
 from db.session import engine

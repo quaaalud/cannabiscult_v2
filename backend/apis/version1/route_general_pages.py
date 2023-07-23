@@ -17,6 +17,7 @@ from gotrue.errors import AuthApiError
 from typing import List
 
 from core.config import settings, Config
+from core.hashing import Hasher
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import create_user, create_supa_user, login_supa_user
 from schemas.subscribers import SubscriberCreate
@@ -134,38 +135,40 @@ async def submit_login_form(
     login_email: str = Form(...),
     login_password: str = Form(...),
     ) -> templates.TemplateResponse:
-
+    print(login_email, '\n')
     user = UserLogin(
         email=login_email,
         password=login_password,
     )
-    try:
-        login_supa_user(user=user)
-        return templates.TemplateResponse(
-            str(
-                Path(
-                    'general_pages',
-                    'success.html'
-                )
-            ),
-            {
-                "request": request,
-                "name": login_email,
-                "pass": login_password,
-            }
-        )
-    except AuthApiError:
-        return templates.TemplateResponse(
-            str(
-                Path(
-                    'general_pages',
-                    'login.html'
-                )
-            ),
-            {
-                "request": request,
-            }
-        )
+#    try:
+    user = login_supa_user(user=user)
+    print(user)
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'success.html'
+            )
+        ),
+        {
+            "request": request,
+            "name": login_email,
+            "pass": login_password,
+        }
+    )
+#    except AuthApiError:
+#        print('Auth Failed')
+#        return templates.TemplateResponse(
+#            str(
+#                Path(
+#                    'general_pages',
+#                    'login.html'
+#                )
+#            ),
+#            {
+#                "request": request,
+#            }
+#        )
 
 
 @general_pages_router.post("/register", response_model=ShowUser)
@@ -438,6 +441,7 @@ async def get_config():
     return Config(
         SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
         SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
+        ALGO=settings.ALGO,
     )
 
 
