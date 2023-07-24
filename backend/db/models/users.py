@@ -10,7 +10,8 @@ class User(Base):
         index=True
     )
     username = Column(
-        String,unique=True,
+        String,
+        unique=True,
         nullable=False
     )
     email = Column(

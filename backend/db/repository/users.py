@@ -10,7 +10,7 @@ from supabase import Client
 from sqlalchemy.orm import Session
 from schemas.users import UserCreate
 from db.models.users import User
-from core.hashing import Hasher
+#from core.hashing import Hasher
 
 
 def add_user_to_supabase(user:UserCreate, _auth:Client):
@@ -20,7 +20,7 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
         name = user.name,
         phone = user.phone,
         zip_code = user.zip_code,
-        password = Hasher.get_password_hash(user.password),
+        password = user.password,
         agree_tos = True,
         can_vote = False,
         is_superuser = False
@@ -29,7 +29,7 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
     res = _auth.auth.sign_up(
         {
             "email": user.email,
-            "password": Hasher.get_password_hash(user.password),
+            "password": user.password,
             "options": {
                 "data": {
                     "username": user.username,
