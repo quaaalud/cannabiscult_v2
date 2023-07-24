@@ -51,3 +51,4 @@ if __name__ == '__main__':
             )
         )
     )
+    print(SupaAuth.refresh_current_user_session())

@@ -8,11 +8,10 @@ Created on Fri Mar 10 21:12:40 2023
 
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from schemas.users import UserCreate, UserLogin, ShowUser
+from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
 from db.session import get_supa_db
 from db.repository.users import create_new_user
 from db._supabase.connect_to_auth import SupaAuth
-from core.hashing import Hasher
 from gotrue.errors import AuthApiError
 
 router = APIRouter()
@@ -37,10 +36,9 @@ def create_supa_user(
         return user
 
 
-@router.post("/", response_model=ShowUser)
+@router.post("/", response_model=LoggedInUser)
 def login_supa_user(
     user: UserLogin,
     ) -> SupaAuth:
     logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
-    print('\n', logged_in_user, '\n\n')
     return logged_in_user

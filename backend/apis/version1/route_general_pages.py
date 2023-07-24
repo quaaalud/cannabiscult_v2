@@ -9,6 +9,7 @@ Created on Sun Mar  5 21:10:59 2023
 
 from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
+from fastapi import BackgroundTasks
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -17,7 +18,6 @@ from gotrue.errors import AuthApiError
 from typing import List
 
 from core.config import settings, Config
-from core.hashing import Hasher
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import create_user, create_supa_user, login_supa_user
 from schemas.subscribers import SubscriberCreate
@@ -146,26 +146,26 @@ async def submit_login_form(
             str(
                 Path(
                     'general_pages',
-                    'success.html'
+                    'login_success.html'
                 )
             ),
             {
                 "request": request,
-                "name": login_email,
-                "pass": login_password,
+                "username": login_email,
+                "user": user,
             }
         )
     except AuthApiError:
-        print('Auth Failed')
         return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
-                    'login.html'
+                    'submit-failed.html'
                 )
             ),
             {
                 "request": request,
+                "username": login_email,
             }
         )
 
@@ -194,20 +194,20 @@ async def submit_register_form(
             can_vote=False,
             is_superuser=False,
         )
+
         create_user(user=user, db=db)
         create_supa_user(user=user)
-  
   
         return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
-                    'success.html'
+                    'register_success.html'
                 )
             ),
             {
                 "request": request,
-                "name": register_email,
+                "username": register_username,
             }
         )
     else:
@@ -215,11 +215,12 @@ async def submit_register_form(
             str(
                 Path(
                     'general_pages',
-                    'login.html'
+                    'submit-failed.html'
                 )
             ),
             {
                 "request": request,
+                "username": register_username,
             }
         )
 
@@ -397,6 +398,7 @@ async def submit_flower_review_vote(
     flavor_vote: str = Form(...),
     effects_vote: str = Form(...),
     db: Session = Depends(get_supa_db),
+    user_session = Depends(),
 ) -> templates.TemplateResponse:
     try:
         review_dict = add_new_votes_to_flower_strain(

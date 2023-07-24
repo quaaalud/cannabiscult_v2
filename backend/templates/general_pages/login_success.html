@@ -1,11 +1,11 @@
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Cannabis Cult Subscribe Success</title>
+  <title>Cannabis Cult Register Success</title>
 {% endblock %} 
 
 {% block head %}
-  <meta http-equiv="refresh" content="5; url=/">
+  <meta http-equiv="refresh" content="2; url=/voting-home">
   <meta 
     property="og:image" 
     content="{{ url_for('static', path='images/black_cc_logo.png') }}"
@@ -51,11 +51,9 @@
 {% endblock %}
 {% block content %}
   <section class="container align-content-center">
-    <span style="text-align:center">
-      <h1>Your submission was successful!</h1>
-    </span>
-    <span style="text-align:center; color:blue;">
-      <p>{{ name }}, check your email to see if you won cult gear and updates regularly.</p>
+    <span>
+      <h1>Your login was successful!</h1>
+      <h2>Welcome Back {{ username }}</h2>
     </span>
   </section>        
 {% endblock %}  

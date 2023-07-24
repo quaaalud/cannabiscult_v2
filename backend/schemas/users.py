@@ -29,7 +29,17 @@ class UserLogin(BaseModel):
 class ShowUser(BaseModel):
     username : str 
     can_vote : bool
-
+    
+    class Config():
+        orm_mode = True
+        
+        
+class LoggedInUser(BaseModel):
+    username : str 
+    email: EmailStr
+    can_vote : bool
+    role : str
+    
     class Config():
         orm_mode = True
 

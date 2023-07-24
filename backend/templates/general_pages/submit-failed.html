@@ -1,11 +1,19 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jul 24 17:12:29 2023
+
+@author: dale
+"""
+
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Cannabis Cult Subscribe Success</title>
+  <title>Cannabis Cult Submission Failure</title>
 {% endblock %} 
 
 {% block head %}
-  <meta http-equiv="refresh" content="5; url=/">
+  <meta http-equiv="refresh" content="5; url=/login">
   <meta 
     property="og:image" 
     content="{{ url_for('static', path='images/black_cc_logo.png') }}"
@@ -51,11 +59,9 @@
 {% endblock %}
 {% block content %}
   <section class="container align-content-center">
-    <span style="text-align:center">
-      <h1>Your submission was successful!</h1>
-    </span>
-    <span style="text-align:center; color:blue;">
-      <p>{{ name }}, check your email to see if you won cult gear and updates regularly.</p>
+    <span>
+      <h1>Your submission failed</h1>
+      <h2>{{ name }}, check your information before re-submitting</h2>
     </span>
   </section>        
 {% endblock %}  

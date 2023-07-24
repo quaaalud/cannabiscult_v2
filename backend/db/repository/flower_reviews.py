@@ -149,6 +149,7 @@ def calculate_overall_score(
     values_list = [structure_val, nose_val, flavor_val, effects_val]
     return get_average_of_list(values_list)
 
+
 def convert_img_bytes_for_html(img_bytes):
     return base64.b64encode(img_bytes).decode()
         
