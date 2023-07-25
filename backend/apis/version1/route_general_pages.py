@@ -9,7 +9,7 @@ Created on Sun Mar  5 21:10:59 2023
 
 from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
-from fastapi import BackgroundTasks
+#from fastapi import BackgroundTasks
 from fastapi.responses import RedirectResponse
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -20,9 +20,9 @@ from typing import List
 from core.config import settings, Config
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
-    create_user, 
-    create_supa_user, 
-    login_supa_user, 
+    create_user,
+    create_supa_user,
+    login_supa_user,
     get_current_users_email,
     return_current_user_vote_status,
 )
@@ -133,14 +133,14 @@ async def forgot_password_form(
             "request": request,
         }
     )
- 
+
 
 @general_pages_router.post("/login-submit", response_model=LoggedInUser)
 async def submit_login_form(
     request: Request,
     login_email: str = Form(...),
     login_password: str = Form(...),
-    ) -> templates.TemplateResponse:
+) -> templates.TemplateResponse:
 
     user = UserLogin(
         email=login_email,
@@ -187,7 +187,7 @@ async def submit_register_form(
     register_zip_code: str = Form(...),
     register_phone: str = Form(...),
     db: Session = Depends(get_supa_db),
-    ) -> templates.TemplateResponse:
+) -> templates.TemplateResponse:
     if register_password == register_repeat_password:
         user = UserCreate(
             email=register_email,
@@ -203,7 +203,7 @@ async def submit_register_form(
 
         create_user(user=user, db=db)
         create_supa_user(user=user)
-  
+
         return templates.TemplateResponse(
             str(
                 Path(
@@ -239,8 +239,8 @@ async def submit_subscriber_form(
     phone: str = Form(...),
     zip_code: str = Form(...),
     db: Session = Depends(get_supa_db),
-    ) -> templates.TemplateResponse:
-  
+) -> templates.TemplateResponse:
+
     subscriber_data = SubscriberCreate(
         email=email,
         name=name,
@@ -322,10 +322,10 @@ async def submit_unsubscribe_form(
     request: Request,
     email: str = Form(...),
     db: Session = Depends(get_supa_db)
-    ) -> templates.TemplateResponse:
-  
+) -> templates.TemplateResponse:
+
     remove_subscriber(email, db=db)
-    
+
     partner_data = await get_current_partner_data()
     return templates.TemplateResponse(
         str(
@@ -392,8 +392,8 @@ async def get_flower_review_voting_page(
                 "request": request,
             }
         )
-    
-    
+
+
 @general_pages_router.post("/submit-vote", response_model=List[str])
 async def submit_flower_review_vote(
     request: Request,
@@ -404,9 +404,9 @@ async def submit_flower_review_vote(
     flavor_vote: str = Form(...),
     effects_vote: str = Form(...),
     db: Session = Depends(get_supa_db),
-    current_user_email = Depends(get_current_users_email),
+    current_user_email=Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
-    
+
     can_vote_status = return_current_user_vote_status(
         user_email=current_user_email,
         db=db,
@@ -423,43 +423,30 @@ async def submit_flower_review_vote(
                 "request": request,
             }
         )
-    if strain_selected and cultivator_selected:
-        try:
-            review_dict = add_new_votes_to_flower_strain(
-                cultivator_selected,
-                strain_selected,
-                structure_vote,
-                nose_vote,
-                flavor_vote,
-                effects_vote,
-                db
-            )
-            request_dict = {
-                "request": request,
-            }
-            response_dict = {**request_dict, **review_dict}
-            return templates.TemplateResponse(
-                str(
-                    Path(
-                        'general_pages',
-                        'voting_home.html'
-                    )
-                ),
-                response_dict
-            )
-        except:
-            return templates.TemplateResponse(
-                str(
-                    Path(
-                        'general_pages',
-                        'voting_home.html'
-                    )
-                ),
-                {
-                    "request": request,
-                }
-            )
-    else:
+    try:
+        review_dict = add_new_votes_to_flower_strain(
+            cultivator_selected,
+            strain_selected,
+            structure_vote,
+            nose_vote,
+            flavor_vote,
+            effects_vote,
+            db
+        )
+        request_dict = {
+            "request": request,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting_home.html'
+                )
+            ),
+            response_dict
+        )
+    except HTTPException:
         return templates.TemplateResponse(
             str(
                 Path(
@@ -471,9 +458,20 @@ async def submit_flower_review_vote(
                 "request": request,
             }
         )
-      
-      
-      
+    except:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting_home.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
+
+
 @general_pages_router.get("/config")
 async def get_config():
     return Config(
@@ -484,10 +482,10 @@ async def get_config():
 
 
 @general_pages_router.get("/{subdomain}.cannabiscult.co")
-async def redirect_to_auth_provider(subdomain: str, auth_url: str=None):
+async def redirect_to_auth_provider(subdomain: str, auth_url: str = None):
     if not auth_url:
         raise HTTPException(
-            status_code=400, 
+            status_code=400,
             detail="auth_provider_url must be provided"
         )
     return RedirectResponse(url=auth_url)
