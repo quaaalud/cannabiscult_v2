@@ -423,30 +423,43 @@ async def submit_flower_review_vote(
                 "request": request,
             }
         )
-    try:
-        review_dict = add_new_votes_to_flower_strain(
-            cultivator_selected,
-            strain_selected,
-            structure_vote,
-            nose_vote,
-            flavor_vote,
-            effects_vote,
-            db
-        )
-        request_dict = {
-            "request": request,
-        }
-        response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(
-            str(
-                Path(
-                    'general_pages',
-                    'voting_home.html'
-                )
-            ),
-            response_dict
-        )
-    except:
+    if strain_selected and cultivator_selected:
+        try:
+            review_dict = add_new_votes_to_flower_strain(
+                cultivator_selected,
+                strain_selected,
+                structure_vote,
+                nose_vote,
+                flavor_vote,
+                effects_vote,
+                db
+            )
+            request_dict = {
+                "request": request,
+            }
+            response_dict = {**request_dict, **review_dict}
+            return templates.TemplateResponse(
+                str(
+                    Path(
+                        'general_pages',
+                        'voting_home.html'
+                    )
+                ),
+                response_dict
+            )
+        except:
+            return templates.TemplateResponse(
+                str(
+                    Path(
+                        'general_pages',
+                        'voting_home.html'
+                    )
+                ),
+                {
+                    "request": request,
+                }
+            )
+    else:
         return templates.TemplateResponse(
             str(
                 Path(
@@ -458,6 +471,7 @@ async def submit_flower_review_vote(
                 "request": request,
             }
         )
+      
       
       
 @general_pages_router.get("/config")
