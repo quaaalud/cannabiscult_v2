@@ -66,12 +66,15 @@ def add_new_votes_to_flower_strain(
         effects_vote: int,
         db: Session = Depends(get_supa_db)
         ):
-    return append_votes_to_arrays(
-        cultivator_select,
-        strain_select,
-        structure_vote,
-        nose_vote,
-        flavor_vote,
-        effects_vote,
-        db,
-    )
+    try:
+        return append_votes_to_arrays(
+            cultivator_select,
+            strain_select,
+            structure_vote,
+            nose_vote,
+            flavor_vote,
+            effects_vote,
+            db,
+        )
+    except:
+        pass

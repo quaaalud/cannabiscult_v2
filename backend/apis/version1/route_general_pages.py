@@ -19,9 +19,15 @@ from typing import List
 
 from core.config import settings, Config
 from route_subscribers import create_subscriber, remove_subscriber
-from route_users import create_user, create_supa_user, login_supa_user
+from route_users import (
+    create_user, 
+    create_supa_user, 
+    login_supa_user, 
+    get_current_users_email,
+    return_current_user_vote_status,
+)
 from schemas.subscribers import SubscriberCreate
-from schemas.users import UserCreate, ShowUser, UserLogin
+from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
 from db.session import get_supa_db
 from version1._supabase.route_flower_reviews import (
     get_all_strains,
@@ -127,9 +133,9 @@ async def forgot_password_form(
             "request": request,
         }
     )
-  
-  
-@general_pages_router.post("/login-submit", response_model=ShowUser)
+ 
+
+@general_pages_router.post("/login-submit", response_model=LoggedInUser)
 async def submit_login_form(
     request: Request,
     login_email: str = Form(...),
@@ -398,8 +404,40 @@ async def submit_flower_review_vote(
     flavor_vote: str = Form(...),
     effects_vote: str = Form(...),
     db: Session = Depends(get_supa_db),
-    user_session = Depends(),
+    current_user_email = Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
+    
+    print('\nUser Email: ', current_user_email)
+    if current_user_email is None:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'login.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
+    else:
+        can_vote_status = return_current_user_vote_status(
+            user_email=current_user_email,
+            db=db,
+        )
+    print('\nVoting Status: ', can_vote_status, '\n\n')
+    if not can_vote_status:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting_home.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
     try:
         review_dict = add_new_votes_to_flower_strain(
             cultivator_selected,

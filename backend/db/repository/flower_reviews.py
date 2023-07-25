@@ -106,7 +106,6 @@ def append_votes_to_arrays(
         review.flavor = func.array_append(FlowerReview.flavor, flavor_value)
         review.effects = func.array_append(FlowerReview.effects, effects_value)
         review.vote_count = FlowerReview.vote_count + 1
-        print(review.vote_count)
         try:
             db.flush()
             db.commit()

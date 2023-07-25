@@ -45,6 +45,7 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
     )
     return res
 
+
 def create_new_user(user:UserCreate, db:Session):
     user = User(
         username= user.username,
@@ -77,5 +78,4 @@ def get_user_by_email(
     ).filter(User.email == user_email).first()
     if user:
         return user
-      
       

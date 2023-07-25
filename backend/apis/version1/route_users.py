@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
 from db.session import get_supa_db
-from db.repository.users import create_new_user
+from db.repository.users import create_new_user, get_user_by_email
 from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
@@ -42,3 +42,18 @@ def login_supa_user(
     ) -> SupaAuth:
     logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
     return logged_in_user
+
+
+@router.get("/", response_model=None)
+def get_current_users_email() -> SupaAuth:
+    current_user_email = SupaAuth.return_current_user_email()
+    return current_user_email
+  
+  
+@router.post("/", response_model=LoggedInUser)
+def return_current_user_vote_status(
+      user_email: str,
+      db: Session = Depends(get_supa_db)
+  ):
+    user = get_user_by_email(user_email=user_email, db=db)
+    return user.can_vote
