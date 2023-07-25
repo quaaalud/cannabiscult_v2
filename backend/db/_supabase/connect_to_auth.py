@@ -61,12 +61,5 @@ class SupaAuth:
 
 
 if __name__ == '__main__':
-    print(SupaAuth.return_current_user_email())
-    user = SupaAuth.login_supabase_user_with_password(
-        UserLogin(
-            email='dludwins@outlook.com',
-            password='Password1',
-        )
-    )
-    print(user)
+    
     print(SupaAuth.return_current_user_email())

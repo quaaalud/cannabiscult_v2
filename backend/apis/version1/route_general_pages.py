@@ -407,7 +407,6 @@ async def submit_flower_review_vote(
     current_user_email = Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
     
-    print('\nUser Email: ', current_user_email)
     if current_user_email is None:
         return templates.TemplateResponse(
             str(
