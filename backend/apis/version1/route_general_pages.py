@@ -407,30 +407,16 @@ async def submit_flower_review_vote(
     current_user_email = Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
     
-    if current_user_email is None:
-        return templates.TemplateResponse(
-            str(
-                Path(
-                    'general_pages',
-                    'login.html'
-                )
-            ),
-            {
-                "request": request,
-            }
-        )
-    else:
-        can_vote_status = return_current_user_vote_status(
-            user_email=current_user_email,
-            db=db,
-        )
-    print('\nVoting Status: ', can_vote_status, '\n\n')
+    can_vote_status = return_current_user_vote_status(
+        user_email=current_user_email,
+        db=db,
+    )
     if not can_vote_status:
         return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
-                    'voting_home.html'
+                    'login.html'
                 )
             ),
             {

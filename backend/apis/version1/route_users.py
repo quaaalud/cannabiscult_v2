@@ -56,4 +56,5 @@ def return_current_user_vote_status(
       db: Session = Depends(get_supa_db)
   ):
     user = get_user_by_email(user_email=user_email, db=db)
-    return user.can_vote
+    if user:
+        return user.can_vote
