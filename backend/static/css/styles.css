@@ -106,5 +106,21 @@ h4 {
 
 
 .vote-template {
+  color: #ffffff;
+}
 
+.vote-template .card {
+  background: url("../img/card-assets/smoky-black-background.svg") no-repeat center center; !important
+  background-size: cover;
+}
+
+.vote-template .card-title {
+  color: #ffffff;
+  font-size: clamp(1rem, 2rem + 1vw, 3rem);
+
+}
+
+.vote-template .card-subtitle {
+  color: #ffffff;
+  font-size: clamp(0.8rem, 1.5rem + 1vw, 2rem);
 }
