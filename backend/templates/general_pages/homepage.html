@@ -54,35 +54,23 @@
 
 {% block content %} 
 
-  <style>
-    #formAccordion {
-      background-color: transparent;
-    }
-    #formAccordionItem{
-      background-color: transparent;
-    }
-    #formAccordionHeader {
-      background-color: transparent;
-    }
-    #collapseOne {
-      background-color: transparent;
-    }
-    .accordion-header {
-      background-color: transparent;
-    }
-    .accordion-button:not(.collapsed) {
-      background-color: transparent;
-    }
-  </style>
-  
   {% include "components/are_you_21.html" %}
 
   <div class="text-center">
-    <div class="container-fluid text-center" style="padding:2em">
-      <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+    <div 
+      class="container-fluid text-center" 
+      style="padding:2em"
+      data-aos="fade-in"
+      data-aos-duration="2000"
+      data-aos-easing="ease-in-out"
+      data-aos-mirror="true"
+      data-aos-once="false"
+      data-aos-anchor-placement="top-center"
+    >
+      <img class="img-fluid" src="{{ url_for('static', path='images/small_black_cc_logo.png') }}" loading="lazy">
     </div>
   </div>
-  <div class="container container-sm" style="max-width: 75rem; background-color: transparent;">
+  <div class="container container-sm" style="max-width: 75rem; background-color: transparent;" data-aos="fade-in">
     <div class="accordion" id="fromAccordion">
       <div class="accordion-item" id="fromAccordionItem">
         <h2 class="accordion-header" id="formAccordionHeader" style="color:#301934">
@@ -137,10 +125,10 @@
       <div id="zenlocator-map-pg2vvfnw"></div><script type="text/javascript" src="https://js.zenlocator.com/xhtkvgxg.min.js" async></script>
     </div>
   </div>
-  <div class="col">
+  <div class="col cult-picks">
     <div class="container-fluid text center" style="padding:5px">
-      <div class="partners-header row text-center">
-        <h1><b><u>Cult Picks</u></b></h1>
+      <div class="row text-center">
+        <h1 class="animate__animated animate__fadeInUp"><b><u>Cult Picks</u></b></h1>
       </div>
     {% include "components/display_partner_deals.html" %}
     </div>

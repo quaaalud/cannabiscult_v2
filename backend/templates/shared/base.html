@@ -23,13 +23,19 @@
       integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" 
       crossorigin="anonymous">
     <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='src/aos/aos.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script 
+      type="text/javascript" 
+      src="{{ url_for('static', path='src/aos/aos.js') }}"
+    ></script>
     <script 
       async
       type="text/javascript" 
       src="{{ url_for('static', path='src/auth/auth.js') }}"
     ></script>
+    
     {% block title %}
     {% endblock %}
   </head>
@@ -55,6 +61,7 @@
       integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" 
       crossorigin="anonymous">
     </script>
+    <script>AOS.init();</script>
     {% block scripts %}
     {% endblock %}
 

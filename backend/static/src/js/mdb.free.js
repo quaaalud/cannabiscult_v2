@@ -17,6 +17,8 @@ import Dropdown from './free/dropdown';
 import Ripple from './free/ripple';
 import Range from './free/range';
 
+AOS.init();
+
 export {
   Alert,
   Button,

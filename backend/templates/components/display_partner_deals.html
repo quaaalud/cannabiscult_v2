@@ -1,15 +1,32 @@
-<div class="container text-center">
+<div class="container text-center cult-picks">
   <div class="row row-cols-1 row-cols-lg-2 g-0">
     {% for dispensary, info in dispensaries.items() %}
-      <div class="col container-glass rounded-9">
+      <div 
+        class="col container-glass rounded-9"
+        data-aos="flip-left"
+        data-aos-offset="325"
+        data-aos-duration="1200"
+        data-aos-easing="ease-in-out"
+        data-aos-mirror="true"
+        data-aos-once="false"
+        data-aos-anchor-placement="center-center"
+      >
         <div class="card-body wrapper-glass">
-          <h1><b><a style="color:#301934" href="{{ info['Main_Url'] }}" target="_blank" rel="noopener noreferrer">{{ dispensary }}</a></b></h1>
-          <h4><b>{{ info['Contact'] }}</b></h4>
-          <h4><b>{{ info['Address'] }}</b></h4>
-          <h4><a href="{{ info['Favorites_Url'] }}" target="_blank" rel="noopener noreferrer" style="color:#301934"><b>{{ info['A Cult Favorite'] }}</b></a></h4>
-          <h4><a href="{{ info['Specials_Url'] }}" target="_blank" rel="noopener noreferrer" style="color:#301934"><b>{{ info['Specials'] }}</b></a></h4>
+          <h1><b><a class="cult-picks ul" href="{{ info['Main_Url'] }}" target="_blank" rel="noopener noreferrer">{{ dispensary }}</a></b></h1>
+          <h4><a href="{{ info['Favorites_Url'] }}" target="_blank" rel="noopener noreferrer">{{ info['A Cult Favorite'] }}</a></h4>
+          <h4><a class="cult-picks ul" href="{{ info['Specials_Url'] }}" target="_blank" rel="noopener noreferrer">{{ info['Specials'] }}</a></h4>
           <div class="container rounded-9">
-            <div class="card-body col banner-image">
+            <div 
+              class="card-body col banner-image"
+              data-aos="fade-in"
+              data-aos-offset="525"
+              data-aos-delay="1000"
+              data-aos-duration="2000"
+              data-aos-easing="ease-in-out"
+              data-aos-mirror="true"
+              data-aos-once="false"
+              data-aos-anchor-placement="top-center"
+            >
               <img src="{{ info['Image'] }}" class="img-fluid rounded-9" alt="{{ dispensary }}">
             </div>
           </div>
@@ -19,12 +36,32 @@
   </div>
   <div class="row row-cols-1 g-0">
     <div class="col card rounded-9">
-      <div class="card-body">
+      <div 
+        class="card-body"
+        data-aos="fade-up"
+        data-aos-offset="325"
+        data-aos-duration="1200"
+        data-aos-easing="ease-in-out"
+        data-aos-mirror="true"
+        data-aos-once="false"
+        data-aos-anchor-placement="top-center"
+        data-aos-delay="25"
+      >
         <h2><b>
           <a style="color:#301934" href="https://thecannabiscult.myshopify.com/">
             First edition merchandise available now!
           </a>
         </h2>
+        <div 
+          data-aos="fade-in"
+          data-aos-offset="200"
+          data-aos-delay="1000"
+          data-aos-duration="2500"
+          data-aos-easing="ease-in-out"
+          data-aos-mirror="true"
+          data-aos-once="false"
+          data-aos-anchor-placement="center-center"
+        >
         <a style="color:#301934" href="https://thecannabiscult.myshopify.com/">
           <img 
             src="https://cdn.shopify.com/s/files/1/0718/5485/0343/products/ffc6b7df5a1ed1b1cdcc7500cd9bd5a3.jpg?v=1676962484&width=1445" 
@@ -33,6 +70,7 @@
             alt="Cannabis Cult First Edition Hoodie"
           >
         </a>
+        </div>
       </div>
     </div>
   </div>

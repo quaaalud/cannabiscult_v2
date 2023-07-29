@@ -1,5 +1,68 @@
-@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Balthazar&family=Hammersmith+One&display=swap');
+
+* {
+  font-family: 'Hammersmith One', sans-serif;
+}
+
+h1 {
+  font-family: 'Hammersmith One', sans-serif;
+}
+
+h4 {
+  font-family: 'Balthazar', serif;
+}
+
+
+
+.banner-image {
+  background-position: center;
+}
+
+
+#formAccordion {
+  background-color: transparent;
+}
+#formAccordionItem{
+  background-color: transparent;
+}
+#formAccordionHeader {
+  background-color: transparent;
+}
+#collapseOne {
+  background-color: transparent;
+}
+.accordion-header {
+  background-color: transparent;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: transparent;
+}
+
+
+.cult-picks h1{
+  font-family: 'Balthazar', serif;
+  color: "#301934";
+  text-transform: uppercase;
+  font-size: clamp(1.5rem, 4rem + 1vw, 6.5rem);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  padding-top: 1.8rem;
+  
+}
+
+.cult-picks a {
+  text-decoration: none;
+  color: inherit;
+  background-color: transparent;
+}
+
+.cult-picks a.ul {
+  text-decoration: underline;
+  color: inherit;
+  background-color: transparent;
+  font-weight: bold;
+}
 
 .container-glass {
   backdrop-filter: blur(16px) saturate(180%);
@@ -17,41 +80,31 @@
   
 }
 
-.banner-image {
-  background-position: center;
-}
-
 .container-glass h1{
-  font-family: 'Righteous', sans-serif;
-  color: "#301934";
   text-transform: uppercase;
   font-size: 2.4rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .container-glass h4 {
-  color: "#301934";
-  font-family: 'Lato', sans-serif;
   text-align: center;
   text-transform: uppercase;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.map-locator h1{
-  font-family: 'Righteous', sans-serif;
+
+.map-locator {
   color: "#301934";
+}
+
+.map-locator h1{
   text-transform: uppercase;
   font-size: clamp(1rem, 3rem + 1vw, 6rem);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
   padding-top: 3rem;
 }
 
-.partners-header h1{
-  font-family: 'Righteous', sans-serif;
-  color: "#301934";
-  text-transform: uppercase;
-  font-size: clamp(1.5rem, 4rem + 1vw, 6.5rem);
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
-  padding-top: 1.8rem;
-  
+
+.vote-template {
+
 }
