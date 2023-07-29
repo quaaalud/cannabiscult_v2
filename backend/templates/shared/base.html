@@ -62,7 +62,14 @@
       crossorigin="anonymous">
     </script>
     <script>
-      var offsetValue = window.innerWidth <= 768 ? 400 : 300;
+      var offsetValue;
+      if (window.innerWidth <= 500) {
+        offsetValue = 575;
+      } else if (window.innerWidth <= 768) {
+        offsetValue = 400;
+      } else {
+        offsetValue = 300;
+      }
   
       AOS.init({
         offset: offsetValue,
