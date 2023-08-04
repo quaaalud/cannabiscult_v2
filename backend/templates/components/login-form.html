@@ -60,7 +60,7 @@
                   
                       <div class="col-md-6 d-flex justify-content-center">
                         <!-- Simple link -->
-                        <a href="/forgot-password">Forgot password?</a>
+                        <a href="#" data-mdb-toggle="modal" data-mdb-target="#forgotPasswordModal">Forgot password?</a>
                       </div>
                     </div>
                     <!-- Submit button -->
@@ -134,3 +134,32 @@
     </div>
   </div>
 </section>
+<!-- Forgot Password Modal -->
+<div class="modal p-5" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel"
+     aria-hidden="true" data-mdb-backdrop="true" data-mdb-keyboard="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content text-center">
+      <div class="modal-header h5 text-white bg-primary justify-content-center">
+        Password Reset
+      </div>
+      <div class="modal-body px-5">
+        <p class="py-2">
+          Enter your email address and we'll send you an email with instructions to reset your password.
+        </p>
+        <div class="form-outline">
+          <input type="email" id="forgotEmail" class="form-control my-3" />
+          <label class="form-label" for="forgotEmail" id="forgotEmailLabel">Email input</label>
+        </div>
+        <a class="btn btn-primary w-100">Reset password</a>
+        <div class="row d-flex justify-content-between mt-4">
+          <div class="col p-1 ms-2">
+            <a class="btn btn-secondary w-100 mb-3" href="/login">Login</a>
+          </div>
+          <div class="col p-1 ms-2">
+            <a class="btn btn-primary w-100 mb-3" href="/login">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
