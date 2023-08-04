@@ -8,6 +8,7 @@ Created on Fri Mar 10 21:13:37 2023
 
 from supabase import Client
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
 from schemas.users import UserCreate
 from db.models.users import User
 #from core.hashing import Hasher
@@ -72,10 +73,31 @@ def create_new_user(user:UserCreate, db:Session):
       
 def get_user_by_email(
         user_email: str,
-        db:Session):
+        db: Session) -> User:
     user = db.query(
         User
     ).filter(User.email == user_email).first()
     if user:
         return user
+      
+      
+def update_user_password(
+    user_email: str,
+    new_password: str,
+    repeated_password: str,
+    db: Session) -> User:
+    if new_password == repeated_password:
+        try:
+            user = get_user_by_email(user_email)
+            user.password = new_password
+            
+        except SQLAlchemyError:
+            db.rollback()
+        else:
+            db.commit()
+            db.refresh(user)
+        finally:
+            return user
+    else:
+        return None
       
