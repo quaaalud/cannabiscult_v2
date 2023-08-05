@@ -25,6 +25,7 @@ from route_users import (
     login_supa_user,
     get_current_users_email,
     return_current_user_vote_status,
+    update_user_password,
 )
 from schemas.subscribers import SubscriberCreate
 from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
@@ -58,6 +59,25 @@ async def home(
             Path(
                 'general_pages',
                 'homepage.html'
+            )
+        ),
+        {
+            "request": request,
+            "dispensaries": partner_data,
+        },
+    )
+  
+  
+@general_pages_router.get("/forgot-password")
+async def password_reset(
+    request: Request
+):
+    partner_data = await get_current_partner_data()
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'forgot-password.html'
             )
         ),
         {
@@ -229,6 +249,37 @@ async def submit_register_form(
                 "username": register_username,
             }
         )
+      
+      
+@general_pages_router.post("/submit-new-password", response_model=ShowUser)
+async def submit_register_form(
+    request: Request,
+    user_email: str = Form(...),
+    new_password: str = Form(...),
+    repeated_password: str = Form(...),
+    db: Session = Depends(get_supa_db),
+) -> templates.TemplateResponse:
+  
+    user = update_user_password(
+        user_email=user_email,
+        new_password=new_password,
+        repeated_password=repeated_password,
+        db=db
+    )
+    print(vars(user))
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'register_success.html'
+            )
+        ),
+        {
+            "request": request,
+            "username": user_email,
+            "can_vote_status": user.can_vote,
+        }
+    )
 
 
 @general_pages_router.post("/submit", response_model=None)

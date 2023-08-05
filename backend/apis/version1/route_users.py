@@ -10,7 +10,9 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
 from db.session import get_supa_db
-from db.repository.users import create_new_user, get_user_by_email
+from db.repository.users import create_new_user
+from db.repository.users import get_user_by_email
+from db.repository.users import get_user_and_updated_password
 from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
@@ -42,6 +44,22 @@ def login_supa_user(
     ) -> SupaAuth:
     logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
     return logged_in_user
+  
+  
+@router.post("/", response_model=ShowUser)
+def update_user_password(
+        user_email: str,
+        new_password: str,
+        repeated_password: str,
+        db: Session = Depends(get_supa_db)
+    ):
+    user = get_user_and_updated_password(
+        user_email=user_email,
+        new_password=new_password,
+        repeated_password=repeated_password,
+        db=db
+    )
+    return user 
 
 
 @router.get("/", response_model=None)
