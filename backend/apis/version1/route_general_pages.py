@@ -255,6 +255,7 @@ async def submit_register_form(
 async def submit_register_form(
     request: Request,
     user_email: str = Form(...),
+    current_password: str = Form(...),
     new_password: str = Form(...),
     repeated_password: str = Form(...),
     db: Session = Depends(get_supa_db),
@@ -262,6 +263,7 @@ async def submit_register_form(
   
     user = update_user_password(
         user_email=user_email,
+        current_password=current_password,
         new_password=new_password,
         repeated_password=repeated_password,
         db=db

@@ -83,14 +83,17 @@ def get_user_by_email(
       
 def get_user_and_updated_password(
     user_email: str,
+    curr_password: str,
     new_password: str,
     repeated_password: str,
     db: Session) -> User:
     if new_password == repeated_password:
         try:
             user = get_user_by_email(user_email, db)
-            user.password = new_password
-            
+            if user.password  == curr_password:
+                user.password = new_password
+            else:
+                raise SQLAlchemyError
         except SQLAlchemyError:
             db.rollback()
         else:
