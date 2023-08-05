@@ -50,12 +50,23 @@
   />
 {% endblock %}
 {% block content %}
+<main>
   <section class="container align-content-center">
-    <span>
-      <h1>Your submission failed</h1>
-      <h2>Check your email and password before re-submitting</h2>
-    </span>
-  </section>        
+    <div class="text-center">
+      <div class="container-fluid text-center" style="padding:2em">
+        <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+      </div>
+    </div>
+  </section>  
+  <section class="container align-content-center">
+    <div>
+      <span>
+        <h1>Your submission failed</h1>
+        <h2>Check your email and password before re-submitting</h2>
+      </span>
+    </div>
+  </section>     
+</main>   
 {% endblock %}  
 
 {% block footer %}
