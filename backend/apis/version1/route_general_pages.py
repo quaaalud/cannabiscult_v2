@@ -252,7 +252,7 @@ async def submit_register_form(
       
       
 @general_pages_router.post("/submit-new-password", response_model=ShowUser)
-async def submit_register_form(
+async def submit_new_password_form(
     request: Request,
     user_email: str = Form(...),
     current_password: str = Form(...),
@@ -268,7 +268,7 @@ async def submit_register_form(
         repeated_password=repeated_password,
         db=db
     )
-    print(vars(user))
+
     return templates.TemplateResponse(
         str(
             Path(
