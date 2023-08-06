@@ -60,13 +60,6 @@
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
-            {% if user_is_logged_in %}
-              <li class="nav-item">
-                <form action="/logout-submit" method="post">
-                  <button type="submit" class="nav-link btn btn-link">Logout</button>
-                </form>
-              </li>
-            {% endif %}
             <li>
               <a 
               class="dropdown-item" 
@@ -76,6 +69,15 @@
                 Cultivar Reviews
               </a>
             </li>
+            {% if user_is_logged_in %}
+              <li class="nav-item">
+                <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a href="/login" class="dropdown-item">Login</a>
+              </li>
+            {% endif %}
           </ul>
         </li>
       </ul>
@@ -88,3 +90,23 @@
       >
   </div>
 </nav>
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to logout?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form action="/logout-submit" method="post">
+          <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
