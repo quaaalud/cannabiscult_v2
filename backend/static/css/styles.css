@@ -105,13 +105,20 @@ h4 {
 
 
 .vote-template {
-  color: #ffffff;
+  background-color: transparent;
+  color: #ffffff;  
+  max-width: 1000px;
+  max-height: 100%vh;
+  
 }
 
 .vote-template .card {
-  background: url("../img/card-assets/smoky-black-background.svg") no-repeat center center; !important
+  background: url("../img/card-assets/smoky-black-background.svg") no-repeat center center !important;
   background-size: cover;
+  position: relative;
+  min-height: 475px;
 }
+
 
 .vote-template .card-title {
   color: #ffffff;

@@ -1,4 +1,4 @@
-<div class="container-fluid text-center d-flex vote-template">
+<div class="container text-center d-flex vote-template">
   <div class="row mx-auto g-3">
     <div class="col-12 col-sm-10 col-md-9 col-lg-8 mx-auto g-3">
       <div class="container-fluid mb-5 text-center mx-auto">
@@ -82,44 +82,50 @@
               </div>
             </div>
           </div>
-          <div class="container pb-5">
-            <form method="post" action="/submit-vote"> 
-              <div class="row mx-auto">
-                <div class="col-sm-10 col-md-8 col-lg-6 mx-auto">
-                  <input type="hidden" name="cultivator_selected" value="{{ cultivator }}" />
-                  <input type="hidden" name="strain_selected" value="{{ strain }}" />
-                  <label for="structure_vote" class="form-label">
-                    Structure
-                  </label>
-                  <div class="range">
-                    <input type="range" class="form-range" min="5" max="10" step="0.5" id="structure_vote" name="structure_vote" />
-                  </div>
-                  <label for="nose_vote" class="form-label">
-                    Nose
-                  </label>
-                  <div class="range">
-                    <input type="range" class="form-range" min="5" max="10" step="0.5" id="nose_vote" name="nose_vote" />
-                  </div>
-                  <label for="flavor_vote" class="form-label">
-                    Flavor
-                  </label>
-                  <div class="range">
-                    <input type="range" class="form-range" min="5" max="10" step="0.5" id="flavor_vote" name="flavor_vote" />
-                  </div>
-                  <label for="effects_vote" class="form-label">
-                    Effects
-                  </label>
-                  <div class="range">
-                    <input type="range" class="form-range" min="5" max="10" step="0.5" id="effects_vote" name="effects_vote" />
-                  </div>
-                  <div class="row mx-auto g-3 m-1">
-                    <button type="submit" id="vote" name="vote" class="btn btn-primary" {% if not strain or not cultivator %}disabled{% endif %}>Vote</button>
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="pb-5" id="voting-form" {% if not strain or not cultivator %} style="display: none;"{% endif %}>
+  <div class="container pb-5 align-content-center justify-content-center">
+    <div class="row align-content-center justify-content-center d-flex">
+      <div class="col-10">
+        <form method="post" action="/submit-vote"> 
+          <div class="row mx-auto">
+            <div class="col-sm-10 col-md-8 col-lg-6 mx-auto">
+              <input type="hidden" name="cultivator_selected" value="{{ cultivator }}" />
+              <input type="hidden" name="strain_selected" value="{{ strain }}" />
+              <label for="structure_vote" class="form-label">
+                Structure
+              </label>
+              <div class="range">
+                <input type="range" class="form-range" min="5" max="10" step="0.5" id="structure_vote" name="structure_vote" />
+              </div>
+              <label for="nose_vote" class="form-label">
+                Nose
+              </label>
+              <div class="range">
+                <input type="range" class="form-range" min="5" max="10" step="0.5" id="nose_vote" name="nose_vote" />
+              </div>
+              <label for="flavor_vote" class="form-label">
+                Flavor
+              </label>
+              <div class="range">
+                <input type="range" class="form-range" min="5" max="10" step="0.5" id="flavor_vote" name="flavor_vote" />
+              </div>
+              <label for="effects_vote" class="form-label">
+                Effects
+              </label>
+              <div class="range">
+                <input type="range" class="form-range" min="5" max="10" step="0.5" id="effects_vote" name="effects_vote" />
+              </div>
+              <div class="row mx-auto g-3 m-1">
+                <button type="submit" id="vote" name="vote" class="btn btn-warning" {% if not strain or not cultivator %}disabled{% endif %}>Vote</button>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
   </div>

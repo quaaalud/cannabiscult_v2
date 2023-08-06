@@ -12,20 +12,6 @@
                 <form method="POST" action="/get-review">
                   <div class="row text-start align-content-start">
                     <label class="form-label">
-                      Strain
-                    </label>
-                  </div>
-                  <div class="row">
-                    <select 
-                      class="form-select form-select-lg mb-3"
-                      id="strain_selected" 
-                      name="strain_selected" 
-                      aria-label=".form-select-lg strain_selected"
-                    >
-                    </select>
-                  </div>
-                  <div class="row text-start align-content-start">
-                    <label class="form-label">
                       Cultivator
                     </label>
                   </div>
@@ -38,9 +24,23 @@
                     >
                     </select>
                   </div>
+                  <div class="row text-start align-content-start">
+                    <label class="form-label">
+                      Strain
+                    </label>
+                  </div>
+                  <div class="row">
+                    <select 
+                      class="form-select form-select-lg mb-3"
+                      id="strain_selected" 
+                      name="strain_selected" 
+                      aria-label=".form-select-lg strain_selected"
+                    >
+                    </select>
+                  </div>
                   <div class="row pt-3 pb-3">
                     <button 
-                      class="btn btn-primary"
+                      class="btn btn-secondary"
                       id="submit"
                       type="submit" 
                       value="Submit"
