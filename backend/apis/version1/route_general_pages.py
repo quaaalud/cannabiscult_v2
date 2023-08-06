@@ -24,8 +24,10 @@ from route_users import (
     create_supa_user,
     login_supa_user,
     get_current_users_email,
+    async_get_current_users_email,
     return_current_user_vote_status,
     update_user_password,
+    logout_current_user,
 )
 from schemas.subscribers import SubscriberCreate
 from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
@@ -54,6 +56,7 @@ async def home(
     request: Request
 ):
     partner_data = await get_current_partner_data()
+    user_is_logged_in = await async_get_current_users_email() is not None
     return templates.TemplateResponse(
         str(
             Path(
@@ -64,94 +67,29 @@ async def home(
         {
             "request": request,
             "dispensaries": partner_data,
+            "user_is_logged_in": user_is_logged_in,
         },
     )
   
-  
-@general_pages_router.get("/forgot-password")
-async def password_reset(
-    request: Request
-):
-    partner_data = await get_current_partner_data()
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'general_pages',
-                'forgot-password.html'
-            )
-        ),
-        {
-            "request": request,
-            "dispensaries": partner_data,
-        },
-    )
+
 
 
 @general_pages_router.get("/voting-home")
 async def voting_home(
     request: Request
 ):
+    user_is_logged_in = await async_get_current_users_email() is not None
     return templates.TemplateResponse(
         str(
             Path(
                 'general_pages',
-                'voting_home.html'
+                'voting-home.html'
             )
         ),
         {
             "request": request,
+            "user_is_logged_in": user_is_logged_in,
         },
-    )
-
-
-@general_pages_router.get("/form", response_class=HTMLResponse)
-async def form(
-    request: Request
-):
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'components',
-                'form.html'
-            )
-        ),
-        {
-            "request": request
-        }
-    )
-
-
-@general_pages_router.get("/login")
-async def login_form(
-    request: Request
-):
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'general_pages',
-                'login.html'
-            )
-        ),
-        {
-            "request": request,
-        }
-    )
-
-
-@general_pages_router.get("/forgot-password")
-async def forgot_password_form(
-    request: Request
-):
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'general_pages',
-                'forgot-password.html'
-            )
-        ),
-        {
-            "request": request,
-        }
     )
 
 
@@ -192,6 +130,7 @@ async def submit_login_form(
             {
                 "request": request,
                 "username": login_email,
+                
             }
         )
 
@@ -251,6 +190,34 @@ async def submit_register_form(
         )
       
       
+@general_pages_router.post("/logout-submit", response_model=None)
+async def submit_user_logout(
+    request: Request,
+    db: Session = Depends(get_supa_db)
+) -> templates.TemplateResponse:
+    user = get_current_users_email()
+    try:
+        if user:
+            logout_current_user()
+    except AuthApiError:
+        pass
+    finally:
+        partner_data = await get_current_partner_data()
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'homepage.html'
+                )
+            ),
+            {
+                "request": request,
+                "dispensaries": partner_data,
+                "user_is_logged_in": user is not None,
+            },
+        )
+      
+      
 @general_pages_router.post("/submit-new-password", response_model=ShowUser)
 async def submit_new_password_form(
     request: Request,
@@ -260,28 +227,44 @@ async def submit_new_password_form(
     repeated_password: str = Form(...),
     db: Session = Depends(get_supa_db),
 ) -> templates.TemplateResponse:
-  
-    user = update_user_password(
-        user_email=user_email,
-        current_password=current_password,
-        new_password=new_password,
-        repeated_password=repeated_password,
-        db=db
-    )
-
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'general_pages',
-                'register_success.html'
-            )
-        ),
-        {
-            "request": request,
-            "username": user_email,
-            "can_vote_status": user.can_vote,
-        }
-    )
+    
+    user_is_logged_in = get_current_users_email() is not None
+    
+    if user_is_logged_in:
+        user = update_user_password(
+            user_email=user_email,
+            current_password=current_password,
+            new_password=new_password,
+            repeated_password=repeated_password,
+            db=db
+        )
+    
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'register_success.html'
+                )
+            ),
+            {
+                "request": request,
+                "username": user_email,
+                "can_vote_status": user.can_vote,
+            }
+        )
+    else:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'login.html'
+                )
+            ),
+            {
+                "request": request,
+                "user_is_logged_in": user_is_logged_in,
+            },
+        )
 
 
 @general_pages_router.post("/submit", response_model=None)
@@ -323,6 +306,7 @@ async def submit_subscriber_form(
 async def privacy_policy(
     request: Request
 ):
+    user_is_logged_in = get_current_users_email() is not None
     return templates.TemplateResponse(
         str(
             Path(
@@ -332,6 +316,7 @@ async def privacy_policy(
         ),
         {
             "request": request,
+            "user_is_logged_in": user_is_logged_in,
         },
     )
 
@@ -340,6 +325,7 @@ async def privacy_policy(
 async def terms_and_conditions(
     request: Request
 ):
+    user_is_logged_in = get_current_users_email() is not None
     return templates.TemplateResponse(
         str(
             Path(
@@ -349,23 +335,7 @@ async def terms_and_conditions(
         ),
         {
             "request": request,
-        },
-    )
-
-
-@general_pages_router.get("/unsubscribe", response_class=HTMLResponse)
-async def unsubscribe(
-    request: Request
-):
-    return templates.TemplateResponse(
-        str(
-            Path(
-                'general_pages',
-                'unsubscribe.html'
-            )
-        ),
-        {
-            "request": request,
+            "user_is_logged_in": user_is_logged_in,
         },
     )
 
@@ -419,16 +389,18 @@ async def get_flower_review_voting_page(
         cultivator_selected,
         db=db,
     )
+    user_is_logged_in = get_current_users_email() is not None
     try:
         request_dict = {
             "request": request,
+            "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
         return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
-                    'voting_home.html'
+                    'voting-home.html'
                 )
             ),
             response_dict
@@ -438,7 +410,7 @@ async def get_flower_review_voting_page(
             str(
                 Path(
                     'general_pages',
-                    'voting_home.html'
+                    'voting-home.html'
                 )
             ),
             {
@@ -464,6 +436,7 @@ async def submit_flower_review_vote(
         user_email=current_user_email,
         db=db,
     )
+    user_is_logged_in = get_current_users_email() is not None
     if not can_vote_status:
         return templates.TemplateResponse(
             str(
@@ -474,6 +447,7 @@ async def submit_flower_review_vote(
             ),
             {
                 "request": request,
+                "user_is_logged_in": user_is_logged_in,
             }
         )
     try:
@@ -488,6 +462,7 @@ async def submit_flower_review_vote(
         )
         request_dict = {
             "request": request,
+            "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
         return templates.TemplateResponse(
@@ -509,6 +484,7 @@ async def submit_flower_review_vote(
             ),
             {
                 "request": request,
+                "user_is_logged_in": user_is_logged_in,
             }
         )
     except:
@@ -521,6 +497,7 @@ async def submit_flower_review_vote(
             ),
             {
                 "request": request,
+                "user_is_logged_in": user_is_logged_in,
             }
         )
 
@@ -547,3 +524,34 @@ async def redirect_to_auth_provider(subdomain: str, auth_url: str = None):
 async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
     return get_gsheet._get_deal_workbook_and_return_dict()
+  
+  
+@general_pages_router.get("/{file_name}")
+async def general_pages_route(
+    request: Request,
+    file_name: str
+):
+    file_path = Path(
+        Path(__file__).parents[2],
+        'templates',
+        'general_pages',
+        f'{file_name}.html'
+    )
+    if not file_path.exists():
+            raise HTTPException(status_code=404, detail="Page not found")
+    
+    partner_data = await get_current_partner_data()
+    user_is_logged_in = await async_get_current_users_email() is not None
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                f"{file_name}.html"
+            )
+        ),
+        {
+            "request": request,
+            "dispensaries": partner_data,
+            "user_is_logged_in": user_is_logged_in
+        },
+    )

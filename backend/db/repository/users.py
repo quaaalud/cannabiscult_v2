@@ -81,7 +81,7 @@ def get_user_by_email(
         return user
       
       
-def get_user_and_updated_password(
+def get_user_and_update_password(
     user_email: str,
     current_password: str,
     new_password: str,

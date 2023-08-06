@@ -43,6 +43,13 @@ class SupaAuth:
     @classmethod
     def get_existing_session(cls):
         return cls._client.auth.get_session()
+      
+    @classmethod
+    def logout_current_user_session(cls):
+        try:
+            return cls._client.auth.sign_out()
+        except:
+            pass
 
     @classmethod
     def refresh_current_user_session(cls):

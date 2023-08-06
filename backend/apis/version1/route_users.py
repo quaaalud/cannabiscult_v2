@@ -12,7 +12,7 @@ from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
 from db.session import get_supa_db
 from db.repository.users import create_new_user
 from db.repository.users import get_user_by_email
-from db.repository.users import get_user_and_updated_password
+from db.repository.users import get_user_and_update_password
 from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
@@ -54,7 +54,7 @@ def update_user_password(
         repeated_password: str,
         db: Session = Depends(get_supa_db)
     ):
-    user = get_user_and_updated_password(
+    user = get_user_and_update_password(
         user_email=user_email,
         current_password=current_password,
         new_password=new_password,
@@ -65,7 +65,19 @@ def update_user_password(
 
 
 @router.get("/", response_model=None)
+def logout_current_user() -> SupaAuth:
+    SupaAuth.logout_current_user_session()
+    pass 
+
+
+@router.get("/", response_model=None)
 def get_current_users_email() -> SupaAuth:
+    current_user_email = SupaAuth.return_current_user_email()
+    return current_user_email
+  
+  
+@router.get("/", response_model=None)
+async def async_get_current_users_email() -> SupaAuth:
     current_user_email = SupaAuth.return_current_user_email()
     return current_user_email
   

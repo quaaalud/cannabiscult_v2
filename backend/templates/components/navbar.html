@@ -60,6 +60,13 @@
               </a>
             </li>
             <li><hr class="dropdown-divider"></li>
+            {% if user_is_logged_in %}
+              <li class="nav-item">
+                <form action="/logout-submit" method="post">
+                  <button type="submit" class="nav-link btn btn-link">Logout</button>
+                </form>
+              </li>
+            {% endif %}
             <li>
               <a 
               class="dropdown-item" 
