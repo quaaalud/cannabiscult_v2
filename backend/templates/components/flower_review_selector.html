@@ -64,48 +64,61 @@
       var strainSelect = document.getElementById('strain_selected');
       var cultivatorSelect = document.getElementById('cultivator_selected');
       var submitButton = document.getElementById('submit');
-      
+    
       function updateButtonState() {
         submitButton.disabled = !(strainSelect.value && cultivatorSelect.value);
       }
-      
+    
+      var initialLoad = !localStorage.getItem('selectedStrain');
+    
       fetch('/get-all-strains')
         .then(response => response.json())
         .then(data => {
-          data.forEach(function(strain, index) {
+          var selectedStrain = initialLoad ? data[0] : localStorage.getItem('selectedStrain');
+          data.forEach(function(strain) {
             var option = document.createElement('option');
             option.text = strain;
             option.value = strain;
-            if (index === 0) {
+            if (strain === selectedStrain) {
               option.selected = true;
             }
             strainSelect.add(option);
           });
-
+    
           var event = new Event('change');
           strainSelect.dispatchEvent(event);
         });
-
+    
       strainSelect.addEventListener('change', function(e) {
         var strainSelected = e.target.value;
-
+        localStorage.setItem('selectedStrain', strainSelected);
+    
         fetch('/get-cultivators-for-strain?strain_selected=' + strainSelected)
           .then(response => response.json())
           .then(data => {
             cultivatorSelect.innerHTML = '';
+            var selectedCultivator = initialLoad ? data[0] : localStorage.getItem('selectedCultivator');
             data.forEach(function(cultivator) {
               var option = document.createElement('option');
               option.text = cultivator;
               option.value = cultivator;
+              if (cultivator === selectedCultivator) {
+                option.selected = true;
+              }
               cultivatorSelect.add(option);
             });
             updateButtonState();
           });
       });
-
+    
+      cultivatorSelect.addEventListener('change', function(e) {
+        localStorage.setItem('selectedCultivator', e.target.value);
+        updateButtonState();
+      });
+    
       strainSelect.addEventListener('change', updateButtonState);
       cultivatorSelect.addEventListener('change', updateButtonState);
-
+    
       updateButtonState();
     });
   </script>

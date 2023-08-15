@@ -80,7 +80,6 @@ async def voting_home(
     request: Request
 ):
     user_is_logged_in = await async_get_current_users_email() is not None
-    print(user_is_logged_in)
     return templates.TemplateResponse(
         str(
             Path(
