@@ -17,7 +17,7 @@
     <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
   </div>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" {% if not strain or not cultivator %} style="display: none; !important" {% endif %}>
   <div class="row">
     <div class="col-12 mx-auto mt-5">
       {% include "components/vote_template.html" %}
