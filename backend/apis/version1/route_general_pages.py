@@ -208,7 +208,7 @@ async def submit_user_logout(
             str(
                 Path(
                     'general_pages',
-                    'homepage.html'
+                    'logout_success.html'
                 )
             ),
             {

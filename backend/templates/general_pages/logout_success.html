@@ -1,0 +1,82 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Cannabis Cult Logout Success</title>
+{% endblock %} 
+
+{% block head %}
+  <meta http-equiv="refresh" content="3; url=/">
+  <meta 
+    property="og:image" 
+    content="{{ url_for('static', path='images/black_cc_logo.png') }}"
+    alt="Cannabis Cult Main Logo with Brain"
+  />
+  <meta 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices." 
+    name="description"
+  />
+  <meta 
+    property="og:description" 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    property="og:title" 
+    content="The Cannabis Cult"
+  />
+  <meta 
+    name="twitter:card" 
+    content="summary_large_image"
+  />
+  <meta 
+    property="twitter:url" 
+    content="https://cannabiscult.co"
+  />
+  <meta 
+    property="twitter:title" 
+    content="The Cannabis Cult"
+  />
+  <meta 
+    property="twitter:description" 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    name="twitter:site" 
+    content="https://cannabiscult.co/"
+  />
+  <meta 
+    property="twitter:image" 
+    content="{{ url_for('static', path='images/black_cc_logo.png') }}"
+    alt="Cannabis Cult Main Logo with Brain"
+  />
+{% endblock %}
+{% block content %}
+<main class="container-fluid pt-3 pb-5">
+  <section class="container align-content-center pt-5 pb-5">
+    <div class="text-center pt-5 pb-5">
+      <span>
+        <h1>Your logout was successful</h1>
+      </span>
+      <span>
+        <h2>
+          Add @cannabiscult.co to your address book so you do not miss an update!
+        </h2>
+      </span>
+    </div>
+  </section>
+  <section class="container align-content-center">
+    <div class="container mb-5">
+      <div class="pb-5">
+        <div class="container-fluid text-center" style="padding:2em">
+          <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+        </div>
+      </div>
+    </div>
+  </section>   
+</main>     
+{% endblock %}  
+
+{% block footer %}
+{% endblock %}
+  
+{% block scripts %}  
+{% endblock %}
