@@ -50,16 +50,29 @@
   />
 {% endblock %}
 {% block content %}
+<main class="container-fluid pt-3 pb-5">
+  <section class="container align-content-center pt-5 pb-5">
+    <div class="text-center pt-5 pb-5">
+      <span>
+        <h1>Your vote was successful!</h1>
+      </span>
+      <span>
+        <p>
+          Add @cannabiscult.co to your address book so you do not miss an update!
+        </p>
+      </span>
+    </div>
+  </section>
   <section class="container align-content-center">
-    <span>
-      <h1>Your vote was successful!</h1>
-    </span>
-    <span>
-      <p>
-        Add @cannabiscult.co to your address book so you do not miss an update!
-      </p>
-    </span>
-  </section>        
+    <div class="container mb-5">
+      <div class="pb-5">
+        <div class="container-fluid text-center" style="padding:2em">
+          <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+        </div>
+      </div>
+    </div>
+  </section>   
+</main>     
 {% endblock %}  
 
 {% block footer %}
