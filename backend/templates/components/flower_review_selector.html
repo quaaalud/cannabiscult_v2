@@ -81,28 +81,26 @@
             }
             strainSelect.add(option);
           });
+          
+          strainSelect.addEventListener('change', function(e) {
+            var strainSelected = e.target.value;
 
-          var event = new Event('change');
-          strainSelect.dispatchEvent(event);
-        });
-
-      strainSelect.addEventListener('change', function(e) {
-        var strainSelected = e.target.value;
-
-        fetch('/get-cultivators-for-strain?strain_selected=' + strainSelected)
-          .then(response => response.json())
-          .then(data => {
-            cultivatorSelect.innerHTML = '';
-            data.forEach(function(cultivator) {
-              var option = document.createElement('option');
-              option.text = cultivator;
-              option.value = cultivator;
-              cultivatorSelect.add(option);
-            });
-            updateButtonState();
+            fetch('/get-cultivators-for-strain?strain_selected=' + strainSelected)
+              .then(response => response.json())
+              .then(data => {
+                cultivatorSelect.innerHTML = '';
+                data.forEach(function(cultivator) {
+                  var option = document.createElement('option');
+                  option.text = cultivator;
+                  option.value = cultivator;
+                  cultivatorSelect.add(option);
+                });
+                updateButtonState();
+              });
           });
-      });
-
+      var event = new Event('change');
+      strainSelect.dispatchEvent(event);
+      
       strainSelect.addEventListener('change', updateButtonState);
       cultivatorSelect.addEventListener('change', updateButtonState);
 
