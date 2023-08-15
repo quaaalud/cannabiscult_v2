@@ -50,14 +50,27 @@
   />
 {% endblock %}
 {% block content %}
+<main class="container-fluid pt-3 pb-5">
+  <section class="container align-content-center pt-5 pb-5">
+    <div class="text-center pt-5 pb-5">
+      <span>
+        <h1>Your submission was successful!</h1>
+      </span>
+      <span style="text-align:center; color:blue;">
+        <p>{{ name }}, check your email to see if you won cult gear and updates regularly.</p>
+      </span>
+    </div>
+  </section> 
   <section class="container align-content-center">
-    <span style="text-align:center">
-      <h1>Your submission was successful!</h1>
-    </span>
-    <span style="text-align:center; color:blue;">
-      <p>{{ name }}, check your email to see if you won cult gear and updates regularly.</p>
-    </span>
-  </section>        
+    <div class="container mb-5">
+      <div class="pb-5">
+        <div class="container-fluid text-center" style="padding:2em">
+          <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+        </div>
+      </div>
+    </div>
+  </section>     
+</main>        
 {% endblock %}  
 
 {% block footer %}
