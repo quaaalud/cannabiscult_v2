@@ -23,6 +23,23 @@ def get_all_strains(
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_strains = db.query(FlowerReview.strain).all()  
     return [result[0] for result in all_strains]
+  
+  
+def get_all_strains_for_cultivator(
+        cultivator_selected: str,
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    all_strains = db.query(
+        FlowerReview.cultivator
+    ).filter(
+        FlowerReview.cultivator == cultivator_selected
+    ).all()  
+    return [result[0] for result in all_strains]
+  
+  
+def get_all_cultivators(
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    all_cultivators = db.query(FlowerReview.cultivators).all()  
+    return [result[0] for result in all_cultivators]
 
 
 def get_all_cultivators_for_strain(
