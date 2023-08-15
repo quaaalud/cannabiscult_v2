@@ -1,0 +1,69 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Cannabis Cult Vote Success</title>
+{% endblock %} 
+
+{% block head %}
+  <meta http-equiv="refresh" content="3; url=/voting-home">
+  <meta 
+    property="og:image" 
+    content="{{ url_for('static', path='images/black_cc_logo.png') }}"
+    alt="Cannabis Cult Main Logo with Brain"
+  />
+  <meta 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices." 
+    name="description"
+  />
+  <meta 
+    property="og:description" 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    property="og:title" 
+    content="The Cannabis Cult"
+  />
+  <meta 
+    name="twitter:card" 
+    content="summary_large_image"
+  />
+  <meta 
+    property="twitter:url" 
+    content="https://cannabiscult.co"
+  />
+  <meta 
+    property="twitter:title" 
+    content="The Cannabis Cult"
+  />
+  <meta 
+    property="twitter:description" 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    name="twitter:site" 
+    content="https://cannabiscult.co/"
+  />
+  <meta 
+    property="twitter:image" 
+    content="{{ url_for('static', path='images/black_cc_logo.png') }}"
+    alt="Cannabis Cult Main Logo with Brain"
+  />
+{% endblock %}
+{% block content %}
+  <section class="container align-content-center h-100">
+    <span>
+      <h1>Your vote was successful!</h1>
+    </span>
+    <span>
+      <p>
+        Add @cannabiscult.co to your address book so you do not miss an update!
+      </p>
+    </span>
+  </section>        
+{% endblock %}  
+
+{% block footer %}
+{% endblock %}
+  
+{% block scripts %}  
+{% endblock %}

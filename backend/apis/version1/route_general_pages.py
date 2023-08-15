@@ -477,7 +477,7 @@ async def submit_flower_review_vote(
             str(
                 Path(
                     'general_pages',
-                    'voting_home.html'
+                    'vote_success.html'
                 )
             ),
             response_dict
