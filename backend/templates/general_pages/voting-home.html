@@ -17,14 +17,11 @@
     <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
   </div>
 </div>
-<div class="container-fluid" {% if not strain or not cultivator %} style="display: none; !important" {% endif %}>
-  <div class="row">
-    <div class="col-12 mx-auto mt-5">
-      {% include "components/vote_template.html" %}
-    </div>
-  </div>
-</div>
+
+{% include "components/vote_template.html" %}
+
 {% include "components/flower_review_selector.html" %}
+
 <div class="container container-sm mb-3 mt-5" style="max-width: 75rem; background-color: transparent;">
   <div class="accordion" id="fromAccordion">
     <div class="accordion-item" id="fromAccordionItem">
