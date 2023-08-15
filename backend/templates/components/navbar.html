@@ -69,16 +69,16 @@
                 Cultivar Reviews
               </a>
             </li>
+            {% if user_is_logged_in %}
+            <li class="nav-item">
+              <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
+            </li>
           </ul>
         </li>
-        {% if user_is_logged_in %}
-          <li class="nav-item">
-            <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
-          </li>
         {% else %}
-          <li class="nav-item">
-            <a href="/login" class="nav-link">Login/Register</a>
-          </li>
+        <li class="nav-item">
+          <a href="/login" class="nav-link">Login/Register</a>
+        </li>
         {% endif %}
       </ul>
     </div>
