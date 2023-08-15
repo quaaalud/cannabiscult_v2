@@ -372,7 +372,7 @@ async def get_all_strains_route(
     return get_all_strains(db)
   
   
-@general_pages_router.get("/get-cultivators-for-strain", response_model=List[str])
+@general_pages_router.get("/get-strains-for-cultivator", response_model=List[str])
 async def get_all_strains_for_cultivator_route(
         cultivator_selected: str = Query(...),
         db: Session = Depends(get_supa_db)) -> List[str]:
