@@ -487,7 +487,7 @@ async def submit_flower_review_vote(
             str(
                 Path(
                     'general_pages',
-                    'voting_home.html'
+                    'voting-home.html'
                 )
             ),
             {
@@ -500,7 +500,7 @@ async def submit_flower_review_vote(
             str(
                 Path(
                     'general_pages',
-                    'voting_home.html'
+                    'voting-home.html'
                 )
             ),
             {
