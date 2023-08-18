@@ -22,7 +22,7 @@ router = APIRouter()
 def get_all_strains(
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_strains = db.query(FlowerReview.strain).all()  
-    return [result[0] for result in all_strains]
+    return sorted(set([result[0] for result in all_strains]))
   
   
 def get_all_strains_for_cultivator(
@@ -33,13 +33,13 @@ def get_all_strains_for_cultivator(
     ).filter(
         FlowerReview.cultivator == cultivator_selected
     ).all()  
-    return [result[0] for result in all_strains]
+    return sorted([result[0] for result in all_strains])
   
   
 def get_all_cultivators(
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_cultivators = db.query(FlowerReview.cultivator).all()  
-    return set([result[0] for result in all_cultivators])
+    return sorted(set([result[0] for result in all_cultivators]))
 
 
 def get_all_cultivators_for_strain(
@@ -50,7 +50,7 @@ def get_all_cultivators_for_strain(
     ).filter(
         FlowerReview.strain == strain_selected
     ).all()  
-    return [result[0] for result in all_cultivators]
+    return sorted(set([result[0] for result in all_cultivators]))
 
 
 def return_selected_review(
