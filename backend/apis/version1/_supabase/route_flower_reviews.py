@@ -39,7 +39,7 @@ def get_all_strains_for_cultivator(
 def get_all_cultivators(
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_cultivators = db.query(FlowerReview.cultivator).all()  
-    return [result[0] for result in all_cultivators]
+    return set([result[0] for result in all_cultivators])
 
 
 def get_all_cultivators_for_strain(
