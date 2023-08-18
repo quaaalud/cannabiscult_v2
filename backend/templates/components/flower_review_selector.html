@@ -12,20 +12,6 @@
                 <form method="POST" action="/get-review">
                   <div class="row text-start align-content-start">
                     <label class="form-label">
-                      Strain
-                    </label>
-                  </div>
-                  <div class="row">
-                    <select 
-                      class="form-select form-select-lg mb-3"
-                      id="strain_selected" 
-                      name="strain_selected" 
-                      aria-label=".form-select-lg strain_selected"
-                    >
-                    </select>
-                  </div>
-                  <div class="row text-start align-content-start">
-                    <label class="form-label">
                       Cultivator
                     </label>
                   </div>
@@ -35,6 +21,20 @@
                       id="cultivator_selected" 
                       name="cultivator_selected" 
                       aria-label=".form-select-lg cultivator_selected"
+                    >
+                    </select>
+                  </div>
+                  <div class="row text-start align-content-start">
+                    <label class="form-label">
+                      Strain
+                    </label>
+                  </div>
+                  <div class="row">
+                    <select 
+                      class="form-select form-select-lg mb-3"
+                      id="strain_selected" 
+                      name="strain_selected" 
+                      aria-label=".form-select-lg strain_selected"
                     >
                     </select>
                   </div>
@@ -69,55 +69,55 @@
         submitButton.disabled = !(strainSelect.value && cultivatorSelect.value);
       }
     
-      var initialLoad = !localStorage.getItem('selectedStrain');
+      var initialLoad = !localStorage.getItem('selectedCultivator');
     
-      fetch('/get-all-strains')
+      fetch('/get-all-cultivators')
         .then(response => response.json())
         .then(data => {
-          var selectedStrain = initialLoad ? data[0] : localStorage.getItem('selectedStrain');
-          data.forEach(function(strain) {
+          var selectedCultivator = initialLoad ? data[0] : localStorage.getItem('selectedCultivator');
+          data.forEach(function(cultivator) {
             var option = document.createElement('option');
-            option.text = strain;
-            option.value = strain;
-            if (strain === selectedStrain) {
+            option.text = cultivator;
+            option.value = cultivator;
+            if (cultivator === selectedCultivator) {
               option.selected = true;
             }
-            strainSelect.add(option);
+            cultivatorSelect.add(option);
           });
     
           var event = new Event('change');
-          strainSelect.dispatchEvent(event);
+          cultivatorSelect.dispatchEvent(event);
         });
     
-      strainSelect.addEventListener('change', function(e) {
-        var strainSelected = e.target.value;
-        localStorage.setItem('selectedStrain', strainSelected);
+      cultivatorSelect.addEventListener('change', function(e) {
+        var cultivatorSelected = e.target.value;
+        localStorage.setItem('selectedCultivator', cultivatorSelected);
     
-        fetch('/get-cultivators-for-strain?strain_selected=' + strainSelected)
+        fetch('/get-strains-for-cultivator?cultivator_selected=' + cultivatorSelected)
           .then(response => response.json())
           .then(data => {
-            cultivatorSelect.innerHTML = '';
-            var selectedCultivator = initialLoad ? data[0] : localStorage.getItem('selectedCultivator');
-            data.forEach(function(cultivator) {
+            strainSelect.innerHTML = '';
+            var selectedStrain = initialLoad ? data[0] : localStorage.getItem('selectedStrain');
+            data.forEach(function(strain) {
               var option = document.createElement('option');
-              option.text = cultivator;
-              option.value = cultivator;
-              if (cultivator === selectedCultivator) {
+              option.text = strain;
+              option.value = strain;
+              if (strain === selectedStrain) {
                 option.selected = true;
               }
-              cultivatorSelect.add(option);
+              strainSelect.add(option);
             });
             updateButtonState();
           });
       });
     
-      cultivatorSelect.addEventListener('change', function(e) {
-        localStorage.setItem('selectedCultivator', e.target.value);
+      strainSelect.addEventListener('change', function(e) {
+        localStorage.setItem('selectedStrain', e.target.value);
         updateButtonState();
       });
     
-      strainSelect.addEventListener('change', updateButtonState);
       cultivatorSelect.addEventListener('change', updateButtonState);
+      strainSelect.addEventListener('change', updateButtonState);
     
       updateButtonState();
     });

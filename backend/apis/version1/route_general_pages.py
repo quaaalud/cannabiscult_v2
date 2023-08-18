@@ -34,6 +34,7 @@ from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
 from db.session import get_supa_db
 from version1._supabase.route_flower_reviews import (
     get_all_strains,
+    get_all_cultivators,
     get_all_strains_for_cultivator,
     get_all_cultivators_for_strain,
     return_selected_review,
@@ -369,6 +370,12 @@ async def submit_unsubscribe_form(
 async def get_all_strains_route(
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_strains(db)
+  
+  
+@general_pages_router.get("/get-all-cultivators", response_model=List[str])
+async def get_all_cultivators_route(
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    return get_all_cultivators(db)
   
   
 @general_pages_router.get("/get-strains-for-cultivator", response_model=List[str])
