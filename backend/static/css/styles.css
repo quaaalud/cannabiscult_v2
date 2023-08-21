@@ -130,3 +130,40 @@ h4 {
   color: #ffffff;
   font-size: clamp(0.8rem, 1.5rem + 1vw, 2rem);
 }
+
+
+.form-range::-webkit-slider-runnable-track {
+  background: darkgray;
+  height: 6px; 
+}
+
+.form-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+}
+
+/* Firefox */
+.form-range::-moz-range-track {
+  background: darkgray;
+  height: 6px; 
+}
+
+.form-range::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: red;
+  border-radius: 50%;
+}
+
+/* General styles to reset appearance */
+.form-range {
+  -webkit-appearance: none; /* Necessary to style Chrome */
+  appearance: none;
+  background: transparent; /* Remove default background */
+  width: 100%; /* Full width */
+  height: 6px; /* Match track height */
+}
