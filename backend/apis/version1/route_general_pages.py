@@ -489,19 +489,6 @@ async def submit_flower_review_vote(
             ),
             response_dict
         )
-    except HTTPException:
-        return templates.TemplateResponse(
-            str(
-                Path(
-                    'general_pages',
-                    'voting-home.html'
-                )
-            ),
-            {
-                "request": request,
-                "user_is_logged_in": user_is_logged_in,
-            }
-        )
     except:
         return templates.TemplateResponse(
             str(
