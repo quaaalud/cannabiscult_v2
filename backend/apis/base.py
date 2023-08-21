@@ -47,3 +47,13 @@ api_router.include_router(
     prefix="/users",
     tags=["user"]
 )
+api_router.include_router(
+    route_users.router,
+    prefix="/flower_reviews",
+    tags=["flower_reviews"]
+)
+api_router.include_router(
+    route_users.router,
+    prefix="/flower_voting",
+    tags=["flower_voting"]
+)

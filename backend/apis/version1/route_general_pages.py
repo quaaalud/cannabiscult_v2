@@ -40,6 +40,9 @@ from version1._supabase.route_flower_reviews import (
     return_selected_review,
     add_new_votes_to_flower_strain,
 )
+from version1._supabase.route_flower_voting import (
+    add_flower_vote_to_db,
+)
 
 
 templates_dir = Path(
@@ -475,6 +478,7 @@ async def submit_flower_review_vote(
             effects_vote,
             db
         )
+        
         request_dict = {
             "request": request,
             "user_is_logged_in": user_is_logged_in,

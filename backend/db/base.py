@@ -10,3 +10,5 @@ from db.base_class import Base
 from db.models.blogs import Blogs 
 from db.models.users import User
 from db.models.subscribers import Subscriber
+from db.models.flower_reviews import FlowerReview
+from db.models.flower_voting import FlowerVoting
