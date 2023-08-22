@@ -4,8 +4,8 @@ from pydantic import BaseModel
 
 
 class FlowerVoteCreate(BaseModel):
-    flower_id: int
-    structure_vote: float
+    cultivator_selected: str
+    strain_selected: str
     structure_explanation: str
     nose_vote: float
     nose_explanation: str

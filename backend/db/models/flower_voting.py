@@ -25,8 +25,12 @@ class FlowerVoting(Base):
         Date,
         nullable=False
     )
-    flower_id = Column(
-        BigInteger,
+    cultivator_selected = Column(
+        String,
+        nullable=False
+    )
+    strain_selected = Column(
+        String,
         nullable=False
     )
     structure_vote = Column(
@@ -64,4 +68,9 @@ class FlowerVoting(Base):
     user_email = Column(
         String,
         nullable=True
+    )
+    flower_id = Column(
+        BigInteger,
+        nullable=True,
+        default=0,
     )

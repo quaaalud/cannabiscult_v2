@@ -19,7 +19,8 @@ router = APIRouter()
 
 @router.post("/")
 def add_flower_vote_to_db(
-        flower_id: int,
+        cultivator_selected: str,
+        strain_selected: str,
         structure_vote: float,
         structure_explanation: str,
         nose_vote: float,
@@ -32,7 +33,8 @@ def add_flower_vote_to_db(
         db: Session = Depends(get_supa_db)
     ):
     flower_vote = FlowerVoteCreate(
-        flower_id = flower_id,
+        cultivator_selected = cultivator_selected,
+        strain_selected = strain_selected,
         structure_vote = structure_vote,
         structure_explanation = structure_explanation,
         nose_vote = nose_vote,
@@ -43,7 +45,6 @@ def add_flower_vote_to_db(
         effects_explanation = effects_explanation,
         user_email = user_email,
     )
-
     return add_new_flower_vote(
         flower_vote
     ) 

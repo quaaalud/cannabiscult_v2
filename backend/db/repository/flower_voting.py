@@ -23,7 +23,8 @@ def add_new_flower_vote(
         db:Session):
     flower_vote = FlowerVoting(
         created_at = date_handler(datetime.datetime.now()),
-        flower_id = int(flower_vote.flower_id),
+        cultivator_selected = str(flower_vote.cultivator_selected),
+        strain_selected = str(flower_vote.strain_selected),
         structure_vote = float(flower_vote.structure_vote),
         stucture_explanation = str(flower_vote.stucture_explanation),
         nose_vote = float(flower_vote.nose_vote),

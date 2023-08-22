@@ -446,6 +446,10 @@ async def submit_flower_review_vote(
     nose_vote: str = Form(...),
     flavor_vote: str = Form(...),
     effects_vote: str = Form(...),
+    structure_explanation: str = Form(...),
+    nose_explanation: str = Form(...),
+    flavor_explanation: str = Form(...),
+    effects_explanation: str = Form(...),
     db: Session = Depends(get_supa_db),
     current_user_email=Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
@@ -454,7 +458,10 @@ async def submit_flower_review_vote(
         user_email=current_user_email,
         db=db,
     )
-    user_is_logged_in = get_current_users_email() is not None
+    
+    user_email = get_current_users_email()
+    user_is_logged_in = user_email is not None
+    
     if not can_vote_status:
         return templates.TemplateResponse(
             str(
@@ -468,6 +475,23 @@ async def submit_flower_review_vote(
                 "user_is_logged_in": user_is_logged_in,
             }
         )
+    try:
+        add_flower_vote_to_db(
+            cultivator_selected,
+            strain_selected,
+            structure_vote,
+            structure_explanation,
+            nose_vote,
+            nose_explanation,
+            flavor_vote,
+            flavor_explanation,
+            effects_vote,
+            effects_explanation,
+            user_email,
+            db
+        )
+    except:
+        pass
     try:
         review_dict = add_new_votes_to_flower_strain(
             cultivator_selected,
