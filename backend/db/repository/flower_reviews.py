@@ -28,15 +28,27 @@ def get_review_data_and_path(
         results_bytes = get_image_from_results(
             img_path
         )
+        struct_avg = get_average_of_list(review.structure)
+        nose_avg = get_average_of_list(review.nose)
+        flavor_avg = get_average_of_list(review.flavor)
+        effects_avg = get_average_of_list(review.effects)
+        total_avg = get_average_of_list(
+            [
+                struct_avg,
+                nose_avg,
+                flavor_avg,
+                effects_avg
+            ]
+        )
         return {
             'id': review.id,
             'strain': review.strain,
             'cultivator': review.cultivator,
-            'overall': review.overall,
-            'structure': get_average_of_list(review.structure),
-            'nose': get_average_of_list(review.nose),
-            'flavor': get_average_of_list(review.flavor),
-            'effects': get_average_of_list(review.effects),
+            'overall': total_avg,
+            'structure': struct_avg,
+            'nose': nose_avg,
+            'flavor': flavor_avg,
+            'effects': effects_avg,
             'vote_count': review.vote_count,
             'card_path': results_bytes,
         }
