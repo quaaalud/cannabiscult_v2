@@ -26,7 +26,7 @@ def add_new_flower_vote(
         cultivator_selected = str(flower_vote.cultivator_selected),
         strain_selected = str(flower_vote.strain_selected),
         structure_vote = float(flower_vote.structure_vote),
-        stucture_explanation = str(flower_vote.stucture_explanation),
+        structure_explanation = str(flower_vote.structure_explanation),
         nose_vote = float(flower_vote.nose_vote),
         nose_explanation = str(flower_vote.nose_explanation),
         flavor_vote = float(flower_vote.flavor_vote),
