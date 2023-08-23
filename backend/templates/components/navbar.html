@@ -73,17 +73,13 @@
             <li class="nav-item">
               <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
             </li>
+            {% endif %}
           </ul>
         </li>
         <li class="nav-item">
           <a href="/voting-home" class="nav-link active">Vote Now</a>
         </li>
-            {% else %}
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="/voting-home" class="nav-link">Vote Now</a>
-        </li>
+        {% if not user_is_logged_in %}
         <li class="nav-item">
           <a href="/login" class="nav-link active">Login/Register</a>
         </li>
