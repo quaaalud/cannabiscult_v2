@@ -461,19 +461,7 @@ async def submit_flower_review_vote(
     
     user_email = get_current_users_email()
     user_is_logged_in = user_email is not None
-    
-    print([cultivator_selected,
-    strain_selected,
-    structure_vote,
-    structure_explanation,
-    nose_vote,
-    nose_explanation,
-    flavor_vote,
-    flavor_explanation,
-    effects_vote,
-    effects_explanation,
-    user_email,])
-    
+
     if not can_vote_status:
         return templates.TemplateResponse(
             str(
@@ -487,7 +475,7 @@ async def submit_flower_review_vote(
                 "user_is_logged_in": user_is_logged_in,
             }
         )
-    else:
+    try:
         add_flower_vote_to_db(
             cultivator_selected=cultivator_selected,
             strain_selected=strain_selected,
@@ -502,44 +490,46 @@ async def submit_flower_review_vote(
             user_email=user_email,
             db=db,
         )
-        try:
-            review_dict = add_new_votes_to_flower_strain(
-                cultivator_selected,
-                strain_selected,
-                structure_vote,
-                nose_vote,
-                flavor_vote,
-                effects_vote,
-                db
-            )
-            
-            request_dict = {
+    except:
+        pass
+    try:
+        review_dict = add_new_votes_to_flower_strain(
+            cultivator_selected,
+            strain_selected,
+            structure_vote,
+            nose_vote,
+            flavor_vote,
+            effects_vote,
+            db
+        )
+        
+        request_dict = {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'vote_success.html'
+                )
+            ),
+            response_dict
+        )
+    except:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting-home.html'
+                )
+            ),
+            {
                 "request": request,
                 "user_is_logged_in": user_is_logged_in,
             }
-            response_dict = {**request_dict, **review_dict}
-            return templates.TemplateResponse(
-                str(
-                    Path(
-                        'general_pages',
-                        'vote_success.html'
-                    )
-                ),
-                response_dict
-            )
-        except:
-            return templates.TemplateResponse(
-                str(
-                    Path(
-                        'general_pages',
-                        'voting-home.html'
-                    )
-                ),
-                {
-                    "request": request,
-                    "user_is_logged_in": user_is_logged_in,
-                }
-            )
+        )
 
 
 @general_pages_router.get("/config")

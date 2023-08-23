@@ -6,7 +6,7 @@ Created on Sun Aug 20 21:52:51 2023
 @author: dale
 """
 
-from sqlalchemy import Column, Integer, String, Float, BigInteger, Date
+from sqlalchemy import Column, String, Float, BigInteger, Date
 from db.base_class import Base
 
 
