@@ -62,7 +62,6 @@ class SupaAuth:
             user_email = logged_in_user.dict()['user']['email']
             return user_email
         else:
-            print('\nNo logged in user\n')
             return None
             
 
