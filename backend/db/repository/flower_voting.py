@@ -19,7 +19,7 @@ def date_handler(obj):
         raise TypeError("Type %s not serializable" % type(obj))
 
 def add_new_flower_vote(
-        flower_vote:FlowerVoteCreate,
+        flower_vote: FlowerVoteCreate,
         db:Session):
     flower_vote = FlowerVoting(
         created_at = date_handler(datetime.datetime.now()),

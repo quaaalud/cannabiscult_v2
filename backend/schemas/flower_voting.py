@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class FlowerVoteCreate(BaseModel):
     cultivator_selected: str
     strain_selected: str
+    structure_vote: str
     structure_explanation: str
     nose_vote: float
     nose_explanation: str

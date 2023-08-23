@@ -46,5 +46,6 @@ def add_flower_vote_to_db(
         user_email = user_email,
     )
     return add_new_flower_vote(
-        flower_vote
+        flower_vote,
+        db=db,
     ) 
