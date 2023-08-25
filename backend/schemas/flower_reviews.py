@@ -7,6 +7,7 @@ Created on Mon Jul  3 15:44:00 2023
 """
 
 from pydantic import BaseModel
+from typing import List
 
 
 class FlowerReviewCreate(BaseModel):
@@ -39,6 +40,7 @@ class ShowFlowerReview(BaseModel):
     effects: float
     vote_count: int
     card_path: str
+    terpene_list: List[str]
 
-    class Config():
+    class Config:
         orm_mode = True

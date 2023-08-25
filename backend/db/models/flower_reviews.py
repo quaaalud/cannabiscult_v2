@@ -57,3 +57,7 @@ class FlowerReview(Base):
         String,
         nullable=True
     )
+    terpene_list = Column(
+        ARRAY(String),
+        nullable=True
+    )

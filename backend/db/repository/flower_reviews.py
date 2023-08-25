@@ -51,6 +51,7 @@ def get_review_data_and_path(
             'effects': effects_avg,
             'vote_count': review.vote_count,
             'card_path': results_bytes,
+            'terpene_list': review.terpene_list,
         }
     else:
         return {
