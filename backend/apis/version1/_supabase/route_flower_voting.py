@@ -22,14 +22,14 @@ def add_flower_vote_to_db(
         cultivator_selected: str,
         strain_selected: str,
         structure_vote: float,
-        structure_explanation: str,
         nose_vote: float,
-        nose_explanation: str,
         flavor_vote: float,
-        flavor_explanation: str,
         effects_vote: float,
-        effects_explanation: str,
         user_email: str,
+        structure_explanation: str = 'None',
+        nose_explanation: str = 'None' ,
+        flavor_explanation: str = 'None',
+        effects_explanation: str = 'None',
         db: Session = Depends(get_supa_db)
     ):
     flower_vote = FlowerVoteCreate(
