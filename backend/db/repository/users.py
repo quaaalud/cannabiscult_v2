@@ -83,14 +83,14 @@ def get_user_by_email(
       
 def get_user_and_update_password(
     user_email: str,
-    current_password: str,
+    username: str,
     new_password: str,
     repeated_password: str,
     db: Session) -> User:
     if new_password == repeated_password:
         try:
             user = get_user_by_email(user_email, db)
-            if user.password  == current_password:
+            if user.username  == username:
                 user.password = new_password
             else:
                 raise SQLAlchemyError

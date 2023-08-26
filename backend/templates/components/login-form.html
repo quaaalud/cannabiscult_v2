@@ -1,3 +1,25 @@
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Forgot Password</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="forgot-password-form">
+          <div class="mb-3">
+            <label for="user-email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="user-email" aria-describedby="emailHelp">
+            <div id="emailHelp" class="form-text">We'll send a password reset link to this email.</div>
+          </div>
+          <button type="submit" class="btn btn-primary">Send Link</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <section class="container">
   <div class="card">
     <div class="card-header">
@@ -59,7 +81,7 @@
                       </div>
                       <div class="col-md-6 d-flex justify-content-center">
                         <!-- Simple link -->
-                        <a href="/forgot-password">Forgot password?</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot password?</a>
                       </div>
                     </div>
                     <!-- Submit button -->
@@ -133,3 +155,63 @@
     </div>
   </div>
 </section>
+<script>
+  
+  document.addEventListener('DOMContentLoaded', function() {
+    const forgotPasswordForm = document.getElementById('forgot-password-form');
+  
+    forgotPasswordForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('user-email').value;
+  
+      const { data, error } = await window.supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: 'https://cannabiscult.co/forgot-password',
+      });
+
+      var myModal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+      myModal.hide();
+  
+      let newModalContent;
+  
+      if (error) {
+        newModalContent = `
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="resultModalLabel">Error</h5>
+            </div>
+            <div class="modal-body">
+              Email not found.
+            </div>
+          </div>
+        `;
+      } else {
+        newModalContent = `
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="resultModalLabel">Success</h5>
+            </div>
+            <div class="modal-body">
+              Password Reset Email Sent.
+            </div>
+          </div>
+        `;
+      }
+
+      const newModal = document.createElement('div');
+      newModal.className = 'modal fade';
+      newModal.id = 'resultModal';
+      newModal.tabIndex = -1;
+      newModal.innerHTML = newModalContent;
+
+      document.body.appendChild(newModal);
+
+      var resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
+      resultModal.show();
+
+      resultModal.addEventListener('hidden.bs.modal', function() {
+        newModal.remove();
+      });
+    });
+  });
+</script>

@@ -49,14 +49,14 @@ def login_supa_user(
 @router.post("/", response_model=ShowUser)
 def update_user_password(
         user_email: str,
-        current_password: str,
+        username: str,
         new_password: str,
         repeated_password: str,
         db: Session = Depends(get_supa_db)
     ):
     user = get_user_and_update_password(
         user_email=user_email,
-        current_password=current_password,
+        username=username,
         new_password=new_password,
         repeated_password=repeated_password,
         db=db

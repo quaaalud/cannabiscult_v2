@@ -227,23 +227,22 @@ async def submit_user_logout(
 async def submit_new_password_form(
     request: Request,
     user_email: str = Form(...),
-    current_password: str = Form(...),
+    username: str = Form(...),
     new_password: str = Form(...),
     repeated_password: str = Form(...),
     db: Session = Depends(get_supa_db),
 ) -> templates.TemplateResponse:
-    
+  
     user_is_logged_in = get_current_users_email() is not None
-    
-    if user_is_logged_in:
+  
+    try:
         user = update_user_password(
             user_email=user_email,
-            current_password=current_password,
+            username=username,
             new_password=new_password,
             repeated_password=repeated_password,
             db=db
         )
-    
         return templates.TemplateResponse(
             str(
                 Path(
@@ -257,20 +256,20 @@ async def submit_new_password_form(
                 "can_vote_status": user.can_vote,
             }
         )
-    else:
+    except:
         return templates.TemplateResponse(
             str(
                 Path(
                     'general_pages',
-                    'login.html'
+                    'submit-failed.html'
                 )
             ),
             {
                 "request": request,
                 "user_is_logged_in": user_is_logged_in,
             },
-        )
-
+        )        
+        
 
 @general_pages_router.post("/submit", response_model=None)
 async def submit_subscriber_form(
@@ -539,6 +538,14 @@ async def get_config():
         SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
         ALGO=settings.ALGO,
     )
+  
+  
+async def get_config_obj():
+    return Config(
+        SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
+        SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
+        ALGO=settings.ALGO,
+    )
 
 
 @general_pages_router.get("/{subdomain}.cannabiscult.co")
@@ -572,6 +579,7 @@ async def general_pages_route(
     
     partner_data = await get_current_partner_data()
     user_is_logged_in = await async_get_current_users_email() is not None
+    config = await get_config_obj()
     return templates.TemplateResponse(
         str(
             Path(
@@ -582,6 +590,8 @@ async def general_pages_route(
         {
             "request": request,
             "dispensaries": partner_data,
-            "user_is_logged_in": user_is_logged_in
+            "user_is_logged_in": user_is_logged_in,
+            "SUPA_URL": config.SUPA_STORAGE_URL,
+            "PUB_KEY": config.SUPA_PUBLIC_KEY,
         },
     )
