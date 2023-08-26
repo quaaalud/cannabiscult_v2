@@ -157,61 +157,23 @@
 </section>
 <script>
   
-  document.addEventListener('DOMContentLoaded', function() {
-    const forgotPasswordForm = document.getElementById('forgot-password-form');
-  
-    forgotPasswordForm.addEventListener('submit', async function(event) {
-      event.preventDefault();
-      
-      const email = document.getElementById('user-email').value;
-  
-      const { data, error } = await window.supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: 'https://cannabiscult.co/forgot-password',
-      });
+document.addEventListener('DOMContentLoaded', function() {
+  const forgotPasswordForm = document.getElementById('forgot-password-form');
 
-      var myModal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
-      myModal.hide();
-  
-      let newModalContent;
-  
-      if (error) {
-        newModalContent = `
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="resultModalLabel">Error</h5>
-            </div>
-            <div class="modal-body">
-              Email not found.
-            </div>
-          </div>
-        `;
-      } else {
-        newModalContent = `
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="resultModalLabel">Success</h5>
-            </div>
-            <div class="modal-body">
-              Password Reset Email Sent.
-            </div>
-          </div>
-        `;
-      }
+  forgotPasswordForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('user-email').value;
 
-      const newModal = document.createElement('div');
-      newModal.className = 'modal fade';
-      newModal.id = 'resultModal';
-      newModal.tabIndex = -1;
-      newModal.innerHTML = newModalContent;
+    const { data, error } = await window.supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: 'https://cannabiscult.co/forgot-password',
+    });
 
-      document.body.appendChild(newModal);
+    var myModal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+    myModal.hide();
 
-      var resultModal = new bootstrap.Modal(document.getElementById('resultModal'));
-      resultModal.show();
-
-      resultModal.addEventListener('hidden.bs.modal', function() {
-        newModal.remove();
-      });
+    
     });
   });
+
 </script>
