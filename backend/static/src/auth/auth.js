@@ -5,14 +5,6 @@ fetch('/config')
     .then(data => {
         var SUPABASE_URL = data.SUPA_STORAGE_URL;
         var SUPABASE_KEY = data.SUPA_PUBLIC_KEY;
-        
-        const supabase = _supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-            auth: {
-                autoRefreshToken: false,
-                persistSession: false,
-                detectSessionInUrl: false
-            }
-        });
 
         window.supabase = _supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
             auth: {
@@ -21,6 +13,8 @@ fetch('/config')
                 detectSessionInUrl: false
             }
         });
+        
+        const supabase = window.supabase
 
     
     window.userToken = null;
