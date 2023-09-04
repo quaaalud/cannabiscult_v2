@@ -432,7 +432,7 @@ async def process_request(
 
 
 @general_pages_router.post("/get-review")
-async def handle_get_review_post(
+async def handle_get_review_get(
     request: Request,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
