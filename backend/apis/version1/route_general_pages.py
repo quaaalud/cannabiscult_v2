@@ -43,6 +43,7 @@ from version1._supabase.route_flower_reviews import (
 from version1._supabase.route_flower_voting import (
     add_flower_vote_to_db,
 )
+from version1._supabase import route_concentrates
 
 
 templates_dir = Path(
@@ -75,8 +76,6 @@ async def home(
             "user_is_logged_in": user_is_logged_in,
         },
     )
-  
-
 
 
 @general_pages_router.get("/voting-home")
@@ -135,7 +134,7 @@ async def submit_login_form(
             {
                 "request": request,
                 "username": login_email,
-                
+
             }
         )
 
@@ -193,8 +192,8 @@ async def submit_register_form(
                 "username": register_username,
             }
         )
-      
-      
+
+
 @general_pages_router.post("/logout-submit", response_model=None)
 async def submit_user_logout(
     request: Request,
@@ -221,8 +220,8 @@ async def submit_user_logout(
                 "user_is_logged_in": user is not None,
             },
         )
-      
-      
+
+
 @general_pages_router.post("/submit-new-password", response_model=ShowUser)
 async def submit_new_password_form(
     request: Request,
@@ -232,9 +231,9 @@ async def submit_new_password_form(
     repeated_password: str = Form(...),
     db: Session = Depends(get_supa_db),
 ) -> templates.TemplateResponse:
-  
+
     user_is_logged_in = get_current_users_email() is not None
-  
+
     try:
         user = update_user_password(
             user_email=user_email,
@@ -268,8 +267,8 @@ async def submit_new_password_form(
                 "request": request,
                 "user_is_logged_in": user_is_logged_in,
             },
-        )        
-        
+        )
+
 
 @general_pages_router.post("/submit", response_model=None)
 async def submit_subscriber_form(
@@ -372,14 +371,14 @@ async def submit_unsubscribe_form(
 async def get_all_strains_route(
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_strains(db)
-  
-  
+
+
 @general_pages_router.get("/get-all-cultivators", response_model=List[str])
 async def get_all_cultivators_route(
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_cultivators(db)
-  
-  
+
+
 @general_pages_router.get("/get-strains-for-cultivator", response_model=List[str])
 async def get_all_strains_for_cultivator_route(
         cultivator_selected: str = Query(...),
@@ -392,15 +391,19 @@ async def get_all_cultivators_for_strain_route(
         strain_selected: str = Query(...),
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_cultivators_for_strain(strain_selected, db)
-  
 
-async def process_request(
+
+async def process_flower_request(
     request: Request,
     strain_selected: str,
     cultivator_selected: str,
     db: Session
 ):
-    review_dict = return_selected_review(strain_selected, cultivator_selected, db=db)
+    review_dict = return_selected_review(
+        strain_selected,
+        cultivator_selected,
+        db=db
+    )
     user_is_logged_in = get_current_users_email() is not None
     try:
         request_dict = {
@@ -432,23 +435,33 @@ async def process_request(
 
 
 @general_pages_router.post("/get-review")
-async def handle_get_review_get(
+async def handle_flower_review_get(
     request: Request,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
     db: Session = Depends(get_supa_db)
 ):
-    return await process_request(request, strain_selected, cultivator_selected, db)
+    return await process_flower_request(
+        request,
+        strain_selected,
+        cultivator_selected,
+        db
+    )
 
 
 @general_pages_router.get("/get-review")
-async def handle_get_review_post(
+async def handle_flower_review_post(
     request: Request,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
     db: Session = Depends(get_supa_db)
 ):
-    return await process_request(request, strain_selected, cultivator_selected, db)
+    return await process_flower_request(
+        request,
+        strain_selected,
+        cultivator_selected,
+        db
+    )
 
 
 @general_pages_router.post("/submit-vote", response_model=List[str])
@@ -472,7 +485,7 @@ async def submit_flower_review_vote(
         user_email=current_user_email,
         db=db,
     )
-    
+
     user_email = get_current_users_email()
     user_is_logged_in = user_email is not None
 
@@ -516,7 +529,213 @@ async def submit_flower_review_vote(
             effects_vote,
             db
         )
-        
+
+        request_dict = {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'vote_success.html'
+                )
+            ),
+            response_dict
+        )
+    except:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting-home.html'
+                )
+            ),
+            {
+                "request": request,
+                "user_is_logged_in": user_is_logged_in,
+            }
+        )
+
+
+@general_pages_router.get("/concentrate-get-all-strains", response_model=List[str])
+async def get_concentrate_strains_route(
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    return route_concentrates.get_all_strains(db)
+
+
+@general_pages_router.get("/concentrate-get-all-cultivators", 
+                          response_model=List[str]
+)
+async def get_concentrate_cultivators_route(
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    return route_concentrates.get_all_cultivators(db)
+
+
+@general_pages_router.get("/concentrate-get-strains-for-cultivator",
+                          response_model=List[str]
+                          )
+async def get_concentrate_strains_for_cultivator_route(
+        cultivator_selected: str = Query(...),
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    return route_concentrates.get_all_strains_for_cultivator(
+        cultivator_selected,
+        db
+    )
+
+
+@general_pages_router.get("/concentrate-get-cultivators-for-strain",
+                          response_model=List[str]
+)
+async def get_concentrate_cultivators_for_strain_route(
+        strain_selected: str = Query(...),
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    return route_concentrates.get_all_cultivators_for_strain(
+        strain_selected,
+        db
+    )
+
+
+async def process_concentrate_request(
+    request: Request,
+    strain_selected: str,
+    cultivator_selected: str,
+    db: Session
+):
+    review_dict = route_concentrates.return_selected_review(
+        strain_selected,
+        cultivator_selected,
+        db=db
+    )
+    user_is_logged_in = get_current_users_email() is not None
+    try:
+        request_dict = {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting-home.html'
+                )
+            ),
+            response_dict
+        )
+    except:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'voting-home.html'
+                )
+            ),
+            {
+                "request": request,
+            }
+        )
+
+
+@general_pages_router.post("/concentrate-get-review")
+async def handle_concentrate_review_get(
+    request: Request,
+    strain_selected: str = Form(None),
+    cultivator_selected: str = Form(None),
+    db: Session = Depends(get_supa_db)
+):
+    return await process_concentrate_request(
+        request,
+        strain_selected,
+        cultivator_selected,
+        db
+    )
+
+
+@general_pages_router.get("/concentrate-get-review")
+async def handle_concentrate_review_post(
+    request: Request,
+    strain_selected: str = Query(None, alias="strain_selected"),
+    cultivator_selected: str = Query(None, alias="cultivator_selected"),
+    db: Session = Depends(get_supa_db)
+):
+    return await process_concentrate_request(
+        request,
+        strain_selected,
+        cultivator_selected,
+        db
+    )
+
+
+@general_pages_router.post("/concentrate-submit-vote",
+                           response_model=List[str]
+)
+async def submit_concentrate_review_vote(
+    request: Request,
+    strain_selected: str = Form(...),
+    cultivator_selected: str = Form(...),
+    structure_vote: str = Form(...),
+    nose_vote: str = Form(...),
+    flavor_vote: str = Form(...),
+    effects_vote: str = Form(...),
+    structure_explanation: str = Form('None'),
+    nose_explanation: str = Form('None'),
+    flavor_explanation: str = Form('None'),
+    effects_explanation: str = Form('None'),
+    db: Session = Depends(get_supa_db),
+    current_user_email=Depends(get_current_users_email),
+) -> templates.TemplateResponse:
+
+    can_vote_status = return_current_user_vote_status(
+        user_email=current_user_email,
+        db=db,
+    )
+
+    user_email = get_current_users_email()
+    user_is_logged_in = user_email is not None
+
+    if not can_vote_status:
+        return templates.TemplateResponse(
+            str(
+                Path(
+                    'general_pages',
+                    'login.html'
+                )
+            ),
+            {
+                "request": request,
+                "user_is_logged_in": user_is_logged_in,
+            }
+        )
+    try:
+        route_concentrates.add_concentrate_vote_to_db(
+            cultivator_selected=cultivator_selected,
+            strain_selected=strain_selected,
+            structure_vote=structure_vote,
+            structure_explanation=structure_explanation,
+            nose_vote=nose_vote,
+            nose_explanation=nose_explanation,
+            flavor_vote=flavor_vote,
+            flavor_explanation=flavor_explanation,
+            effects_vote=effects_vote,
+            effects_explanation=effects_explanation,
+            user_email=user_email,
+            db=db,
+        )
+    except:
+        pass
+    try:
+        review_dict = route_concentrates.add_new_votes_to_concentrate_values(
+            cultivator_selected,
+            strain_selected,
+            structure_vote,
+            nose_vote,
+            flavor_vote,
+            effects_vote,
+            db
+        )
+
         request_dict = {
             "request": request,
             "user_is_logged_in": user_is_logged_in,
@@ -553,8 +772,8 @@ async def get_config():
         SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
         ALGO=settings.ALGO,
     )
-  
-  
+
+
 async def get_config_obj():
     return Config(
         SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
@@ -576,8 +795,8 @@ async def redirect_to_auth_provider(subdomain: str, auth_url: str = None):
 async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
     return get_gsheet._get_deal_workbook_and_return_dict()
-  
-  
+
+
 @general_pages_router.get("/{file_name}")
 async def general_pages_route(
     request: Request,
@@ -590,8 +809,8 @@ async def general_pages_route(
         f'{file_name}.html'
     )
     if not file_path.exists():
-            raise HTTPException(status_code=404, detail="Page not found")
-    
+        raise HTTPException(status_code=404, detail="Page not found")
+
     partner_data = await get_current_partner_data()
     user_is_logged_in = await async_get_current_users_email() is not None
     config = await get_config_obj()

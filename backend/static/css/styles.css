@@ -63,6 +63,14 @@ h4 {
   font-weight: bold;
 }
 
+.custom-switch-width {
+  width: 50px !important;
+}
+
+.custom-switch-width:checked::before {
+  left: calc(100% - 2em) !important;
+}
+
 .container-glass {
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);

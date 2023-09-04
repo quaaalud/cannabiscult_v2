@@ -38,7 +38,7 @@
                     >
                     </select>
                   </div>
-                  <div class="row pt-3 pb-3">
+                  <div class="row pt-3 pb-3 pt-2">
                     <button 
                       class="btn btn-info"
                       id="submit"
@@ -47,6 +47,20 @@
                     >
                       Submit
                     </button>
+                  </div>
+                  <div class="d-flex flex-column align-items-center justify-content-center pt-2 pb-2">
+                    <div class="row">
+                      <div class="col text-center">
+                        <label class="form-switch-label fs-5 pb-3 pt-2" for="typeSwitch" id="typeLabel">Flower</label>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col text-center">
+                        <div class="form-check form-switch">
+                          <input type="checkbox" class="form-check-input" id="typeSwitch">
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </form>
               </div>
@@ -61,43 +75,65 @@
 {% block scripts %}
   <script>
     window.addEventListener('DOMContentLoaded', function() {
+    
+      var typeSwitch = document.getElementById('typeSwitch');
+      var typeLabel = document.getElementById('typeLabel');
       var strainSelect = document.getElementById('strain_selected');
       var cultivatorSelect = document.getElementById('cultivator_selected');
       var submitButton = document.getElementById('submit');
-    
+      
+      function getRouteBase() {
+        return typeSwitch.checked ? '/concentrate-' : '/';
+      }
+      
+      typeLabel.textContent = typeSwitch.checked ? 'Concentrates' : 'Flower';
+      
+      typeSwitch.addEventListener('change', function() {
+        typeLabel.textContent = typeSwitch.checked ? 'Concentrates' : 'Flower';
+        strainSelect.innerHTML = ''; 
+        cultivatorSelect.innerHTML = '';
+        fetchCultivatorsAndStrains(); 
+      });
+  
       function updateButtonState() {
         submitButton.disabled = !(strainSelect.value && cultivatorSelect.value);
       }
-    
-      var initialLoad = !localStorage.getItem('selectedCultivator');
-    
-      fetch('/get-all-cultivators')
-        .then(response => response.json())
-        .then(data => {
-          var selectedCultivator = initialLoad ? data[0] : localStorage.getItem('selectedCultivator');
-          data.forEach(function(cultivator) {
-            var option = document.createElement('option');
-            option.text = cultivator;
-            option.value = cultivator;
-            if (cultivator === selectedCultivator) {
-              option.selected = true;
-            }
-            cultivatorSelect.add(option);
+  
+      function fetchCultivatorsAndStrains() {
+        var initialLoad = !localStorage.getItem('selectedCultivator');
+        var routeBase = getRouteBase();
+  
+        fetch(routeBase + 'get-all-cultivators')
+          .then(response => response.json())
+          .then(data => {
+            cultivatorSelect.innerHTML = '';
+            var selectedCultivator = initialLoad ? data[0] : localStorage.getItem('selectedCultivator');
+            data.forEach(function(cultivator) {
+              var option = document.createElement('option');
+              option.text = cultivator;
+              option.value = cultivator;
+              if (cultivator === selectedCultivator) {
+                option.selected = true;
+              }
+              cultivatorSelect.add(option);
+            });
+  
+            var event = new Event('change');
+            cultivatorSelect.dispatchEvent(event);
           });
-    
-          var event = new Event('change');
-          cultivatorSelect.dispatchEvent(event);
-        });
-    
+      }
+  
+      fetchCultivatorsAndStrains();
+  
       cultivatorSelect.addEventListener('change', function(e) {
         var cultivatorSelected = e.target.value;
         localStorage.setItem('selectedCultivator', cultivatorSelected);
-    
-        fetch('/get-strains-for-cultivator?cultivator_selected=' + cultivatorSelected)
+        
+        fetch(getRouteBase() + 'get-strains-for-cultivator?cultivator_selected=' + cultivatorSelected)
           .then(response => response.json())
           .then(data => {
             strainSelect.innerHTML = '';
-            var selectedStrain = initialLoad ? data[0] : localStorage.getItem('selectedStrain');
+            var selectedStrain = localStorage.getItem('selectedStrain') || data[0];
             data.forEach(function(strain) {
               var option = document.createElement('option');
               option.text = strain;
@@ -110,15 +146,15 @@
             updateButtonState();
           });
       });
-    
+  
       strainSelect.addEventListener('change', function(e) {
         localStorage.setItem('selectedStrain', e.target.value);
         updateButtonState();
       });
-    
+  
       cultivatorSelect.addEventListener('change', updateButtonState);
       strainSelect.addEventListener('change', updateButtonState);
-    
+      
       updateButtonState();
     });
   </script>
