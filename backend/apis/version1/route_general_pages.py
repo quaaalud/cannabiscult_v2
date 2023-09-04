@@ -392,20 +392,15 @@ async def get_all_cultivators_for_strain_route(
         strain_selected: str = Query(...),
         db: Session = Depends(get_supa_db)) -> List[str]:
     return get_all_cultivators_for_strain(strain_selected, db)
+  
 
-
-@general_pages_router.post("/get-review", response_model=List[str])
-async def get_flower_review_voting_page(
+async def process_request(
     request: Request,
-    strain_selected: str = Form(...),
-    cultivator_selected: str = Form(...),
-    db: Session = Depends(get_supa_db),
-) -> templates.TemplateResponse:
-    review_dict = return_selected_review(
-        strain_selected,
-        cultivator_selected,
-        db=db,
-    )
+    strain_selected: str,
+    cultivator_selected: str,
+    db: Session
+):
+    review_dict = return_selected_review(strain_selected, cultivator_selected, db=db)
     user_is_logged_in = get_current_users_email() is not None
     try:
         request_dict = {
@@ -434,6 +429,26 @@ async def get_flower_review_voting_page(
                 "request": request,
             }
         )
+
+
+@general_pages_router.post("/get-review")
+async def handle_get_review_post(
+    request: Request,
+    strain_selected: str = Form(None),
+    cultivator_selected: str = Form(None),
+    db: Session = Depends(get_supa_db)
+):
+    return await process_request(request, strain_selected, cultivator_selected, db)
+
+
+@general_pages_router.get("/get-review")
+async def handle_get_review_post(
+    request: Request,
+    strain_selected: str = Query(None, alias="strain_selected"),
+    cultivator_selected: str = Query(None, alias="cultivator_selected"),
+    db: Session = Depends(get_supa_db)
+):
+    return await process_request(request, strain_selected, cultivator_selected, db)
 
 
 @general_pages_router.post("/submit-vote", response_model=List[str])
