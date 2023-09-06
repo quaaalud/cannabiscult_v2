@@ -21,10 +21,10 @@ router = APIRouter()
 
 def get_all_strains(
         db: Session = Depends(get_supa_db)) -> List[str]:
-    all_strains = db.query(FlowerReview.strain).all()  
+    all_strains = db.query(FlowerReview.strain).all()
     return sorted(set([result[0] for result in all_strains]))
-  
-  
+
+
 def get_all_strains_for_cultivator(
         cultivator_selected: str,
         db: Session = Depends(get_supa_db)) -> List[str]:
@@ -32,14 +32,32 @@ def get_all_strains_for_cultivator(
         FlowerReview.strain
     ).filter(
         FlowerReview.cultivator == cultivator_selected
-    ).all()  
+    ).all()
     return sorted([result[0] for result in all_strains])
-  
-  
+
+
 def get_all_cultivators(
         db: Session = Depends(get_supa_db)) -> List[str]:
-    all_cultivators = db.query(FlowerReview.cultivator).all()  
-    return sorted(set([result[0] for result in all_cultivators]))
+    all_cultivators = db.query(FlowerReview.cultivator).all()
+    return sorted(
+        set(
+            [result[0] for result in all_cultivators if
+               (str(result[0]).lower() != "connoisseur")
+            ]
+        )
+    )
+  
+  
+def get_mystery_pack_cultivators(
+        db: Session = Depends(get_supa_db)) -> List[str]:
+    all_cultivators = db.query(FlowerReview.cultivator).all()
+    return sorted(
+        set(
+            [result[0] for result in all_cultivators if
+               (str(result[0]).lower() == "connoisseur")
+            ]
+        )
+    )
 
 
 def get_all_cultivators_for_strain(
@@ -49,7 +67,7 @@ def get_all_cultivators_for_strain(
         FlowerReview.cultivator
     ).filter(
         FlowerReview.strain == strain_selected
-    ).all()  
+    ).all()
     return sorted(set([result[0] for result in all_cultivators]))
 
 
@@ -57,7 +75,7 @@ def return_selected_review(
         strain_selected: str,
         cultivator_selected: str,
         db: Session = Depends(get_supa_db)
-        ):
+):
     return get_review_data_and_path(
         db,
         cultivator_selected,
@@ -82,7 +100,7 @@ def add_new_votes_to_flower_strain(
         flavor_vote: int,
         effects_vote: int,
         db: Session = Depends(get_supa_db)
-        ):
+):
     try:
         return append_votes_to_arrays(
             cultivator_select,
