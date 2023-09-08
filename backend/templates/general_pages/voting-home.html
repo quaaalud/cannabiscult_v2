@@ -24,7 +24,7 @@
 />
 <meta 
   property="og:title" 
-  content="Cannabis Cult Cultivar Reviews"
+  content="Cannabis Cult Cultivar {% if strain and cultivator %}{{ cultivator }} {{ strain }}{% endif %} Reviews"
 />
 <meta 
   name="twitter:card" 
@@ -40,7 +40,7 @@
 />
 <meta 
   property="twitter:title" 
-  content="Cannabis Cult Cultivar {{ cultivator }} {{ strain }} Review Page." 
+  content="Cannabis Cult Cultivar {% if strain and cultivator %}{{ cultivator }} {{ strain }}{% endif %} Reviews" 
 />
 <meta 
   property="twitter:description" 
