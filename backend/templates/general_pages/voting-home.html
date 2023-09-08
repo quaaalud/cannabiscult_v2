@@ -71,7 +71,11 @@
   </div>
 </div>
 
-{% include "components/vote_template.html" %}
+{% if cultivator == "Connoisseur" %}
+  {% include "components/mystery_vote_template.html" %}
+{% else %}
+  {% include "components/vote_template.html" %}
+{% endif %}
 
 {% include "components/flower_review_selector.html" %}
 
