@@ -41,6 +41,7 @@ def get_review_data_and_path(
                 effects_avg
             ]
         )
+        print(return_image_url_from_supa_storage(img_path))
         return {
             'id': review.id,
             'strain': review.strain,
