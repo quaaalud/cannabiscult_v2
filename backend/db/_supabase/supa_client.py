@@ -25,8 +25,7 @@ def get_cc_bucket():
 
 def get_signed_url_from_storage(file_path: str, life_span: int = 6000):    
     client = return_created_client()
-    return client.storage.create_signed_url(
-        settings.POSTGRES_DB,
+    return client.storage.from_(settings.POSTGRES_DB).create_signed_url(
         file_path,
         life_span
     ) 
