@@ -9,6 +9,7 @@ Created on Sun Jul  2 22:54:46 2023
 from db._supabase import supa_client
 import base64
 
+
 def get_reviews_list() -> list[dict]:    
     bucket = supa_client.get_cc_bucket()
     folder_path = 'reviews'
@@ -21,3 +22,9 @@ def get_image_from_results(file_path: str):
         path=file_path
     )
     return base64.b64encode(img_bytes).decode()
+  
+
+def return_image_url_from_supa_storage(file_path: str):
+    return supa_client.get_signed_url_from_storage(
+        file_path=file_path
+    )

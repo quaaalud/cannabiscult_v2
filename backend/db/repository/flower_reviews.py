@@ -11,7 +11,8 @@ from pathlib import Path
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from db.models.flower_reviews import FlowerReview
-from db._supabase.connect_to_storage import get_image_from_results 
+from db._supabase.connect_to_storage import get_image_from_results
+from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 def get_review_data_and_path(
         db: Session,
@@ -52,6 +53,7 @@ def get_review_data_and_path(
             'vote_count': review.vote_count,
             'card_path': results_bytes,
             'terpene_list': review.terpene_list,
+            'url_path': return_image_url_from_supa_storage(img_path)
         }
     else:
         return {
@@ -89,6 +91,9 @@ def get_review_data_and_path_from_id(
             'effects': get_average_of_list(review.effects),
             'vote_count': review.vote_count,
             'card_path': results_bytes,
+            'url_path': return_image_url_from_supa_storage(
+                str(Path(review.card_path))
+            )
         }
     else:
         return {
