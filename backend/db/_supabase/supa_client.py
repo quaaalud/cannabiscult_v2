@@ -28,7 +28,7 @@ def get_signed_url_from_storage(file_path: str, life_span: int = 6000):
     return client.storage.from_(settings.POSTGRES_DB).create_signed_url(
         file_path,
         life_span
-    ) 
+    ).get('signedURL')
 
 
 if __name__ == '__main__':
