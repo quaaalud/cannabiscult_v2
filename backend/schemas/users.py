@@ -31,7 +31,7 @@ class ShowUser(BaseModel):
     can_vote : bool
     
     class Config():
-        orm_mode = True
+        from_attributes = True
         
         
 class LoggedInUser(BaseModel):
@@ -41,5 +41,5 @@ class LoggedInUser(BaseModel):
     role : str
     
     class Config():
-        orm_mode = True
+        from_attributes = True
 

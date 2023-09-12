@@ -28,7 +28,7 @@ SupaLocal = sessionmaker(
 
 def get_db() -> Generator:
     try:
-        db = SessionLocal()
+        db = SupaLocal()
         yield db
     finally:
         db.close()

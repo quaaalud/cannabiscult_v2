@@ -11,12 +11,11 @@ from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
 #from fastapi import BackgroundTasks
 from fastapi.responses import RedirectResponse
-from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
 from typing import List
-
+from db.session import get_db
 from core.config import settings, Config
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
@@ -31,7 +30,6 @@ from route_users import (
 )
 from schemas.subscribers import SubscriberCreate
 from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
-from db.session import get_supa_db
 from version1._supabase.route_flower_reviews import (
     get_all_strains,
     get_all_cultivators,
@@ -149,7 +147,7 @@ async def submit_register_form(
     register_username: str = Form(...),
     register_zip_code: str = Form(...),
     register_phone: str = Form(...),
-    db: Session = Depends(get_supa_db),
+    db: Session = Depends(get_db),
 ) -> templates.TemplateResponse:
     if register_password == register_repeat_password:
         user = UserCreate(
@@ -197,7 +195,7 @@ async def submit_register_form(
 @general_pages_router.post("/logout-submit", response_model=None)
 async def submit_user_logout(
     request: Request,
-    db: Session = Depends(get_supa_db)
+    db: Session = Depends(get_db)
 ) -> templates.TemplateResponse:
     user = get_current_users_email()
     try:
@@ -229,7 +227,7 @@ async def submit_new_password_form(
     username: str = Form(...),
     new_password: str = Form(...),
     repeated_password: str = Form(...),
-    db: Session = Depends(get_supa_db),
+    db: Session = Depends(get_db),
 ) -> templates.TemplateResponse:
 
     user_is_logged_in = get_current_users_email() is not None
@@ -277,7 +275,7 @@ async def submit_subscriber_form(
     email: str = Form(...),
     phone: str = Form(...),
     zip_code: str = Form(...),
-    db: Session = Depends(get_supa_db),
+    db: Session = Depends(get_db),
 ) -> templates.TemplateResponse:
 
     subscriber_data = SubscriberCreate(
@@ -347,7 +345,7 @@ async def terms_and_conditions(
 async def submit_unsubscribe_form(
     request: Request,
     email: str = Form(...),
-    db: Session = Depends(get_supa_db)
+    db: Session = Depends(get_db)
 ) -> templates.TemplateResponse:
 
     remove_subscriber(email, db=db)
@@ -369,27 +367,27 @@ async def submit_unsubscribe_form(
 
 @general_pages_router.get("/get-all-strains", response_model=List[str])
 async def get_all_strains_route(
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return get_all_strains(db)
 
 
 @general_pages_router.get("/get-all-cultivators", response_model=List[str])
 async def get_all_cultivators_route(
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return get_all_cultivators(db)
 
 
 @general_pages_router.get("/get-strains-for-cultivator", response_model=List[str])
 async def get_all_strains_for_cultivator_route(
         cultivator_selected: str = Query(...),
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return get_all_strains_for_cultivator(cultivator_selected, db)
 
 
 @general_pages_router.get("/get-cultivators-for-strain", response_model=List[str])
 async def get_all_cultivators_for_strain_route(
         strain_selected: str = Query(...),
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return get_all_cultivators_for_strain(strain_selected, db)
 
 
@@ -439,7 +437,7 @@ async def handle_flower_review_get(
     request: Request,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
-    db: Session = Depends(get_supa_db)
+    db: Session = Depends(get_db)
 ):
     return await process_flower_request(
         request,
@@ -454,7 +452,7 @@ async def handle_flower_review_post(
     request: Request,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
-    db: Session = Depends(get_supa_db)
+    db: Session = Depends(get_db)
 ):
     return await process_flower_request(
         request,
@@ -477,7 +475,7 @@ async def submit_flower_review_vote(
     nose_explanation: str = Form('None'),
     flavor_explanation: str = Form('None'),
     effects_explanation: str = Form('None'),
-    db: Session = Depends(get_supa_db),
+    db: Session = Depends(get_db),
     current_user_email=Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
 
@@ -561,7 +559,7 @@ async def submit_flower_review_vote(
 
 @general_pages_router.get("/concentrate-get-all-strains", response_model=List[str])
 async def get_concentrate_strains_route(
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return route_concentrates.get_all_strains(db)
 
 
@@ -569,7 +567,7 @@ async def get_concentrate_strains_route(
                           response_model=List[str]
 )
 async def get_concentrate_cultivators_route(
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return route_concentrates.get_all_cultivators(db)
 
 
@@ -578,7 +576,7 @@ async def get_concentrate_cultivators_route(
                           )
 async def get_concentrate_strains_for_cultivator_route(
         cultivator_selected: str = Query(...),
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return route_concentrates.get_all_strains_for_cultivator(
         cultivator_selected,
         db
@@ -590,7 +588,7 @@ async def get_concentrate_strains_for_cultivator_route(
 )
 async def get_concentrate_cultivators_for_strain_route(
         strain_selected: str = Query(...),
-        db: Session = Depends(get_supa_db)) -> List[str]:
+        db: Session = Depends(get_db)) -> List[str]:
     return route_concentrates.get_all_cultivators_for_strain(
         strain_selected,
         db
@@ -643,7 +641,7 @@ async def handle_concentrate_review_get(
     request: Request,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
-    db: Session = Depends(get_supa_db)
+    db: Session = Depends(get_db)
 ):
     return await process_concentrate_request(
         request,
@@ -658,7 +656,7 @@ async def handle_concentrate_review_post(
     request: Request,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
-    db: Session = Depends(get_supa_db)
+    db: Session = Depends(get_db)
 ):
     return await process_concentrate_request(
         request,
@@ -683,7 +681,7 @@ async def submit_concentrate_review_vote(
     nose_explanation: str = Form('None'),
     flavor_explanation: str = Form('None'),
     effects_explanation: str = Form('None'),
-    db: Session = Depends(get_supa_db),
+    db: Session = Depends(get_db),
     current_user_email=Depends(get_current_users_email),
 ) -> templates.TemplateResponse:
 

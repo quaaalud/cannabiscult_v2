@@ -43,4 +43,4 @@ class ShowFlowerReview(BaseModel):
     terpene_list: List[str]
 
     class Config:
-        orm_mode = True
+        from_attributes = True

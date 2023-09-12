@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Sat Apr 15 20:04:19 2023
+Created on Mon Sep 11 21:55:38 2023
 
 @author: dale
 """
@@ -9,14 +9,14 @@ Created on Sat Apr 15 20:04:19 2023
 from pydantic import BaseModel, EmailStr
 
 
-class SubscriberCreate(BaseModel):
+class MysteryVoterCreate(BaseModel):
     email : EmailStr  
     name : str
     zip_code : str
     phone : str
     
 
-class ShowSubscriber(BaseModel):
+class ShowMysteryVoter(BaseModel):
     email : EmailStr
 
     class Config():

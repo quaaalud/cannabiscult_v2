@@ -57,3 +57,8 @@ api_router.include_router(
     prefix="/flower_voting",
     tags=["flower_voting"]
 )
+api_router.include_router(
+    route_users.router,
+    prefix="/mystery_voters",
+    tags=["mystery_voters"]
+)
