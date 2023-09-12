@@ -44,48 +44,54 @@
       <div class="card rounded-5 shadow-5">
         <div class="card-body">
           <div class="row align-content-center justify-content-center d-flex">
-            <form method="post" action="/submit-vote"> 
+            <form method="post" action="/submit-mystery-vote"> 
               <div class="row mx-auto">
                 <input type="hidden" name="cultivator_selected" value="{{ cultivator }}" />
                 <input type="hidden" name="strain_selected" value="{{ strain }}" />
-                <label for="structure_vote" class="form-label fs-3">
+                <div>
+                  <label for="voter_email" class="form-label fs-3">
+                    Your Email
+                  </label>
+                  <input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />
+                </div>
+                <label for="mystery_structure_vote" class="form-label pt-5 pt-lg-4 fs-3">
                   Structure
                 </label>
                 <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="5" max="10" step="0.5" id="structure_vote" name="structure_vote" />
+                  <input type="range" class="form-range" min="1" max="10" step="1" id="mystery_structure_vote" name="mystery_structure_vote" />
                   <div class="pt-3">
-                    <input class="form-control pt-2" type="text" id="structure_explanation" name="structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />
+                    <input class="form-control pt-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />
                   </div>
                 </div>
-                <label for="nose_vote" class="form-label pt-5 pt-lg-4 fs-3">
+                <label for="mystery_nose_vote" class="form-label pt-5 pt-lg-4 fs-3">
                   Nose
                 </label>
                 <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="5" max="10" step="0.5" id="nose_vote" name="nose_vote" />
+                  <input type="range" class="form-range" min="1" max="10" step="1" id="mystery_nose_vote" name="mystery_nose_vote" />
                   <div class="pt-3">
-                    <input class="form-control pt-2" id="structure_explanation" name="nose_explanation" type="text" placeholder="Explain your Nose Rating" aria-label="Nose Vote Explantion Field" />
+                    <input class="form-control pt-2" id="mystery_structure_explanation" name="mystery_nose_explanation" type="text" placeholder="Explain your Nose Rating" aria-label="Nose Vote Explantion Field" />
                   </div>
                 </div>
-                <label for="flavor_vote" class="form-label pt-5 pt-lg-4 fs-3">
+                <label for="mystery_flavor_vote" class="form-label pt-5 pt-lg-4 fs-3">
                   Flavor
                 </label>
                 <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="5" max="10" step="0.5" id="flavor_vote" name="flavor_vote" />
+                  <input type="range" class="form-range" min="1" max="10" step="1" id="mystery_flavor_vote" name="mystery_flavor_vote" />
                   <div class="pt-3">
-                    <input class="form-control pt-2" type="text" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Flavor Vote Explantion Field" />
+                    <input class="form-control pt-2" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Flavor Vote Explantion Field" />
                   </div>
                 </div>
-                <label for="effects_vote" class="form-label pt-5 pt-lg-4 fs-3">
+                <label for="mystery_effects_vote" class="form-label pt-5 pt-lg-4 fs-3">
                   Effects
                 </label>
                 <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="5" max="10" step="0.5" id="effects_vote" name="effects_vote" />
+                  <input type="range" class="form-range" min="1" max="10" step="0.5" id="mystery_effects_vote" name="mystery_effects_vote" />
                   <div class="pt-3">
-                    <input class="form-control" type="text" id="effects_explanation" name="effects_explanation" placeholder="Explain your Effects Rating" aria-label="Effects Vote Explantion Field" />
+                    <input class="form-control" type="text" id="mystery_effects_explanation" name="mystery_effects_explanation" placeholder="Explain your Effects Rating" aria-label="Effects Vote Explantion Field" />
                   </div>
                 </div>
                 <div class="row mx-auto g-3 m-1 pt-3">
-                  <button type="submit" id="vote" name="vote" class="btn btn-danger" {% if not strain or not cultivator %}disabled{% endif %}>Vote</button>
+                  <button type="submit" id="vote" name="vote" class="btn btn-danger" {% if not strain or not cultivator or not voter_email %}disabled{% endif %}>Vote</button>
                 </div>
               </div>
             </form>

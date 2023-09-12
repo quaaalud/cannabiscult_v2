@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Sep 11 22:56:04 2023
+
+@author: dale
+"""
+
+<!-- Modal Structure Template -->
+<div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="questionModalLabel">Question</h5>
+      </div>
+      <div class="modal-body">
+        <!-- Dynamic Content will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="nextBtn">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}  
+<script>
+  let step = 0;
+  const formState = {
+    "cultivator_selected": "{{ cultivator }}",
+    "strain_selected": "{{ strain }}",
+  };
+
+  const questions = [
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />`,
+      key: "voter_email"
+    },
+    {
+      title: "Your Structure Vote",
+      content: `<input class="form-control pt-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />`,
+      key: "mystery_structure_vote"
+    },
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-2" id="mystery_structure_explanation" name="mystery_nose_explanation" type="text" placeholder="Explain your Nose Rating" aria-label="Nose Vote Explantion Field" />`,
+      key: "mystery_"
+    },
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />`,
+      key: "mystery_"
+    },
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />`,
+      key: "mystery_"
+    },
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />`,
+      key: "mystery_"
+    },
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />`,
+      key: "mystery_"
+    },
+  ];
+  
+  async function submitForm(formState) {
+    try {
+      const response = await fetch('/submit-mystery-review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formState)
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Submission successful:", data);
+      } else {
+        console.log("Submission failed:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+    }
+  }
+
+  function loadQuestion() {
+    const modalBody = document.querySelector('.modal-body');
+    const modalTitle = document.querySelector('.modal-title');
+    const nextBtn = document.querySelector('#nextBtn');
+
+    if (step < questions.length) {
+      modalTitle.textContent = questions[step].title;
+      modalBody.innerHTML = questions[step].content;
+      nextBtn.textContent = "Next";
+      nextBtn.onclick = function() {
+        const value = document.querySelector(`#${questions[step].key}`).value;
+        formState[questions[step].key] = value;
+        step++;
+        loadQuestion();
+      };
+    } else {
+
+      nextBtn.textContent = "Submit";
+      nextBtn.onclick = function() {
+        submitForm(formState);
+      };
+      modalTitle.textContent = "All questions completed.";
+      modalBody.textContent = "Click submit to complete.";
+    }
+  }
+
+  function startQuestions() {
+    $('#questionModal').modal('show');
+    loadQuestion();
+  }
+
+  $('#questionModal').on('shown.bs.modal', function() {
+    loadQuestion();
+  });
+
+  $('#questionModal').on('hidden.bs.modal', function() {
+    step = 0; 
+  });
+</script>
+{% endblock %}
