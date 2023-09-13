@@ -1,6 +1,6 @@
-<section class="container" id="mystery-voting" {% if not strain %} style="display: none !important;"{% endif %}>
-  <div class="row g-0 d-lg-flex justify-content-center">
-    <div class="container col-lg-6 text-center d-flex vote-template ps-lg-5 pe-0 me-0 g-0 me-0 align-items-end" id="vote-template">
+<section class="container text-center justify-content-center align-items-center" id="mystery-voting" {% if not strain %} style="display: none !important;"{% endif %}>
+  <div class="row g-0 justify-content-center">
+    <div class="container col-lg-6 text-center d-flex vote-template g-0 align-items-center" id="vote-template">
       <div class="row mx-auto">
         <div class="container-fluid mb-5 text-center mx-auto col-md-8 col-lg-11">
           <div class="card rounded-5">
@@ -26,6 +26,13 @@
               </div>  
               <div class="container card-body pt-2">
                 <div class="row mx-auto justify-content-center">
+                  <div class="col-9 mx-auto">
+                    <button type="button" class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#questionModal">
+                      Vote Now
+                    </button>
+                  </div>
+                </div>
+                <div class="row mx-auto justify-content-center">
                   <div class="col-7 mx-auto">
                     <img 
                       src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvY2FyZF9hc3NldHMvQ3VsdCBDbGFzc2ljICBDdWx0aXZhciBFbWJsZW0uc3ZnIiwiaWF0IjoxNjk0MTQyMjAyLCJleHAiOjE3MjU2NzgyMDJ9.FH3G7aI8gSni20WSrYnYSy5OuaM6sv_McyyXunRGVig&t=2023-09-08T03%3A03%3A22.770Z"
@@ -40,71 +47,5 @@
         </div>
       </div>
     </div>
-    <div class="container d-flex col-md-8 col-lg-4 pb-5 mt-lg-4 mt-xl-5 ps-lg-0 ms-lg-0 align-items-start justify-content-center align-content-center" id="voting-form">
-      <div class="card rounded-5 shadow-5">
-        <div class="card-body">
-          <div class="row align-content-center justify-content-center d-flex">
-            <form method="post" action="/submit-mystery-vote"> 
-              <div class="row mx-auto">
-                <input type="hidden" name="cultivator_selected" value="{{ cultivator }}" />
-                <input type="hidden" name="strain_selected" value="{{ strain }}" />
-                <div>
-                  <label for="voter_email" class="form-label fs-3">
-                    Your Email
-                  </label>
-                  <input class="form-control pt-3" id="voter-email" name="voter-email" placeholder="Email Address Required" />
-                </div>
-                <label for="mystery_structure_vote" class="form-label pt-5 pt-lg-4 fs-3">
-                  Structure
-                </label>
-                <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="1" max="10" step="1" id="mystery_structure_vote" name="mystery_structure_vote" />
-                  <div class="pt-3">
-                    <input class="form-control pt-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />
-                  </div>
-                </div>
-                <label for="mystery_nose_vote" class="form-label pt-5 pt-lg-4 fs-3">
-                  Nose
-                </label>
-                <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="1" max="10" step="1" id="mystery_nose_vote" name="mystery_nose_vote" />
-                  <div class="pt-3">
-                    <input class="form-control pt-2" id="mystery_structure_explanation" name="mystery_nose_explanation" type="text" placeholder="Explain your Nose Rating" aria-label="Nose Vote Explantion Field" />
-                  </div>
-                </div>
-                <label for="mystery_flavor_vote" class="form-label pt-5 pt-lg-4 fs-3">
-                  Flavor
-                </label>
-                <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="1" max="10" step="1" id="mystery_flavor_vote" name="mystery_flavor_vote" />
-                  <div class="pt-3">
-                    <input class="form-control pt-2" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Flavor Vote Explantion Field" />
-                  </div>
-                </div>
-                <label for="mystery_effects_vote" class="form-label pt-5 pt-lg-4 fs-3">
-                  Effects
-                </label>
-                <div class="range pt-lg-1">
-                  <input type="range" class="form-range" min="1" max="10" step="0.5" id="mystery_effects_vote" name="mystery_effects_vote" />
-                  <div class="pt-3">
-                    <input class="form-control" type="text" id="mystery_effects_explanation" name="mystery_effects_explanation" placeholder="Explain your Effects Rating" aria-label="Effects Vote Explantion Field" />
-                  </div>
-                </div>
-                <div class="row mx-auto g-3 m-1 pt-3">
-                  <button type="submit" id="vote" name="vote" class="btn btn-danger" {% if not strain or not cultivator or not voter_email %}disabled{% endif %}>Vote</button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-10 pb-5">
-      <div class="container text-center fs-5">
-        <p>Issues or Suggestions?</p>
-        <a class="link-offset-2 link-underline link-underline-opacity-0 link-danger" href="mailto:contact@thesocialoutfitus.com">Send us an email.</a>
-      </div>
-    </div> 
   </div>
-  
 </section>

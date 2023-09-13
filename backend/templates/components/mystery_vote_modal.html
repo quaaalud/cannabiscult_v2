@@ -1,0 +1,270 @@
+<!-- Modal Structure Template -->
+<div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Question</h5>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Dynamic Content will be loaded here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="nextBtn" name="nextBtn">Next</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Voter Info Capture Modal -->
+<div class="modal fade" id="voterInfoCaptureModal" tabindex="-1" aria-labelledby="voterInfoCaptureModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="voterInfoCaptureModalLabel">New Voter Information</h5>
+      </div>
+      <div class="modal-body">
+        <form id="newVoterForm">
+          <div class="mb-3">
+            <label for="newVoterName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="voter_name" name="voter_name">
+          </div>
+          <div class="mb-3">
+            <label for="newVoterEmail" class="form-label">Email</label>
+            <input type="email" class="form-control" id="voter_email" name="voter_email" required>
+          </div>
+          <div class="mb-3">
+            <label for="newVoterPhone" class="form-label">Phone</label>
+            <input type="text" class="form-control" id="voter_phone" name="voter_phone">
+          </div>
+          <div class="mb-3">
+            <label for="newVoterZipCode" class="form-label">Zip Code</label>
+            <input type="text" class="form-control" id="voter_zip_code" name="voter_zip_code">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="submitNewVoterBtn">Submit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% block scripts %}  
+<script>
+  const questions = [
+    {
+      title: "Your Email",
+      content: `<input class="form-control pt-3" id="voter_email" name="voter_email" placeholder="Email Address Required" />`,
+      key: "voter_email"
+    },
+    {
+      title: "Your Method of Consumption",
+      content: `<input class="form-control pt-2" type="text" id="method_of_consumption" name="method_of_consumption" placeholder="Brief Description of your Method of Consumption" aria-label="Method of Consumption Text Input Field" />`,
+      key: "method_of_consumption"
+    },
+    {
+      title: "Mystery Sight Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_sight_vote" name="mystery_sight_vote" />`,
+      key: "mystery_sight_vote"
+    },
+    {
+      title: "Mystery Sight Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Sight Rating" aria-label="Sight Vote Explantion Field" />`,
+      key: "mystery_sight_explanation"
+    },
+    {
+      title: "Mystery Structure Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_structure_vote" name="mystery_structure_vote" />`,
+      key: "mystery_structure_vote"
+    },
+    {
+      title: "Mystery Structure Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />`,
+      key: "mystery_structure_explanation"
+    },
+    {
+      title: "Mystery Smell Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_smell_vote" name="mystery_smell_vote" />`,
+      key: "mystery_smell_vote"
+    },
+    {
+      title: "Mystery Smell Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Smell Rating" aria-label="Smell Vote Explantion Field" />`,
+      key: "mystery_smell_explanation"
+    },
+    {
+      title: "Mystery Freshness Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_freshness_vote" name="mystery_freshness_vote" />`,
+      key: "mystery_freshness_vote"
+    },
+    {
+      title: "Mystery Freshness Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Freshness Rating" aria-label="Smell Vote Explantion Field" />`,
+      key: "mystery_freshness_explanation"
+    },
+    {
+      title: "Mystery Flavor Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_flavor_vote" name="mystery_flavor_vote" />`,
+      key: "mystery_flavor_vote"
+    },
+    {
+      title: "Mystery Flavor Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Smell Vote Explantion Field" />`,
+      key: "mystery_flavor_explanation"
+    },
+    {
+      title: "Mystery Effects Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_effects_vote" name="mystery_effects_vote" />`,
+      key: "mystery_effects_vote"
+    },
+    {
+      title: "Mystery Effects Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_effects_explanation" name="mystery_effects_explanation" placeholder="Explain your Effects Rating" aria-label="Smell Vote Explantion Field" />`,
+      key: "mystery_effects_explanation"
+    },
+    {
+      title: "Mystery Smoothness Vote",
+      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_smoothness_vote" name="mystery_smoothness_vote" />`,
+      key: "mystery_smoothness_vote"
+    },
+    {
+      title: "Mystery Smoothness Explanation",
+      content: `<input class="form-control pt-2" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your Smoothness Rating" aria-label="Smell Vote Explantion Field" />`,
+      key: "mystery_smoothness_explanation"
+    },
+  ];
+  async function checkVoterExists(email) {
+    const root = window.location.origin;
+    const url = new URL('/check-mystery-voter', root);
+    url.searchParams.append('voter_email', email);
+    
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        return data.exists;
+    } else {
+        console.log("Request failed:", response.status, response.statusText);
+        return false;
+    }
+  }
+  document.addEventListener("DOMContentLoaded", function() {
+    const submitButton = document.getElementById("submitNewVoterBtn");
+    const form = document.getElementById("newVoterForm");
+  
+    submitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+  
+      const formData = new URLSearchParams();
+        formData.append('voter_name', document.getElementById("voter_name").value);
+        formData.append('voter_email', document.getElementById("voter_email").value);
+        formData.append('voter_phone', document.getElementById("voter_phone").value);
+        formData.append('voter_zip_code', document.getElementById("voter_zip_code").value);
+    
+        fetch("/submit-new-voter", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString()
+        })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.status)
+        if (data.status === true) {
+          $('#voterInfoCaptureModal').modal('hide');
+          step = 0;
+          loadQuestion();
+        } else {
+          return
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    });
+  });
+  
+  let step = 0;
+  const formState = {
+    "cultivator_selected": "{{ cultivator }}",
+    "strain_selected": "{{ strain }}",
+  };
+  const modalTitle = document.getElementById('modalTitle');
+  const modalBody = document.getElementById('modalBody');
+  const nextBtn = document.getElementById('nextBtn');
+
+  async function submitForm(formState) {
+    try {
+      const response = await fetch('/mystery_reviews/submit-mystery-review', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formState)
+      });
+      console.log(response)
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Submission successful:", data);
+      } else {
+        console.log("Submission failed:", response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error("Error during submission:", error);
+    }
+  }
+
+  function loadQuestion() {
+    if (step < questions.length) {
+      const question = questions[step];
+      modalTitle.innerHTML = question.title;
+      modalBody.innerHTML = question.content;
+  
+      const input = document.getElementById(question.key);
+  
+      nextBtn.onclick = async function () {
+        if (input) {
+          formState[question.key] = input.value;
+  
+          if (question.key === "voter_email") {
+            const voterExists = await checkVoterExists(input.value);
+            if (!voterExists) {
+              $('#voterInfoCaptureModal').modal('show');
+              return;
+            }
+          }
+        }
+        
+        $('#voterInfoCaptureModal').modal('hide');
+        
+        $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
+          step++;
+          loadQuestion();
+        });
+  
+        if (!$('#voterInfoCaptureModal').hasClass('show')) {
+          step++;
+          loadQuestion();
+        }
+      };
+    } else {
+      nextBtn.textContent = 'Submit';
+      nextBtn.onclick = function () {
+        submitForm(formState);
+      };
+      modalTitle.textContent = 'All questions completed.';
+      modalBody.textContent = 'Click submit to complete.';
+    }
+  }
+  
+  loadQuestion();
+
+</script>
+{% endblock %}

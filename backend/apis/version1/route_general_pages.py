@@ -14,7 +14,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
-from typing import List
+from typing import List, Optional, Dict
 from db.session import get_db
 from core.config import settings, Config
 from route_subscribers import create_subscriber, remove_subscriber
@@ -28,6 +28,7 @@ from route_users import (
     update_user_password,
     logout_current_user,
 )
+from schemas.mystery_voters import MysteryVoterCreate
 from schemas.subscribers import SubscriberCreate
 from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
 from version1._supabase.route_flower_reviews import (
@@ -42,7 +43,10 @@ from version1._supabase.route_flower_voting import (
     add_flower_vote_to_db,
 )
 from version1._supabase import route_concentrates
-
+from version1._supabase.route_mystery_voters import (
+    get_voter_info_by_email,
+    create_mystery_voter
+)
 
 templates_dir = Path(
     Path(__file__).parents[2],
@@ -762,6 +766,52 @@ async def submit_concentrate_review_vote(
             }
         )
 
+
+@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]]) 
+def check_mystery_voter_email_by_get(
+      voter_email: str = Query(None, alias="voter_email"),      
+      db: Session = Depends(get_db)
+) -> Optional[Dict[str, bool]]:
+    voter = get_voter_info_by_email(voter_email=voter_email, db=db)
+    if not voter:
+        return {'exists': False}
+    return {'exists': True}
+
+@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]]) 
+def check_mystery_voter_email(
+      voter_email: str = Form(...),      
+      db: Session = Depends(get_db)
+) -> Optional[Dict[str, bool]]:
+    voter = get_voter_info_by_email(voter_email=voter_email, db=db)
+    if not voter:
+        return {'exists': False}
+    return {'exists': True}
+
+
+@general_pages_router.post("/submit-new-voter", response_model=None)
+async def submit_mystery_voter_create(
+      voter_name: str = Form(None),
+      voter_email: str = Form(...),
+      voter_phone: str = Form(None),
+      voter_zip_code: str = Form(None),
+      db: Session = Depends(get_db),
+) -> Optional[bool]:
+    existing_voter = get_voter_info_by_email(voter_email, db)
+    if existing_voter:
+        return {"status": True}
+    
+    voter = MysteryVoterCreate(
+        email=voter_email,
+        name=voter_name,
+        zip_code=voter_zip_code,
+        phone=voter_phone,
+    )
+    if not voter:
+        return {"status": False}
+      
+    create_mystery_voter(voter=voter, db=db)
+    return {"status": True}
+  
 
 @general_pages_router.get("/config")
 async def get_config():
