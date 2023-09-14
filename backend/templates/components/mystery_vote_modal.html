@@ -8,8 +8,15 @@
       <div class="modal-body" id="modalBody">
         <!-- Dynamic Content will be loaded here -->
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="nextBtn" name="nextBtn">Next</button>
+      <div class="modal-footer container">
+        <div class="row g-2 p-1">
+          <div class="col-6 align-items-start">
+            <button type="button" class="btn btn-error" id="backBtn">Back</button>
+          </div>
+          <div class="col-6 align-items-end">
+            <button type="button" class="btn btn-info" id="nextBtn" name="nextBtn">Next</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -43,7 +50,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" id="submitNewVoterBtn">Submit</button>
+        <button type="button" class="btn btn-info" id="submitNewVoterBtn">Submit</button>
       </div>
     </div>
   </div>
@@ -331,7 +338,7 @@
       title: "Connoisseur Effects Explanation",
       content: `
         <label for="mystery_effects_explanation">Explain your Effects Rating</label>
-        <select class="form-select" id="mystery_effects_explanation" name="mystery_effects_explanation" multiple aria-label="Effects Vote Explanation Field">
+        <select class="form-select" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
           <option value="sedative">Sedative</option>
           <option value="relaxing">Relaxing</option>
           <option value="energizing">Energizing</option>
@@ -387,7 +394,6 @@
           <label class="btn btn-outline-primary" for="mystery_smoothness_vote10">10</label>
         </div>
       `,
-      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_smoothness_vote" name="mystery_smoothness_vote" />`,
       key: "mystery_smoothness_vote"
     },
     {
@@ -461,6 +467,7 @@
   const modalTitle = document.getElementById('modalTitle');
   const modalBody = document.getElementById('modalBody');
   const nextBtn = document.getElementById('nextBtn');
+  const backBtn = document.getElementById('backBtn');
 
   async function submitForm(formState) {
     try {
@@ -484,6 +491,9 @@
   }
 
   function loadQuestion() {
+    if (step < 0) {
+      step = 0;
+    }
     if (step < questions.length) {
       const question = questions[step];
       modalTitle.innerHTML = question.title;
@@ -524,6 +534,19 @@
       modalTitle.textContent = 'All questions completed.';
       modalBody.textContent = 'Click submit to complete.';
     }
+    backBtn.onclick = function () {
+      $('#voterInfoCaptureModal').modal('hide');
+      
+      $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
+        step--;
+        loadQuestion();
+      });
+      
+      if (!$('#voterInfoCaptureModal').hasClass('show')) {
+        step--;
+        loadQuestion();
+      }
+    };
   }
   
   loadQuestion();
