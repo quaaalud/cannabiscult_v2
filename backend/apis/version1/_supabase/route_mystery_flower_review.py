@@ -17,7 +17,7 @@ from db.models.mystery_flower_review import MysteryFlowerReview
 router = APIRouter()
 
 
-@router.post("/", response_model=None)
+@router.post("/submit-mystery-review", response_model=None)
 def submit_mystery_flower_review(
     mystery_flower_review: CreateMysteryFlowerReview,
     db: Session = Depends(get_db)
