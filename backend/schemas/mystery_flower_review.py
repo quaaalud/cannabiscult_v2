@@ -23,42 +23,42 @@ class CreateMysteryFlowerReview(BaseModel):
     method_of_consumption: str = Field(
         None, description="Method of consumption", max_length=255
     )
-    mystery_sight_vote: int = Field(
+    mystery_sight_vote: str = Field(
         None, description="Vote for sight"
     )
     mystery_sight_explanation: str = Field(
         None, description="Explanation for sight vote", max_length=255
     )
-    mystery_structure_vote: int = Field(
+    mystery_structure_vote: str = Field(
         None, description="Vote for structure"
     )
     mystery_structure_explanation: str = Field(
         None, description="Explanation for structure vote", max_length=255
     )
-    mystery_smell_vote: int = Field(
+    mystery_smell_vote: str = Field(
         None, description="Vote for smell"
     )
     mystery_smell_explanation: str = Field(
         None, description="Explanation for smell vote", max_length=255
     )
-    mystery_freshness_vote: int = Field(
+    mystery_freshness_vote: str = Field(
         None, description="Vote for freshness"
     )
     mystery_freshness_explanation: str = Field(
         None, description="Explanation for freshness vote", max_length=255
     )
-    mystery_flavor_vote: int = Field(
+    mystery_flavor_vote: str = Field(
         None, description="Vote for flavor"
     )
     mystery_flavor_explanation: str = Field(
         None, description="Explanation for flavor vote", max_length=255
     )
-    mystery_effects_vote: int = Field(
+    mystery_effects_vote: str = Field(
         None, description="Vote for effects")
     mystery_effects_explanation: str = Field(
         None, description="Explanation for effects vote", max_length=255
     )
-    mystery_smoothness_vote: int = Field(
+    mystery_smoothness_vote: str = Field(
         None, description="Vote for smoothness"
     )
     mystery_smoothness_explanation: str = Field(
