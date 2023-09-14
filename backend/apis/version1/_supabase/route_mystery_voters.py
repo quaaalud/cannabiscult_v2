@@ -6,8 +6,8 @@ Created on Mon Sep 11 22:10:32 2023
 @author: dale
 """
 
-from typing import Optional
-from fastapi import APIRouter, Form, Depends
+
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.session import get_db
 from schemas.mystery_voters import MysteryVoterCreate
