@@ -54,20 +54,31 @@
 <script>
   const questions = [
     {
-      title: "Your Email",
+      title: "Connoisseur Email",
       content: `<input class="form-control pt-3" id="voter_email" name="voter_email" placeholder="Email Address Required" />`,
       key: "voter_email"
     },
     {
       title: "Your Method of Consumption",
-      content: `<input class="form-control pt-2" type="text" id="method_of_consumption" name="method_of_consumption" placeholder="Brief Description of your Method of Consumption" aria-label="Method of Consumption Text Input Field" />`,
+      content: `
+        <label for="method_of_consumption">Select Your Method of Smoking Inhaled Cannabis Flower</label>
+        <select class="form-select" id="method_of_consumption" name="method_of_consumption" aria-label="Method of Consumption Dropdown Field">
+          <option value="blunt">Blunt</option>
+          <option value="bong">Bong</option>
+          <option value="joint">Joint</option>
+          <option value="one_hitter">One-Hitter</option>
+          <option value="pipe">Pipe</option>
+          <option value="steamroller">Steamroller</option>
+          <option value="vaporizer">Vaporizer</option>
+        </select>
+      `,
       key: "method_of_consumption"
     },
     {
-      title: "Mystery Sight Vote",
+      title: "Connoisseur Sight Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Mystery Sight Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
           <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_sight_vote1">1</label>
         
@@ -107,62 +118,280 @@
       key: "mystery_sight_explanation"
     },
     {
-      title: "Mystery Structure Vote",
-      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_structure_vote" name="mystery_structure_vote" />`,
+      title: "Connoisseur Structure Vote",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Structure Vote">
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote1" value="1" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote1">1</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote2" value="2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote2">2</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote3" value="3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote3">3</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote4" value="4" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote4">4</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote5" value="5" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote5">5</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote6" value="6" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote6">6</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote7" value="7" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote7">7</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote8" value="8" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote8">8</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote9" value="9" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote9">9</label>
+        
+          <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote10" value="10" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_structure_vote10">10</label>
+        </div>
+      `,
       key: "mystery_structure_vote"
     },
     {
-      title: "Mystery Structure Explanation",
+      title: "Connoisseur Structure Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />`,
       key: "mystery_structure_explanation"
     },
     {
-      title: "Mystery Smell Vote",
-      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_smell_vote" name="mystery_smell_vote" />`,
+      title: "Connoisseur Smell Vote",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Smell Vote">
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote1" value="1" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote1">1</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote2" value="2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote2">2</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote3" value="3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote3">3</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote4" value="4" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote4">4</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote5" value="5" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote5">5</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote6" value="6" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote6">6</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote7" value="7" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote7">7</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote8" value="8" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote8">8</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote9" value="9" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote9">9</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote10" value="10" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smell_vote10">10</label>
+        </div>
+      `,
       key: "mystery_smell_vote"
     },
     {
-      title: "Mystery Smell Explanation",
+      title: "Connoisseur Smell Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Smell Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_smell_explanation"
     },
     {
-      title: "Mystery Freshness Vote",
-      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_freshness_vote" name="mystery_freshness_vote" />`,
+      title: "Connoisseur Freshness Vote",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Freshness Vote">
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote1" value="1" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote1">1</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote2" value="2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote2">2</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote3" value="3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote3">3</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote4" value="4" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote4">4</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote5" value="5" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote5">5</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote6" value="6" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote6">6</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote7" value="7" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote7">7</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote8" value="8" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote8">8</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote9" value="9" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote9">9</label>
+        
+          <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote10" value="10" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_freshness_vote10">10</label>
+        </div>
+      `,
       key: "mystery_freshness_vote"
     },
     {
-      title: "Mystery Freshness Explanation",
+      title: "Connoisseur Freshness Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Freshness Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_freshness_explanation"
     },
     {
-      title: "Mystery Flavor Vote",
-      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_flavor_vote" name="mystery_flavor_vote" />`,
+      title: "Connoisseur Flavor Vote",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Flavor Vote">
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote1" value="1" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote1">1</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote2" value="2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote2">2</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote3" value="3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote3">3</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote4" value="4" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote4">4</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote5" value="5" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote5">5</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote6" value="6" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote6">6</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote7" value="7" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote7">7</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote8" value="8" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote8">8</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote9" value="9" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote9">9</label>
+        
+          <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote10" value="10" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_flavor_vote10">10</label>
+        </div>
+      `,
       key: "mystery_flavor_vote"
     },
     {
-      title: "Mystery Flavor Explanation",
+      title: "Connoisseur Flavor Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_flavor_explanation"
     },
     {
-      title: "Mystery Effects Vote",
-      content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_effects_vote" name="mystery_effects_vote" />`,
+      title: "Connoisseur Effects Vote",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote1" value="1" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote1">1</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote2" value="2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote2">2</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote3" value="3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote3">3</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote4" value="4" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote4">4</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote5" value="5" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote5">5</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote6" value="6" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote6">6</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote7" value="7" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote7">7</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote8" value="8" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote8">8</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote9" value="9" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote9">9</label>
+        
+          <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote10" value="10" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_effects_vote10">10</label>
+        </div>
+      `,
       key: "mystery_effects_vote"
     },
     {
-      title: "Mystery Effects Explanation",
-      content: `<input class="form-control pt-2" type="text" id="mystery_effects_explanation" name="mystery_effects_explanation" placeholder="Explain your Effects Rating" aria-label="Smell Vote Explantion Field" />`,
+      title: "Connoisseur Effects Explanation",
+      content: `
+        <label for="mystery_effects_explanation">Explain your Effects Rating</label>
+        <select class="form-select" id="mystery_effects_explanation" name="mystery_effects_explanation" multiple aria-label="Effects Vote Explanation Field">
+          <option value="sedative">Sedative</option>
+          <option value="relaxing">Relaxing</option>
+          <option value="energizing">Energizing</option>
+          <option value="euphoric">Euphoric</option>
+          <option value="focused">Focused</option>
+          <option value="uplifting">Uplifting</option>
+          <option value="creative">Creative</option>
+          <option value="talkative">Talkative</option>
+          <option value="calming">Calming</option>
+          <option value="happy">Happy</option>
+          <option value="tingly">Tingly</option>
+          <option value="giggly">Giggly</option>
+          <option value="hungry">Hungry (Induces Appetite)</option>
+          <option value="sleepy">Sleepy</option>
+          <option value="aroused">Aroused</option>
+        </select>
+      `,
       key: "mystery_effects_explanation"
     },
     {
-      title: "Mystery Smoothness Vote",
+      title: "Connoisseur Smoothness Vote",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Smoothness Vote">
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote1" value="1" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote1">1</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote2" value="2" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote2">2</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote3" value="3" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote3">3</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote4" value="4" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote4">4</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote5" value="5" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote5">5</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote6" value="6" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote6">6</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote7" value="7" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote7">7</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote8" value="8" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote8">8</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote9" value="9" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote9">9</label>
+        
+          <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote10" value="10" autocomplete="off">
+          <label class="btn btn-outline-primary" for="mystery_smoothness_vote10">10</label>
+        </div>
+      `,
       content: `<input type="range" class="form-range" min="1" max="10" step="1" id="mystery_smoothness_vote" name="mystery_smoothness_vote" />`,
       key: "mystery_smoothness_vote"
     },
     {
-      title: "Mystery Smoothness Explanation",
+      title: "Connoisseur Smoothness Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your Smoothness Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_smoothness_explanation"
     },
