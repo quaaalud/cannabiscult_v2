@@ -6,7 +6,7 @@ Created on Wed Sep 13 19:34:01 2023
 @author: dale
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, Float, String, BigInteger
 from db.base_class import Base
 
 class MysteryFlowerReview(Base):
@@ -15,9 +15,6 @@ class MysteryFlowerReview(Base):
         primary_key=True,
         index=True,
         autoincrement="auto",
-    )
-    flower_id = Column(
-        Integer,
     )
     cultivator = Column(
         String,
@@ -43,7 +40,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_sight_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )
@@ -53,7 +50,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_structure_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )
@@ -63,7 +60,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_smell_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )
@@ -73,7 +70,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_freshness_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )
@@ -83,7 +80,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_flavor_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )
@@ -93,7 +90,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_effects_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )
@@ -103,7 +100,7 @@ class MysteryFlowerReview(Base):
         unique=False,
     )
     mystery_smoothness_vote = Column(
-        Integer,
+        Float,
         nullable=True,
         unique=False,
     )

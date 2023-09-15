@@ -22,8 +22,8 @@ def submit_mystery_flower_review(
     mystery_flower_review: CreateMysteryFlowerReview,
     db: Session = Depends(get_db)
 ) -> MysteryFlowerReview:
-    mystery_flower_review = create_mystery_flower_review(
-        voter=mystery_flower_review,
+    submitted_review = create_mystery_flower_review(
+        mystery_flower_review=mystery_flower_review,
         db=db
     )
-    return mystery_flower_review
+    return submitted_review

@@ -2,22 +2,24 @@
 <div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalTitle">Question</h5>
-      </div>
-      <div class="modal-body" id="modalBody">
-        <!-- Dynamic Content will be loaded here -->
-      </div>
-      <div class="modal-footer container">
-        <div class="row g-2 p-1">
-          <div class="col-6 align-items-start">
-            <button type="button" class="btn btn-error" id="backBtn">Back</button>
-          </div>
-          <div class="col-6 align-items-end">
-            <button type="button" class="btn btn-info" id="nextBtn" name="nextBtn">Next</button>
+      <form method="POST" action="/myster_flower_review/submit-mystery-review" id="submit-mystery-vote" name="submit-mystery-vote">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">Question</h5>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Dynamic Content will be loaded here -->
+        </div>
+        <div class="modal-footer container">
+          <div class="row g-2 p-1">
+            <div class="col-6 align-items-start">
+              <button type="button" class="btn btn-error" id="backBtn">Back</button>
+            </div>
+            <div class="col-6 align-items-end">
+              <button type="button" class="btn btn-info" id="nextBtn" name="nextBtn">Next</button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </div>
@@ -116,6 +118,7 @@
           <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_sight_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_sight_vote"
     },
@@ -159,6 +162,7 @@
           <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_structure_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_structure_vote"
     },
@@ -202,6 +206,7 @@
           <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_smell_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_smell_vote"
     },
@@ -245,6 +250,7 @@
           <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_freshness_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_freshness_vote"
     },
@@ -288,6 +294,7 @@
           <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_flavor_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_flavor_vote"
     },
@@ -331,6 +338,7 @@
           <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_effects_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_effects_vote"
     },
@@ -393,6 +401,7 @@
           <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_smoothness_vote10">10</label>
         </div>
+      </div>
       `,
       key: "mystery_smoothness_vote"
     },
@@ -402,26 +411,6 @@
       key: "mystery_smoothness_explanation"
     },
   ];
-  async function checkVoterExists(email) {
-    const root = window.location.origin;
-    const url = new URL('/check-mystery-voter', root);
-    url.searchParams.append('voter_email', email);
-    
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        return data.exists;
-    } else {
-        console.log("Request failed:", response.status, response.statusText);
-        return false;
-    }
-  }
   document.addEventListener("DOMContentLoaded", function() {
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
@@ -457,99 +446,138 @@
         console.error("Error:", error);
       });
     });
-  });
   
-  let step = 0;
-  const formState = {
-    "cultivator_selected": "{{ cultivator }}",
-    "strain_selected": "{{ strain }}",
-  };
-  const modalTitle = document.getElementById('modalTitle');
-  const modalBody = document.getElementById('modalBody');
-  const nextBtn = document.getElementById('nextBtn');
-  const backBtn = document.getElementById('backBtn');
-
-  async function submitForm(formState) {
-    try {
-      const response = await fetch('/mystery_reviews/submit-mystery-review', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formState)
-      });
-      console.log(response)
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Submission successful:", data);
-      } else {
-        console.log("Submission failed:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Error during submission:", error);
-    }
-  }
-
-  function loadQuestion() {
-    if (step < 0) {
-      step = 0;
-    }
-    if (step < questions.length) {
-      const question = questions[step];
-      modalTitle.innerHTML = question.title;
-      modalBody.innerHTML = question.content;
-  
-      const input = document.getElementById(question.key);
-  
-      nextBtn.onclick = async function () {
-        if (input) {
-          formState[question.key] = input.value;
-  
-          if (question.key === "voter_email") {
-            const voterExists = await checkVoterExists(input.value);
-            if (!voterExists) {
-              $('#voterInfoCaptureModal').modal('show');
-              return;
-            }
+    async function checkVoterExists(email) {
+      const root = window.location.origin;
+      const url = new URL('/check-mystery-voter', root);
+      url.searchParams.append('voter_email', email);
+      
+      const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
           }
+      });
+  
+      if (response.ok) {
+          const data = await response.json();
+          return data.exists;
+      } else {
+          console.log("Request failed:", response.status, response.statusText);
+          return false;
+      }
+    }
+      
+    let step = 0;
+    const formState = {
+      "cultivator": "{{ cultivator }}",
+      "strain": "{{ strain }}",
+    };
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    
+    async function submitForm(formState) {
+      try {
+        const response = await fetch('/mystery_flower_review/submit-mystery-review', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formState)
+        });
+        console.log(response)
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Submission successful:", data);
+          window.location.href = "https://cannabiscult.co/voting-home";
+        } else {
+          console.log("Submission failed:", response.status, response.statusText);
         }
+      } catch (error) {
+        console.error("Error during submission:", error);
+      }
+    }
+  
+    function loadQuestion() {
+      const intKeys = [
+        "mystery_sight_vote", 
+        "mystery_structure_vote", 
+        "mystery_smell_vote",
+        "mystery_freshness_vote",
+        "mystery_flavor_vote",
+        "mystery_effects_vote",
+        "mystery_smoothness_vote"
+      ];
+      
+      if (step < 0) {
+        step = 0;
+      }
+      if (step < questions.length) {
+        const question = questions[step];
+        modalTitle.innerHTML = question.title;
+        modalBody.innerHTML = question.content;
         
+    
+        const input = document.getElementById(question.key);
+    
+        nextBtn.onclick = async function () {
+          if (input) {
+            formState[question.key] = input.value;
+    
+            if (question.key === "voter_email") {
+              const voterExists = await checkVoterExists(input.value);
+              if (!voterExists) {
+                $('#voterInfoCaptureModal').modal('show');
+                return;
+              }
+            }
+            else if (question.key === "mystery_effects_explanation") {
+              const selectedOptions = Array.from(document.getElementById('mystery_effects_explanation').selectedOptions).map(option => option.value);
+              const combinedString = selectedOptions.join(' ');
+              formState['mystery_effects_explanation'] = combinedString;
+            } 
+          } else {
+            const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
+            const radioVal = radioCheck ? radioCheck.value : "0";
+            formState[question.key] = radioVal;
+          }
+           
+          $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
+            step++;
+            loadQuestion();
+          });
+    
+          if (!$('#voterInfoCaptureModal').hasClass('show')) {
+            step++;
+            loadQuestion();
+          }
+        };
+      } else {
+        nextBtn.textContent = 'Submit';
+        nextBtn.onclick = function () {
+          submitForm(formState);
+        };
+        modalTitle.textContent = 'All questions completed.';
+        modalBody.textContent = 'Click submit to complete.';
+      }
+      backBtn.onclick = function () {
         $('#voterInfoCaptureModal').modal('hide');
         
         $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
-          step++;
+          step--;
           loadQuestion();
         });
-  
+        
         if (!$('#voterInfoCaptureModal').hasClass('show')) {
-          step++;
+          step--;
           loadQuestion();
         }
       };
-    } else {
-      nextBtn.textContent = 'Submit';
-      nextBtn.onclick = function () {
-        submitForm(formState);
-      };
-      modalTitle.textContent = 'All questions completed.';
-      modalBody.textContent = 'Click submit to complete.';
     }
-    backBtn.onclick = function () {
-      $('#voterInfoCaptureModal').modal('hide');
-      
-      $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
-        step--;
-        loadQuestion();
-      });
-      
-      if (!$('#voterInfoCaptureModal').hasClass('show')) {
-        step--;
-        loadQuestion();
-      }
-    };
-  }
   
-  loadQuestion();
-
+    loadQuestion();
+  });
 </script>
 {% endblock %}
