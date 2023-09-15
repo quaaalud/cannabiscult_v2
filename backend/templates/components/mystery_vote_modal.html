@@ -77,7 +77,7 @@
     {
       title: "Your Method of Consumption",
       content: `
-        <label for="method_of_consumption">Select Your Method of Smoking Inhaled Cannabis Flower</label>
+        <label for="method_of_consumption">Select Your Method of Smoking {{ strain }}</label>
         <select class="form-select" id="method_of_consumption" name="method_of_consumption" aria-label="Method of Consumption Dropdown Field">
           <option value="blunt">Blunt</option>
           <option value="bong">Bong</option>
@@ -91,7 +91,7 @@
       key: "method_of_consumption"
     },
     {
-      title: "Connoisseur Sight Vote",
+      title: "{{ strain }} Sight Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
@@ -130,12 +130,12 @@
       key: "mystery_sight_vote"
     },
     {
-      title: "Mystery Sight Explanation",
+      title: "{{ strain }} Sight Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Sight Rating" aria-label="Sight Vote Explantion Field" />`,
       key: "mystery_sight_explanation"
     },
     {
-      title: "Connoisseur Structure Vote",
+      title: "{{ strain }} Structure Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Structure Vote">
@@ -174,12 +174,12 @@
       key: "mystery_structure_vote"
     },
     {
-      title: "Connoisseur Structure Explanation",
+      title: "{{ strain }} Structure Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />`,
       key: "mystery_structure_explanation"
     },
     {
-      title: "Connoisseur Smell Vote",
+      title: "{{ strain }} Smell Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Smell Vote">
@@ -218,12 +218,12 @@
       key: "mystery_smell_vote"
     },
     {
-      title: "Connoisseur Smell Explanation",
+      title: "{{ strain }} Smell Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Smell Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_smell_explanation"
     },
     {
-      title: "Connoisseur Freshness Vote",
+      title: "{{ strain }} Freshness Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Freshness Vote">
@@ -262,12 +262,12 @@
       key: "mystery_freshness_vote"
     },
     {
-      title: "Connoisseur Freshness Explanation",
+      title: "{{ strain }} Freshness Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Freshness Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_freshness_explanation"
     },
     {
-      title: "Connoisseur Flavor Vote",
+      title: "{{ strain }} Flavor Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Flavor Vote">
@@ -306,12 +306,12 @@
       key: "mystery_flavor_vote"
     },
     {
-      title: "Connoisseur Flavor Explanation",
+      title: "{{ strain }} Flavor Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_flavor_explanation"
     },
     {
-      title: "Connoisseur Effects Vote",
+      title: "{{ strain }} Effects Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
@@ -350,7 +350,7 @@
       key: "mystery_effects_vote"
     },
     {
-      title: "Connoisseur Effects Explanation",
+      title: "{{ strain }} Effects Explanation",
       content: `
         <label for="mystery_effects_explanation">Explain your Effects Rating</label>
         <select class="form-select" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
@@ -374,7 +374,7 @@
       key: "mystery_effects_explanation"
     },
     {
-      title: "Connoisseur Smoothness Vote",
+      title: "{{ strain }} Smoothness Vote",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Smoothness Vote">
@@ -413,7 +413,7 @@
       key: "mystery_smoothness_vote"
     },
     {
-      title: "Connoisseur Smoothness Explanation",
+      title: "{{ strain }} Smoothness Explanation",
       content: `<input class="form-control pt-2" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your Smoothness Rating" aria-label="Smell Vote Explantion Field" />`,
       key: "mystery_smoothness_explanation"
     },
