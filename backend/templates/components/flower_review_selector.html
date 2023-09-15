@@ -9,7 +9,7 @@
                 <h5 class="card-title">
                   Get Cultivar Reviews
                 </h5>
-                <form method="POST" action="/get-review">
+                <form method="POST" action="/get-review" id="review-form">
                   <div class="row text-start align-content-start">
                     <label for="cultivator_selected" class="form-label">
                       Cultivator
@@ -77,6 +77,7 @@
     window.addEventListener('DOMContentLoaded', function() {
     
       var typeSwitch = document.getElementById('typeSwitch');
+      var form = document.getElementById('review-form');
       var typeLabel = document.getElementById('typeLabel');
       var strainSelect = document.getElementById('strain_selected');
       var cultivatorSelect = document.getElementById('cultivator_selected');
@@ -86,6 +87,10 @@
         return typeSwitch.checked ? '/concentrate-' : '/';
       }
       
+      function getFormAction() {
+        return typeSwitch.checked ? '/concentrate-get-review' : '/get-review';
+      }
+      
       typeLabel.textContent = typeSwitch.checked ? 'Concentrates' : 'Flower';
       
       typeSwitch.addEventListener('change', function() {
@@ -93,6 +98,7 @@
         strainSelect.innerHTML = ''; 
         cultivatorSelect.innerHTML = '';
         fetchCultivatorsAndStrains(); 
+        form.action = getFormAction();
       });
   
       function updateButtonState() {
