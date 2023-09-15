@@ -541,7 +541,12 @@
     
         nextBtn.onclick = async function () {
           if (input) {
-            formState[question.key] = input.value;
+            var inputVal = input.value;
+            if (!inputVal) {
+              alert("Connoisseur Reviews Must Have at Least a Brief Description!"); 
+              return;
+            }
+            formState[question.key] = inputVal
     
             if (question.key === "voter_email") {
               const voterExists = await checkVoterExists(input.value);
@@ -558,6 +563,10 @@
           } else {
             const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
             const radioVal = radioCheck ? radioCheck.value : "0";
+            if (radioVal === "0") {
+              alert("Connoisseur Scoring Reviews Must Have a Value!"); 
+              return;
+            }
             formState[question.key] = radioVal;
           }
            
