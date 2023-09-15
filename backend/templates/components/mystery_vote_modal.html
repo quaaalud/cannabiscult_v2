@@ -52,7 +52,14 @@
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-info" id="submitNewVoterBtn">Submit</button>
+        <div class="row g-2 p-1">
+          <div class="col-6 align-items-start">
+            <button type="button" class="btn btn-error" id="newUserBackBtn">Back</button>
+          </div>
+          <div class="col-6 align-items-end">
+            <button type="button" class="btn btn-info" id="submitNewVoterBtn">Submit</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -414,6 +421,9 @@
   document.addEventListener("DOMContentLoaded", function() {
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
+        document.getElementById("newUserBackBtn").onclick = function() {
+      $('#voterInfoCaptureModal').modal('hide');
+    };
   
     submitButton.addEventListener("click", function(event) {
       event.preventDefault();
@@ -521,6 +531,13 @@
         
     
         const input = document.getElementById(question.key);
+        
+        document.addEventListener('keydown', function enterKeyHandler(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            nextBtn.click();
+          }
+        });
     
         nextBtn.onclick = async function () {
           if (input) {
