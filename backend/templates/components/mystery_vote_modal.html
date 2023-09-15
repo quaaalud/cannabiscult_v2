@@ -414,19 +414,6 @@
   document.addEventListener("DOMContentLoaded", function() {
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
-    
-    const modal = document.getElementById('questionModal');
-    const nextBtn = document.getElementById('nextBtn');
-    
-    if (modal) {
-      modal.addEventListener('keydown', function(event) {
-        if (event.keyCode === 13) {
-          event.preventDefault();
-          nextBtn.click();
-        }
-      });
-    }
-    
   
     submitButton.addEventListener("click", function(event) {
       event.preventDefault();

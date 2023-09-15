@@ -39,7 +39,7 @@ def get_voter_info_by_email(
     voter = db.query(
         MysteryVoter
     ).filter(
-        MysteryVoter.email.lower() == voter_email.lower()
+        MysteryVoter.email == voter_email
     ).first()
     
     if not voter:
