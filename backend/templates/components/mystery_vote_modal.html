@@ -1,7 +1,7 @@
 <!-- Modal Structure Template -->
-<div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
+<div class="modal fade p-1" style="max-width: 100vw;" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content overflow-auto">
       <form method="POST" action="/myster_flower_review/submit-mystery-review" id="submit-mystery-vote" name="submit-mystery-vote">
         <div class="modal-header">
           <h5 class="modal-title" id="modalTitle">Question</h5>
@@ -37,19 +37,19 @@
         <form id="newVoterForm">
           <div class="mb-3">
             <label for="newVoterName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="voter_name" name="voter_name">
+            <input type="text" class="form-control" id="voter_name" name="voter_name" autocomplete="name">
           </div>
           <div class="mb-3">
             <label for="newVoterEmail" class="form-label">Email</label>
-            <input type="email" class="form-control" id="voter_email" name="voter_email" required>
+            <input type="email" class="form-control" id="voter_email" name="voter_email" autocomplete="email" required>
           </div>
           <div class="mb-3">
             <label for="newVoterPhone" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="voter_phone" name="voter_phone">
+            <input type="text" class="form-control" id="voter_phone" name="voter_phone" autocomplete="phone">
           </div>
           <div class="mb-3">
             <label for="newVoterZipCode" class="form-label">Zip Code</label>
-            <input type="text" class="form-control" id="voter_zip_code" name="voter_zip_code">
+            <input type="text" class="form-control" id="voter_zip_code" name="voter_zip_code" autocomplete="on">
           </div>
         </form>
       </div>
@@ -73,22 +73,33 @@
   const questions = [
     {
       title: "Connoisseur Email",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" id="voter_email" name="voter_email" placeholder="Email Address Required" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" id="voter_email" name="voter_email" placeholder="Email Address Required" autocomplete="email" />
+         </div>
+        </div>`,
       key: "voter_email"
     },
     {
       title: "Your Method of Consumption for {{ strain }}",
       content: `
-        <label class="ps-2 pe-2" for="method_of_consumption">Select Your Method of Smoking {{ strain }}</label>
-        <select class="form-select form-select-lg ps-2 pe-2" id="method_of_consumption" name="method_of_consumption" aria-label="Method of Consumption Dropdown Field">
-          <option value="blunt">Blunt</option>
-          <option value="bong">Bong</option>
-          <option value="joint">Joint</option>
-          <option value="one_hitter">One-Hitter</option>
-          <option value="pipe">Pipe</option>
-          <option value="steamroller">Steamroller</option>
-          <option value="vaporizer">Vaporizer</option>
-        </select>
+        <div class="container ps-lg-3">
+          <label class="row ps-3 ps-lg-4 pb-3" for="method_of_consumption">How did you consume {{ strain }}</label>
+        </div>
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <select class="form-select ps-2 pe-2" id="method_of_consumption" name="method_of_consumption" aria-label="Method of Consumption Dropdown Field">
+              <option value="blunt">Blunt</option>
+              <option value="bong">Bong</option>
+              <option value="joint">Joint</option>
+              <option value="one_hitter">One-Hitter</option>
+              <option value="pipe">Pipe</option>
+              <option value="steamroller">Steamroller</option>
+              <option value="vaporizer">Vaporizer</option>
+            </select>
+          </div>
+        </div>
       `,
       key: "method_of_consumption"
     },
@@ -96,7 +107,7 @@
       title: "{{ strain }} - Sight Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Sight Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
           <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_sight_vote1">1</label>
         
@@ -133,14 +144,20 @@
     },
     {
       title: "{{ strain }} - Sight Explanation",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Sight Rating" aria-label="Sight Vote Explantion Field" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Sight Rating" aria-label="Sight Vote Explantion Field" />
+          </div>
+        </div>
+      `,
       key: "mystery_sight_explanation"
     },
     {
       title: "{{ strain }} - Structure Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Structure Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Structure Vote">
           <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_structure_vote1">1</label>
         
@@ -177,14 +194,20 @@
     },
     {
       title: "{{ strain }} - Structure Explanation",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Structure Rating" aria-label="Structure Vote Explantion Field" />
+          </div>
+        </div>
+      `,
       key: "mystery_structure_explanation"
     },
     {
       title: "{{ strain }} - Smell Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Smell Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Smell Vote">
           <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_smell_vote1">1</label>
         
@@ -221,14 +244,20 @@
     },
     {
       title: "{{ strain }} - Smell Explanation",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Smell Rating" aria-label="Smell Vote Explantion Field" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Smell Rating" aria-label="Smell Vote Explantion Field" />
+          </div>
+        </div>
+      `,
       key: "mystery_smell_explanation"
     },
     {
       title: "{{ strain }} - Freshness Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Freshness Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Freshness Vote">
           <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_freshness_vote1">1</label>
         
@@ -265,14 +294,20 @@
     },
     {
       title: "{{ strain }} - Freshness Explanation",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Freshness Rating" aria-label="Smell Vote Explantion Field" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Freshness Rating" aria-label="Smell Vote Explantion Field" />
+          </div>
+        </div>
+      `,
       key: "mystery_freshness_explanation"
     },
     {
       title: "{{ strain }} - Flavor Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Flavor Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Flavor Vote">
           <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_flavor_vote1">1</label>
         
@@ -309,14 +344,20 @@
     },
     {
       title: "{{ strain }} - Flavor Explanation",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Smell Vote Explantion Field" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating" aria-label="Smell Vote Explantion Field" />
+          </div>
+        </div>
+      `,
       key: "mystery_flavor_explanation"
     },
     {
       title: "{{ strain }} - Effects Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Effects Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
           <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_effects_vote1">1</label>
         
@@ -354,8 +395,8 @@
     {
       title: "{{ strain }} - Effects Explanation",
       content: `
-        <label class="pb-2 ps-2 pe-2" for="mystery_effects_explanation">Explain your Effects Rating</label>
-        <select class="form-select form-select-lg ps-2 pe-2" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
+        <label class="pb-3 ps-2 ps-lg-4" for="mystery_effects_explanation">Explain your Effects Rating</label>
+        <select class="form-select px-2 px-lg-4" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
           <option value="sedative">Sedative</option>
           <option value="relaxing">Relaxing</option>
           <option value="energizing">Energizing</option>
@@ -379,7 +420,7 @@
       title: "{{ strain }} -Smoothness Vote",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group btn-group-lg" role="group" aria-label="Connoisseur Smoothness Vote">
+        <div class="btn-group" role="group" aria-label="Connoisseur Smoothness Vote">
           <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-primary" for="mystery_smoothness_vote1">1</label>
         
@@ -416,10 +457,47 @@
     },
     {
       title: "{{ strain }} - Smoothness Explanation",
-      content: `<input class="form-control form-control-lg ps-2 pe-2" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your Smoothness Rating" aria-label="Smell Vote Explantion Field" />`,
+      content: `
+        <div class="container">
+          <div class="row px-2 px-lg-4">
+            <input class="form-control" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your Smoothness Rating" aria-label="Smell Vote Explantion Field" />
+          </div>
+        </div>
+      `,
       key: "mystery_smoothness_explanation"
     },
   ];
+  function adjustButtonSize() {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      const elements = document.querySelectorAll('.btn-group-lg');
+      elements.forEach(element => {
+        element.classList.remove('btn-group-lg');
+      });
+      const formElements = document.querySelectorAll('.form-select-lg');
+      formElements.forEach(element => {
+        element.classList.remove('form-select-lg');
+      });
+      const inputElements = document.querySelectorAll('.form-control-lg');
+      inputElements.forEach(element => {
+        element.classList.remove('form-control-lg');
+      });
+    } else {
+      const elements = document.querySelectorAll('.btn-group');
+      elements.forEach(element => {
+        element.classList.add('btn-group-lg');
+      });
+      const formElements = document.querySelectorAll('.form-select');
+      formElements.forEach(element => {
+        element.classList.add('form-select-lg');
+      });
+      const inputElements = document.querySelectorAll('.form-control');
+      inputElements.forEach(element => {
+        element.classList.add('form-control-lg');
+      });
+    }
+  }
+  window.addEventListener('resize', adjustButtonSize);
+  
   document.addEventListener("DOMContentLoaded", function() {
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
@@ -570,11 +648,13 @@
           $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
             step++;
             loadQuestion();
+            adjustButtonSize();
           });
     
           if (!$('#voterInfoCaptureModal').hasClass('show')) {
             step++;
             loadQuestion();
+            adjustButtonSize();
           }
         };
       } else {
@@ -591,16 +671,19 @@
         $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
           step--;
           loadQuestion();
+          adjustButtonSize();
         });
         
         if (!$('#voterInfoCaptureModal').hasClass('show')) {
           step--;
           loadQuestion();
+          adjustButtonSize();
         }
       };
     }
-  
+    adjustButtonSize();
     loadQuestion();
+    adjustButtonSize();
   });
 </script>
 {% endblock %}
