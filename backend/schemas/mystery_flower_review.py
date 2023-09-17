@@ -16,6 +16,8 @@ class CreateMysteryFlowerReview(BaseModel):
     method_of_consumption: str
     mystery_sight_vote: int
     mystery_sight_explanation: str
+    mystery_size_vote: int
+    mystery_size_explanation: str
     mystery_structure_vote: int
     mystery_structure_explanation: str
     mystery_smell_vote: int
