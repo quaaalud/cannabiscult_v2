@@ -6,7 +6,7 @@ Created on Wed Sep 13 19:34:01 2023
 @author: dale
 """
 
-from sqlalchemy import Column, Integer, Float, String, BigInteger
+from sqlalchemy import Column, Integer, Float, String
 from db.base_class import Base
 
 class MysteryFlowerReview(Base):

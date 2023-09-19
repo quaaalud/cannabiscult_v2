@@ -3,21 +3,30 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content overflow-auto">
       <form method="POST" action="/myster_flower_review/submit-mystery-review" id="submit-mystery-vote" name="submit-mystery-vote">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modalTitle">Question</h5>
+        <div class="modal-header container">
+          <div class="justify-content-center text-center">
+            <h5 class="modal-title fs-4" id="modalTitle">Question</h5>
+          </div>
         </div>
         <div class="pt-1 pb-1">
           <div class="modal-body ps-1 pe-1" id="modalBody">
             <!-- Dynamic Content will be loaded here -->
           </div>
-        </div>
-        <div class="modal-footer container">
-          <div class="row g-2 p-1">
-            <div class="col-6 align-items-start">
-              <button type="button" class="btn btn-lg btn-error" id="backBtn">Back</button>
+          <div class="container"> 
+            <div class="col-12">
+              <div class="row justify-content-center pt-2 px-4">
+                <div class="col-6">
+                  <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" id="backBtn">Back</button>
+                </div>
+                <div class="col-6">
+                  <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" id="nextBtn" name="nextBtn">Next</button>
+                </div>
+              </div>
             </div>
-            <div class="col-6 align-items-end">
-              <button type="button" class="btn btn-lg btn-info" id="nextBtn" name="nextBtn">Next</button>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-4 col-md-5 col-6">
+              <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvY2FyZF9hc3NldHMvQ3VsdCBDbGFzc2ljICBDdWx0aXZhciBFbWJsZW0uc3ZnIiwiaWF0IjoxNjk1MDkzODQyLCJleHAiOjE3MjY2Mjk4NDJ9.57R00NLb_38ruDIIHbdKNskRCcadnv3gW8BJstVSpHI&t=2023-09-19T03%3A24%3A02.520Z" />
             </div>
           </div>
         </div>
@@ -75,8 +84,8 @@
       title: "Connoisseur Email",
       content: `
         <div class="container">
-          <div class="row px-2 px-lg-4">
-            <input class="form-control" id="voter_email" name="voter_email" placeholder="Your email is required to rank strains" autocomplete="email" />
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" id="voter_email" name="voter_email" placeholder="Your email is required to rank strains" autocomplete="email" />
          </div>
         </div>`,
       key: "voter_email"
@@ -85,10 +94,12 @@
       title: "Your Method of Consumption for {{ strain }}",
       content: `
         <div class="container ps-lg-3">
-          <label class="row ps-3 ps-lg-4 pb-3" for="method_of_consumption">How did you consume {{ strain }}</label>
+          <div class="row">
+            <label class="ps-3 pb-3 fs-5" for="method_of_consumption">How did you consume {{ strain }}:</label>
+          </div>
         </div>
         <div class="container">
-          <div class="row px-2 px-lg-4">
+          <div class="row px-3 pb-3 text-center">
             <select class="form-select ps-2 pe-2" id="method_of_consumption" name="method_of_consumption" aria-label="Method of Consumption Dropdown Field">
               <option value="blunt">Blunt</option>
               <option value="bong">Bong</option>
@@ -109,10 +120,10 @@
         <div class="container align-items-center text-center">
           <div class="row">
             <div class="col text-start">
-              <label class="text-warning" for="sight_1_point">No Color or Trichomes</label> 
+              <label class="ps-2 text-warning" for="sight_1_point">No Color or Trichomes</label> 
             </div>
             <div class="col text-end">
-              <label class="text-warning" for="sight_10_point">Colorful & Caked</label> 
+              <label class="pe-2 text-warning" for="sight_10_point">Colorful & Caked</label> 
             </div>
           </div>
           <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
@@ -154,8 +165,8 @@
       title: "{{ strain }} - Eye Appeal Rating Explation",
       content: `
         <div class="container">
-          <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Eye Appeal rating for {{ strain }}" aria-label="Sight Vote Explantion Field" />
+          <div class="row px-3">
+            <input class="form-control text-center" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Eye Appeal rating for {{ strain }}" aria-label="Sight Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -167,10 +178,10 @@
         <div class="container align-items-center text-center">
           <div class="row">
             <div class="col text-start">
-              <label class="text-warning" for="size_1_point">Small Budlets</label> 
+              <label class="ps-2 text-warning" for="size_1_point">Small Budlets</label> 
             </div>
             <div class="col text-end">
-              <label class="text-warning" for="size_10_point">Single Bud</label> 
+              <label class="pe-2 text-warning" for="size_10_point">Single Bud</label> 
             </div>
           </div>
           <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
@@ -213,7 +224,7 @@
       content: `
         <div class="container">
           <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_size_explanation" name="mystery_size_explanation" placeholder="Explain your Bud Size rating for {{ strain }}" aria-label="Size Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="mystery_size_explanation" name="mystery_size_explanation" placeholder="Explain your Bud Size rating for {{ strain }}" aria-label="Size Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -225,10 +236,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="text-warning" for="structure_1_point">Stemmy & Leafy</label> 
+            <label class="ps-2 text-warning" for="structure_1_point">Stemmy & Leafy</label> 
           </div>
           <div class="col text-end">
-            <label class="text-warning" for="structure_10_point">No Stems & Dense</label> 
+            <label class="pe-2 text-warning" for="structure_10_point">No Stems & Dense</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Bud Structure Rating">
@@ -271,7 +282,7 @@
       content: `
         <div class="container">
           <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Bud Structure Rating for {{ strain }}" aria-label="Structure Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Bud Structure Rating for {{ strain }}" aria-label="Structure Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -283,10 +294,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="text-warning" for="smell_1_point">Bad or No Smell</label> 
+            <label class="ps-2 text-warning" for="smell_1_point">Musty or Lacking</label> 
           </div>
           <div class="col text-end">
-            <label class="text-warning" for="smell_10_point">Great & Strong Smell</label> 
+            <label class="pe-2 text-warning" for="smell_10_point">Sweet & Skunky</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Smell Vote">
@@ -329,7 +340,7 @@
       content: `
         <div class="container">
           <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Aroma Rating for {{ strain }}" aria-label="Smell Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Aroma Rating for {{ strain }}" aria-label="Smell Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -341,10 +352,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="text-warning" for="freshness_1_point">Dry & Dusty</label> 
+            <label class="ps-2 text-warning" for="freshness_1_point">Dry & Dusty</label> 
           </div>
           <div class="col text-end">
-            <label class="text-warning" for="freshness_10_point">Dank & Sticky</label> 
+            <label class="pe-2 text-warning" for="freshness_10_point">Dank & Sticky</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Freshness Vote">
@@ -387,7 +398,7 @@
       content: `
         <div class="container">
           <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Stickiness & Moisture Rating for {{ strain }}" aria-label="Freshness Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Stickiness Rating for {{ strain }}" aria-label="Freshness Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -399,10 +410,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="text-warning" for="flavor_1_point">Little to None</label> 
+            <label class="ps-2 text-warning" for="flavor_1_point">Stale & Nasty</label> 
           </div>
           <div class="col text-end">
-            <label class="text-warning" for="flavor_10_point">Savoury & Delectable</label> 
+            <label class="pe-2 text-warning" for="flavor_10_point">Savoury & Delectable</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Flavor Vote">
@@ -445,7 +456,7 @@
       content: `
         <div class="container">
           <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -457,10 +468,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="text-warning" for="smoothness_1_point">Harsh, Causes Cough</label> 
+            <label class="ps-2 text-warning" for="smoothness_1_point">Harsh & Causes Cough</label> 
           </div>
           <div class="col text-end">
-            <label class="text-warning" for="smoothness_10_point">Smooth & Relaxing</label> 
+            <label class="pe-2 text-warning" for="smoothness_10_point">Smooth & Relaxing</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Smoothness Vote">
@@ -503,7 +514,7 @@
       content: `
         <div class="container">
           <div class="row px-2 px-lg-4">
-            <input class="form-control" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your Smoothness of Smoke Rating for {{ strain }}" aria-label="Smoothness of Smoke Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your 'Smooth Smoke' Rating for {{ strain }}" aria-label="Smoothness of Smoke Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -515,10 +526,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="text-warning" for="effects_1_point">Little to None</label> 
+            <label class="ps-2 text-warning" for="effects_1_point">Nil. Zilch.</label> 
           </div>
           <div class="col text-end">
-            <label class="text-warning" for="effects_10_point">Strong & Lasting</label> 
+            <label class="pe-2 text-warning" for="effects_10_point">Strong & Lasting</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
@@ -559,7 +570,7 @@
     {
       title: "{{ strain }} - Effects Rating Explanation",
       content: `
-        <label class="pb-3 ps-2 fs-5 text-danger" for="mystery_effects_explanation"><u>Explain your Effects Rating for {{ strain }}:</u></label>
+        <label class="pb-3 ps-2 fs-5 text-danger" for="mystery_effects_explanation"><u>Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</u></label>
         <select class="form-select px-2 px-lg-4" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
           <option value="alert">Alert</option>
           <option value="sedative">Sedative</option>
@@ -749,6 +760,10 @@
             }
             else if (question.key === "mystery_effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('mystery_effects_explanation').selectedOptions).map(option => option.value);
+              if (selectedOptions > 2) {
+                alert("Please tell us two ways {{ strain }} made you feel."); 
+                return;
+              }
               const combinedString = selectedOptions.join(' ');
               formState['mystery_effects_explanation'] = combinedString;
             } 
