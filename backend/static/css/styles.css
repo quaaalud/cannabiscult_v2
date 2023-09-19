@@ -178,13 +178,28 @@ h4 {
 }
 
 
+.modal-descriptor {
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
 
-@media (max-width: 400px) {
+
+@media (max-width: 485px) {
+
+  .long-voting-label {
+    font-size: 0.85rem;
+  }
+
+}
+
+@media (max-width: 420px) {
   .btn-outline-primary {
     font-size: 0.7rem;
   }
   .btn-check {
     margin: 0px;
+  }
+  .long-voting-label {
+    font-size: 0.7rem;
   }
 }
 
@@ -195,6 +210,9 @@ h4 {
   }
   .btn-check {
     margin: 0px;
+  }
+  .long-voting-label {
+    font-size: 0.6rem;
   }
 }
 
