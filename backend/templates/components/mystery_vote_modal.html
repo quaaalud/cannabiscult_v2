@@ -85,7 +85,7 @@
       content: `
         <div class="container">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" id="voter_email" name="voter_email" placeholder="Your email is required to rank strains" autocomplete="email" />
+            <input class="form-control text-center" id="voter_email" name="voter_email" placeholder="Your email is required to rate strains" autocomplete="email" />
          </div>
         </div>`,
       key: "voter_email"
@@ -115,70 +115,12 @@
       key: "method_of_consumption"
     },
     {
-      title: "{{ strain }} - Eye Appeal Rating",
-      content: `
-        <div class="container align-items-center text-center">
-          <div class="row">
-            <div class="col text-start">
-              <label class="ps-2 text-warning" for="sight_1_point">No Color or Trichomes</label> 
-            </div>
-            <div class="col text-end">
-              <label class="pe-2 text-warning" for="sight_10_point">Colorful & Caked</label> 
-            </div>
-          </div>
-          <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote1" value="1" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote1" id="sight_1_point">1</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote2" value="2" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote2">2</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote3" value="3" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote3">3</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote4" value="4" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote4">4</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote5" value="5" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote5">5</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote6" value="6" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote6">6</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote7" value="7" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote7">7</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote8" value="8" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote8">8</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote9" value="9" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote9">9</label>
-          
-            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote10" value="10" autocomplete="off">
-            <label class="btn btn-outline-primary" for="mystery_sight_vote10" id="sight_10_point">10</label>
-          </div>
-        </div>
-      `,
-      key: "mystery_sight_vote"
-    },
-    {
-      title: "{{ strain }} - Eye Appeal Rating Explation",
-      content: `
-        <div class="container">
-          <div class="row px-3">
-            <input class="form-control text-center" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Eye Appeal rating for {{ strain }}" aria-label="Sight Vote Explantion Field" />
-          </div>
-        </div>
-      `,
-      key: "mystery_sight_explanation"
-    },
-    {
       title: "{{ strain }} - Bud Size Rating",
       content: `
         <div class="container align-items-center text-center">
           <div class="row">
             <div class="col text-start">
-              <label class="ps-2 text-warning" for="size_1_point">Small Budlets</label> 
+              <label class="ps-2 text-warning" for="size_1_point">Small Buds</label> 
             </div>
             <div class="col text-end">
               <label class="pe-2 text-warning" for="size_10_point">Single Bud</label> 
@@ -231,15 +173,73 @@
       key: "mystery_size_explanation"
     },
     {
+      title: "{{ strain }} - Eye Appeal Rating",
+      content: `
+        <div class="container align-items-center text-center">
+          <div class="row">
+            <div class="col text-start">
+              <label class="ps-2 text-warning" for="sight_1_point">Bad Color, Few Trichomes</label> 
+            </div>
+            <div class="col text-end">
+              <label class="pe-2 text-warning" for="sight_10_point">Rich Color & Trichomes</label> 
+            </div>
+          </div>
+          <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote1" value="1" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote1" id="sight_1_point">1</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote2" value="2" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote2">2</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote3" value="3" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote3">3</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote4" value="4" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote4">4</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote5" value="5" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote5">5</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote6" value="6" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote6">6</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote7" value="7" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote7">7</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote8" value="8" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote8">8</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote9" value="9" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote9">9</label>
+          
+            <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote10" value="10" autocomplete="off">
+            <label class="btn btn-outline-primary" for="mystery_sight_vote10" id="sight_10_point">10</label>
+          </div>
+        </div>
+      `,
+      key: "mystery_sight_vote"
+    },
+    {
+      title: "{{ strain }} - Eye Appeal Rating Explation",
+      content: `
+        <div class="container">
+          <div class="row px-3">
+            <input class="form-control text-center" type="text" id="mystery_sight_explanation" name="mystery_sight_explanation" placeholder="Explain your Eye Appeal rating for {{ strain }}" aria-label="Sight Vote Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "mystery_sight_explanation"
+    },
+    {
       title: "{{ strain }} - Buds Structure Rating",
       content: `
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="ps-2 text-warning" for="structure_1_point">Stemmy & Leafy</label> 
+            <label class="ps-2 text-warning" for="structure_1_point">Larfy, Stemmy, Leafy</label> 
           </div>
           <div class="col text-end">
-            <label class="pe-2 text-warning" for="structure_10_point">No Stems & Dense</label> 
+            <label class="pe-2 text-warning" for="structure_10_point">Dense, Clean Trim</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Bud Structure Rating">
@@ -294,10 +294,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="ps-2 text-warning" for="smell_1_point">Musty or Lacking</label> 
+            <label class="ps-2 text-warning" for="smell_1_point">Bad or No Aroma</label> 
           </div>
           <div class="col text-end">
-            <label class="pe-2 text-warning" for="smell_10_point">Sweet & Skunky</label> 
+            <label class="pe-2 text-warning" for="smell_10_point">Good, Strong Aroma</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Smell Vote">
@@ -410,10 +410,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="ps-2 text-warning" for="flavor_1_point">Stale & Nasty</label> 
+            <label class="ps-2 text-warning" for="flavor_1_point">Bad or No Flavor</label> 
           </div>
           <div class="col text-end">
-            <label class="pe-2 text-warning" for="flavor_10_point">Savoury & Delectable</label> 
+            <label class="pe-2 text-warning" for="flavor_10_point">Tastey Flavor</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Flavor Vote">
@@ -468,10 +468,10 @@
       <div class="container align-items-center text-center">
         <div class="row">
           <div class="col text-start">
-            <label class="ps-2 text-warning" for="smoothness_1_point">Harsh & Causes Cough</label> 
+            <label class="ps-2 text-warning" for="smoothness_1_point">Harsh, Causes Cough</label> 
           </div>
           <div class="col text-end">
-            <label class="pe-2 text-warning" for="smoothness_10_point">Smooth & Relaxing</label> 
+            <label class="pe-2 text-warning" for="smoothness_10_point">Smooth, Relaxing</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Smoothness Vote">
@@ -525,11 +525,11 @@
       content: `
       <div class="container align-items-center text-center">
         <div class="row">
-          <div class="col text-start">
-            <label class="ps-2 text-warning" for="effects_1_point">Nil. Zilch.</label> 
+          <div class="col-6 text-start">
+            <label class="ps-2 text-warning" for="effects_1_point">Short or No Effects</label> 
           </div>
-          <div class="col text-end">
-            <label class="pe-2 text-warning" for="effects_10_point">Strong & Lasting</label> 
+          <div class="col-6 text-end">
+            <label class="pe-2 text-warning" for="effects_10_point">Strong, Lasting Effects</label> 
           </div>
         </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
@@ -570,7 +570,7 @@
     {
       title: "{{ strain }} - Effects Rating Explanation",
       content: `
-        <label class="pb-3 ps-2 fs-5 text-danger" for="mystery_effects_explanation"><u>Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</u></label>
+        <label class="pb-3 ps-2 fs-5 text-info" for="mystery_effects_explanation"><u>Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</u></label>
         <select class="form-select px-2 px-lg-4" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
           <option value="alert">Alert</option>
           <option value="sedative">Sedative</option>
@@ -760,7 +760,7 @@
             }
             else if (question.key === "mystery_effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('mystery_effects_explanation').selectedOptions).map(option => option.value);
-              if (selectedOptions > 2) {
+              if (selectedOptions.length <= 1) {
                 alert("Please tell us two ways {{ strain }} made you feel."); 
                 return;
               }

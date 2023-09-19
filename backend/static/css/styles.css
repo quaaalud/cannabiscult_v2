@@ -40,6 +40,7 @@ h4 {
   background-color: transparent;
 }
 
+
 .cult-picks h1{
   font-family: 'Balthazar', serif;
   color: "#301934";
@@ -175,3 +176,25 @@ h4 {
   width: 100%; /* Full width */
   height: 6px; /* Match track height */
 }
+
+
+
+@media (max-width: 400px) {
+  .btn-outline-primary {
+    font-size: 0.7rem;
+  }
+  .btn-check {
+    margin: 0px;
+  }
+}
+
+@media (max-width: 360px) {
+  .btn-outline-primary {
+    font-size: 0.7rem;
+    padding: 0.4rem 0.6rem;
+  }
+  .btn-check {
+    margin: 0px;
+  }
+}
+
