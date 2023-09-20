@@ -613,11 +613,7 @@
       elements.forEach(element => {
         element.classList.remove('btn-group-lg');
       });
-      const classLabels = document.querySelectorAll('.consume-label');
-      classLabels.forEach(label => {
-        label.classList.remove('fs-5');
-        label.classList.add('fs-6');
-      });
+      
       const formElements = document.querySelectorAll('.form-select-lg');
       formElements.forEach(element => {
         element.classList.remove('form-select-lg');
@@ -631,11 +627,6 @@
       elements.forEach(element => {
         element.classList.add('btn-group-lg');
       });
-      const classLabels = document.querySelectorAll('.consume-label');
-      classLabels.forEach(label => {
-        label.classList.add('fs-5');
-        label.classList.remove('fs-6');
-      });
       const formElements = document.querySelectorAll('.form-select');
       formElements.forEach(element => {
         element.classList.add('form-select-lg');
@@ -643,6 +634,19 @@
       const inputElements = document.querySelectorAll('.form-control');
       inputElements.forEach(element => {
         element.classList.add('form-control-lg');
+      });
+    }
+    if (window.matchMedia("(max-width: 510px)").matches) {
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.remove('fs-5');
+        label.classList.add('fs-6');
+      });
+    } else {
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.add('fs-5');
+        label.classList.remove('fs-6');
       });
     }
   }
@@ -785,7 +789,7 @@
             else if (question.key === "mystery_effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('mystery_effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
-                alert("Please tell us two ways {{ strain }} made you feel. On desktop you will need to hold the control key to highlight multiple selections."); 
+                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
                 return;
               }
               const combinedString = selectedOptions.join(' ');
