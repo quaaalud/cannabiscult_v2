@@ -184,7 +184,8 @@ h4 {
 }
 
 .btn-group .btn-outline-dark:last-child {
-  margin-right: 0 !important;
+  margin-right: 0px !important;
+  padding-right: 10px !important;
 }
 
 .single-width-outline {
@@ -208,9 +209,14 @@ select {
   border: 1px solid black !important;
 }
 
-
 @media (max-width: 485px) {
 
+  .btn {
+    font-size: 0.85rem;
+  }
+  .btn-check {
+    margin: 0px;
+  }
   .long-voting-label {
     font-size: 0.85rem;
   }
@@ -218,7 +224,7 @@ select {
 }
 
 @media (max-width: 420px) {
-  .btn-outline-primary {
+  .btn {
     font-size: 0.7rem;
   }
   .btn-check {
@@ -230,7 +236,7 @@ select {
 }
 
 @media (max-width: 360px) {
-  .btn-outline-primary {
+  .btn {
     font-size: 0.7rem;
     padding: 0.4rem 0.6rem;
   }

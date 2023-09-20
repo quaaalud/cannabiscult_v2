@@ -1,22 +1,22 @@
 <!-- Modal Structure Template -->
-<div class="modal fade" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+<div class="modal fade w-100" id="questionModal" tabindex="-1" aria-labelledby="questionModalLabel" aria-hidden="true" style="min-width:100%">
+  <div class="modal-dialog modal-dialog-centered w-100">
     <div class="modal-content overflow-auto">
       <form method="POST" action="/myster_flower_review/submit-mystery-review" id="submit-mystery-vote" name="submit-mystery-vote">
         <div class="container text-center pt-1 pb-1">
           <div class="row align-content-center justify-content-center pt-4">
               <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
           </div>
-          <div class="row justify-content-center">
-            <div class="col-12 text-center">
-              <div class="modal-body container text-center justify-content-center align-content-center align-items-center pb-3" id="modalBody">
-            <!-- Dynamic Content will be loaded here -->
+          <div class="container text-center align-content-center align-items-center justify-content-center w-100 px-0 pt-2 pb-0">
+            <div class="col-12 justify-content-center text-center p-0">
+              <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="modalBody">
+                <!-- Dynamic Content will be loaded here -->
               </div>
             </div>
           </div>
-          <div class="container pt-3"> 
+          <div class="container"> 
             <div class="col-12">
-              <div class="row justify-content-center pt-2 px-4">
+              <div class="row justify-content-center pt-4 px-4">
                 <div class="col-6">
                   <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" id="backBtn">Back</button>
                 </div>
@@ -87,7 +87,7 @@
       content: `
         <div class="container">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center email-input-field" id="voter_email" name="voter_email" placeholder="Your email is required to rate strains" autocomplete="email" />
+            <input class="form-control text-center email-input-field" id="voter_email" name="voter_email" placeholder="Your email is required to rate strains" />
          </div>
         </div>`,
       key: "voter_email"
@@ -98,7 +98,7 @@
         <div class="container ps-lg-3">
           <div class="row align-items-center justify-content-center g-1">
             <div class="col-auto d-flex align-items-center text-start">
-              <label class="fs-5 pe-1" for="method_of_consumption">How did you consume {{ strain }}:</label>
+              <label class="pe-3 consume-label" for="method_of_consumption">How did you consume {{ strain }}:</label>
             </div>
             <div class="col-auto d-flex align-items-center text-start"> 
               <div class="single-width-outline">
@@ -123,14 +123,6 @@
       title: "{{ strain }} - Bud Size Rating",
       content: `
         <div class="container">
-          <div class="row">
-            <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Small Buds</label> 
-            </div>
-            <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Single Bud</label> 
-            </div>
-          </div>
           <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
             <input type="radio" class="btn-check btn-outline-dark" name="mystery_size_vote" id="mystery_size_vote1" value="1" autocomplete="off">
             <label class="btn btn-outline-dark" for="mystery_size_vote1" id="sight_1_point">1</label>
@@ -162,6 +154,14 @@
             <input type="radio" class="btn-check" name="mystery_size_vote" id="mystery_size_vote10" value="10" autocomplete="off">
             <label class="btn btn-outline-dark" for="mystery_size_vote10" id="size_10_point">10</label>
           </div>
+          <div class="row pt-1">
+            <div class="col text-start">
+              <label class="ps-2  modal-info-shadow" for="size_1_point">Small Buds</label> 
+            </div>
+            <div class="col text-end">
+              <label class="pe-2  modal-info-shadow" for="size_10_point">Single Bud</label> 
+            </div>
+          </div>
         </div>
       `,
       key: "mystery_size_vote"
@@ -181,14 +181,6 @@
       title: "{{ strain }} - Bud Appearance Rating",
       content: `
         <div class="container align-items-center text-center">
-          <div class="row">
-            <div class="col text-start">
-              <label class="ps-2 modal-info-shadow long-voting-label" for="sight_1_point">Bad Color, Few Trichomes</label> 
-            </div>
-            <div class="col text-end">
-              <label class="pe-2 modal-info-shadow long-voting-label" for="sight_10_point">Rich Color & Trichomes</label> 
-            </div>
-          </div>
           <div class="btn-group" role="group" aria-label="Connoisseur Sight Vote">
             <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote1" value="1" autocomplete="off">
             <label class="btn btn-outline-dark" for="mystery_sight_vote1" id="sight_1_point">1</label>
@@ -220,6 +212,14 @@
             <input type="radio" class="btn-check" name="mystery_sight_vote" id="mystery_sight_vote10" value="10" autocomplete="off">
             <label class="btn btn-outline-dark" for="mystery_sight_vote10" id="sight_10_point">10</label>
           </div>
+          <div class="row pt-1">
+            <div class="col text-start">
+              <label class="ps-2 modal-info-shadow long-voting-label" for="sight_1_point">Bad Color, Few Trichomes</label> 
+            </div>
+            <div class="col text-end">
+              <label class="pe-2 modal-info-shadow long-voting-label" for="sight_10_point">Rich Color & Trichomes</label> 
+            </div>
+          </div>
         </div>
       `,
       key: "mystery_sight_vote"
@@ -239,14 +239,6 @@
       title: "{{ strain }} - Buds Structure Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="row">
-          <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="structure_1_point">Larfy, Stemmy, Leafy</label> 
-          </div>
-          <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="structure_10_point">Dense, Clean Trim</label> 
-          </div>
-        </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Bud Structure Rating">
           <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_structure_vote1" id="structure_1_point">1</label>
@@ -278,6 +270,14 @@
           <input type="radio" class="btn-check" name="mystery_structure_vote" id="mystery_structure_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_structure_vote10" id="structure_10_point">10</label>
         </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="structure_1_point">Larfy, Stemmy, Leafy</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="structure_10_point">Dense, Clean Trim</label> 
+          </div>
+        </div>
       </div>
       `,
       key: "mystery_structure_vote"
@@ -297,14 +297,6 @@
       title: "{{ strain }} - Aroma Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="row">
-          <div class="col text-start">
-            <label class="ps-2 modal-info-shadow" for="smell_1_point">Bad<span class="long-voting-label"> or </span>No Aroma</label> 
-          </div>
-          <div class="col text-end">
-            <label class="pe-2 modal-info-shadow" for="smell_10_point">Good, Strong Aroma</label> 
-          </div>
-        </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Smell Vote">
           <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_smell_vote1" id="smell_1_point">1</label>
@@ -336,6 +328,14 @@
           <input type="radio" class="btn-check" name="mystery_smell_vote" id="mystery_smell_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_smell_vote10" id="smell_10_point">10</label>
         </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="smell_1_point">Bad<span class="long-voting-label"> or </span>No Aroma</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="smell_10_point">Good, Strong Aroma</label> 
+          </div>
+        </div>
       </div>
       `,
       key: "mystery_smell_vote"
@@ -355,14 +355,6 @@
       title: "{{ strain }} - Stickiness & Moisture Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="row">
-          <div class="col text-start">
-            <label class="ps-2 modal-info-shadow" for="freshness_1_point">Dry & Dusty</label> 
-          </div>
-          <div class="col text-end">
-            <label class="pe-2 modal-info-shadow" for="freshness_10_point">Dank & Sticky</label> 
-          </div>
-        </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Freshness Vote">
           <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_freshness_vote1" id="freshness_1_point">1</label>
@@ -394,6 +386,14 @@
           <input type="radio" class="btn-check" name="mystery_freshness_vote" id="mystery_freshness_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_freshness_vote10" id="freshness_10_point">10</label>
         </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="freshness_1_point">Dry & Dusty</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="freshness_10_point">Dank & Sticky</label> 
+          </div>
+        </div>
       </div>
       `,
       key: "mystery_freshness_vote"
@@ -413,14 +413,6 @@
       title: "{{ strain }} - Flavor Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="row">
-          <div class="col text-start">
-            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
-          </div>
-          <div class="col text-end">
-            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tastey Flavor</label> 
-          </div>
-        </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Flavor Vote">
           <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_flavor_vote1" id="flavor_1_point">1</label>
@@ -452,6 +444,14 @@
           <input type="radio" class="btn-check" name="mystery_flavor_vote" id="mystery_flavor_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_flavor_vote10" id="flavor_10_point">10</label>
         </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tastey Flavor</label> 
+          </div>
+        </div>
       </div>
       `,
       key: "mystery_flavor_vote"
@@ -471,14 +471,6 @@
       title: "{{ strain }} -Smoothness of Smoke Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="row">
-          <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Harsh, Causes Cough</label> 
-          </div>
-          <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Smooth, Relaxing</label> 
-          </div>
-        </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Smoothness Vote">
           <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_smoothness_vote1" id="smoothness_1_point">1</label>
@@ -510,6 +502,14 @@
           <input type="radio" class="btn-check" name="mystery_smoothness_vote" id="mystery_smoothness_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_smoothness_vote10" id="smoothness_10_point">10</label>
         </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Harsh, Causes Cough</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Smooth, Relaxing</label> 
+          </div>
+        </div>
       </div>
       `,
       key: "mystery_smoothness_vote"
@@ -529,14 +529,6 @@
       title: "{{ strain }} - Effects Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="row">
-          <div class="col-6 text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label> 
-          </div>
-          <div class="col-6 text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label> 
-          </div>
-        </div>
         <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
           <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_effects_vote1" id="effects_1_point">1</label>
@@ -568,6 +560,14 @@
           <input type="radio" class="btn-check" name="mystery_effects_vote" id="mystery_effects_vote10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="mystery_effects_vote10" id="effects_10_point">10</label>
         </div>
+        <div class="row pt-1">
+          <div class="col-6 text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label> 
+          </div>
+          <div class="col-6 text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label> 
+          </div>
+        </div>
       </div>
       `,
       key: "mystery_effects_vote"
@@ -575,26 +575,34 @@
     {
       title: "{{ strain }} - Effects Rating Explanation",
       content: `
-        <label class="pb-3 ps-2 fs-5 text-start" for="mystery_effects_explanation"><u>Please <a class="text-info" href="#" data-bs-toggle="tooltip" data-bs-title="Hold the 'control' key to select multiple options on desktop" style="text-decoration: none;">pick a minimum of two (2)</a> to explain how {{ strain }} made you feel:</u></label>
-        <select class="form-select px-2 px-lg-4" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
-          <option value="sedative">Sedative</option>
-          <option value="relaxing">Relaxing</option>
-          <option value="sleepy">Sleepy</option>
-          <option value="tingly">Tingly</option>
-          <option value="calming">Calming</option>
-          <option value="hungry">Hungry</option>
-          <option value="happy">Happy</option>
-          <option value="giggly">Giggly</option>
-          <option value="energizing">Energizing</option>
-          <option value="euphoric">Euphoric</option>
-          <option value="focused">Focused</option>
-          <option value="uplifting">Uplifting</option>
-          <option value="alert">Alert</option>
-          <option value="creative">Creative</option>
-          <option value="talkative">Talkative</option>
-          <option value="aroused">Aroused</option>
-          <option value="aroused">None / Short Lived</option>
-        </select>
+        <div class="container align-content-center align-items-center justify-content-center text-center">
+          <div class="row">
+            <div class="col-7">
+              <label class="pb-3 ps-2 fs-5 text-start" for="mystery_effects_explanation">Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</label>
+            </div>
+            <div class="col-5 align-content-center align-items-center justify-content-center ">
+              <select class="form-select px-3 px-lg-4" id="mystery_effects_explanation" name="mystery_effects_explanation" aria-label="Effects Vote Explanation Field" multiple>
+                <option value="sedative">Sedative</option>
+                <option value="relaxing">Relaxing</option>
+                <option value="sleepy">Sleepy</option>
+                <option value="tingly">Tingly</option>
+                <option value="calming">Calming</option>
+                <option value="hungry">Hungry</option>
+                <option value="happy">Happy</option>
+                <option value="giggly">Giggly</option>
+                <option value="energizing">Energizing</option>
+                <option value="euphoric">Euphoric</option>
+                <option value="focused">Focused</option>
+                <option value="uplifting">Uplifting</option>
+                <option value="alert">Alert</option>
+                <option value="creative">Creative</option>
+                <option value="talkative">Talkative</option>
+                <option value="aroused">Aroused</option>
+                <option value="aroused">None / Short Lived</option>
+              </select>
+            </div>
+          </div>
+        </div>
       `,
       key: "mystery_effects_explanation"
     },
@@ -604,6 +612,11 @@
       const elements = document.querySelectorAll('.btn-group-lg');
       elements.forEach(element => {
         element.classList.remove('btn-group-lg');
+      });
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.remove('fs-5');
+        label.classList.add('fs-6');
       });
       const formElements = document.querySelectorAll('.form-select-lg');
       formElements.forEach(element => {
@@ -618,6 +631,11 @@
       elements.forEach(element => {
         element.classList.add('btn-group-lg');
       });
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.add('fs-5');
+        label.classList.remove('fs-6');
+      });
       const formElements = document.querySelectorAll('.form-select');
       formElements.forEach(element => {
         element.classList.add('form-select-lg');
@@ -629,11 +647,6 @@
     }
   }
   window.addEventListener('resize', adjustButtonSize);
-  
-  var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-  var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-    return new bootstrap.Tooltip(tooltipTriggerEl)
-  })
   
   document.addEventListener("DOMContentLoaded", function() {
     const submitButton = document.getElementById("submitNewVoterBtn");
@@ -772,7 +785,7 @@
             else if (question.key === "mystery_effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('mystery_effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
-                alert("Please tell us two ways {{ strain }} made you feel."); 
+                alert("Please tell us two ways {{ strain }} made you feel. On desktop you will need to hold the control key to highlight multiple selections."); 
                 return;
               }
               const combinedString = selectedOptions.join(' ');
