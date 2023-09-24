@@ -94,7 +94,7 @@
       <div class="card rounded-5 shadow-5">
         <div class="card-body">
           <div class="row align-content-center justify-content-center d-flex">
-            <form method="post" action="/submit-vote"> 
+            <form method="post" action="/submit-vote" id="voteSubmitForm"> 
               <div class="row mx-auto">
                 <input type="hidden" name="cultivator_selected" value="{{ cultivator }}" />
                 <input type="hidden" name="strain_selected" value="{{ strain }}" />
@@ -152,3 +152,18 @@
   </div>
   
 </section>
+
+{% block scripts %}
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.querySelector("#voteSubmitForm");
+    const path = window.location.pathname;
+  
+    if (path.includes("concentrate-get-review")) {
+      form.action = "/concentrate-submit-vote";
+    } else if (path.includes("get-review")) {
+      form.action = "/submit-vote";
+    }
+  });
+</script>
+{% endblock %}
