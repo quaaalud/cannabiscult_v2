@@ -39,16 +39,6 @@ class MysteryFlowerReview(Base):
         nullable=True,
         unique=False,
     )
-    mystery_sight_vote = Column(
-        Float,
-        nullable=True,
-        unique=False,
-    )
-    mystery_sight_explanation = Column(
-        String,
-        nullable=True,
-        unique=False,
-    )
     mystery_size_vote = Column(
         Float,
         nullable=True,
