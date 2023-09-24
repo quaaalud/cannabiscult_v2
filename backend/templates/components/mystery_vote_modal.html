@@ -605,8 +605,10 @@
       event.preventDefault();
   
       const formData = new URLSearchParams();
+        const emailInput = document.getElementById("voter_email").value
+        const lowerCasedEmail = emailInput.toLowerCase()
         formData.append('voter_name', document.getElementById("voter_name").value);
-        formData.append('voter_email', document.getElementById("voter_email").value);
+        formData.append('voter_email', lowerCasedEmail);
         formData.append('voter_phone', document.getElementById("voter_phone").value);
         formData.append('voter_zip_code', document.getElementById("voter_zip_code").value);
     
@@ -634,9 +636,10 @@
     });
       
     async function checkVoterExists(email) {
+      const lowerCaseEmail = email.toLowerCase();
       const root = window.location.origin;
       const url = new URL('/check-mystery-voter', root);
-      url.searchParams.append('voter_email', email);
+      url.searchParams.append('voter_email', lowerCaseEmail);
       
       const response = await fetch(url, {
           method: 'GET',
