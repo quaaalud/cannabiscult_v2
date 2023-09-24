@@ -16,10 +16,12 @@ def create_mystery_flower_review(
         db:Session):
     review_data_dict = mystery_flower_review.dict()
     created_mystery_review = MysteryFlowerReview(**review_data_dict)
-
-    db.add(created_mystery_review)
-
-    db.commit()
-    db.refresh(created_mystery_review)
-
-    return created_mystery_review
+    try:
+        db.add(created_mystery_review)
+    except:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(created_mystery_review)
+    finally:
+        return created_mystery_review
