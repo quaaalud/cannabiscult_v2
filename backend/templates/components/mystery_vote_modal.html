@@ -634,6 +634,7 @@
           step = 0;
           loadQuestion();
         } else {
+          alert("Please ensure all information in the form is valid and try submission again.")
           return
         }
       })
@@ -686,7 +687,6 @@
         console.log(response)
         if (response.ok) {
           const data = await response.json();
-          console.log("Submission successful:", data);
           window.location.href = "https://cannabiscult.co/voting-home";
         } else {
           console.log("Submission failed:", response.status, response.statusText);
