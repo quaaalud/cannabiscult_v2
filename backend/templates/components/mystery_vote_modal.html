@@ -42,7 +42,9 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="voterInfoCaptureModalLabel">New Connoisseur Information</h5>
+        <div class="row text-center">
+          <h5 class="modal-title" id="voterInfoCaptureModalLabel">New Connoisseur Information</h5>
+        </div>
       </div>
       <div class="modal-body">
         <form id="newVoterForm">
@@ -65,12 +67,17 @@
         </form>
       </div>
       <div class="modal-footer">
-        <div class="row g-2 p-1">
-          <div class="col-6 align-items-start">
-            <button type="button" class="btn btn-error" id="newUserBackBtn">Back</button>
+        <div class="container text-center"> 
+          <div class="row g-2 p-1">
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" name="newUserBackBtn" id="newUserBackBtn">Back</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" name="submitNewVoterBtn" id="submitNewVoterBtn">Submit</button>
+            </div>
           </div>
-          <div class="col-6 align-items-end">
-            <button type="button" class="btn btn-info" id="submitNewVoterBtn">Submit</button>
+          <div class="row py-3">
+            <h6 id="voterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
           </div>
         </div>
       </div>
