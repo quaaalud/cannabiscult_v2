@@ -797,18 +797,20 @@ async def submit_mystery_voter_create(
       db: Session = Depends(get_db),
 ) -> Optional[bool]:
     existing_voter = get_voter_info_by_email(voter_email, db)
-    if not existing_voter:
-        try:
-            voter = MysteryVoterCreate(
-                email=voter_email,
-                name=voter_name,
-                zip_code=voter_zip_code,
-                phone=voter_phone,
-            )
-            create_mystery_voter(voter=voter, db=db)
-        except:
-            return {"status": False}
-    return {"status": True}
+    
+    if existing_voter:
+        return {"status": True}
+    try:
+        voter = MysteryVoterCreate(
+            email=voter_email,
+            name=voter_name,
+            zip_code=voter_zip_code,
+            phone=voter_phone,
+        )
+        create_mystery_voter(voter=voter, db=db)
+        return {"status": True}
+    except:
+        return {"status": False}
   
 
 @general_pages_router.get("/config")

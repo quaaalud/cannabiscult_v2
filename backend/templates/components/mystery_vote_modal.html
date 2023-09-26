@@ -31,6 +31,7 @@
               <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/Small%20C%20image%20Logo.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL1NtYWxsIEMgaW1hZ2UgTG9nby5zdmciLCJpYXQiOjE2OTU1NjY4OTgsImV4cCI6MTcyNzEwMjg5OH0.KhSW1ZSuU_eRovc9ycELDUS2HVA-QekQBr_UhI04kuQ&t=2023-09-24T14%3A48%3A18.833Z" />
             </div>
           </div>
+          <div class="position-absolute bottom-0 end-0 p-3 fs-4" id="page_label" name="page_label"><span id="page_num" name="page_num">1</span> / 7</div>
         </div>
       </form>
     </div>
@@ -42,27 +43,25 @@
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
-        <div class="row text-center">
-          <h5 class="modal-title" id="voterInfoCaptureModalLabel">New Connoisseur Information</h5>
+        <div class="container text-center">
+          <div class="row text-center">
+            <h5 class="modal-title" id="voterInfoCaptureModalLabel">New Connoisseur Information</h5>
+          </div>
         </div>
       </div>
       <div class="modal-body">
-        <form id="newVoterForm">
+        <form id="newVoterForm" class="container">
           <div class="mb-3">
-            <label for="newVoterName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="voter_name" name="voter_name" autocomplete="name">
+            <input type="text" class="form-control" placeholder="Enter Your Name" id="voter_name" name="voter_name" autocomplete="name">
           </div>
           <div class="mb-3">
-            <label for="newVoterEmail" class="form-label">Email</label>
-            <input type="email" class="form-control email-input-field" id="voter_email" name="voter_email" autocomplete="email" required>
+            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_voter_email" name="voter_email" autocomplete="email" required>
           </div>
           <div class="mb-3">
-            <label for="newVoterPhone" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="voter_phone" name="voter_phone" autocomplete="phone">
+            <input type="text" class="form-control" placeholder="Enter Your Phone Number" id="voter_phone" name="voter_phone" autocomplete="phone">
           </div>
           <div class="mb-3">
-            <label for="newVoterZipCode" class="form-label">Zip Code</label>
-            <input type="text" class="form-control" id="voter_zip_code" name="voter_zip_code" autocomplete="on">
+            <input type="text" class="form-control" placeholder="Enter Your Zip Code" id="voter_zip_code" name="voter_zip_code" autocomplete="on">
           </div>
         </form>
       </div>
@@ -92,7 +91,7 @@
     {
       title: "Connoisseur Email",
       content: `
-        <div class="container">
+        <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center email-input-field" id="voter_email" name="voter_email" placeholder="Your email is required to rate strains" />
          </div>
@@ -176,8 +175,8 @@
     {
       title: "{{ strain }} - Bud Size Rating Explation",
       content: `
-        <div class="container">
-          <div class="row px-2 px-lg-4">
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center" type="text" id="mystery_size_explanation" name="mystery_size_explanation" placeholder="Explain your Bud Size rating for {{ strain }}" aria-label="Size Vote Explantion Field" />
           </div>
         </div>
@@ -234,8 +233,8 @@
     {
       title: "{{ strain }} - Bud Structure Rating Explanation",
       content: `
-        <div class="container">
-          <div class="row px-2 px-lg-4">
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center" type="text" id="mystery_structure_explanation" name="mystery_structure_explanation" placeholder="Explain your Bud Structure Rating for {{ strain }}" aria-label="Structure Vote Explantion Field" />
           </div>
         </div>
@@ -292,8 +291,8 @@
     {
       title: "{{ strain }} - Aroma Rating Explanation",
       content: `
-        <div class="container">
-          <div class="row px-2 px-lg-4">
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center" type="text" id="mystery_smell_explanation" name="mystery_smell_explanation" placeholder="Explain your Aroma Rating for {{ strain }}" aria-label="Smell Vote Explantion Field" />
           </div>
         </div>
@@ -350,8 +349,8 @@
     {
       title: "{{ strain }} - Stickiness & Moisture Rating Explanation",
       content: `
-        <div class="container">
-          <div class="row px-2 px-lg-4">
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center" type="text" id="mystery_freshness_explanation" name="mystery_freshness_explanation" placeholder="Explain your Stickiness Rating for {{ strain }}" aria-label="Freshness Vote Explantion Field" />
           </div>
         </div>
@@ -408,8 +407,8 @@
     {
       title: "{{ strain }} - Flavor Rating Explanation",
       content: `
-        <div class="container">
-          <div class="row px-2 px-lg-4">
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center" type="text" id="mystery_flavor_explanation" name="mystery_flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
           </div>
         </div>
@@ -466,8 +465,8 @@
     {
       title: "{{ strain }} - Smoothness of Smoke Explanation",
       content: `
-        <div class="container">
-          <div class="row px-2 px-lg-4">
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center" type="text" id="mystery_smoothness_explanation" name="mystery_smoothness_explanation" placeholder="Explain your 'Smooth Smoke' Rating for {{ strain }}" aria-label="Smoothness of Smoke Vote Explantion Field" />
           </div>
         </div>
@@ -612,7 +611,7 @@
       event.preventDefault();
   
       const formData = new URLSearchParams();
-        const emailInput = document.getElementById("voter_email").value
+        const emailInput = document.getElementById("new_voter_email").value
         const lowerCasedEmail = emailInput.toLowerCase()
         formData.append('voter_name', document.getElementById("voter_name").value);
         formData.append('voter_email', lowerCasedEmail);
@@ -695,6 +694,20 @@
         console.error("Error during submission:", error);
       }
     }
+    
+    function updatePageLabel() {
+      const currentQuestionIndex = step
+      const totalQuestions = questions.length;
+    
+      const currentPairIndex = Math.floor(currentQuestionIndex / 2);
+      const totalPairs = Math.floor(totalQuestions / 2);
+    
+      const pageNumElement = document.getElementById("page_num");
+      const pageLabelElement = document.getElementById("page_label");
+    
+      pageNumElement.textContent = currentPairIndex + 1;
+      pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex + 1}</span> / ${totalPairs}`;
+    }
   
     function loadQuestion() {
       const intKeys = [
@@ -762,12 +775,14 @@
           $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
             step++;
             loadQuestion();
+            updatePageLabel()
             adjustButtonSize();
           });
     
           if (!$('#voterInfoCaptureModal').hasClass('show')) {
             step++;
             loadQuestion();
+            updatePageLabel()
             adjustButtonSize();
           }
         };
@@ -785,18 +800,21 @@
         $('#voterInfoCaptureModal').on('hidden.bs.modal', function () {
           step--;
           loadQuestion();
+          updatePageLabel()
           adjustButtonSize();
         });
         
         if (!$('#voterInfoCaptureModal').hasClass('show')) {
           step--;
           loadQuestion();
+          updatePageLabel()
           adjustButtonSize();
         }
       };
     }
     adjustButtonSize();
     loadQuestion();
+    updatePageLabel()
     adjustButtonSize();
   });
 </script>
