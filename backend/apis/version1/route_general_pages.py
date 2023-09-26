@@ -843,6 +843,23 @@ async def redirect_to_auth_provider(subdomain: str, auth_url: str = None):
 async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
     return get_gsheet._get_deal_workbook_and_return_dict()
+  
+  
+@general_pages_router.get("/sitemap.xml")
+async def sitemap(
+    request: Request
+):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'sitemap.xml'
+            )
+        ),
+        {
+            "request": request,
+        },
+    )
 
 
 @general_pages_router.get("/{file_name}")
