@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="Cannabis Cult" content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices.">
+    <meta content="Missouri, Kansas, Saint Louis, Cannabis, Marijuana, Weed, Pot, Dispensary, Dispensaries Near Me, Weed Near Me, Cultivator, Leafly, Weedmaps, Weed Maps," name="keywords">
+    
+    {% block head %}
+    {%  endblock %}
+    
+    <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
+    <!-- Google Fonts Roboto -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"/>
+    <!-- MDB -->
+    <link rel="stylesheet" href="{{ url_for('static', path='css/mdb.min.css') }}" />  
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    
+    <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', path='src/aos/aos.css') }}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest/dist/umd/supabase.min.js"></script>
+    <script 
+      type="text/javascript" 
+      src="{{ url_for('static', path='src/aos/aos.js') }}"
+    ></script>
+    <script 
+      async
+      type="text/javascript" 
+      src="{{ url_for('static', path='src/auth/auth.js') }}"
+    ></script>
+    {% block title %}
+    {% endblock %}
+  </head>
+  
+  {% block header %}
+  {%  endblock %}
+  
+  <body class="stage">
+    {% block content %}
+    {% endblock %}
+    
+    {% block footer %}
+    {% endblock %}
+    <!-- MDB -->
+    <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script>
+      var offsetValue;
+      if (window.innerWidth <= 500) {
+        offsetValue = 725;
+      } else if (window.innerWidth <= 768) {
+        offsetValue = 650;
+      } else {
+        offsetValue = 225;
+      }
+  
+      AOS.init({
+        offset: offsetValue,
+        mirror: false,
+        once: true
+      });
+    </script>
+    {% block scripts %}
+    {% endblock %}
+
+  </body>
+</html>
