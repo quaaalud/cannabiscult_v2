@@ -5,7 +5,7 @@
 {% endblock %} 
 
 {% block head %}
-  <meta http-equiv="refresh" content="7; url=/voting-home">
+  <meta http-equiv="refresh" content="120; url=/voting-home">
   <meta 
     property="og:image" 
     content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/brain_vector.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL2JyYWluX3ZlY3Rvci5zdmciLCJpYXQiOjE2OTUwOTM0MzIsImV4cCI6MTcyNjYyOTQzMn0.aORzL_pXYA8OQGUdHaMGjO9qDPKZ7mSfeTnGK0ScNuU&t=2023-09-19T03%3A17%3A12.711Z"
@@ -50,8 +50,11 @@
   />
 {% endblock %}
 {% block content %}
-<body class="bg-black">
-  <main class="container" style="background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/svg/connoisseur_success_img_wider.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL3N2Zy9jb25ub2lzc2V1cl9zdWNjZXNzX2ltZ193aWRlci5zdmciLCJpYXQiOjE2OTYwMjk2MDcsImV4cCI6MTcyNzU2NTYwN30.hDa1oTOnkl8e128DTDIs54GW5ycxxzVG_WGB7FVwL0E&t=2023-09-29T23%3A20%3A07.225Z'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
+<body class="container d-flex align-items-center justify-content-center text-center" style="background-color:#000; margin: 0; padding: 0;">
+  <main class="container-fluid" style="background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/svg/success_brain.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL3N2Zy9zdWNjZXNzX2JyYWluLnN2ZyIsImlhdCI6MTY5NjE4MzE4NSwiZXhwIjoxNzI3NzE5MTg1fQ.EuRNSbCWsVIbnspWqL5XFx-mm5Tg6WMp1mfcBasG9cY&t=2023-10-01T17%3A59%3A45.664Z'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
+    <div class="row align-items-center justify-content-center" style="background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/svg/success_frame.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL3N2Zy9zdWNjZXNzX2ZyYW1lLnN2ZyIsImlhdCI6MTY5NjE4MzMyNywiZXhwIjoxNzI3NzE5MzI3fQ.xT2eHYm0r9T-WtawpkV54iPqnq0Kr5CbNjsJBtTE79U&t=2023-10-01T18%3A02%3A07.182Z'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
+      <div id="success-text" class="container" style="background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/svg/success_text.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL3N2Zy9zdWNjZXNzX3RleHQuc3ZnIiwiaWF0IjoxNjk2MTgzMzQzLCJleHAiOjE3Mjc3MTkzNDN9.GxcpNVZGcgDO8dL-b4q_h0mX2tcSaux9CPfMq4kOTvI&t=2023-10-01T18%3A02%3A23.769Z'); background-size: contain; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
+    </div>
   </main>
 </body>        
 {% endblock %}  
@@ -59,5 +62,21 @@
 {% block footer %}
 {% endblock %}
   
-{% block scripts %}  
+{% block scripts %} 
+<script>
+
+function adjustBackgroundSize() {
+  const element = document.querySelector('#success-text');
+
+  if (window.innerWidth < 450) {
+    element.style.backgroundSize = 'cover';
+  } else {
+    element.style.backgroundSize = 'contain'; 
+  }
+}
+
+adjustBackgroundSize();
+
+window.addEventListener('resize', adjustBackgroundSize);
+</script> 
 {% endblock %}
