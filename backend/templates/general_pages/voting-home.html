@@ -65,22 +65,29 @@
 
 {% block content %}
 <main class="container-fluid">
-<div class="text-center">
-  <div class="container-fluid text-center" style="padding:2em">
-    <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
-  </div>
-</div>
-
 {% if cultivator == "Connoisseur" %}
+  <div class="pt-4 pt-md-5">
   {% include "components/mystery_vote_template.html" %}
+  </div>
   {% include "components/mystery_vote_modal.html" %}
+    <div class="text-center">
+      <div class="container-fluid text-center pb-5">
+        <a href="/">
+          <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+        </a>
+      </div>
+    </div>
 {% else %}
+  <div class="text-center">
+    <div class="container-fluid text-center" style="padding:2em">
+      <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+    </div>
+  </div>
   {% include "components/vote_template.html" %}
-{% endif %}
-
   <section class="pb-4">
     {% include "components/flower_review_selector.html" %}
   </section>
+{% endif %}
 </main>
 {% endblock %}
 
