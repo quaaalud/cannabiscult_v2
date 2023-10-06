@@ -62,28 +62,24 @@
   
 {% block scripts %} 
 <script>
-  function adjustBackgroundSize() {
+  function adjustTextImgSize() {
     const textElement = document.querySelector('#success-text');
     if (window.innerWidth < 600) {
       textElement.style.minHeight = 'Clamp(300px, 55vh, 75vh';
       textElement.style.maxHeight = '100vh';
-      textElement.style.maxWidth = '85vw !important';
+      textElement.style.maxWidth = '600px !important';
       
-      
-    } else if (window.innerWidth < 395) {
-      textElement.style.minHeight = 'Clamp(90vh, 500px, 95vh';
-      textElement.style.maxHeight = '65vh';
-      textElement.style.maxWidth = '300px !important';
       
     } else {
-      textElement.style.minHeight = '80vh';
+      textElement.style.minHeight = '750px';
       textElement.style.maxHeight = '85vh';
       textElement.style.maxWidth = '65vw !important';
+      
     }
   }
   
-  adjustBackgroundSize();
+  adjustTextImgSize();
   
-  window.addEventListener('resize', adjustBackgroundSize);
+  window.addEventListener('resize', adjustTextImgSize);
 </script> 
 {% endblock %}
