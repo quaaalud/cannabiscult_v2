@@ -63,6 +63,15 @@
           <div class="mb-3">
             <input type="text" class="form-control" placeholder="Enter Your Zip Code" id="voter_zip_code" name="voter_zip_code" autocomplete="on">
           </div>
+          <div class="conainer ps-1">
+            <div class="form-check ps-4">
+              <input class="form-check-input me-2" type="checkbox" value="" id="register_check" name="register_check" checked
+                aria-describedby="registerCheckHelpText" />
+              <label class="form-check-label" for="register_check">
+                I have read and agree to the <a href="/privacy-policy" style="color:#301934" target="_blank" rel="noopener noreferrer">privacy policy</a> & <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer">user agreement</a>
+              </label>
+            </div>
+          </div>
         </form>
       </div>
       <div class="modal-footer">
@@ -75,7 +84,7 @@
               <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" name="submitNewVoterBtn" id="submitNewVoterBtn">Submit</button>
             </div>
           </div>
-          <div class="row py-3">
+          <div class="row pb-3 pt-4">
             <h6 id="voterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
           </div>
         </div>
@@ -83,6 +92,18 @@
     </div>
   </div>
 </div>
+<script>
+  const termsCheckbox = document.getElementById('register_check');
+  const submitButton = document.getElementById('submitNewVoterBtn');
+  
+  function toggleSubmitButtonState() {
+      submitButton.disabled = !termsCheckbox.checked;
+  }
+
+  termsCheckbox.addEventListener('change', toggleSubmitButtonState);
+
+  toggleSubmitButtonState();
+</script>
 
 
 {% block scripts %}  
