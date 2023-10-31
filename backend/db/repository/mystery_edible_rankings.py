@@ -11,7 +11,7 @@ from schemas.mystery_edible_rankings import CreateMysteryEdibleRanking
 from db.models.mystery_edible_rankings import MysteryEdibleRankings
 
 
-def create_mystery_flower_review(
+def create_mystery_edible_ranking(
         mystery_edible_ranking: CreateMysteryEdibleRanking,
         db:Session):
     ranking_data_dict = mystery_edible_ranking.dict()
