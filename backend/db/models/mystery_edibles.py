@@ -7,7 +7,7 @@ Created on Mon Oct 30 21:57:01 2023
 """
 
 
-from sqlalchemy import Column, Integer, String, Float, ARRAY, BigInteger
+from sqlalchemy import Column, String, BigInteger
 from db.base_class import Base
 
 

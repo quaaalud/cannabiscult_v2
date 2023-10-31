@@ -11,7 +11,6 @@ from typing import Optional
 
 
 class EdibleRankingBase(BaseModel):
-    cultivator: str 
     strain: str
     appearance_vote: float = Field(..., gt=0, lt=10)
     flavor_vote: float = Field(..., gt=0, lt=10)
