@@ -39,6 +39,8 @@ from _supabase import route_flower_reviews
 from _supabase import route_flower_voting
 from _supabase import route_mystery_flower_review
 from _supabase import route_mystery_voters
+from _supabase import route_mystery_edible_rankings
+from _supabase import route_mystery_edible_voters
 
 api_router = APIRouter()
 api_router.include_router(
@@ -80,4 +82,14 @@ api_router.include_router(
     route_mystery_voters.router,
     prefix="/mystery_voters",
     tags=["mystery_voters"]
+)
+api_router.include_router(
+    route_mystery_edible_rankings.router,
+    prefix="/mystery_edible_rankings",
+    tags=["mystery_edible_rankings"]
+)
+api_router.include_router(
+    route_mystery_edible_voters.router,
+    prefix="/mystery_edible_voters",
+    tags=["mystery_edible_voters"]
 )
