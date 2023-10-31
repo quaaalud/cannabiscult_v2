@@ -15,7 +15,6 @@ class MysteryEdibleVoterBase(BaseModel):
     name: str
     zip_code: str
     phone: Optional[str] = None
-    agree_tos: bool = True
     
 
 class MysteryEdibleVoterCreate(MysteryEdibleVoterBase):
