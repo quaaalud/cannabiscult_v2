@@ -11,7 +11,7 @@ from sqlalchemy import Column, Integer, String, Boolean, Date
 from db.base_class import Base
 
 
-class MysteryVoter(Base):
+class MysteryEdibleVoter(Base):
     mystery_edible_voter_id = Column(
         Integer,
         primary_key=True,

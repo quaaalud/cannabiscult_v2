@@ -6,10 +6,10 @@ Created on Mon Oct 30 19:48:26 2023
 @author: dale
 """
 
-from sqlalchemy import Column, Integer, Float, String
+from sqlalchemy import Column, Integer, Float, String, Date
 from db.base_class import Base
 
-class MysteryEdibleRankings(Base):
+class MysteryEdibleRanking(Base):
     mystery_edible_ranking_id = Column(
         Integer,
         primary_key=True,
@@ -62,4 +62,7 @@ class MysteryEdibleRankings(Base):
     effects_explanation = Column(
         String,
         nullable=True
+    )
+    date_posted = Column(
+        Date
     )

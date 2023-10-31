@@ -23,7 +23,7 @@ class EdibleRankingBase(BaseModel):
     effects_explanation: Optional[str] = Field(None, max_length=500)
 
 class CreateMysteryEdibleRanking(EdibleRankingBase):
-    voter_email: EmailStr = Field(..., max_length=500)
+    voter_email: EmailStr = Field(...)
     
     class Config():
         from_attributes = True
