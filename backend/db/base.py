@@ -14,3 +14,5 @@ from db.models.flower_reviews import FlowerReview
 from db.models.flower_voting import FlowerVoting
 from db.models.concentrate_reviews import ConcentrateReview
 from db.models.concentrate_voting import ConcentrateVoting
+from db.models.mystery_edible_rankings import MysteryEdibleRankings
+from db.models.mystery_edible_voters import MysteryEdibleVoter
