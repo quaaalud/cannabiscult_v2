@@ -29,10 +29,6 @@ class MysteryEdible(Base):
         String,
         nullable=False
     )
-    vote_count = Column(
-        Integer,
-        nullable=False
-    )
     card_path = Column(
         String,
         nullable=True

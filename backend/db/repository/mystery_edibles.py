@@ -17,8 +17,7 @@ def get_edible_data_and_path(
     if edible:
         return {
             'mystery_id': edible.mystery_edible_id,
-            'product_number': edible.strain,
-            'vote_count': edible.vote_count,
+            'mystery_edible': edible.strain,
             'url_path': return_image_url_from_supa_storage(
                 str(Path(edible.card_path))
             )

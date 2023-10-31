@@ -10,8 +10,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 
-class EdibleRankingBase(BaseModel):
+class MysteryEdibleBase(BaseModel):
     cultivator: str 
     strain: str
     card_path: str
-    vote_count: int
