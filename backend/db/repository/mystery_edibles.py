@@ -6,7 +6,7 @@ from db.models.mystery_edibles import MysteryEdible
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
-def get_review_data_and_path(
+def get_edible_data_and_path(
         db: Session,
         strain_select: str) -> MysteryEdible:
     edible = db.query(
