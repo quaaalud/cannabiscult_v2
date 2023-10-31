@@ -79,6 +79,7 @@ def get_user_by_email(
     ).filter(User.email == user_email).first()
     if user:
         return user
+    return None
       
       
 def get_user_and_update_password(
