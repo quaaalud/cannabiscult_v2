@@ -10,12 +10,10 @@ from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
 
-class EdibleVoteBase(BaseModel):
+class EdibleRankingBase(BaseModel):
     cultivator: str 
     strain: str
-    voter_email: EmailStr = Field(..., max_length=500)
     appearance_vote: float = Field(..., gt=0, lt=10)
-    smell_vote: float = Field(..., gt=0, lt=10)
     flavor_vote: float = Field(..., gt=0, lt=10)
     aftertaste_vote: float = Field(..., gt=0, lt=10)
     effects_vote: float = Field(..., gt=0, lt=10)
@@ -24,12 +22,8 @@ class EdibleVoteBase(BaseModel):
     aftertaste_explanation: Optional[str] = Field(None, max_length=500)
     effects_explanation: Optional[str] = Field(None, max_length=500)
 
-class EdibleVoteCreate(EdibleVoteBase):
-    pass
-
-class EdibleVote(EdibleVoteBase):
-    edible_vote_id: int
-    review_id: int
-    created_at: str
-    class Config:
+class CreateMysteryEdibleRanking(EdibleRankingBase):
+    voter_email: EmailStr = Field(..., max_length=500)
+    
+    class Config():
         from_attributes = True
