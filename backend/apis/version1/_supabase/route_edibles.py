@@ -8,10 +8,11 @@ Created on Mon Oct 30 22:14:44 2023
 
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from typing import Dict, List
+from typing import Dict, List, Any
 from db.session import get_db
-from db.repository.mystery_edibles import get_edible_data_and_path
-from db.models.mystery_edibles import MysteryEdible
+from db.repository.edibles import get_edible_data_and_path
+from db.repository.edibles import get_vivd_edible_data_by_strain
+from db.models.edibles import MysteryEdible
 
 router = APIRouter()
 
@@ -28,7 +29,7 @@ async def get_all_mystery_edibles(
 async def get_return_selected_mystery_edible(
     strain_selected: str = Query(None, alias="strain_selected"),
     db: Session = Depends(get_db)
-) -> Dict[str]:
+) -> Dict[str, Any]:
     return get_edible_data_and_path(
         db,
         strain_select=strain_selected,
@@ -38,8 +39,19 @@ async def get_return_selected_mystery_edible(
 async def post_return_selected_mystery_edible(
         strain_selected: str,
         db: Session = Depends(get_db)
-) -> Dict[str]:
+) -> Dict[str, Any]:
     return get_edible_data_and_path(
         db,
         strain_select=strain_selected,
+    )
+  
+
+@router.get("/get-vivid-edible")
+async def query_vivd_edible_data_by_strain(
+    edible_strain: str = Query(None, alias="edible_strain"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    return get_vivd_edible_data_by_strain(
+        db,
+        edible_strain=edible_strain,
     )

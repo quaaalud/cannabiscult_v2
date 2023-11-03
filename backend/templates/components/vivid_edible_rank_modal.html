@@ -1,0 +1,638 @@
+<!-- Modal Structure Template -->
+<div class="modal fade w-100" id="vividEdibleRankingsModal" tabindex="-1" aria-labelledby="vividEdibleRankingsModalLabel" aria-hidden="true" style="min-width:100%">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content overflow-auto">
+      <form method="POST" action="/submit-vivid-edible-ranking" id="vidid-edible-ranking-form" name="submit-vidid-edible-form">
+        <div class="container text-center pt-1 pb-1">
+          <div class="row align-content-center justify-content-center pt-4">
+              <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
+          </div>
+          <div class="container text-center align-content-center align-items-center justify-content-center w-100 px-0 pt-2 pb-0">
+            <div class="col-12 justify-content-center text-center p-0">
+              <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="modalBody">
+                <!-- Dynamic Content will be loaded here -->
+              </div>
+            </div>
+          </div>
+          <div class="container"> 
+            <div class="col-12">
+              <div class="row justify-content-center pt-4 px-4">
+                <div class="col-6">
+                  <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" id="backBtn">Back</button>
+                </div>
+                <div class="col-6">
+                  <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" id="nextBtn" name="nextBtn">Next</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-4 col-md-5 col-6">
+              <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/Small%20C%20image%20Logo.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL1NtYWxsIEMgaW1hZ2UgTG9nby5zdmciLCJpYXQiOjE2OTU1NjY4OTgsImV4cCI6MTcyNzEwMjg5OH0.KhSW1ZSuU_eRovc9ycELDUS2HVA-QekQBr_UhI04kuQ&t=2023-09-24T14%3A48%3A18.833Z" />
+            </div>
+          </div>
+          <div class="position-absolute bottom-0 end-0 p-3 fs-4" id="page_label" name="page_label"><span id="page_num" name="page_num">1</span> / 9</div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Voter Info Capture Modal -->
+<div class="modal fade" id="vividEdibleVoterInfoCaptureModal" tabindex="-1" aria-labelledby="vividEdibleVoterInfoCaptureModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="container text-center">
+          <div class="row text-center">
+            <h5 class="modal-title" id="vividEdibleVoterInfoCaptureModalLabel">New Connoisseur Information</h5>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form id="newVoterForm" class="container">
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Name" id="connoisseur_name" name="connoisseur_name" autocomplete="name">
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="connoisseur" autocomplete="email" required>
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Phone Number" id="connoisseur_phone" name="connoisseur_phone" autocomplete="phone">
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Zip Code" id="connoisseur_zip_code" name="connoisseur_zip_code" autocomplete="on">
+          </div>
+          <div class="conainer ps-1">
+            <div class="form-check ps-4">
+              <input class="form-check-input me-2" type="checkbox" value="" id="register_check" name="register_check" checked
+                aria-describedby="registerCheckHelpText" />
+              <label class="form-check-label" for="register_check">
+                I have read and agree to the <a href="/privacy-policy" style="color:#301934" target="_blank" rel="noopener noreferrer">privacy policy</a> & <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer">user agreement</a>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="container text-center"> 
+          <div class="row g-2 p-1">
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" name="newUserBackBtn" id="newUserBackBtn">Back</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" name="submitNewVoterBtn" id="submitNewVoterBtn">Submit</button>
+            </div>
+          </div>
+          <div class="row pb-3 pt-4">
+            <h6 id="vividEdibleVoterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const termsCheckbox = document.getElementById('register_check');
+  const submitButton = document.getElementById('submitNewVoterBtn');
+  
+  function toggleSubmitButtonState() {
+      submitButton.disabled = !termsCheckbox.checked;
+  }
+
+  termsCheckbox.addEventListener('change', toggleSubmitButtonState);
+
+  toggleSubmitButtonState();
+</script>
+
+
+{% block scripts %}  
+<script>
+  const questions = [
+    {
+      title: "Connoisseur Email",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center email-input-field" id="connoisseur" name="connoisseur" placeholder="Your email is required to rate strains" />
+         </div>
+        </div>`,
+      key: "connoisseur"
+    },
+    {
+      title: "{{ strain }} - Appearance Rating",
+      content: `
+        <div class="container">
+          <div class="btn-group" role="group" aria-label="Vivid {{ strain }} Appearance Rating">
+            <input type="radio" class="btn-check btn-outline-dark" name="appearance_rating" id="appearance_rating1" value="1" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating1" id="sight_1_point">1</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating2" value="2" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating2">2</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating3" value="3" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating3">3</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating4" value="4" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating4">4</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating5" value="5" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating5">5</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating6" value="6" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating6">6</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating7" value="7" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating7">7</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating8" value="8" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating8">8</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating9" value="9" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating9">9</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating10" value="10" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating10" id="size_10_point">10</label>
+          </div>
+          <div class="row pt-1">
+            <div class="col text-start">
+              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label> 
+            </div>
+            <div class="col text-end">
+              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label> 
+            </div>
+          </div>
+        </div>
+      `,
+      key: "appearance_rating"
+    },
+    {
+      title: "{{ strain }} - Appearance Rating Explation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="appearance_rating" name="appearance_rating" placeholder="Explain your appearance rating for {{ strain }}" aria-label="Appearance Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "appearance_rating"
+    },
+    {
+      title: "{{ strain }} - Flavor Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vivid {{ strain }} Flavor Rating">
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating10" id="flavor_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "flavor_rating"
+    },
+    {
+      title: "{{ strain }} - Flavor Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="flavor_rating_explanation" name="flavor_rating_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "flavor_rating_explanation"
+    },
+    {
+      title: "{{ strain }} - Aftertaste Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vivid {{ strain }} Aftertaste Rating">
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating1" id="smoothness_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="aftertaste_rating10" id="smoothness_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Nasty, Gross</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable, Addicting</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "aftertaste_rating"
+    },
+    {
+      title: "{{ strain }} - Aftertaste Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="aftertaste_rating_explanation" name="aftertaste_rating_explanation" placeholder="Explain your aftertaste rating for {{ strain }}" aria-label="Aftertaste Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "aftertaste_rating_explanation"
+    },
+    {
+      title: "{{ strain }} - Effects Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings1" id="effects_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings2">2</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings3">3</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings4">4</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings5">5</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings6">6</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings7">7</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings8">8</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings9">9</label>
+        
+          <input type="radio" class="btn-check" name="effects_ratings" id="effects_ratings10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_ratings10" id="effects_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col-6 text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label> 
+          </div>
+          <div class="col-6 text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "effects_ratings"
+    },
+    {
+      title: "{{ strain }} - Effects Rating Explanation",
+      content: `
+        <div class="container align-content-center align-items-center justify-content-center text-center">
+          <div class="row align-items-center">
+            <div class="col-7">
+              <label class="pb-3 ps-2 fs-5 text-start" for="effects_rating_explanation">Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</label>
+            </div>
+            <div class="col-5 align-content-center align-items-center justify-content-center ">
+              <select class="form-select px-3 px-lg-4" id="effects_rating_explanation" name="effects_rating_explanation" aria-label="Effects Rating Explanation Field" multiple>
+                <option value="sedative">Sedative</option>
+                <option value="relaxing">Relaxing</option>
+                <option value="sleepy">Sleepy</option>
+                <option value="tingly">Tingly</option>
+                <option value="calming">Calming</option>
+                <option value="hungry">Hungry</option>
+                <option value="happy">Happy</option>
+                <option value="giggly">Giggly</option>
+                <option value="energizing">Energizing</option>
+                <option value="euphoric">Euphoric</option>
+                <option value="focused">Focused</option>
+                <option value="uplifting">Uplifting</option>
+                <option value="alert">Alert</option>
+                <option value="creative">Creative</option>
+                <option value="talkative">Talkative</option>
+                <option value="aroused">Aroused</option>
+                <option value="aroused">None / Short Lived</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `,
+      key: "effects_rating_explanation"
+    },
+  ];
+  function adjustButtonSize() {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      const elements = document.querySelectorAll('.btn-group-lg');
+      elements.forEach(element => {
+        element.classList.remove('btn-group-lg');
+      });
+      
+      const formElements = document.querySelectorAll('.form-select-lg');
+      formElements.forEach(element => {
+        element.classList.remove('form-select-lg');
+      });
+      const inputElements = document.querySelectorAll('.form-control-lg');
+      inputElements.forEach(element => {
+        element.classList.remove('form-control-lg');
+      });
+    } else {
+      const elements = document.querySelectorAll('.btn-group');
+      elements.forEach(element => {
+        element.classList.add('btn-group-lg');
+      });
+      const formElements = document.querySelectorAll('.form-select');
+      formElements.forEach(element => {
+        element.classList.add('form-select-lg');
+      });
+      const inputElements = document.querySelectorAll('.form-control');
+      inputElements.forEach(element => {
+        element.classList.add('form-control-lg');
+      });
+    }
+    if (window.matchMedia("(max-width: 510px)").matches) {
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.remove('fs-5');
+        label.classList.add('fs-6');
+      });
+    } else {
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.add('fs-5');
+        label.classList.remove('fs-6');
+      });
+    }
+  }
+  window.addEventListener('resize', adjustButtonSize);
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    const submitButton = document.getElementById("submitNewVoterBtn");
+    const form = document.getElementById("newVoterForm");
+        document.getElementById("newUserBackBtn").onclick = function() {
+      $('#vividEdibleVoterInfoCaptureModal').modal('hide');
+    };
+  
+    submitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+  
+      const formData = new URLSearchParams();
+        const emailInput = document.getElementById("new_connoisseur").value
+        const lowerCasedEmail = emailInput.toLowerCase()
+        formData.append('voter_name', document.getElementById("connoisseur_name").value);
+        formData.append('voter_email', lowerCasedEmail);
+        formData.append('voter_phone', document.getElementById("connoisseur_phone").value);
+        formData.append('voter_zip_code', document.getElementById("connoisseur_zip_code").value);
+    
+        fetch("/submit-new-voter", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString()
+        })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.status)
+        if (data.status === true) {
+          $('#vividEdibleVoterInfoCaptureModal').modal('hide');
+          step = 0;
+          loadQuestion();
+        } else {
+          alert("Please ensure you have provided a valid email and try again.")
+          return
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    });
+      
+    async function checkVoterExists(email) {
+      const lowerCaseEmail = email.toLowerCase();
+      const root = window.location.origin;
+      const url = new URL('/check--voter', root);
+      url.searchParams.append('connoisseur', lowerCaseEmail);
+      
+      const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+  
+      if (response.ok) {
+          const data = await response.json();
+          return data.exists;
+      } else {
+          console.log("Request failed:", response.status, response.statusText);
+          return false;
+      }
+    }
+      
+    let step = 0;
+    const formState = {
+      "vivid_edible_id": "{{ vivid_edible_id }}",
+      "strain": "{{ strain }}",
+    };
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    
+    async function submitForm(formState) {
+      try {
+        const response = await fetch('/_flower_review/submit--review', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formState)
+        });
+        console.log(response)
+        if (response.ok) {
+          const data = await response.json();
+          window.location.href = "https://cannabiscult.co/";
+        } else {
+          console.log("Submission failed:", response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error("Error during submission:", error);
+      }
+    }
+    
+    function updatePageLabel() {
+      const currentQuestionIndex = step
+      const totalQuestions = questions.length;
+    
+      const currentPairIndex = Math.floor(currentQuestionIndex / 2);
+      const totalPairs = Math.floor(totalQuestions / 2);
+    
+      const pageNumElement = document.getElementById("page_num");
+      const pageLabelElement = document.getElementById("page_label");
+    
+      pageNumElement.textContent = currentPairIndex + 1;
+      pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex + 1}</span> / ${totalPairs}`;
+    }
+  
+    function loadQuestion() {
+      const intKeys = [
+        "appearance_rating",
+        "flavor_rating",
+        "effects_rating",
+        "aftertaste_rating",
+      ];
+      
+      if (step < 0) {
+        step = 0;
+      }
+      if (step < questions.length) {
+        const question = questions[step];
+        modalTitle.innerHTML = question.title;
+        modalBody.innerHTML = question.content;
+        
+    
+        const input = document.getElementById(question.key);
+        
+        document.addEventListener('keydown', function enterKeyHandler(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            nextBtn.click();
+          }
+        });
+    
+        nextBtn.onclick = async function () {
+          if (input) {
+            var inputVal = input.value;
+              
+            if (question.key === "connoisseur") {
+              const voterExists = await checkVoterExists(input.value);
+              if (!voterExists) {
+                $('#vividEdibleVoterInfoCaptureModal').modal('show');
+                return;
+              }
+              formState[question.key] = input.value;
+            }
+            else if (question.key === "effects_rating_explanation") {
+              const selectedOptions = Array.from(document.getElementById('effects_rating_explanation').selectedOptions).map(option => option.value);
+              if (selectedOptions.length <= 1) {
+                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
+                return;
+              }
+              const combinedString = selectedOptions.join(' ');
+              formState['_effects_explanation'] = combinedString;
+            } 
+            else {
+              formState[question.key] = input.value;
+            }
+          } else {
+            const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
+            const radioVal = radioCheck ? radioCheck.value : "0";
+            if (radioVal === "0") {
+              alert("Connoisseur Ratings Must Have a Value!"); 
+              return;
+            }
+            formState[question.key] = radioVal;
+          }
+           
+          $('#vividEdibleVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+            step++;
+            loadQuestion();
+            updatePageLabel()
+            adjustButtonSize();
+          });
+    
+          if (!$('#vividEdibleVoterInfoCaptureModal').hasClass('show')) {
+            step++;
+            loadQuestion();
+            updatePageLabel()
+            adjustButtonSize();
+          }
+        };
+      } else {
+        nextBtn.textContent = 'Submit';
+        nextBtn.onclick = function () {
+          submitForm(formState);
+        };
+        modalTitle.textContent = 'All questions completed.';
+        modalBody.textContent = 'Your ratings for {{ strain }} are completed.';
+      }
+      backBtn.onclick = function () {
+        $('#vividEdibleVoterInfoCaptureModal').modal('hide');
+        
+        $('#vividEdibleVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+          step--;
+          loadQuestion();
+          updatePageLabel()
+          adjustButtonSize();
+        });
+        
+        if (!$('#vividEdibleVoterInfoCaptureModal').hasClass('show')) {
+          step--;
+          loadQuestion();
+          updatePageLabel()
+          adjustButtonSize();
+        }
+      };
+    }
+    adjustButtonSize();
+    loadQuestion();
+    updatePageLabel()
+    adjustButtonSize();
+  });
+</script>
+{% endblock %}

@@ -2,7 +2,7 @@
 
 from pathlib import Path
 from sqlalchemy.orm import Session
-from db.models.mystery_edibles import MysteryEdible
+from db.models.edibles import MysteryEdible, VividEdible
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
@@ -18,6 +18,25 @@ def get_edible_data_and_path(
         return {
             'mystery_id': edible.mystery_edible_id,
             'mystery_edible': edible.strain,
+            'url_path': return_image_url_from_supa_storage(
+                str(Path(edible.card_path))
+            )
+        }
+    return None
+  
+  
+def get_vivd_edible_data_by_strain(
+        db: Session,
+        edible_strain: int) -> MysteryEdible:
+    edible = db.query(
+        VividEdible
+    ).filter(
+        (VividEdible.strain == edible_strain)
+    ).first()
+    if edible:
+        return {
+            'id': edible.vivid_edible_id,
+            'edible': edible.strain,
             'url_path': return_image_url_from_supa_storage(
                 str(Path(edible.card_path))
             )

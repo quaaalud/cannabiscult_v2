@@ -66,3 +66,62 @@ class MysteryEdibleRanking(Base):
     date_posted = Column(
         Date
     )
+    
+    
+class Vivid_Edible_Ranking(Base):
+    vivid_edible_ranking_id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        autoincrement="auto",
+    )
+    cultivator = Column(
+        String,
+        nullable=False,
+        index=True
+    )
+    strain = Column(
+        String,
+        nullable=False,
+        index=True
+    )
+    voter_email = Column(
+        String,
+        nullable=False,
+        index=True
+    )
+    appearance_vote = Column(
+        Float,
+        nullable=False
+    )
+    appearance_explanation = Column(
+        String,
+        nullable=True
+    )
+    flavor_vote = Column(
+        Float,
+        nullable=False
+    )
+    flavor_explanation = Column(
+        String,
+        nullable=True
+    )
+    aftertaste_vote = Column(
+        Float,
+        nullable=False
+    )
+    aftertaste_explanation = Column(
+        String,
+        nullable=True
+    )
+    effects_vote = Column(
+        Float,
+        nullable=False
+    )
+    effects_explanation = Column(
+        String,
+        nullable=True
+    )
+    date_posted = Column(
+        Date
+    )

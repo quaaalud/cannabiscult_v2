@@ -6,7 +6,8 @@ Created on Mon Sep 11 21:48:19 2023
 @author: dale
 """
 
-from sqlalchemy import Column, Integer, String, Boolean, Date
+from sqlalchemy import Column, Integer, String, Boolean, Date, ForeignKey
+from sqlalchemy.orm import relationship
 
 from db.base_class import Base
 
@@ -46,3 +47,33 @@ class MysteryVoter(Base):
     date_posted = Column(
         Date
     )
+
+    
+class Vivid_Edible_Voter(Base):
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        autoincrement="auto"
+    )
+    mystery_voter_id = Column(
+        Integer,
+        ForeignKey('mysteryvoter.id'),
+        nullable=False
+    )
+
+    mystery_voter = relationship(
+        "MysteryVoter",
+        back_populates="vivid_edible_voters"
+    )
+    
+MysteryVoter.vivid_edible_voters = relationship(
+    "Vivid_Edible_Voter",
+    order_by=Vivid_Edible_Voter.id,
+    back_populates="mystery_voter"
+)
+
+Vivid_Edible_Voter.mystery_voter = relationship(
+    "MysteryVoter",
+    back_populates="vivid_edible_voters"
+)

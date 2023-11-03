@@ -21,7 +21,16 @@ class EdibleRankingBase(BaseModel):
     aftertaste_explanation: Optional[str] = Field(None, max_length=500)
     effects_explanation: Optional[str] = Field(None, max_length=500)
 
+
 class CreateMysteryEdibleRanking(EdibleRankingBase):
+    voter_email: EmailStr = Field(...)
+    
+    class Config():
+        from_attributes = True
+        
+
+class CreateVividEdibleRanking(EdibleRankingBase):
+    vivid_edible_id: int
     voter_email: EmailStr = Field(...)
     
     class Config():

@@ -1,0 +1,86 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Vivid {{ strain }} - Cannabis Cult</title>
+{% endblock %} 
+
+{% block head %}
+<meta 
+  content="Cannabis Cult {{ strain }} Cultivar Rating Page." 
+  name="description"
+/>
+<meta 
+  name="keywords"
+  content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Vivid, Vivid Edible"
+/>
+<meta 
+  property="og:image" 
+  content="{{ url_path }}"
+  alt="Cannabis Cult {{ strain }} Cultivar Rating Card"
+/>
+<meta 
+  property="og:description" 
+  content="Cannabis Cult {{ strain }} Cultivar Rating Page." 
+/>
+<meta 
+  property="og:title" 
+  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Ratings"
+/>
+<meta 
+  name="twitter:card" 
+  content="summary_large_image"
+/>
+<meta 
+  property="twitter:url" 
+  content="https://cannabiscult.co"
+/>
+<meta 
+  property="twitter:site" 
+  content="@cannabiscult"
+/>
+<meta 
+  property="twitter:title" 
+  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Reviews" 
+/>
+<meta 
+  property="twitter:description" 
+  content="Vivid's {{ strain }} Cultivar Review Page on CannabisCult.co" 
+/>
+<meta 
+  property="twitter:image" 
+  content="{{ url_path }}"
+/>
+<meta 
+  property="twitter:image:alt"
+  content="Cannabis Cult Cultivar Review Card for Vivid's {{ strain }}"
+/>
+<link 
+  rel="canonical" 
+  href="https://cannabiscult.co/vivid-edible-rankings{% if strain %}/get-vivid-edible?{{ strain }}{% endif %}"
+/>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<main class="container-fluid">
+  <div class="pt-4 pt-md-5">
+  {% include "components/vivid_edible_rank_card.html" %}
+  </div>
+  {% include "components/vivid_edible_rank_modal.html" %}
+  <div class="text-center">
+    <div class="container-fluid text-center pb-5">
+      <a href="/">
+        <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
+      </a>
+    </div>
+  </div>
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

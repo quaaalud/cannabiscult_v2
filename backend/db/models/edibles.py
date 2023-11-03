@@ -33,3 +33,23 @@ class MysteryEdible(Base):
         String,
         nullable=True
     )
+
+
+class VividEdible(Base):
+    __table_args__ = {'schema': 'public'}
+
+    vivid_edible_id = Column(
+        BigInteger,
+        primary_key=True,
+        index=True,
+        autoincrement="auto",
+        nullable=False
+    )
+    strain = Column(
+        String,
+        nullable=False
+    )
+    card_path = Column(
+        String,
+        nullable=True
+    )
