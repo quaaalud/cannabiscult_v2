@@ -120,10 +120,10 @@
       key: "connoisseur"
     },
     {
-      title: "{{ strain }} - Appearance Rating",
+      title: "{{ edible }} - Appearance Rating",
       content: `
         <div class="container">
-          <div class="btn-group" role="group" aria-label="Vivid {{ strain }} Appearance Rating">
+          <div class="btn-group" role="group" aria-label="Vivid {{ edible }} Appearance Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="appearance_rating" id="appearance_rating1" value="1" autocomplete="off">
             <label class="btn btn-outline-dark" for="appearance_rating1" id="sight_1_point">1</label>
           
@@ -167,21 +167,21 @@
       key: "appearance_rating"
     },
     {
-      title: "{{ strain }} - Appearance Rating Explation",
+      title: "{{ edible }} - Appearance Rating Explation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="appearance_rating" name="appearance_rating" placeholder="Explain your appearance rating for {{ strain }}" aria-label="Appearance Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="appearance_rating" name="appearance_rating" placeholder="Explain your appearance rating for {{ edible }}" aria-label="Appearance Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "appearance_rating"
     },
     {
-      title: "{{ strain }} - Flavor Rating",
+      title: "{{ edible }} - Flavor Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vivid {{ strain }} Flavor Rating">
+        <div class="btn-group" role="group" aria-label="Vivid {{ edible }} Flavor Rating">
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
         
@@ -225,21 +225,21 @@
       key: "flavor_rating"
     },
     {
-      title: "{{ strain }} - Flavor Rating Explanation",
+      title: "{{ edible }} - Flavor Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="flavor_rating_explanation" name="flavor_rating_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="flavor_rating_explanation" name="flavor_rating_explanation" placeholder="Explain your Flavor Rating for {{ edible }}" aria-label="Flavor Vote Explantion Field" />
           </div>
         </div>
       `,
       key: "flavor_rating_explanation"
     },
     {
-      title: "{{ strain }} - Aftertaste Rating",
+      title: "{{ edible }} - Aftertaste Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vivid {{ strain }} Aftertaste Rating">
+        <div class="btn-group" role="group" aria-label="Vivid {{ edible }} Aftertaste Rating">
           <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="aftertaste_rating1" id="smoothness_1_point">1</label>
         
@@ -283,18 +283,18 @@
       key: "aftertaste_rating"
     },
     {
-      title: "{{ strain }} - Aftertaste Rating Explanation",
+      title: "{{ edible }} - Aftertaste Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="aftertaste_rating_explanation" name="aftertaste_rating_explanation" placeholder="Explain your aftertaste rating for {{ strain }}" aria-label="Aftertaste Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="aftertaste_rating_explanation" name="aftertaste_rating_explanation" placeholder="Explain your aftertaste rating for {{ edible }}" aria-label="Aftertaste Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "aftertaste_rating_explanation"
     },
     {
-      title: "{{ strain }} - Effects Rating",
+      title: "{{ edible }} - Effects Rating",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
@@ -341,12 +341,12 @@
       key: "effects_ratings"
     },
     {
-      title: "{{ strain }} - Effects Rating Explanation",
+      title: "{{ edible }} - Effects Rating Explanation",
       content: `
         <div class="container align-content-center align-items-center justify-content-center text-center">
           <div class="row align-items-center">
             <div class="col-7">
-              <label class="pb-3 ps-2 fs-5 text-start" for="effects_rating_explanation">Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</label>
+              <label class="pb-3 ps-2 fs-5 text-start" for="effects_rating_explanation">Please pick a minimum of two (2) to explain how {{ edible }} made you feel:</label>
             </div>
             <div class="col-5 align-content-center align-items-center justify-content-center ">
               <select class="form-select px-3 px-lg-4" id="effects_rating_explanation" name="effects_rating_explanation" aria-label="Effects Rating Explanation Field" multiple>
@@ -487,7 +487,7 @@
     let step = 0;
     const formState = {
       "vivid_edible_id": "{{ vivid_edible_id }}",
-      "strain": "{{ strain }}",
+      "strain": "{{ edible }}",
     };
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
@@ -570,7 +570,7 @@
             else if (question.key === "effects_rating_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_rating_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
-                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
+                alert("Please tell us two ways {{ edible }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
                 return;
               }
               const combinedString = selectedOptions.join(' ');
@@ -609,7 +609,7 @@
           submitForm(formState);
         };
         modalTitle.textContent = 'All questions completed.';
-        modalBody.textContent = 'Your ratings for {{ strain }} are completed.';
+        modalBody.textContent = 'Your ratings for {{ edible }} are completed.';
       }
       backBtn.onclick = function () {
         $('#vividEdibleVoterInfoCaptureModal').modal('hide');
