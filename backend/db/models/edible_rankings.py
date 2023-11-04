@@ -78,7 +78,6 @@ class Vivid_Edible_Ranking(Base):
     cultivator = Column(
         String,
         nullable=False,
-        index=True
     )
     strain = Column(
         String,

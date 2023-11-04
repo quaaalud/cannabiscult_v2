@@ -7,7 +7,7 @@
             <div class="row justify-content-center text-center">
               <div class="col-12 text-center mx-auto pt-3">
                 <h1 class="card-title">
-                  <strong>{{ strain }}</strong>
+                  <strong>{{ edible }}</strong>
                 </h1>
                 <h3 class="card-subtitle mb-2">
                   <u>Vivid</u>
@@ -18,9 +18,9 @@
                   <div class="mx-auto">
                     <a href="#" data-bs-toggle="modal" data-bs-target="#questionModal">
                       <img 
-                        src="data:image/png;base64, {{ card_path }}"
+                        src="{{ url_path }}"
                         class="img-fluid rounded-5" 
-                        alt="Vivid's {{ strain }} Cultivar Review Card"
+                        alt="Vivid's {{ edible }} Cultivar Review Card"
                       />
                     </a>
                   </div>
@@ -29,7 +29,7 @@
               <div class="container card-body pt-2">
                 <div class="row mx-auto justify-content-center">
                   <div class="col-xs-10 col-9 mx-auto">
-                    <button type="button" class="btn btn-lg btn-info w-100 fs-4" data-bs-toggle="modal" data-bs-target="#questionModal" style="border: 3px solid black;">
+                    <button type="button" class="btn btn-lg btn-info w-100 fs-4" data-bs-toggle="modal" data-bs-target="#vividEdibleRankingsModal" style="border: 3px solid black;">
                       <i class="fas fa-arrow-right pe-2"></i> Press to Vote
                     </button>
                   </div>

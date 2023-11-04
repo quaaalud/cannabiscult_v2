@@ -465,8 +465,8 @@
     async function checkVoterExists(email) {
       const lowerCaseEmail = email.toLowerCase();
       const root = window.location.origin;
-      const url = new URL('/check--voter', root);
-      url.searchParams.append('connoisseur', lowerCaseEmail);
+      const url = new URL('/check-mystery-voter', root);
+      url.searchParams.append('voter_email', lowerCaseEmail);
       
       const response = await fetch(url, {
           method: 'GET',

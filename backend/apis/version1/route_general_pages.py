@@ -17,6 +17,7 @@ from gotrue.errors import AuthApiError
 from typing import List, Optional, Dict
 from db.session import get_db
 from core.config import settings, Config
+from db.repository.edibles import get_vivd_edible_data_by_strain
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
     create_user,
@@ -464,6 +465,30 @@ async def handle_flower_review_post(
         cultivator_selected,
         db
     )
+
+
+@general_pages_router.get("/get-vivid-edible")
+async def handle_vivid_edible_post(
+    request: Request,
+    edible_strain: str = Query(None, alias="edible_strain"),
+    db: Session = Depends(get_db)
+):
+    edible_dict = get_vivd_edible_data_by_strain(
+       db,
+       edible_strain=edible_strain,
+    )
+    response_dict = {"request": request, **edible_dict}
+    print(response_dict)
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'vivid-edible-ratings.html'
+            )
+        ),
+        response_dict
+    )
+
 
 
 @general_pages_router.post("/submit-vote", response_model=List[str])
