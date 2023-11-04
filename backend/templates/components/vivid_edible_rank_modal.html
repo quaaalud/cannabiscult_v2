@@ -521,13 +521,13 @@
       const totalQuestions = questions.length;
     
       const currentPairIndex = Math.floor(currentQuestionIndex / 2);
-      const totalPairs = Math.floor(totalQuestions / 2);
+      const totalPairs = Math.floor((totalQuestions+1) / 2);
     
       const pageNumElement = document.getElementById("page_num");
       const pageLabelElement = document.getElementById("page_label");
     
       pageNumElement.textContent = currentPairIndex + 1;
-      pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex + 1}</span> / ${totalPairs}`;
+      pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex}</span> / ${totalPairs}`;
     }
   
     function loadQuestion() {

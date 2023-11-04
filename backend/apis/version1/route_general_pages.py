@@ -478,7 +478,6 @@ async def handle_vivid_edible_post(
        edible_strain=edible_strain,
     )
     response_dict = {"request": request, **edible_dict}
-    print(response_dict)
     return templates.TemplateResponse(
         str(
             Path(
