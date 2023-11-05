@@ -30,8 +30,9 @@ class CreateMysteryEdibleRanking(EdibleRankingBase):
         
 
 class CreateVividEdibleRanking(EdibleRankingBase):
-    vivid_edible_id: int
+    vivid_edible_id: int = Field(...)
     voter_email: EmailStr = Field(...)
+    cultivator: Optional[str] = Field(None, max_length=199)
     
     class Config():
         from_attributes = True
