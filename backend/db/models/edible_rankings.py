@@ -63,9 +63,6 @@ class MysteryEdibleRanking(Base):
         String,
         nullable=True
     )
-    date_posted = Column(
-        Date
-    )
     
     
 class Vivid_Edible_Ranking(Base):
@@ -121,11 +118,67 @@ class Vivid_Edible_Ranking(Base):
         String,
         nullable=True
     )
-    date_posted = Column(
-        Date
+    vivid_edible_id = Column(
+        Integer,
+        nullable=False,
     )
     
-    vivid_edible_id = Column(
+    
+class Vibe_Edible_Ranking(Base):
+    vibe_edible_ranking_id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        autoincrement="auto",
+    )
+    cultivator = Column(
+        String,
+        nullable=False,
+    )
+    strain = Column(
+        String,
+        nullable=False,
+        index=True
+    )
+    connoisseur = Column(
+        String,
+        nullable=False,
+        index=True
+    )
+    appearance_rating = Column(
+        Float,
+        nullable=False
+    )
+    appearance_explanation = Column(
+        String,
+        nullable=True
+    )
+    flavor_rating = Column(
+        Float,
+        nullable=False
+    )
+    flavor_explanation = Column(
+        String,
+        nullable=True
+    )
+    aftertaste_rating = Column(
+        Float,
+        nullable=False
+    )
+    aftertaste_explanation = Column(
+        String,
+        nullable=True
+    )
+    effects_rating = Column(
+        Float,
+        nullable=False
+    )
+    effects_explanation = Column(
+        String,
+        nullable=True
+    )
+    
+    vibe_edible_id = Column(
         Integer,
         nullable=False,
     )

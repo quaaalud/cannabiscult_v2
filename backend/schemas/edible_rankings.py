@@ -36,3 +36,12 @@ class CreateVividEdibleRanking(EdibleRankingBase):
     
     class Config():
         from_attributes = True
+
+
+class CreateVibeEdibleRanking(EdibleRankingBase):
+    vibe_edible_id: int = Field(...)
+    connoisseur: EmailStr = Field(...)
+    cultivator: Optional[str] = Field(None, max_length=199)
+    
+    class Config():
+        from_attributes = True

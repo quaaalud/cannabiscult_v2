@@ -1,7 +1,7 @@
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Vivid {{ edible }} - Cannabis Cult</title>
+  <title>vibe {{ edible }} - Cannabis Cult</title>
 {% endblock %} 
 
 {% block head %}
@@ -24,7 +24,7 @@
 />
 <meta 
   property="og:title" 
-  content="Cannabis Cult Cultivar {% if strain %}{{ edible }} {% endif %}Ratings"
+  content="Cannabis Cult Cultivar {% if edible %}{{ edible }} {% endif %}Ratings"
 />
 <meta 
   name="twitter:card" 
@@ -44,7 +44,7 @@
 />
 <meta 
   property="twitter:description" 
-  content="Vivid's {{ edible }} Cultivar Review Page on CannabisCult.co" 
+  content="vibe's {{ edible }} Cultivar Review Page on CannabisCult.co" 
 />
 <meta 
   property="twitter:image" 
@@ -52,11 +52,11 @@
 />
 <meta 
   property="twitter:image:alt"
-  content="Cannabis Cult Cultivar Review Card for Vivid's {{ edible }}"
+  content="Cannabis Cult Cultivar Review Card for vibe's {{ edible }}"
 />
 <link 
   rel="canonical" 
-  href="https://cannabiscult.co/vivid-edible-rankings{% if edible %}/get-vivid-edible?{{ edible }}{% endif %}"
+  href="https://cannabiscult.co/vibe-edible-rankings{% if strain %}/get-vibe-edible?{{ edible }}{% endif %}"
 />
 {% endblock %}
 
@@ -66,9 +66,9 @@
 {% block content %}
 <main class="container-fluid">
   <div class="pt-4 pt-md-5">
-  {% include "components/vivid-edible_rank_card.html" %}
+  {% include "components/vibe_edible_rank_card.html" %}
   </div>
-  {% include "components/vivid_edible_rank_modal.html" %}
+  {% include "components/vibe_edible_rank_modal.html" %}
   <div class="text-center">
     <div class="container-fluid text-center pb-5">
       <a href="/">

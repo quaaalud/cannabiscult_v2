@@ -12,6 +12,7 @@ from typing import Dict, List, Any
 from db.session import get_db
 from db.repository.edibles import get_edible_data_and_path
 from db.repository.edibles import get_vivd_edible_data_by_strain
+from db.repository.edibles import get_vibe_edible_data_by_strain
 from db.models.edibles import MysteryEdible
 
 router = APIRouter()
@@ -52,6 +53,17 @@ async def query_vivd_edible_data_by_strain(
     db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     return get_vivd_edible_data_by_strain(
+        db,
+        edible_strain=edible_strain,
+    )
+  
+  
+@router.get("/get-vibe-edible")
+async def query_vibe_edible_data_by_strain(
+    edible_strain: str = Query(None, alias="edible_strain"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    return get_vibe_edible_data_by_strain(
         db,
         edible_strain=edible_strain,
     )

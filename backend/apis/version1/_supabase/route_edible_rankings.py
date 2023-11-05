@@ -15,6 +15,9 @@ from db.models.edible_rankings import MysteryEdibleRanking
 from schemas.edible_rankings import CreateVividEdibleRanking
 from db.repository.edible_rankings import create_vivid_edible_ranking
 from db.models.edible_rankings import Vivid_Edible_Ranking
+from schemas.edible_rankings import CreateVibeEdibleRanking
+from db.repository.edible_rankings import create_vibe_edible_ranking
+from db.models.edible_rankings import Vibe_Edible_Ranking
 
 
 router = APIRouter()
@@ -38,6 +41,18 @@ def submit_vivid_edible_ranking(
     db: Session = Depends(get_db)
 ) -> Vivid_Edible_Ranking:
     submitted_ranking = create_vivid_edible_ranking(
+        edible_ranking=edible_ranking,
+        db=db
+    )
+    return submitted_ranking
+  
+  
+@router.post("/submit-vibe-edible-ranking", response_model=None)
+def submit_vibe_edible_ranking(
+    edible_ranking: CreateVibeEdibleRanking,
+    db: Session = Depends(get_db)
+) -> Vibe_Edible_Ranking:
+    submitted_ranking = create_vibe_edible_ranking(
         edible_ranking=edible_ranking,
         db=db
     )
