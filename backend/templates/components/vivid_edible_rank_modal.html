@@ -517,7 +517,7 @@
     }
     
     function updatePageLabel() {
-      const currentQuestionIndex = step
+      const currentQuestionIndex = step+1
       const totalQuestions = questions.length;
     
       const currentPairIndex = Math.floor(currentQuestionIndex / 2);
@@ -525,12 +525,8 @@
     
       const pageNumElement = document.getElementById("page_num");
       const pageLabelElement = document.getElementById("page_label");
-      
-      if ((currentQuestionIndex+1 < totalQuestions)) {
-        pageNumElement.textContent = currentPairIndex + 1;
-      } else {
-        pageNumElement.textContent = currentPairIndex + 2;
-      }
+  
+      pageNumElement.textContent = currentPairIndex + 1;
       pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex}</span> / ${totalPairs}`;
     }
   
