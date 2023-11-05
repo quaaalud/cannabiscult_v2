@@ -12,10 +12,10 @@ from typing import Optional
 
 class EdibleRankingBase(BaseModel):
     strain: str
-    appearance_vote: float = Field(..., gt=0, lt=10)
-    flavor_vote: float = Field(..., gt=0, lt=10)
-    aftertaste_vote: float = Field(..., gt=0, lt=10)
-    effects_vote: float = Field(..., gt=0, lt=10)
+    appearance_rating: float = Field(..., gt=0, lt=10.1)
+    flavor_rating: float = Field(..., gt=0, lt=10.1)
+    aftertaste_rating: float = Field(..., gt=0, lt=10.1)
+    effects_rating: float = Field(..., gt=0, lt=10.1)
     appearance_explanation: Optional[str] = Field(None, max_length=500)
     flavor_explanation: Optional[str] = Field(None, max_length=500)
     aftertaste_explanation: Optional[str] = Field(None, max_length=500)
@@ -31,7 +31,7 @@ class CreateMysteryEdibleRanking(EdibleRankingBase):
 
 class CreateVividEdibleRanking(EdibleRankingBase):
     vivid_edible_id: int = Field(...)
-    voter_email: EmailStr = Field(...)
+    connoisseur: EmailStr = Field(...)
     cultivator: Optional[str] = Field(None, max_length=199)
     
     class Config():

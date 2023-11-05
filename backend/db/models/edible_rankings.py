@@ -84,12 +84,12 @@ class Vivid_Edible_Ranking(Base):
         nullable=False,
         index=True
     )
-    voter_email = Column(
+    connoisseur = Column(
         String,
         nullable=False,
         index=True
     )
-    appearance_vote = Column(
+    appearance_rating = Column(
         Float,
         nullable=False
     )
@@ -97,7 +97,7 @@ class Vivid_Edible_Ranking(Base):
         String,
         nullable=True
     )
-    flavor_vote = Column(
+    flavor_rating = Column(
         Float,
         nullable=False
     )
@@ -105,7 +105,7 @@ class Vivid_Edible_Ranking(Base):
         String,
         nullable=True
     )
-    aftertaste_vote = Column(
+    aftertaste_rating = Column(
         Float,
         nullable=False
     )
@@ -113,7 +113,7 @@ class Vivid_Edible_Ranking(Base):
         String,
         nullable=True
     )
-    effects_vote = Column(
+    effects_rating = Column(
         Float,
         nullable=False
     )
@@ -123,4 +123,9 @@ class Vivid_Edible_Ranking(Base):
     )
     date_posted = Column(
         Date
+    )
+    
+    vivid_edible_id = Column(
+        Integer,
+        nullable=False,
     )
