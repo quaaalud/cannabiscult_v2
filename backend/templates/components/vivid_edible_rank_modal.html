@@ -31,7 +31,7 @@
               <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/Small%20C%20image%20Logo.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL1NtYWxsIEMgaW1hZ2UgTG9nby5zdmciLCJpYXQiOjE2OTU1NjY4OTgsImV4cCI6MTcyNzEwMjg5OH0.KhSW1ZSuU_eRovc9ycELDUS2HVA-QekQBr_UhI04kuQ&t=2023-09-24T14%3A48%3A18.833Z" />
             </div>
           </div>
-          <div class="position-absolute bottom-0 end-0 p-3 fs-4" id="page_label" name="page_label"><span id="page_num" name="page_num">1</span> / 9</div>
+          <div class="position-absolute bottom-0 end-0 p-3 fs-4" id="page_label" name="page_label"><span id="page_num" name="page_num">1</span> / 5</div>
         </div>
       </form>
     </div>
@@ -525,8 +525,12 @@
     
       const pageNumElement = document.getElementById("page_num");
       const pageLabelElement = document.getElementById("page_label");
-    
-      pageNumElement.textContent = currentPairIndex + 1;
+      
+      if ((currentQuestionIndex+1 < totalQuestions)) {
+        pageNumElement.textContent = currentPairIndex + 1;
+      } else {
+        pageNumElement.textContent = currentPairIndex + 2;
+      }
       pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex}</span> / ${totalPairs}`;
     }
   
