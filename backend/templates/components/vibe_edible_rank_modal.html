@@ -568,7 +568,7 @@
               }
               formState[question.key] = input.value;
             }
-            else if (question.key === "effects_rating_explanation") {
+            else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_rating_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
                 alert("Please tell us two ways {{ edible }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
