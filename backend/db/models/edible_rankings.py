@@ -9,13 +9,8 @@ Created on Mon Oct 30 19:48:26 2023
 from sqlalchemy import Column, Integer, Float, String, Date
 from db.base_class import Base
 
-class MysteryEdibleRanking(Base):
-    mystery_edible_ranking_id = Column(
-        Integer,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-    )
+
+class EdibleRankingBase(Base):
     cultivator = Column(
         String,
         nullable=False,
@@ -63,60 +58,23 @@ class MysteryEdibleRanking(Base):
         String,
         nullable=True
     )
-    
-    
-class Vivid_Edible_Ranking(Base):
-    vivid_edible_ranking_id = Column(
+
+class MysteryEdibleRanking(EdibleRankingBase):
+    mystery_edible_ranking_id = Column(
         Integer,
         primary_key=True,
         index=True,
         autoincrement="auto",
     )
-    cultivator = Column(
-        String,
-        nullable=False,
-    )
-    strain = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    connoisseur = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    appearance_rating = Column(
-        Float,
-        nullable=False
-    )
-    appearance_explanation = Column(
-        String,
-        nullable=True
-    )
-    flavor_rating = Column(
-        Float,
-        nullable=False
-    )
-    flavor_explanation = Column(
-        String,
-        nullable=True
-    )
-    aftertaste_rating = Column(
-        Float,
-        nullable=False
-    )
-    aftertaste_explanation = Column(
-        String,
-        nullable=True
-    )
-    effects_rating = Column(
-        Float,
-        nullable=False
-    )
-    effects_explanation = Column(
-        String,
-        nullable=True
+    
+    
+    
+class Vivid_Edible_Ranking(EdibleRankingBase):
+    vivid_edible_ranking_id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        autoincrement="auto",
     )
     vivid_edible_id = Column(
         Integer,
@@ -124,60 +82,14 @@ class Vivid_Edible_Ranking(Base):
     )
     
     
-class Vibe_Edible_Ranking(Base):
+class Vibe_Edible_Ranking(EdibleRankingBase):
     vibe_edible_ranking_id = Column(
         Integer,
         primary_key=True,
         index=True,
         autoincrement="auto",
     )
-    cultivator = Column(
-        String,
-        nullable=False,
-    )
-    strain = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    connoisseur = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    appearance_rating = Column(
-        Float,
-        nullable=False
-    )
-    appearance_explanation = Column(
-        String,
-        nullable=True
-    )
-    flavor_rating = Column(
-        Float,
-        nullable=False
-    )
-    flavor_explanation = Column(
-        String,
-        nullable=True
-    )
-    aftertaste_rating = Column(
-        Float,
-        nullable=False
-    )
-    aftertaste_explanation = Column(
-        String,
-        nullable=True
-    )
-    effects_rating = Column(
-        Float,
-        nullable=False
-    )
-    effects_explanation = Column(
-        String,
-        nullable=True
-    )
-    
+
     vibe_edible_id = Column(
         Integer,
         nullable=False,

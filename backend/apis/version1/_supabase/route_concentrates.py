@@ -8,12 +8,13 @@ Created on Mon Sep  4 17:26:25 2023
 
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
-from fastapi import Depends
-from typing import List
-from db.session import get_supa_db
+from fastapi import Depends, Query
+from typing import List, Dict, Any
+from db.session import get_supa_db, get_db
 from db.repository.concentrate_reviews import append_votes_to_arrays
 from db.repository.concentrate_reviews import get_review_data_and_path
 from db.repository.concentrate_reviews import get_review_data_and_path_from_id
+from db.repository.concentrates import get_concentrate_data_and_path
 from db.models.concentrate_reviews import ConcentrateReview
 from db.repository.concentrate_voting import add_new_vote
 from schemas.concentrate_voting import ConcentrateVoteCreate
@@ -131,4 +132,15 @@ def add_concentrate_vote_to_db(
     return add_new_vote(
         vote,
         db=db,
+    )
+
+
+@router.get("/get-concentrate")
+async def query_concentrate_by_strain(
+    strain: str = Query(None, alias="strain"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    return get_concentrate_data_and_path(
+        db,
+        strain_select=strain,
     )

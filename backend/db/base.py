@@ -19,3 +19,5 @@ from db.models.edibles import MysteryEdible
 from db.models.edible_rankings import MysteryEdibleRanking
 from db.models.edible_rankings import Vivid_Edible_Ranking
 from db.models.edible_rankings import Vibe_Edible_Ranking
+from db.models.concentrates import Concentrate
+from db.models.concentrate_rankings import Hidden_Concentrate_Rankings
