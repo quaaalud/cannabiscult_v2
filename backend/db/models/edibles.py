@@ -11,20 +11,9 @@ from sqlalchemy import Column, String, BigInteger
 from db.base_class import Base
 
 
-class _EdibleBase(Base):
+class MysteryEdible(Base):
     __table_args__ = {'schema': 'public'}
     
-    strain = Column(
-        String,
-        nullable=False
-    )
-    card_path = Column(
-        String,
-        nullable=True
-    )
-
-
-class MysteryEdible(_EdibleBase):
     mystery_edible_id = Column(
         BigInteger,
         primary_key=True,
@@ -36,9 +25,19 @@ class MysteryEdible(_EdibleBase):
         String,
         nullable=False
     )
+    strain = Column(
+        String,
+        nullable=False
+    )
+    card_path = Column(
+        String,
+        nullable=True
+    )
 
 
-class VividEdible(_EdibleBase):
+class VividEdible(Base):
+    __table_args__ = {'schema': 'public'}
+    
     vivid_edible_id = Column(
         BigInteger,
         primary_key=True,
@@ -46,13 +45,31 @@ class VividEdible(_EdibleBase):
         autoincrement="auto",
         nullable=False
     )
+    strain = Column(
+        String,
+        nullable=False
+    )
+    card_path = Column(
+        String,
+        nullable=True
+    )
     
     
-class VibeEdible(_EdibleBase):
+class VibeEdible(Base):
+    __table_args__ = {'schema': 'public'}
+    
     vibe_edible_id = Column(
         BigInteger,
         primary_key=True,
         index=True,
         autoincrement="auto",
         nullable=False
+    )
+    strain = Column(
+        String,
+        nullable=False
+    )
+    card_path = Column(
+        String,
+        nullable=True
     )

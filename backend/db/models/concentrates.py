@@ -6,11 +6,11 @@ Created on Sun Nov  5 17:09:03 2023
 @author: dale
 """
 
-from sqlalchemy import Column, String, BigInteger, Bool
+from sqlalchemy import Column, String, BigInteger, Boolean
 from db.base_class import Base
 
-
-class _ConcentrateBase(Base):
+    
+class Concentrate(Base):
     __table_args__ = {'schema': 'public'}
 
     cultivator = Column(
@@ -26,13 +26,10 @@ class _ConcentrateBase(Base):
         nullable=True
     )
     voting_open = Column(
-        Bool,
+        Boolean,
         default=True,
         nullable=False,
     )
-    
-    
-class Concentrate(_ConcentrateBase):
     concentrate_id = Column(
         BigInteger,
         primary_key=True,
@@ -41,6 +38,6 @@ class Concentrate(_ConcentrateBase):
         nullable=False
     )
     is_mystery = Column(
-        Bool,
+        Boolean,
         default=True,
     )
