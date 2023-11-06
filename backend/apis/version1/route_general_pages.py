@@ -45,6 +45,7 @@ from version1._supabase.route_flower_voting import (
     add_flower_vote_to_db,
 )
 from version1._supabase import route_concentrates
+from db.repository.concentrates import get_concentrate_data_and_path
 from version1._supabase.route_mystery_voters import (
     get_voter_info_by_email,
     create_mystery_voter
@@ -465,6 +466,28 @@ async def handle_flower_review_post(
         strain_selected,
         cultivator_selected,
         db
+    )
+  
+  
+@general_pages_router.get("/get-hidden-concentrate")
+async def handle_hidden_concentrate_post(
+    request: Request,
+    strain: str = Query(None, alias="strain"),
+    db: Session = Depends(get_db)
+):
+    hidden_concentrate_dict = get_concentrate_data_and_path(
+       db,
+       strain=strain,
+    )
+    response_dict = {"request": request, **hidden_concentrate_dict}
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'connoisseur-concentrates.html'
+            )
+        ),
+        response_dict
     )
 
 

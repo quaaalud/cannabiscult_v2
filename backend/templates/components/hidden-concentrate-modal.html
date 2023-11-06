@@ -653,7 +653,6 @@
         "effects_rating",
         "consistency_rating",
         "smell_rating",
-        "effects_rating",
         "harshness_rating",
       ];
       
@@ -688,13 +687,13 @@
               formState[question.key] = input.value;
             }
             else if (question.key === "effects_explanation") {
-              const selectedOptions = Array.from(document.getElementById('effects_rating_explanation').selectedOptions).map(option => option.value);
+              const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
                 alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
                 return;
               }
               const combinedString = selectedOptions.join(' ');
-              formState['_effects_explanation'] = combinedString;
+              formState['effects_explanation'] = combinedString;
             } 
             else {
               formState[question.key] = input.value;

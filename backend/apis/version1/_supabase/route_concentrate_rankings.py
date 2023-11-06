@@ -23,7 +23,7 @@ def submit_mystery_concentrate_ranking(
     db: Session = Depends(get_db)
 ) -> Hidden_Concentrate_Ranking:
     submitted_ranking = create_hidden_concentrate_ranking(
-        mystery_concentrate_ranking=concentrate_ranking,
+        hidden_ranking=concentrate_ranking,
         db=db
     )
     return submitted_ranking
