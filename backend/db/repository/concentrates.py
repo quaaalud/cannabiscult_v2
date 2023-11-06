@@ -19,7 +19,7 @@ def get_concentrate_data_and_path(
         return {
             'id': concentrate.concentrate_id,
             'cultivator': concentrate.cultivator,
-            'concentrate': concentrate.strain,
+            'strain': concentrate.strain,
             'url_path': return_image_url_from_supa_storage(
                 str(Path(concentrate.card_path))
             ),
