@@ -120,6 +120,25 @@
       key: "connoisseur"
     },
     {
+      title: "Connoisseur Email",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <p>Please select the flavor you are voting on:</p>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="flavor" id="flavor">
+              <option selected>Select Flavor</option>
+              <option value="Black Cherry">Black Cherry</option>
+              <option value="Blueberry Lemonade">Blueberry Lemonade</option>
+              <option value="Green Apple Cotton Candy">Green Apple Cotton Candy</option>
+              <option value="Pineapple Orange Guava">Pineapple Orange Guava</option>
+              <option value="Pomegranate Plum">Pomegranate Plum</option>
+              <option value="Watermelon Cucumber Serrano">Watermelon Cucumber Serrano</option>
+            </select>
+          </div>
+        </div>`,
+      key: "flavor"
+    },
+    {
       title: "{{ edible }} - Appearance Rating",
       content: `
         <div class="container">
@@ -152,14 +171,14 @@
             <label class="btn btn-outline-dark" for="appearance_rating9">9</label>
           
             <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="appearance_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="appearance_rating10" id="appearance_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label> 
+              <label class="ps-2  modal-info-shadow" for="appearance_1_point">Ugly</label> 
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label> 
+              <label class="pe-2  modal-info-shadow" for="appearance_10_point">Appealing</label> 
             </div>
           </div>
         </div>
@@ -176,6 +195,122 @@
         </div>
       `,
       key: "appearance_explanation"
+    },
+    {
+      title: "{{ edible }} - Feel Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ edible }} Feel Rating">
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating1" id="feel_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating10" id="feel_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="feel_1_point">Too Hard<span class="long-voting-label"> or </span>Sweaty</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="feel_10_point">Firm<span class="long-voting-label"> and </span>Dry</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "feel_rating"
+    },
+    {
+      title: "{{ edible }} - Feel Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="feel_explanation" name="feel_explanation" placeholder="Explain your Feel Rating for {{ edible }}" aria-label="Feel Vote Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "feel_explanation"
+    },
+    {
+      title: "{{ edible }} - Chew Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ edible }} Chew Rating">
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating1" id="chew_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating10" id="chew_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="chew_1_point">Nasty, Gross</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="chew_10_point">Enjoyable, Addicting</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "chew_rating"
+    },
+    {
+      title: "{{ edible }} - Chew Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="chew_explanation" name="chew_explanation" placeholder="Explain your chew rating for {{ edible }}" aria-label="Chew Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "chew_explanation"
     },
     {
       title: "{{ edible }} - Flavor Rating",
@@ -217,7 +352,7 @@
             <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label> 
+            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor<span class="long-voting-label"> as </span>Described</label>  
           </div>
         </div>
       </div>
@@ -229,69 +364,43 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ edible }}" aria-label="Flavor Vote Explantion Field" />
+            <input class="form-control text-center mb-3" type="hidden" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ edible }}" aria-label="Flavor Vote Explanation Field" />
+            
+            <div>
+              <p>Please select the flavor profile:</p>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
+                <label class="form-check-label" for="deliciousTaste">Delicious Taste</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tastesAsDescribed" value="tastesAsDescribed">
+                <label class="form-check-label" for="tastesAsDescribed">Tastes as described</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="littleNoCannabisTaste" value="littleNoCannabisTaste">
+                <label class="form-check-label" for="littleNoCannabisTaste">Little/no cannabis taste</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="badTaste" value="badTaste">
+                <label class="form-check-label" for="badTaste">Bad taste</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
+                <label class="form-check-label" for="tooMuchFlavor">Too much flavor</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
+                <label class="form-check-label" for="tooLittleFlavor">Too little flavor</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
+                <label class="form-check-label" for="tooMuchCannabisTaste">Too much cannabis taste</label>
+              </div>
+            </div>
           </div>
         </div>
       `,
       key: "flavor_explanation"
-    },
-    {
-      title: "{{ edible }} - Aftertaste Rating",
-      content: `
-      <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe {{ edible }} Aftertaste Rating">
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating1" value="1" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating1" id="smoothness_1_point">1</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating2" value="2" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating2">2</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating3" value="3" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating3">3</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating4" value="4" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating4">4</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating5" value="5" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating5">5</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating6" value="6" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating6">6</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating7" value="7" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating7">7</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating8" value="8" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating8">8</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating9" value="9" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating9">9</label>
-        
-          <input type="radio" class="btn-check" name="aftertaste_rating" id="aftertaste_rating10" value="10" autocomplete="off">
-          <label class="btn btn-outline-dark" for="aftertaste_rating10" id="smoothness_10_point">10</label>
-        </div>
-        <div class="row pt-1">
-          <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Nasty, Gross</label> 
-          </div>
-          <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable, Addicting</label> 
-          </div>
-        </div>
-      </div>
-      `,
-      key: "aftertaste_rating"
-    },
-    {
-      title: "{{ edible }} - Aftertaste Rating Explanation",
-      content: `
-        <div class="container px-4">
-          <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="aftertaste_explanation" name="aftertaste_explanation" placeholder="Explain your aftertaste rating for {{ edible }}" aria-label="Aftertaste Rating Explantion Field" />
-          </div>
-        </div>
-      `,
-      key: "aftertaste_explanation"
     },
     {
       title: "{{ edible }} - Effects Rating",
@@ -533,9 +642,10 @@
     function loadQuestion() {
       const intKeys = [
         "appearance_rating",
+        "feel_rating",
         "flavor_rating",
         "effects_rating",
-        "aftertaste_rating",
+        "chew_rating",
       ];
       
       if (step < 0) {
@@ -569,7 +679,7 @@
               formState[question.key] = input.value;
             }
             else if (question.key === "effects_explanation") {
-              const selectedOptions = Array.from(document.getElementById('effects_rating_explanation').selectedOptions).map(option => option.value);
+              const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
                 alert("Please tell us two ways {{ edible }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
                 return;
@@ -577,6 +687,24 @@
               const combinedString = selectedOptions.join(' ');
               formState['effects_explanation'] = combinedString;
             } 
+            else if (question.key === "flavor_explanation") {
+              const flavorOptions = document.getElementsByName('flavorOptions');
+              let selectedOption = '';
+              
+              for (const option of flavorOptions) {
+                if (option.checked) {
+                  selectedOption = option.value;
+                  break;
+                }
+              }
+              
+              if (!selectedOption) {
+                alert("Please select a flavor profile for {{ edible }}."); 
+                return;
+              }
+            
+              formState['flavor_explanation'] = selectedOption;
+            }
             else {
               formState[question.key] = input.value;
             }

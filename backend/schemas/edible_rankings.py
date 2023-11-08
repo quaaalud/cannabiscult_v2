@@ -38,10 +38,23 @@ class CreateVividEdibleRanking(EdibleRankingBase):
         from_attributes = True
 
 
-class CreateVibeEdibleRanking(EdibleRankingBase):
+class CreateVibeEdibleRanking(BaseModel):
     vibe_edible_id: int = Field(...)
     connoisseur: EmailStr = Field(...)
     cultivator: Optional[str] = Field(None, max_length=199)
+    strain: str = Field(..., max_length=200)
+    flavor: str = Field(..., max_length=200)
+    
+    appearance_rating: float = Field(..., gt=0, lt=10.1)
+    flavor_rating: float = Field(..., gt=0, lt=10.1)
+    feel_rating: float = Field(..., gt=0, lt=10.1)
+    chew_rating: float = Field(..., gt=0, lt=10.1)
+    effects_rating: float = Field(..., gt=0, lt=10.1)
+    appearance_explanation: Optional[str] = Field(None, max_length=500)
+    flavor_explanation: Optional[str] = Field(None, max_length=500)
+    feel_explanation: Optional[str] = Field(None, max_length=500)
+    chew_explanation: Optional[str] = Field(None, max_length=500)
+    effects_explanation: Optional[str] = Field(None, max_length=500)
     
     class Config():
         from_attributes = True
