@@ -1,0 +1,766 @@
+<!-- Modal Structure Template -->
+<div class="modal fade w-100" id="vibeConcentrateRankingsModal" tabindex="-1" aria-labelledby="vibeConcentrateRankingsModalLabel" aria-hidden="true" style="min-width:100%">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content overflow-auto">
+      <form method="POST" action="/submit-vibe-concentrate-ranking" id="vidid-concentrate-ranking-form" name="submit-vidid-concentrate-form">
+        <div class="container text-center pt-1 pb-1">
+          <div class="row align-content-center justify-content-center pt-4">
+              <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
+          </div>
+          <div class="container text-center align-content-center align-items-center justify-content-center w-100 px-0 pt-2 pb-0">
+            <div class="col-12 justify-content-center text-center p-0">
+              <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="modalBody">
+                <!-- Dynamic Content will be loaded here -->
+              </div>
+            </div>
+          </div>
+          <div class="container"> 
+            <div class="col-12">
+              <div class="row justify-content-center pt-4 px-4">
+                <div class="col-6">
+                  <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" id="backBtn">Back</button>
+                </div>
+                <div class="col-6">
+                  <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" id="nextBtn" name="nextBtn">Next</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row justify-content-center">
+            <div class="col-4 col-md-5 col-6">
+              <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/Small%20C%20image%20Logo.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL1NtYWxsIEMgaW1hZ2UgTG9nby5zdmciLCJpYXQiOjE2OTU1NjY4OTgsImV4cCI6MTcyNzEwMjg5OH0.KhSW1ZSuU_eRovc9ycELDUS2HVA-QekQBr_UhI04kuQ&t=2023-09-24T14%3A48%3A18.833Z" />
+            </div>
+          </div>
+          <div class="position-absolute bottom-0 end-0 p-3 fs-4" id="page_label" name="page_label"><span id="page_num" name="page_num">1</span> / 5</div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Voter Info Capture Modal -->
+<div class="modal fade" id="vibeConcentrateVoterInfoCaptureModal" tabindex="-1" aria-labelledby="vibeConcentrateVoterInfoCaptureModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="container text-center">
+          <div class="row text-center">
+            <h5 class="modal-title" id="vibeConcentrateVoterInfoCaptureModalLabel">New Connoisseur Information</h5>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form id="newVoterForm" class="container">
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Name" id="connoisseur_name" name="connoisseur_name" autocomplete="name">
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="connoisseur" autocomplete="email" required>
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Phone Number" id="connoisseur_phone" name="connoisseur_phone" autocomplete="phone">
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Zip Code" id="connoisseur_zip_code" name="connoisseur_zip_code" autocomplete="on">
+          </div>
+          <div class="conainer ps-1">
+            <div class="form-check ps-4">
+              <input class="form-check-input me-2" type="checkbox" value="" id="register_check" name="register_check" checked
+                aria-describedby="registerCheckHelpText" />
+              <label class="form-check-label" for="register_check">
+                I have read and agree to the <a href="/privacy-policy" style="color:#301934" target="_blank" rel="noopener noreferrer">privacy policy</a> & <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer">user agreement</a>
+              </label>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="container text-center"> 
+          <div class="row g-2 p-1">
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" name="newUserBackBtn" id="newUserBackBtn">Back</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" name="submitNewVoterBtn" id="submitNewVoterBtn">Submit</button>
+            </div>
+          </div>
+          <div class="row pb-3 pt-4">
+            <h6 id="vibeConcentrateVoterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const termsCheckbox = document.getElementById('register_check');
+  const submitButton = document.getElementById('submitNewVoterBtn');
+  
+  function toggleSubmitButtonState() {
+      submitButton.disabled = !termsCheckbox.checked;
+  }
+
+  termsCheckbox.addEventListener('change', toggleSubmitButtonState);
+
+  toggleSubmitButtonState();
+</script>
+
+
+{% block scripts %}  
+<script>
+  const questions = [
+    {
+      title: "Connoisseur Email",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center email-input-field" id="connoisseur" name="connoisseur" placeholder="Your email is required to rate strains" />
+         </div>
+        </div>`,
+      key: "connoisseur"
+    },
+    {
+      title: "Connoisseur Email",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <p>Please select the flavor you are voting on:</p>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="flavor" id="flavor">
+              <option selected>Select Flavor</option>
+              <option value="Black Cherry">Black Cherry</option>
+              <option value="Blueberry Lemonade">Blueberry Lemonade</option>
+              <option value="Green Apple Cotton Candy">Green Apple Cotton Candy</option>
+              <option value="Pineapple Orange Guava">Pineapple Orange Guava</option>
+              <option value="Pomegranate Plum">Pomegranate Plum</option>
+              <option value="Watermelon Cucumber Serrano">Watermelon Cucumber Serrano</option>
+            </select>
+          </div>
+        </div>`,
+      key: "flavor"
+    },
+    {
+      title: "{{ strain }} - Appearance Rating",
+      content: `
+        <div class="container">
+          <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Appearance Rating">
+            <input type="radio" class="btn-check btn-outline-dark" name="appearance_rating" id="appearance_rating1" value="1" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating1" id="sight_1_point">1</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating2" value="2" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating2">2</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating3" value="3" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating3">3</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating4" value="4" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating4">4</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating5" value="5" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating5">5</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating6" value="6" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating6">6</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating7" value="7" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating7">7</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating8" value="8" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating8">8</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating9" value="9" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating9">9</label>
+          
+            <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating10" value="10" autocomplete="off">
+            <label class="btn btn-outline-dark" for="appearance_rating10" id="appearance_10_point">10</label>
+          </div>
+          <div class="row pt-1">
+            <div class="col text-start">
+              <label class="ps-2  modal-info-shadow" for="appearance_1_point">Ugly</label> 
+            </div>
+            <div class="col text-end">
+              <label class="pe-2  modal-info-shadow" for="appearance_10_point">Appealing</label> 
+            </div>
+          </div>
+        </div>
+      `,
+      key: "appearance_rating"
+    },
+    {
+      title: "{{ strain }} - Appearance Rating Explation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="appearance_explanation" name="appearance_explanation" placeholder="Explain your appearance rating for {{ strain }}" aria-label="Appearance Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "appearance_explanation"
+    },
+    {
+      title: "{{ strain }} - Feel Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Feel Rating">
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating1" id="feel_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="feel_rating" id="feel_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="feel_rating10" id="feel_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="feel_1_point">Too Hard<span class="long-voting-label"> or </span>Sweaty</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="feel_10_point">Firm<span class="long-voting-label"> and </span>Dry</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "feel_rating"
+    },
+    {
+      title: "{{ strain }} - Feel Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="feel_explanation" name="feel_explanation" placeholder="Explain your Feel Rating for {{ strain }}" aria-label="Feel Vote Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "feel_explanation"
+    },
+    {
+      title: "{{ strain }} - Chew Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Chew Rating">
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating1" id="chew_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="chew_rating" id="chew_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="chew_rating10" id="chew_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="chew_1_point">Nasty, Gross</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="chew_10_point">Enjoyable, Addicting</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "chew_rating"
+    },
+    {
+      title: "{{ strain }} - Chew Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="chew_explanation" name="chew_explanation" placeholder="Explain your chew rating for {{ strain }}" aria-label="Chew Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "chew_explanation"
+    },
+    {
+      title: "{{ strain }} - Flavor Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Flavor Rating">
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="flavor_rating10" id="flavor_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor<span class="long-voting-label"> as </span>Described</label>  
+          </div>
+        </div>
+      </div>
+      `,
+      key: "flavor_rating"
+    },
+    {
+      title: "{{ strain }} - Flavor Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center mb-3" type="hidden" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explanation Field" />
+            
+            <div class="text-start fs-4">
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
+                <label class="form-check-label" for="deliciousTaste">Delicious Taste</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tastesAsDescribed" value="tastesAsDescribed">
+                <label class="form-check-label" for="tastesAsDescribed">Tastes as described</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="littleNoCannabisTaste" value="littleNoCannabisTaste">
+                <label class="form-check-label" for="littleNoCannabisTaste">Little/no cannabis taste</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="badTaste" value="badTaste">
+                <label class="form-check-label" for="badTaste">Bad taste</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
+                <label class="form-check-label" for="tooMuchFlavor">Too much flavor</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
+                <label class="form-check-label" for="tooLittleFlavor">Too little flavor</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
+                <label class="form-check-label" for="tooMuchCannabisTaste">Too much cannabis taste</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      `,
+      key: "flavor_explanation"
+    },
+    {
+      title: "{{ strain }} - Effects Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating1" id="effects_1_point">1</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating2">2</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating3">3</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating4">4</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating5">5</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating6">6</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating7">7</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating8">8</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating9">9</label>
+        
+          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="effects_rating10" id="effects_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col-6 text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label> 
+          </div>
+          <div class="col-6 text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label> 
+          </div>
+        </div>
+      </div>
+      `,
+      key: "effects_rating"
+    },
+    {
+      title: "{{ strain }} - Effects Rating Explanation",
+      content: `
+        <div class="container align-content-center align-items-center justify-content-center text-center">
+          <div class="row align-items-center">
+            <div class="col-7">
+              <label class="pb-3 ps-2 fs-5 text-start" for="effects_explanation">Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</label>
+            </div>
+            <div class="col-5 align-content-center align-items-center justify-content-center ">
+              <select class="form-select px-3 px-lg-4" id="effects_explanation" name="effects_explanation" aria-label="Effects Rating Explanation Field" multiple>
+                <option value="sedative">Sedative</option>
+                <option value="relaxing">Relaxing</option>
+                <option value="sleepy">Sleepy</option>
+                <option value="tingly">Tingly</option>
+                <option value="calming">Calming</option>
+                <option value="hungry">Hungry</option>
+                <option value="happy">Happy</option>
+                <option value="giggly">Giggly</option>
+                <option value="energizing">Energizing</option>
+                <option value="euphoric">Euphoric</option>
+                <option value="focused">Focused</option>
+                <option value="uplifting">Uplifting</option>
+                <option value="alert">Alert</option>
+                <option value="creative">Creative</option>
+                <option value="talkative">Talkative</option>
+                <option value="aroused">Aroused</option>
+                <option value="aroused">None / Short Lived</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      `,
+      key: "effects_explanation"
+    },
+  ];
+  function adjustButtonSize() {
+    if (window.matchMedia("(max-width: 767px)").matches) {
+      const elements = document.querySelectorAll('.btn-group-lg');
+      elements.forEach(element => {
+        element.classList.remove('btn-group-lg');
+      });
+      
+      const formElements = document.querySelectorAll('.form-select-lg');
+      formElements.forEach(element => {
+        element.classList.remove('form-select-lg');
+      });
+      const inputElements = document.querySelectorAll('.form-control-lg');
+      inputElements.forEach(element => {
+        element.classList.remove('form-control-lg');
+      });
+    } else {
+      const elements = document.querySelectorAll('.btn-group');
+      elements.forEach(element => {
+        element.classList.add('btn-group-lg');
+      });
+      const formElements = document.querySelectorAll('.form-select');
+      formElements.forEach(element => {
+        element.classList.add('form-select-lg');
+      });
+      const inputElements = document.querySelectorAll('.form-control');
+      inputElements.forEach(element => {
+        element.classList.add('form-control-lg');
+      });
+    }
+    if (window.matchMedia("(max-width: 510px)").matches) {
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.remove('fs-5');
+        label.classList.add('fs-6');
+      });
+    } else {
+      const classLabels = document.querySelectorAll('.consume-label');
+      classLabels.forEach(label => {
+        label.classList.add('fs-5');
+        label.classList.remove('fs-6');
+      });
+    }
+  }
+  window.addEventListener('resize', adjustButtonSize);
+  
+  document.addEventListener("DOMContentLoaded", function() {
+    const submitButton = document.getElementById("submitNewVoterBtn");
+    const form = document.getElementById("newVoterForm");
+        document.getElementById("newUserBackBtn").onclick = function() {
+      $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
+    };
+  
+    submitButton.addEventListener("click", function(event) {
+      event.preventDefault();
+  
+      const formData = new URLSearchParams();
+        const emailInput = document.getElementById("new_connoisseur").value
+        const lowerCasedEmail = emailInput.toLowerCase()
+        formData.append('voter_name', document.getElementById("connoisseur_name").value);
+        formData.append('voter_email', lowerCasedEmail);
+        formData.append('voter_phone', document.getElementById("connoisseur_phone").value);
+        formData.append('voter_zip_code', document.getElementById("connoisseur_zip_code").value);
+    
+        fetch("/submit-new-voter", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString()
+        })
+      .then(response => response.json())
+      .then(data => {
+        console.log(data.status)
+        if (data.status === true) {
+          $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
+          step = 0;
+          loadQuestion();
+        } else {
+          alert("Please ensure you have provided a valid email and try again.")
+          return
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+      });
+    });
+      
+    async function checkVoterExists(email) {
+      const lowerCaseEmail = email.toLowerCase();
+      const root = window.location.origin;
+      const url = new URL('/check-mystery-voter', root);
+      url.searchParams.append('voter_email', lowerCaseEmail);
+      
+      const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json'
+          }
+      });
+  
+      if (response.ok) {
+          const data = await response.json();
+          return data.exists;
+      } else {
+          console.log("Request failed:", response.status, response.statusText);
+          return false;
+      }
+    }
+      
+    let step = 0;
+    const formState = {
+      "vibe_concentrate_id": "{{ id }}",
+      "cultivator": "Vibe-Batch-1",
+      "strain": "{{ strain }}",
+    };
+    const modalTitle = document.getElementById('modalTitle');
+    const modalBody = document.getElementById('modalBody');
+    const nextBtn = document.getElementById('nextBtn');
+    const backBtn = document.getElementById('backBtn');
+    
+    async function submitForm(formState) {
+      try {
+        const response = await fetch('/concentrate_rankings/submit-vibe-concentrate-ranking', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formState)
+        });
+        console.log(response)
+        if (response.ok) {
+          const data = await response.json();
+          window.location.href = "https://cannabiscult.co/";
+        } else {
+          console.log("Submission failed:", response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error("Error during submission:", error);
+      }
+    }
+    
+    function updatePageLabel() {
+      const currentQuestionIndex = step+1
+      const totalQuestions = questions.length;
+    
+      const currentPairIndex = Math.floor(currentQuestionIndex / 2);
+      const totalPairs = Math.floor((totalQuestions+1) / 2);
+    
+      const pageNumElement = document.getElementById("page_num");
+      const pageLabelElement = document.getElementById("page_label");
+  
+      pageNumElement.textContent = currentPairIndex + 1;
+      pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex}</span> / ${totalPairs}`;
+    }
+  
+    function loadQuestion() {
+      const intKeys = [
+        "appearance_rating",
+        "feel_rating",
+        "flavor_rating",
+        "effects_rating",
+        "chew_rating",
+      ];
+      
+      if (step < 0) {
+        step = 0;
+      }
+      if (step < questions.length) {
+        const question = questions[step];
+        modalTitle.innerHTML = question.title;
+        modalBody.innerHTML = question.content;
+        
+    
+        const input = document.getElementById(question.key);
+        
+        document.addEventListener('keydown', function enterKeyHandler(event) {
+          if (event.keyCode === 13) {
+            event.preventDefault();
+            nextBtn.click();
+          }
+        });
+    
+        nextBtn.onclick = async function () {
+          if (input) {
+            var inputVal = input.value;
+              
+            if (question.key === "connoisseur") {
+              const voterExists = await checkVoterExists(input.value);
+              if (!voterExists) {
+                $('#vibeConcentrateVoterInfoCaptureModal').modal('show');
+                return;
+              }
+              formState[question.key] = input.value;
+            }
+            else if (question.key === "effects_explanation") {
+              const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
+              if (selectedOptions.length <= 1) {
+                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
+                return;
+              }
+              const combinedString = selectedOptions.join(' ');
+              formState['effects_explanation'] = combinedString;
+            } 
+            else if (question.key === "flavor_explanation") {
+              const flavorOptions = document.getElementsByName('flavorOptions');
+              let selectedOption = '';
+              
+              for (const option of flavorOptions) {
+                if (option.checked) {
+                  selectedOption = option.value;
+                  break;
+                }
+              }
+              
+              if (!selectedOption) {
+                alert("Please select a flavor profile for {{ strain }}."); 
+                return;
+              }
+            
+              formState['flavor_explanation'] = selectedOption;
+            }
+            else {
+              formState[question.key] = input.value;
+            }
+          } else {
+            const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
+            const radioVal = radioCheck ? radioCheck.value : "0";
+            if (radioVal === "0") {
+              alert("Connoisseur Ratings Must Have a Value!"); 
+              return;
+            }
+            formState[question.key] = radioVal;
+          }
+           
+          $('#vibeConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+            step++;
+            loadQuestion();
+            updatePageLabel()
+            adjustButtonSize();
+          });
+    
+          if (!$('#vibeConcentrateVoterInfoCaptureModal').hasClass('show')) {
+            step++;
+            loadQuestion();
+            updatePageLabel()
+            adjustButtonSize();
+          }
+        };
+      } else {
+        nextBtn.textContent = 'Submit';
+        nextBtn.onclick = function () {
+          submitForm(formState);
+        };
+        modalTitle.textContent = 'All questions completed.';
+        modalBody.textContent = 'Your ratings for {{ strain }} are completed.';
+      }
+      backBtn.onclick = function () {
+        $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
+        
+        $('#vibeConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+          step--;
+          loadQuestion();
+          updatePageLabel()
+          adjustButtonSize();
+        });
+        
+        if (!$('#vibeConcentrateVoterInfoCaptureModal').hasClass('show')) {
+          step--;
+          loadQuestion();
+          updatePageLabel()
+          adjustButtonSize();
+        }
+      };
+    }
+    adjustButtonSize();
+    loadQuestion();
+    updatePageLabel()
+    adjustButtonSize();
+  });
+</script>
+{% endblock %}

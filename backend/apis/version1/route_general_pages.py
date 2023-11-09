@@ -533,6 +533,28 @@ async def handle_vibe_edible_post(
         ),
         response_dict
     )
+  
+  
+@general_pages_router.get("/get_vibe_concentrate")
+async def handle_vibe_concentrate_post(
+    request: Request,
+    strain: str = Query(None, alias="strain"),
+    db: Session = Depends(get_db)
+):
+    edible_dict = get_vibe_edible_data_by_strain(
+       db,
+       strain=strain,
+    )
+    response_dict = {"request": request, **edible_dict}
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'vibe-concentate-ratings.html'
+            )
+        ),
+        response_dict
+    )
 
 
 @general_pages_router.post("/submit-vote", response_model=List[str])
