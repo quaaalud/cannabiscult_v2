@@ -144,3 +144,14 @@ async def query_concentrate_by_strain(
         db,
         strain_select=strain,
     )
+  
+
+@router.get("/get-vibe-concentrate")
+async def query_vibe_concentrate_by_strain(
+    strain: str = Query(None, alias="strain"),
+    db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    return get_concentrate_data_and_path(
+        db,
+        strain_select=strain,
+    )

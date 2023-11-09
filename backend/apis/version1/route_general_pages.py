@@ -541,7 +541,7 @@ async def handle_vibe_concentrate_post(
     strain: str = Query(None, alias="strain"),
     db: Session = Depends(get_db)
 ):
-    edible_dict = get_vibe_edible_data_by_strain(
+    edible_dict = get_concentrate_data_and_path(
        db,
        strain=strain,
     )
@@ -550,7 +550,7 @@ async def handle_vibe_concentrate_post(
         str(
             Path(
                 'general_pages',
-                'vibe-concentate-ratings.html'
+                'vibe-concentrate-ratings.html'
             )
         ),
         response_dict
