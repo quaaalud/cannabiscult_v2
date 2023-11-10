@@ -469,7 +469,7 @@ async def handle_flower_review_post(
     )
 
 
-@general_pages_router.get("/get-hidden-concentrate")
+@general_pages_router.get("/get_hidden_concentrate")
 async def handle_hidden_concentrate_post(
     request: Request,
     strain: str = Query(None, alias="strain"),
@@ -484,7 +484,7 @@ async def handle_hidden_concentrate_post(
         str(
             Path(
                 'general_pages',
-                'connoisseur-concentrates.html'
+                'connoisseur_concentrates.html'
             )
         ),
         response_dict
