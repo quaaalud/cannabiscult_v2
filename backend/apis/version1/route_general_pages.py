@@ -535,6 +535,22 @@ async def handle_vibe_edible_post(
     )
 
 
+@general_pages_router.get("/vibe_concentrate_ratings")
+async def vibe_concentrates_main_page(
+    request: Request,
+    db: Session = Depends(get_db)
+):
+    return templates.TemplateResponse(
+        str(
+            Path(
+                'general_pages',
+                'vibe-concentrate-ratings.html'
+            )
+        ),
+        {"request": request}
+    )
+
+
 @general_pages_router.get("/get_vibe_concentrate")
 async def handle_vibe_concentrate_post(
     request: Request,
@@ -661,6 +677,7 @@ async def get_concentrate_strains_route(
 @general_pages_router.get("/concentrate-get-all-cultivators", response_model=List[str])
 async def get_concentrate_cultivators_route(db: Session = Depends(get_db)) -> List[str]:
     return route_concentrates.get_all_cultivators(db)
+
 
 @general_pages_router.get("/concentrate-get-strains-for-cultivator",
                           response_model=List[str]
