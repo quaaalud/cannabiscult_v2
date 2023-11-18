@@ -14,7 +14,7 @@
               </div>
             </div>
           </div>
-          <div class="container"> 
+          <div class="container">
             <div class="col-12">
               <div class="row justify-content-center pt-4 px-4">
                 <div class="col-6">
@@ -75,7 +75,7 @@
         </form>
       </div>
       <div class="modal-footer">
-        <div class="container text-center"> 
+        <div class="container text-center">
           <div class="row g-2 p-1">
             <div class="col-6">
               <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" name="newUserBackBtn" id="newUserBackBtn">Back</button>
@@ -95,7 +95,7 @@
 <script>
   const termsCheckbox = document.getElementById('register_check');
   const submitButton = document.getElementById('submitNewVoterBtn');
-  
+
   function toggleSubmitButtonState() {
       submitButton.disabled = !termsCheckbox.checked;
   }
@@ -106,7 +106,7 @@
 </script>
 
 
-{% block scripts %}  
+{% block scripts %}
 <script>
   const questions = [
     {
@@ -126,40 +126,40 @@
           <div class="btn-group" role="group" aria-label="Hidden {{ strain }} Color Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="color_rating" id="color_rating1" value="1" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating1" id="sight_1_point">1</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating2">2</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating3" value="3" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating3">3</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating4" value="4" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating4">4</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating5" value="5" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating5">5</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating6" value="6" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating6">6</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating7" value="7" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating7">7</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating8" value="8" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating8">8</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating9" value="9" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating9">9</label>
-          
+
             <input type="radio" class="btn-check" name="color_rating" id="color_rating10" value="10" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating10" id="size_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label> 
+              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label> 
+              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label>
             </div>
           </div>
         </div>
@@ -184,40 +184,40 @@
           <div class="btn-group" role="group" aria-label="Hidden {{ strain }} Smell Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="smell_rating" id="smell_rating1" value="1" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating1" id="sight_1_point">1</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating2">2</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating3" value="3" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating3">3</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating4" value="4" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating4">4</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating5" value="5" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating5">5</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating6" value="6" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating6">6</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating7" value="7" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating7">7</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating8" value="8" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating8">8</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating9" value="9" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating9">9</label>
-          
+
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating10" value="10" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating10" id="size_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label> 
+              <label class="ps-2  modal-info-shadow" for="size_1_point">Weak <span class="long-voting-label">or</span> None</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label> 
+              <label class="pe-2  modal-info-shadow" for="size_10_point">Strong <span class="long-voting-label">and</span> Good</label>
             </div>
           </div>
         </div>
@@ -242,40 +242,40 @@
           <div class="btn-group" role="group" aria-label="Hidden {{ strain }} Consistency Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="consistency_rating" id="consistency_rating1" value="1" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating1" id="sight_1_point">1</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating2">2</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating3" value="3" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating3">3</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating4" value="4" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating4">4</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating5" value="5" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating5">5</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating6" value="6" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating6">6</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating7" value="7" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating7">7</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating8" value="8" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating8">8</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating9" value="9" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating9">9</label>
-          
+
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating10" value="10" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating10" id="size_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label> 
+              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Desireable</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label> 
+              <label class="pe-2  modal-info-shadow" for="size_10_point">Desireable</label>
             </div>
           </div>
         </div>
@@ -300,40 +300,40 @@
         <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Flavor Rating">
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating2">2</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating3">3</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating4">4</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating5">5</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating6">6</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating7">7</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating8">8</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating9">9</label>
-        
+
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating10" id="flavor_10_point">10</label>
         </div>
         <div class="row pt-1">
           <div class="col text-start">
-            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
+            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label> 
+            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
           </div>
         </div>
       </div>
@@ -358,40 +358,40 @@
         <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Harshness Rating">
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating1" id="smoothness_1_point">1</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating2" value="2" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating2">2</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating3" value="3" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating3">3</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating4" value="4" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating4">4</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating5" value="5" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating5">5</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating6" value="6" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating6">6</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating7" value="7" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating7">7</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating8" value="8" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating8">8</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating9" value="9" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating9">9</label>
-        
+
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating10" id="smoothness_10_point">10</label>
         </div>
         <div class="row pt-1">
           <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Nasty, Gross</label> 
+            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Nasty, Gross</label>
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable, Addicting</label> 
+            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable, Addicting</label>
           </div>
         </div>
       </div>
@@ -416,40 +416,40 @@
         <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating1" id="effects_1_point">1</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating2" value="2" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating2">2</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating3" value="3" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating3">3</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating4" value="4" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating4">4</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating5" value="5" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating5">5</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating6" value="6" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating6">6</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating7" value="7" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating7">7</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating8" value="8" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating8">8</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating9" value="9" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating9">9</label>
-        
+
           <input type="radio" class="btn-check" name="effects_rating" id="effects_rating10" value="10" autocomplete="off">
           <label class="btn btn-outline-dark" for="effects_rating10" id="effects_10_point">10</label>
         </div>
         <div class="row pt-1">
           <div class="col-6 text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label> 
+            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
           </div>
           <div class="col-6 text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label> 
+            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
           </div>
         </div>
       </div>
@@ -497,7 +497,7 @@
       elements.forEach(element => {
         element.classList.remove('btn-group-lg');
       });
-      
+
       const formElements = document.querySelectorAll('.form-select-lg');
       formElements.forEach(element => {
         element.classList.remove('form-select-lg');
@@ -535,17 +535,17 @@
     }
   }
   window.addEventListener('resize', adjustButtonSize);
-  
+
   document.addEventListener("DOMContentLoaded", function() {
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
         document.getElementById("newUserBackBtn").onclick = function() {
       $('#hiddenConcentrateVoterInfoCaptureModal').modal('hide');
     };
-  
+
     submitButton.addEventListener("click", function(event) {
       event.preventDefault();
-  
+
       const formData = new URLSearchParams();
         const emailInput = document.getElementById("new_connoisseur").value
         const lowerCasedEmail = emailInput.toLowerCase()
@@ -553,7 +553,7 @@
         formData.append('voter_email', lowerCasedEmail);
         formData.append('voter_phone', document.getElementById("connoisseur_phone").value);
         formData.append('voter_zip_code', document.getElementById("connoisseur_zip_code").value);
-    
+
         fetch("/submit-new-voter", {
           method: "POST",
           headers: {
@@ -577,20 +577,20 @@
         console.error("Error:", error);
       });
     });
-      
+
     async function checkVoterExists(email) {
       const lowerCaseEmail = email.toLowerCase();
       const root = window.location.origin;
       const url = new URL('/check-mystery-voter', root);
       url.searchParams.append('voter_email', lowerCaseEmail);
-      
+
       const response = await fetch(url, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json'
           }
       });
-  
+
       if (response.ok) {
           const data = await response.json();
           return data.exists;
@@ -599,7 +599,7 @@
           return false;
       }
     }
-      
+
     let step = 0;
     const formState = {
       "concentrate_id": "{{ id }}",
@@ -610,7 +610,7 @@
     const modalBody = document.getElementById('modalBody');
     const nextBtn = document.getElementById('nextBtn');
     const backBtn = document.getElementById('backBtn');
-    
+
     async function submitForm(formState) {
       try {
         const response = await fetch('/concentrate_ranking/submit-hidden-concentrate-ranking', {
@@ -631,21 +631,21 @@
         console.error("Error during submission:", error);
       }
     }
-    
+
     function updatePageLabel() {
       const currentQuestionIndex = step+1
       const totalQuestions = questions.length;
-    
+
       const currentPairIndex = Math.floor(currentQuestionIndex / 2);
       const totalPairs = Math.floor((totalQuestions+1) / 2);
-    
+
       const pageNumElement = document.getElementById("page_num");
       const pageLabelElement = document.getElementById("page_label");
-  
+
       pageNumElement.textContent = currentPairIndex + 1;
       pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex}</span> / ${totalPairs}`;
     }
-  
+
     function loadQuestion() {
       const intKeys = [
         "color_rating",
@@ -655,7 +655,7 @@
         "smell_rating",
         "harshness_rating",
       ];
-      
+
       if (step < 0) {
         step = 0;
       }
@@ -663,21 +663,21 @@
         const question = questions[step];
         modalTitle.innerHTML = question.title;
         modalBody.innerHTML = question.content;
-        
-    
+
+
         const input = document.getElementById(question.key);
-        
+
         document.addEventListener('keydown', function enterKeyHandler(event) {
           if (event.keyCode === 13) {
             event.preventDefault();
             nextBtn.click();
           }
         });
-    
+
         nextBtn.onclick = async function () {
           if (input) {
             var inputVal = input.value;
-              
+
             if (question.key === "connoisseur") {
               const voterExists = await checkVoterExists(input.value);
               if (!voterExists) {
@@ -689,12 +689,12 @@
             else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
-                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
+                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections.");
                 return;
               }
               const combinedString = selectedOptions.join(' ');
               formState['effects_explanation'] = combinedString;
-            } 
+            }
             else {
               formState[question.key] = input.value;
             }
@@ -702,19 +702,19 @@
             const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
             const radioVal = radioCheck ? radioCheck.value : "0";
             if (radioVal === "0") {
-              alert("Connoisseur Ratings Must Have a Value!"); 
+              alert("Connoisseur Ratings Must Have a Value!");
               return;
             }
             formState[question.key] = radioVal;
           }
-           
+
           $('#hiddenConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
             step++;
             loadQuestion();
             updatePageLabel()
             adjustButtonSize();
           });
-    
+
           if (!$('#hiddenConcentrateVoterInfoCaptureModal').hasClass('show')) {
             step++;
             loadQuestion();
@@ -732,14 +732,14 @@
       }
       backBtn.onclick = function () {
         $('#hiddenConcentrateVoterInfoCaptureModal').modal('hide');
-        
+
         $('#hiddenConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
           step--;
           loadQuestion();
           updatePageLabel()
           adjustButtonSize();
         });
-        
+
         if (!$('#hiddenConcentrateVoterInfoCaptureModal').hasClass('show')) {
           step--;
           loadQuestion();

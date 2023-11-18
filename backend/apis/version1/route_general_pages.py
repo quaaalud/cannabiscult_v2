@@ -541,11 +541,11 @@ async def handle_vibe_concentrate_post(
     strain: str = Query(None, alias="strain"),
     db: Session = Depends(get_db)
 ):
-    edible_dict = get_concentrate_data_and_path(
+    concentrate_dict = get_concentrate_data_and_path(
        db,
        strain=strain,
     )
-    response_dict = {"request": request, **edible_dict}
+    response_dict = {"request": request, **concentrate_dict}
     return templates.TemplateResponse(
         str(
             Path(
@@ -658,13 +658,9 @@ async def get_concentrate_strains_route(
     return route_concentrates.get_all_strains(db)
 
 
-@general_pages_router.get("/concentrate-get-all-cultivators", 
-                          response_model=List[str]
-)
-async def get_concentrate_cultivators_route(
-        db: Session = Depends(get_db)) -> List[str]:
+@general_pages_router.get("/concentrate-get-all-cultivators", response_model=List[str])
+async def get_concentrate_cultivators_route(db: Session = Depends(get_db)) -> List[str]:
     return route_concentrates.get_all_cultivators(db)
-
 
 @general_pages_router.get("/concentrate-get-strains-for-cultivator",
                           response_model=List[str]
@@ -858,9 +854,9 @@ async def submit_concentrate_review_vote(
         )
 
 
-@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]]) 
+@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]])
 def check_mystery_voter_email_by_get(
-      voter_email: str = Query(None, alias="voter_email"),      
+      voter_email: str = Query(None, alias="voter_email"),
       db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
     voter = get_voter_info_by_email(voter_email=voter_email, db=db)
@@ -868,9 +864,9 @@ def check_mystery_voter_email_by_get(
         return {'exists': False}
     return {'exists': True}
 
-@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]]) 
+@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]])
 def check_mystery_voter_email(
-      voter_email: str = Form(...),      
+      voter_email: str = Form(...),
       db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
     voter = get_voter_info_by_email(voter_email=voter_email, db=db)
