@@ -32,16 +32,15 @@ class Concentrate_Ranking(Base):
     smell_explanation = Column(String(500))
     harshness_explanation = Column(String(500))
     effects_explanation = Column(String(500))
-    
+
     date_posted = Column(
         Date,
         default=func.now(),
         nullable=False,
     )
     concentrate_id = Column(Integer, nullable=False)
-    
-    
-    
+
+
 class Hidden_Concentrate_Ranking(Base):
     hidden_concentrate_ranking_id = Column(
         Integer,
@@ -64,7 +63,7 @@ class Hidden_Concentrate_Ranking(Base):
     smell_explanation = Column(String(500))
     harshness_explanation = Column(String(500))
     effects_explanation = Column(String(500))
-    
+
     date_posted = Column(
         Date,
         default=func.now(),

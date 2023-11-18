@@ -9,7 +9,7 @@ Created on Sun Nov  5 17:09:03 2023
 from sqlalchemy import Column, String, BigInteger, Boolean
 from db.base_class import Base
 
-    
+
 class Concentrate(Base):
     __table_args__ = {'schema': 'public'}
 

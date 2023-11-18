@@ -10,7 +10,6 @@ from sqlalchemy import Column, String, Float, BigInteger, Date
 from db.base_class import Base
 
 
-
 class ConcentrateVoting(Base):
     __table_args__ = {'schema': 'public'}
 
