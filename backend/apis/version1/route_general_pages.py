@@ -714,11 +714,9 @@ async def process_concentrate_request(
         cultivator_selected,
         db=db
     )
-    user_is_logged_in = get_current_users_email() is not None
     try:
         request_dict = {
             "request": request,
-            "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
         return templates.TemplateResponse(
