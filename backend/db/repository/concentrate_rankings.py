@@ -25,8 +25,8 @@ def create_hidden_concentrate_ranking(hidden_ranking: CreateHiddenConcentrateRan
         return created_ranking
 
 
-def create_vibe_concentrate_ranking(vibe_ranking: CreateConcentrateRanking, db: Session):
-    ranking_data_dict = vibe_ranking.dict()
+def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
+    ranking_data_dict = ranking.dict()
     created_ranking = Vibe_Concentrate_Ranking(**ranking_data_dict)
     try:
         db.add(created_ranking)

@@ -13,7 +13,7 @@ from typing import Optional
 class ConcentrateRankingBase(BaseModel):
     cultivator: str
     strain: str
-    
+
     color_rating: float = Field(..., gt=0, lt=10.1)
     consistency_rating: float = Field(..., gt=0, lt=10.1)
     smell_rating: float = Field(..., gt=0, lt=10.1)
@@ -28,15 +28,14 @@ class ConcentrateRankingBase(BaseModel):
     harshness_explanation: Optional[str] = Field(None, max_length=500)
     residuals_explanation: Optional[str] = Field(None, max_length=500)
     effects_explanation: Optional[str] = Field(None, max_length=500)
-    
-    class Config():
+
+    class Config:
         from_attributes = True
 
 
 class CreateConcentrateRanking(ConcentrateRankingBase):
     connoisseur: EmailStr = Field(...)
-    concentrate_id: int = Field(...)
 
 
 class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
-    pass
+    concentrate_id: int = Field(...)

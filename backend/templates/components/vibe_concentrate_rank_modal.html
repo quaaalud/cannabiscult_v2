@@ -455,6 +455,64 @@
       key: "harshness_explanation"
     },
     {
+      title: "Vibe Conentrates - Residuals Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Residuals Rating">
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating1" id="residuals_1_point">1</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating2">2</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating3">3</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating4">4</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating5">5</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating6">6</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating7">7</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating8">8</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating9">9</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating10" id="residuals_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="residuals_1_point">Thick & Black</label>
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="residuals_10_point">None</label>
+          </div>
+        </div>
+      </div>
+      `,
+      key: "residuals_rating"
+    },
+    {
+      title: "Vibe Conentrates - Residuals Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="residuals_explanation" name="residuals_explanation" placeholder="Explain your residuals rating for {{ strain }}" aria-label="Residuals Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "residuals_explanation"
+    },
+    {
       title: "Vibe Conentrates - Effects Rating",
       content: `
       <div class="container align-items-center text-center">
@@ -591,15 +649,20 @@
       })
       .then(strainsObject => {
         const selectElement = document.getElementById('strain');
-        selectElement.length = 0;
+        while (selectElement.options.length > 1) {
+          selectElement.remove(1);
+        }
         
-        const strains = Object.values(strainsObject);
-        strains.forEach(strain => {
-          const option = document.createElement('option');
-          option.value = strain;
-          option.textContent = strain;
-          selectElement.appendChild(option);
-        });
+        if (Array.isArray(strainsObject)) {
+          strainsObject.forEach(strain => {
+            const option = document.createElement('option');
+            option.value = strain;
+            option.textContent = strain;
+            selectElement.appendChild(option);
+          });
+        } else {
+          console.error('Strains object is not an array:', strainsObject);
+        }
       })
       .catch(error => {
         console.error('Error fetching strains:', error);
@@ -681,7 +744,7 @@
     
     async function submitForm(formState) {
       try {
-        const response = await fetch('/concentrate_rankings/submit-vibe-concentrate-ranking', {
+        const response = await fetch('/concentrate_ranking/submit-vibe-concentrate-ranking', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -691,7 +754,7 @@
         console.log(response)
         if (response.ok) {
           const data = await response.json();
-          window.location.href = "https://cannabiscult.co/";
+          window.location.href = "https://cannabiscult.co/vibe_concentrate_ratings";
         } else {
           console.log("Submission failed:", response.status, response.statusText);
         }
@@ -721,6 +784,7 @@
         "effects_rating",
         "consistency_rating",
         "smell_rating",
+        "residuals_rating",
         "harshness_rating",
       ];
       
@@ -753,6 +817,16 @@
                 return;
               }
               formState[question.key] = input.value;
+              fetchAndPopulateStrains();
+            }
+            else if (question.key === "strain") {
+              const selectElement = document.getElementById('strain');
+              const selectedValue = selectElement.value;
+              if (selectedValue === "Select Strain") {
+                alert("Please select a strain before continuing.");
+                return;
+              }
+              formState[question.key] = selectedValue;
             }
             else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
@@ -836,7 +910,6 @@
     }
     adjustButtonSize();
     loadQuestion();
-    fetchAndPopulateStrains();
     updatePageLabel();
     adjustButtonSize();
   });
