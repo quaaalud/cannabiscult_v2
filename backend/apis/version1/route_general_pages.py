@@ -723,7 +723,7 @@ async def process_concentrate_request(
             str(
                 Path(
                     'general_pages',
-                    'voting-home.html'
+                    'connoisseur_concentrates.html'
                 )
             ),
             response_dict
