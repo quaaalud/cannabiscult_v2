@@ -104,4 +104,3 @@ class Vibe_Concentrate_Ranking(Base):
         default=func.now(),
         nullable=False,
     )
-    concentrate_id = Column(Integer, nullable=False)
