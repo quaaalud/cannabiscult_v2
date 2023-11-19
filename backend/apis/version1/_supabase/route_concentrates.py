@@ -132,7 +132,7 @@ async def query_concentrate_by_strain(
 ) -> Dict[str, Any]:
     return get_concentrate_data_and_path(
         db,
-        strain_select=strain,
+        strain,
     )
 
 

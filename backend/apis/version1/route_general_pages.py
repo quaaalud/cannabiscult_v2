@@ -709,11 +709,11 @@ async def process_concentrate_request(
     cultivator_selected: str,
     db: Session
 ):
-    review_dict = route_concentrates.return_selected_review(
-        strain_selected,
-        cultivator_selected,
+    review_dict = await route_concentrates.query_concentrate_by_strain(
+        strain=strain_selected,
         db=db
     )
+    print(review_dict)
     try:
         request_dict = {
             "request": request,
