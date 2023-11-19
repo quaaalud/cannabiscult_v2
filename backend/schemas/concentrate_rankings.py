@@ -19,12 +19,14 @@ class ConcentrateRankingBase(BaseModel):
     smell_rating: float = Field(..., gt=0, lt=10.1)
     flavor_rating: float = Field(..., gt=0, lt=10.1)
     harshness_rating: float = Field(..., gt=0, lt=10.1)
+    residuals_rating: float = Field(..., gt=0, lt=10.1)
     effects_rating: float = Field(..., gt=0, lt=10.1)
     color_explanation: Optional[str] = Field(None, max_length=500)
     consistency_explanation: Optional[str] = Field(None, max_length=500)
     flavor_explanation: Optional[str] = Field(None, max_length=500)
     smell_explanation: Optional[str] = Field(None, max_length=500)
     harshness_explanation: Optional[str] = Field(None, max_length=500)
+    residuals_explanation: Optional[str] = Field(None, max_length=500)
     effects_explanation: Optional[str] = Field(None, max_length=500)
     
     class Config():

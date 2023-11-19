@@ -410,6 +410,64 @@
       key: "harshness_explanation"
     },
     {
+      title: "{{ strain }} - Residuals Rating",
+      content: `
+      <div class="container align-items-center text-center">
+        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Residuals Rating">
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating1" value="1" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating1" id="residuals_1_point">1</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating2" value="2" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating2">2</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating3" value="3" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating3">3</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating4" value="4" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating4">4</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating5" value="5" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating5">5</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating6" value="6" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating6">6</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating7" value="7" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating7">7</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating8" value="8" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating8">8</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating9" value="9" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating9">9</label>
+
+          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating10" value="10" autocomplete="off">
+          <label class="btn btn-outline-dark" for="residuals_rating10" id="residuals_10_point">10</label>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow long-voting-label" for="residuals_1_point">Thick & Black</label>
+          </div>
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow long-voting-label" for="residuals_10_point">None</label>
+          </div>
+        </div>
+      </div>
+      `,
+      key: "residuals_rating"
+    },
+    {
+      title: "{{ strain }} - Residuals Rating Explanation",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3">
+            <input class="form-control text-center" type="text" id="residuals_explanation" name="residuals_explanation" placeholder="Explain your residuals rating for {{ strain }}" aria-label="Residuals Rating Explantion Field" />
+          </div>
+        </div>
+      `,
+      key: "residuals_explanation"
+    },
+    {
       title: "{{ strain }} - Effects Rating",
       content: `
       <div class="container align-items-center text-center">
@@ -654,6 +712,7 @@
         "consistency_rating",
         "smell_rating",
         "harshness_rating",
+        "residuals_rating",
       ];
 
       if (step < 0) {

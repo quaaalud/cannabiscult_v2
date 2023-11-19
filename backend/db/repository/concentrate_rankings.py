@@ -11,9 +11,7 @@ from schemas.concentrate_rankings import CreateHiddenConcentrateRanking
 from db.models.concentrate_rankings import Hidden_Concentrate_Ranking
 
 
-def create_hidden_concentrate_ranking(
-        hidden_ranking: CreateHiddenConcentrateRanking,
-        db:Session):
+def create_hidden_concentrate_ranking(hidden_ranking: CreateHiddenConcentrateRanking, db: Session):
     ranking_data_dict = hidden_ranking.dict()
     created_ranking = Hidden_Concentrate_Ranking(**ranking_data_dict)
     try:
@@ -26,3 +24,16 @@ def create_hidden_concentrate_ranking(
     finally:
         return created_ranking
       
+      
+def create_vibe_concentrate_ranking(vibe_ranking: CreateHiddenConcentrateRanking, db: Session):
+    ranking_data_dict = vibe_ranking.dict()
+    created_ranking = Hidden_Concentrate_Ranking(**ranking_data_dict)
+    try:
+        db.add(created_ranking)
+    except:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(created_ranking)
+    finally:
+        return created_ranking
