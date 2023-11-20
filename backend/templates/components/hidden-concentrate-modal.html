@@ -2,7 +2,7 @@
 <div class="modal fade w-100" id="hiddenConcentrateRankingsModal" tabindex="-1" aria-labelledby="hiddenConcentrateRankingsModalLabel" aria-hidden="true" style="min-width:100%">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content overflow-auto">
-      <form method="POST" action="/submit-vibe-edible-ranking" id="vidid-edible-ranking-form" name="submit-vidid-edible-form">
+      <form method="POST" action="/submit-{{ strain }}-edible-ranking" id="vidid-edible-ranking-form" name="submit-vidid-edible-form">
         <div class="container text-center pt-1 pb-1">
           <div class="row align-content-center justify-content-center pt-4">
               <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
@@ -123,9 +123,9 @@
       title: "{{ strain }} - Color Rating",
       content: `
         <div class="container">
-          <div class="btn-group" role="group" aria-label="Hidden {{ strain }} Color Rating">
+          <div class="btn-group" role="group" aria-label="{{ strain }} Color Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="color_rating" id="color_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating1" id="sight_1_point">1</label>
+            <label class="btn btn-outline-dark" for="color_rating1" id="color_1_point">1</label>
 
             <input type="radio" class="btn-check" name="color_rating" id="color_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating2">2</label>
@@ -152,14 +152,14 @@
             <label class="btn btn-outline-dark" for="color_rating9">9</label>
 
             <input type="radio" class="btn-check" name="color_rating" id="color_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="color_rating10" id="color_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label>
+              <label class="ps-2  modal-info-shadow" for="color_1_point">Not Healthy</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label>
+              <label class="pe-2  modal-info-shadow" for="color_10_point">Very Healthy</label>
             </div>
           </div>
         </div>
@@ -181,9 +181,9 @@
       title: "{{ strain }} - Smell Rating",
       content: `
         <div class="container">
-          <div class="btn-group" role="group" aria-label="Hidden {{ strain }} Smell Rating">
+          <div class="btn-group" role="group" aria-label="{{ strain }} Smell Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="smell_rating" id="smell_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating1" id="sight_1_point">1</label>
+            <label class="btn btn-outline-dark" for="smell_rating1" id="smell_1_point">1</label>
 
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating2">2</label>
@@ -210,14 +210,14 @@
             <label class="btn btn-outline-dark" for="smell_rating9">9</label>
 
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="smell_rating10" id="smell_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Weak <span class="long-voting-label">or</span> None</label>
+              <label class="ps-2  modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Strong <span class="long-voting-label">and</span> Good</label>
+              <label class="pe-2  modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungeant</label>
             </div>
           </div>
         </div>
@@ -239,9 +239,9 @@
       title: "{{ strain }} - Consistency Rating",
       content: `
         <div class="container">
-          <div class="btn-group" role="group" aria-label="Hidden {{ strain }} Consistency Rating">
+          <div class="btn-group" role="group" aria-label="{{ strain }} Consistency Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="consistency_rating" id="consistency_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating1" id="sight_1_point">1</label>
+            <label class="btn btn-outline-dark" for="consistency_rating1" id="consistency_1_point">1</label>
 
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating2">2</label>
@@ -268,14 +268,14 @@
             <label class="btn btn-outline-dark" for="consistency_rating9">9</label>
 
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="consistency_rating10" id="consistency_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Desireable</label>
+              <label class="ps-2  modal-info-shadow" for="consistency_1_point">Not Desireable</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Desireable</label>
+              <label class="pe-2  modal-info-shadow" for="consistency_10_point">Desireable</label>
             </div>
           </div>
         </div>
@@ -297,7 +297,7 @@
       title: "{{ strain }} - Flavor Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Flavor Rating">
+        <div class="btn-group" role="group" aria-label="{{ strain }} Flavor Rating">
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
 
@@ -352,12 +352,12 @@
       key: "flavor_explanation"
     },
     {
-      title: "{{ strain }} - Harshness Rating",
+      title: "{{ strain }} - Smoothness on Inhale Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Harshness Rating">
+        <div class="btn-group" role="group" aria-label="Vibe Conentrate Harshness Rating">
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating1" value="1" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating1" id="smoothness_1_point">1</label>
+          <label class="btn btn-outline-dark" for="harshness_rating1" id="harshness_1_point">1</label>
 
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating2" value="2" autocomplete="off">
           <label class="btn btn-outline-dark" for="harshness_rating2">2</label>
@@ -384,14 +384,14 @@
           <label class="btn btn-outline-dark" for="harshness_rating9">9</label>
 
           <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating10" value="10" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating10" id="smoothness_10_point">10</label>
+          <label class="btn btn-outline-dark" for="harshness_rating10" id="harshness_10_point">10</label>
         </div>
         <div class="row pt-1">
           <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Nasty, Gross</label>
+            <label class="ps-2 modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable, Addicting</label>
+            <label class="pe-2 modal-info-shadow long-voting-label" for="harshness_10_point">Enjoyable</label>
           </div>
         </div>
       </div>
@@ -399,7 +399,7 @@
       key: "harshness_rating"
     },
     {
-      title: "{{ strain }} - Harshness Rating Explanation",
+      title: "{{ strain }} - Smoothness on Inhale Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
@@ -413,7 +413,7 @@
       title: "{{ strain }} - Residuals Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Residuals Rating">
+        <div class="btn-group" role="group" aria-label="{{ strain }} Residuals Rating">
           <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="residuals_rating1" id="residuals_1_point">1</label>
 
