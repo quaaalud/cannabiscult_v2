@@ -139,7 +139,7 @@
         <div class="container">
           <div class="btn-group" role="group" aria-label="Vibe Concentrates Color Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="color_rating" id="color_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating1" id="sight_1_point">1</label>
+            <label class="btn btn-outline-dark" for="color_rating1" id="color_1_point">1</label>
 
             <input type="radio" class="btn-check" name="color_rating" id="color_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="color_rating2">2</label>
@@ -166,14 +166,14 @@
             <label class="btn btn-outline-dark" for="color_rating9">9</label>
 
             <input type="radio" class="btn-check" name="color_rating" id="color_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="color_rating10" id="color_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Healthy</label>
+              <label class="ps-2  modal-info-shadow" for="color_1_point">Not Healthy</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Very Healthy</label>
+              <label class="pe-2  modal-info-shadow" for="color_10_point">Very Healthy</label>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@
         <div class="container">
           <div class="btn-group" role="group" aria-label="Vibe Concentrates Smell Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="smell_rating" id="smell_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating1" id="sight_1_point">1</label>
+            <label class="btn btn-outline-dark" for="smell_rating1" id="smell_1_point">1</label>
 
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="smell_rating2">2</label>
@@ -224,14 +224,14 @@
             <label class="btn btn-outline-dark" for="smell_rating9">9</label>
 
             <input type="radio" class="btn-check" name="smell_rating" id="smell_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="smell_rating10" id="smell_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Weak <span class="long-voting-label">or</span> None</label>
+              <label class="ps-2  modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Strong <span class="long-voting-label">and</span> Good</label>
+              <label class="pe-2  modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungeant</label>
             </div>
           </div>
         </div>
@@ -255,7 +255,7 @@
         <div class="container">
           <div class="btn-group" role="group" aria-label="Vibe Conentrate Consistency Rating">
             <input type="radio" class="btn-check btn-outline-dark" name="consistency_rating" id="consistency_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating1" id="sight_1_point">1</label>
+            <label class="btn btn-outline-dark" for="consistency_rating1" id="consistency_1_point">1</label>
 
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating2" value="2" autocomplete="off">
             <label class="btn btn-outline-dark" for="consistency_rating2">2</label>
@@ -282,14 +282,14 @@
             <label class="btn btn-outline-dark" for="consistency_rating9">9</label>
 
             <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating10" id="size_10_point">10</label>
+            <label class="btn btn-outline-dark" for="consistency_rating10" id="consistency_10_point">10</label>
           </div>
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="size_1_point">Not Desireable</label>
+              <label class="ps-2  modal-info-shadow" for="consistency_1_point">Not Desireable</label>
             </div>
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="size_10_point">Desireable</label>
+              <label class="pe-2  modal-info-shadow" for="consistency_10_point">Desireable</label>
             </div>
           </div>
         </div>
@@ -363,31 +363,35 @@
             
             <div class="text-start fs-4">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
                 <label class="form-check-label" for="deliciousTaste">Delicious Taste</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tastesAsDescribed" value="tastesAsDescribed">
-                <label class="form-check-label" for="tastesAsDescribed">Tastes as described</label>
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="sweet" value="sweet">
+                <label class="form-check-label" for="sweet">Sweet</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="littleNoCannabisTaste" value="littleNoCannabisTaste">
-                <label class="form-check-label" for="littleNoCannabisTaste">Little/no cannabis taste</label>
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="pepper" value="pepper">
+                <label class="form-check-label" for="pepper">Pepper</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="badTaste" value="badTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="citrus" value="citrus">
+                <label class="form-check-label" for="citrus">Citrus</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="badTaste" value="badTaste">
                 <label class="form-check-label" for="badTaste">Bad taste</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
                 <label class="form-check-label" for="tooMuchFlavor">Too much flavor</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
                 <label class="form-check-label" for="tooLittleFlavor">Too little flavor</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
                 <label class="form-check-label" for="tooMuchCannabisTaste">Too much cannabis taste</label>
               </div>
             </div>
@@ -397,7 +401,7 @@
       key: "flavor_explanation"
     },
     {
-      title: "Vibe Conentrates - Harshness Rating",
+      title: "Smoothness on Inhale Rating",
       content: `
       <div class="container align-items-center text-center">
         <div class="btn-group" role="group" aria-label="Vibe Conentrate Harshness Rating">
@@ -433,10 +437,10 @@
         </div>
         <div class="row pt-1">
           <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Nasty, Gross</label>
+            <label class="ps-2 modal-info-shadow long-voting-label" for="smoothness_1_point">Very Harsh</label>
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable, Addicting</label>
+            <label class="pe-2 modal-info-shadow long-voting-label" for="smoothness_10_point">Enjoyable</label>
           </div>
         </div>
       </div>
@@ -444,21 +448,21 @@
       key: "harshness_rating"
     },
     {
-      title: "Vibe Conentrates - Harshness Rating Explanation",
+      title: "Smoothness on Inhale Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your harshness rating for {{ strain }}" aria-label="Harshness Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your smoothness rating for Vibe's Concentrate" aria-label="Harshness Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "harshness_explanation"
     },
     {
-      title: "Vibe Conentrates - Residuals Rating",
+      title: "Residuals Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe {{ strain }} Residuals Rating">
+        <div class="btn-group" role="group" aria-label="Vibe Residuals Rating">
           <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="residuals_rating1" id="residuals_1_point">1</label>
 
@@ -494,7 +498,7 @@
             <label class="ps-2 modal-info-shadow long-voting-label" for="residuals_1_point">Thick & Black</label>
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="residuals_10_point">None</label>
+            <label class="pe-2 modal-info-shadow long-voting-label" for="residuals_10_point">Clean Melt</label>
           </div>
         </div>
       </div>
@@ -502,7 +506,7 @@
       key: "residuals_rating"
     },
     {
-      title: "Vibe Conentrates - Residuals Rating Explanation",
+      title: "Residuals Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
@@ -839,21 +843,20 @@
             } 
             else if (question.key === "flavor_explanation") {
               const flavorOptions = document.getElementsByName('flavorOptions');
-              let selectedOption = '';
-              
+              let selectedOptions = [];
+            
               for (const option of flavorOptions) {
                 if (option.checked) {
-                  selectedOption = option.value;
-                  break;
+                  selectedOptions.push(option.value);
                 }
               }
-              
-              if (!selectedOption) {
-                alert("Please select a flavor profile for your rating."); 
+            
+              if (selectedOptions.length === 0) {
+                alert("Please select at least one flavor profile for your rating.");
                 return;
               }
             
-              formState['flavor_explanation'] = selectedOption;
+              formState['flavor_explanation'] = selectedOptions.join(', ');
             }
             else {
               formState[question.key] = input.value;
