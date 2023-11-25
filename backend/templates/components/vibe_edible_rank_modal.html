@@ -368,31 +368,31 @@
             
             <div class="text-start fs-4">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
                 <label class="form-check-label" for="deliciousTaste">Delicious Taste</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tastesAsDescribed" value="tastesAsDescribed">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tastesAsDescribed" value="tastesAsDescribed">
                 <label class="form-check-label" for="tastesAsDescribed">Tastes as described</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="littleNoCannabisTaste" value="littleNoCannabisTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="littleNoCannabisTaste" value="littleNoCannabisTaste">
                 <label class="form-check-label" for="littleNoCannabisTaste">Little/no cannabis taste</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="badTaste" value="badTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="badTaste" value="badTaste">
                 <label class="form-check-label" for="badTaste">Bad taste</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
                 <label class="form-check-label" for="tooMuchFlavor">Too much flavor</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
                 <label class="form-check-label" for="tooLittleFlavor">Too little flavor</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
+                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
                 <label class="form-check-label" for="tooMuchCannabisTaste">Too much cannabis taste</label>
               </div>
             </div>
@@ -687,22 +687,13 @@
               formState['effects_explanation'] = combinedString;
             } 
             else if (question.key === "flavor_explanation") {
-              const flavorOptions = document.getElementsByName('flavorOptions');
-              let selectedOption = '';
-              
-              for (const option of flavorOptions) {
-                if (option.checked) {
-                  selectedOption = option.value;
-                  break;
-                }
-              }
-              
-              if (!selectedOption) {
+              const flavorOptions = Array.from(document.getElementById('flavor_explanation').selectedOptions).map(option => option.value);
+              if (flavorOptions < 1) {
                 alert("Please select a flavor profile for {{ edible }}."); 
                 return;
               }
-            
-              formState['flavor_explanation'] = selectedOption;
+              const combinedString = flavorOptions.join(' ');
+              formState['flavor_explanation'] = combinedString;
             }
             else {
               formState[question.key] = input.value;

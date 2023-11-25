@@ -311,7 +311,7 @@
       title: "Vibe Conentrates - Flavor Rating",
       content: `
       <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe Conentrate Flavor Rating">
+        <div class="btn-group" role="group" aria-label="Vibe Concentrate Flavor Rating">
           <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
           <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
         
@@ -355,46 +355,11 @@
       key: "flavor_rating"
     },
     {
-      title: "Vibe Conentrates - Flavor Rating Explanation",
+      title: "Vibe's Concentrate Flavor Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center mb-3" type="hidden" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for Vibe Conentrates" aria-label="Flavor Vote Explanation Field" />
-            
-            <div class="text-start fs-4">
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="deliciousTaste" value="deliciousTaste">
-                <label class="form-check-label" for="deliciousTaste">Delicious Taste</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="sweet" value="sweet">
-                <label class="form-check-label" for="sweet">Sweet</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="pepper" value="pepper">
-                <label class="form-check-label" for="pepper">Pepper</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="citrus" value="citrus">
-                <label class="form-check-label" for="citrus">Citrus</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="badTaste" value="badTaste">
-                <label class="form-check-label" for="badTaste">Bad taste</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooMuchFlavor" value="tooMuchFlavor">
-                <label class="form-check-label" for="tooMuchFlavor">Too much flavor</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooLittleFlavor" value="tooLittleFlavor">
-                <label class="form-check-label" for="tooLittleFlavor">Too little flavor</label>
-              </div>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="flavorOptions" id="tooMuchCannabisTaste" value="tooMuchCannabisTaste">
-                <label class="form-check-label" for="tooMuchCannabisTaste">Too much cannabis taste</label>
-              </div>
-            </div>
+            <input class="form-control text-center" type="text" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
           </div>
         </div>
       `,
@@ -440,7 +405,7 @@
             <label class="ps-2 modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
           </div>
           <div class="col text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="harshness_10_point">Enjoyable</label>
+            <label class="pe-2 modal-info-shadow long-voting-label" for="harshness_10_point">Smooth & Enjoyable</label>
           </div>
         </div>
       </div>
@@ -495,7 +460,7 @@
         </div>
         <div class="row pt-1">
           <div class="col text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="residuals_1_point">Thick & Black</label>
+            <label class="ps-2 modal-info-shadow long-voting-label" for="residuals_1_point">Thick, Dirty Melt</label>
           </div>
           <div class="col text-end">
             <label class="pe-2 modal-info-shadow long-voting-label" for="residuals_10_point">Clean Melt</label>
@@ -841,23 +806,6 @@
               const combinedString = selectedOptions.join(' ');
               formState['effects_explanation'] = combinedString;
             } 
-            else if (question.key === "flavor_explanation") {
-              const flavorOptions = document.getElementsByName('flavorOptions');
-              let selectedOptions = [];
-            
-              for (const option of flavorOptions) {
-                if (option.checked) {
-                  selectedOptions.push(option.value);
-                }
-              }
-            
-              if (selectedOptions.length === 0) {
-                alert("Please select at least one flavor profile for your rating.");
-                return;
-              }
-            
-              formState['flavor_explanation'] = selectedOptions.join(', ');
-            }
             else {
               formState[question.key] = input.value;
             }
