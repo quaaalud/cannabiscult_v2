@@ -14,6 +14,9 @@ h4 {
 }
 
 
+.navy-color-parent * {
+    color: hsl(231, 52.6%, 20%);
+}
 
 .banner-image {
   background-position: center;
