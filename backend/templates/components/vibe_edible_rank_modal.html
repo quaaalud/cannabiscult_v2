@@ -687,12 +687,16 @@
               formState['effects_explanation'] = combinedString;
             } 
             else if (question.key === "flavor_explanation") {
-              const flavorOptions = Array.from(document.getElementById('flavor_explanation').selectedOptions).map(option => option.value);
-              if (flavorOptions < 1) {
-                alert("Please select a flavor profile for {{ edible }}."); 
+              const checkboxes = document.querySelectorAll('input[name="flavorOptions"]:checked');
+              if (checkboxes.length === 0) {
+                alert("Please describe the flavor profile for {{ edible }}.");
                 return;
               }
-              const combinedString = flavorOptions.join(' ');
+            
+              const selectedOptions = Array.from(checkboxes).map(checkbox => checkbox.value);
+            
+              const combinedString = selectedOptions.join(' ');
+            
               formState['flavor_explanation'] = combinedString;
             }
             else {
