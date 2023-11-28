@@ -171,7 +171,7 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="color_explanation" name="color_explanation" placeholder="Explain your color rating for {{ strain }}" aria-label="Color Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="color_explanation" name="color_explanation" placeholder="Explain your color rating for {{ strain }}" aria-label="Color Rating Explantion Field" autocomplete="off"/>
           </div>
         </div>
       `,
@@ -229,7 +229,7 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="smell_explanation" name="smell_explanation" placeholder="Explain your smell rating for {{ strain }}" aria-label="Smell Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="smell_explanation" name="smell_explanation" placeholder="Explain your smell rating for {{ strain }}" aria-label="Smell Rating Explantion Field" autocomplete="off"/>
           </div>
         </div>
       `,
@@ -287,7 +287,7 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="consistency_explanation" name="consistency_explanation" placeholder="Explain your consistency rating for {{ strain }}" aria-label="Consistency Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="consistency_explanation" name="consistency_explanation" placeholder="Explain your consistency rating for {{ strain }}" aria-label="Consistency Rating Explantion Field" autocomplete="off"/>
           </div>
         </div>
       `,
@@ -345,7 +345,7 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" />
+            <input class="form-control text-center" type="text" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" autocomplete="off"/>
           </div>
         </div>
       `,
@@ -403,7 +403,7 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your harshness rating for {{ strain }}" aria-label="Harshness Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your harshness rating for {{ strain }}" aria-label="Harshness Rating Explantion Field" autocomplete="off"/>
           </div>
         </div>
       `,
@@ -461,7 +461,7 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="residuals_explanation" name="residuals_explanation" placeholder="Explain your residuals rating for {{ strain }}" aria-label="Residuals Rating Explantion Field" />
+            <input class="form-control text-center" type="text" id="residuals_explanation" name="residuals_explanation" placeholder="Explain your residuals rating for {{ strain }}" aria-label="Residuals Rating Explantion Field" autocomplete="off"/>
           </div>
         </div>
       `,
@@ -752,7 +752,7 @@
                 return;
               }
               const combinedString = selectedOptions.join(' ');
-              formState['effects_explanation'] = combinedString;
+              formState[question.key] = combinedString;
             }
             else {
               formState[question.key] = input.value;
