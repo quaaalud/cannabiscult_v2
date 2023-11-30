@@ -60,4 +60,3 @@ class FlowerReview(Base):
         ARRAY(String),
         nullable=True
     )
-
