@@ -47,7 +47,7 @@ class Concentrate(Base):
 
 class Concentrate_Descriptions(Base):
     __table_args__ = {'schema': 'public'}
-    description_id = Column(BigInteger, primary_key=True, autoincrement=True)
+#    description_id = Column(BigInteger, primary_key=True, autoincrement=True)
     concentrate_id = Column(
         BigInteger, ForeignKey('concentrate.concentrate_id', onupdate="CASCADE"), nullable=True
     )
