@@ -43,18 +43,3 @@ class Concentrate(Base):
         Boolean,
         default=True,
     )
-
-
-class Concentrate_Descriptions(Base):
-    __table_args__ = {'schema': 'public'}
-#    description_id = Column(BigInteger, primary_key=True, autoincrement=True)
-    concentrate_id = Column(
-        BigInteger, ForeignKey('concentrate.concentrate_id', onupdate="CASCADE"), nullable=True
-    )
-    description = Column(Text, nullable=False, default='Coming Soon')
-    effects = Column(Text, nullable=False, default='Coming Soon')
-    lineage = Column(Text, nullable=False, default='Coming Soon')
-    terpenes_list = Column(ARRAY(Text), nullable=True)
-    cultivar_email = Column(
-        Text, ForeignKey('mysteryvoter.email', onupdate="CASCADE"), nullable=False
-    )
