@@ -317,8 +317,8 @@ async def get_all_cultivators_for_strain_route(
 async def process_flower_request(
     request: Request, strain_selected: str, cultivator_selected: str, db: Session
 ):
-    review_dict = return_selected_review(strain_selected, cultivator_selected, db=db)
     user_is_logged_in = get_current_users_email() is not None
+    review_dict = await return_selected_review(strain_selected, cultivator_selected, db=db)
     try:
         request_dict = {
             "request": request,

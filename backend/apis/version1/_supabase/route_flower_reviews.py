@@ -71,7 +71,7 @@ def get_all_cultivators_for_strain(
     return sorted(set([result[0] for result in all_cultivators]))
 
 
-def return_selected_review(
+async def return_selected_review(
         strain_selected: str,
         cultivator_selected: str,
         db: Session = Depends(get_supa_db)
