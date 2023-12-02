@@ -75,6 +75,6 @@ async def get_top_strains(db: Session = Depends(get_supa_db)):
         )
         scored_strains.append((strain[0], strain[1], round(overall_score, 1)))
     scored_strains.sort(key=lambda x: x[2], reverse=True)
-    top_strains = scored_strains[:5]
+    top_strains = scored_strains[:3]
 
     return top_strains

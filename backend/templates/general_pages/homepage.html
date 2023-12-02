@@ -54,28 +54,12 @@
 
 {% block content %} 
 
-  <div class="container-fluid text-center pt-3">
-    <div 
-      class="container-fluid text-center" 
-      style="padding:2em"
-      data-aos="fade-in"
-      data-aos-duration="2000"
-      data-aos-easing="ease-in-out"
-      data-aos-mirror="true"
-      data-aos-once="false"
-      data-aos-anchor-placement="top-center"
-    >
-      <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/brain_vector.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL2JyYWluX3ZlY3Rvci5zdmciLCJpYXQiOjE2OTUwOTM0MzIsImV4cCI6MTcyNjYyOTQzMn0.aORzL_pXYA8OQGUdHaMGjO9qDPKZ7mSfeTnGK0ScNuU&t=2023-09-19T03%3A17%3A12.711Z" loading="lazy">
-    </div>
-  </div>
+  {% include "components/homepage_elements/top_logo_header.html" %}
+  {% include "components/homepage_elements/homepage_features.html" %}
   <div style="padding-top:50px;">
     {% include "components/flower_review_selector.html" %}
   </div>
-  <div class="container text-center" style="height:450px; width:400px">
-    <div style="padding-top:50px;">
-      {% include "components/partner_carousel.html" %}
-    </div>
-  </div>
+  {% include "components/top_rated_flower.html" %}
   <div class="map-locator col">
     <div class="row text-center">
       <h1><b><u>Dispensaries Near Me</u></b></h1>

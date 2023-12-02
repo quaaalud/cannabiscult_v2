@@ -1,0 +1,57 @@
+<div style="position: relative;" data-draggable="true">
+  <section draggable="false" class="container pt-5" data-v-271253ee="">
+    <section class="mb-10">
+      <h2 class="fw-bold mb-5 text-center">
+        Top Flower<br>
+      </h2>
+      <div id="flowerContainer"></div>
+    </section>
+  </section>
+</div>
+
+<script>
+  async function fetchFlowerData() {
+    try {
+      const response = await fetch('/flower_voting/get_top_flower_strains');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const flowerData = await response.json();
+
+      updateFlowerData(flowerData);
+    } catch (error) {
+      console.error('Error fetching flower data:', error);
+    }
+  }
+
+  function updateFlowerData(data) {
+    const container = document.getElementById('flowerContainer');
+    let htmlContent = '';
+
+    data.forEach((flower, index) => {
+      const strain = flower[0];
+      const cultivator = flower[1];
+      const score = flower[2];
+      htmlContent += `
+      <div class="row mb-4">
+        <div class="col-md-3 mb-4 mb-md-0 ms-auto">
+          <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
+            <img src="https://mdbootstrap.com/img/new/standard/city/018.jpg" class="w-100" alt="" aria-controls="#picker-editor">
+          </div>
+        </div>
+        <div class="col-md-9 col-xl-7 mb-4 mb-md-0 me-auto">
+          <h5 class="fw-bold">${strain}</h5>
+          <div class="mb-2 text-danger small">
+            <i class="fas fa-globe-americas me-2" aria-controls="#picker-editor"></i>
+            <!-- Icon and other static content -->
+            <span>${cultivator}</span>
+          </div>
+          <p class="text-muted">${score}</p>
+        </div>
+      </div>`;
+    });
+    container.innerHTML = htmlContent;
+  }
+
+  fetchFlowerData();
+</script>
