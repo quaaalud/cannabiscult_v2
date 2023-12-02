@@ -1,10 +1,17 @@
 <div style="position: relative;" data-draggable="true">
   <section draggable="false" class="container pt-5" data-v-271253ee="">
     <section class="mb-10">
-      <h2 class="fw-bold mb-5 text-center">
-        Top Flower<br>
-      </h2>
-      <div id="flowerContainer"></div>
+      <h1 class="mb-5 fs-1 text-center map-locator">
+        <u><b>Cultivar Flower Rankings</b></u><br>
+      </h1>
+      <div class="container-fluid">
+        <div class="col-12">
+          <div id="flowerContainer"></div>
+        </div>
+        <div class="col-12">
+          {% include "components/flower_review_selector.html" %}
+        </div>
+      </div>
     </section>
   </section>
 </div>
@@ -38,17 +45,17 @@
       <div class="row mb-4">
         <div class="col-md-3 mb-4 mb-md-0 ms-auto">
           <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
-            <img src=${url_path} class="w-100" alt="" aria-controls="#picker-editor" loading="lazy">
+            <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
           </div>
         </div>
         <div class="col-md-9 col-xl-7 mb-4 mb-md-0 me-auto">
-          <h5 class="fw-bold">${strain}</h5>
-          <div class="mb-2 text-danger small">
-            <i class="fas fa-globe-americas me-2" aria-controls="#picker-editor"></i>
+          <h5 class="fw-bold fs-1">${strain}</h5>
+          <div class="mb-2 text-info small">
+            <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
             <!-- Icon and other static content -->
-            <span>${cultivator}</span>
+            <span class="fs-4">${cultivator}</span>
           </div>
-          <p class="text-muted">${score}</p>
+          <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
         </div>
       </div>`;
     });
