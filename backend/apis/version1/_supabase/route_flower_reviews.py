@@ -71,6 +71,7 @@ def get_all_cultivators_for_strain(
     return sorted(set([result[0] for result in all_cultivators]))
 
 
+@router.get("/get_flower_from_strain_and_cultivator", response_model=list)
 async def return_selected_review(
         strain_selected: str,
         cultivator_selected: str,

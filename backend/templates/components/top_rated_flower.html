@@ -32,11 +32,13 @@
       const strain = flower[0];
       const cultivator = flower[1];
       const score = flower[2];
+      const url_path = flower[3];
+      console.log(url_path);
       htmlContent += `
       <div class="row mb-4">
         <div class="col-md-3 mb-4 mb-md-0 ms-auto">
           <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
-            <img src="https://mdbootstrap.com/img/new/standard/city/018.jpg" class="w-100" alt="" aria-controls="#picker-editor">
+            <img src=${url_path} class="w-100" alt="" aria-controls="#picker-editor">
           </div>
         </div>
         <div class="col-md-9 col-xl-7 mb-4 mb-md-0 me-auto">

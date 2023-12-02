@@ -13,6 +13,7 @@ from fastapi import Depends
 from db.session import get_supa_db
 from db.models.flower_voting import FlowerVoting
 from db.repository.flower_voting import add_new_flower_vote
+from db.repository.flower_reviews import get_review_data_and_path
 from schemas.flower_voting import FlowerVoteCreate
 
 
@@ -76,5 +77,11 @@ async def get_top_strains(db: Session = Depends(get_supa_db)):
         scored_strains.append((strain[0], strain[1], round(overall_score, 1)))
     scored_strains.sort(key=lambda x: x[2], reverse=True)
     top_strains = scored_strains[:3]
+    return_strains = []
+    for strain in top_strains:
+        card_path = get_review_data_and_path(db, strain[1], strain[0])["url_path"]
+        card_path = str(card_path).replace(" ", "+")
+        strain_with_path = (strain[0], strain[1], round(strain[2], 1), card_path)
+        return_strains.append(strain_with_path)
 
-    return top_strains
+    return return_strains
