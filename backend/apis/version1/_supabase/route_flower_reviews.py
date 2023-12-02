@@ -46,8 +46,8 @@ def get_all_cultivators(
             ]
         )
     )
-  
-  
+
+
 def get_mystery_pack_cultivators(
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_cultivators = db.query(FlowerReview.cultivator).all()
@@ -71,7 +71,7 @@ def get_all_cultivators_for_strain(
     return sorted(set([result[0] for result in all_cultivators]))
 
 
-@router.get("/get_flower_from_strain_and_cultivator", response_model=list)
+@router.get("/get_flower_from_strain_and_cultivator", response_model=dict)
 async def return_selected_review(
         strain_selected: str,
         cultivator_selected: str,
