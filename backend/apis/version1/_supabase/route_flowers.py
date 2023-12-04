@@ -6,18 +6,20 @@ Created on Mon Sep  4 17:26:25 2023
 @author: dale
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from fastapi import Depends, Query
 from typing import List, Dict, Any
 from db.session import get_supa_db, get_db
 from db.repository.flower_reviews import append_votes_to_arrays
 from db.repository.flower_reviews import get_review_data_and_path
 from db.repository.flower_reviews import get_review_data_and_path_from_id
-from db.repository.flowers import get_flower_data_and_path, get_vibe_flower_strains
+from db.repository.flowers import get_flower_data_and_path
 from db.models.flower_reviews import FlowerReview
-from db.repository.flower_voting import add_new_vote
+from db.repository.flower_voting import add_new_flower_vote
 from schemas.flower_voting import FlowerVoteCreate
+
+# New Flower Modules
+from db.repository.flowers import get_flower_and_description, get_flower_and_description_by_id
 
 
 router = APIRouter()
@@ -32,9 +34,7 @@ def get_all_strains_for_cultivator(
     cultivator_selected: str, db: Session = Depends(get_supa_db)
 ) -> List[str]:
     all_strains = (
-        db.query(FlowerReview.strain)
-        .filter(FlowerReview.cultivator == cultivator_selected)
-        .all()
+        db.query(FlowerReview.strain).filter(FlowerReview.cultivator == cultivator_selected).all()
     )
     return sorted([result[0] for result in all_strains])
 
@@ -48,9 +48,7 @@ def get_all_cultivators_for_strain(
     strain_selected: str, db: Session = Depends(get_supa_db)
 ) -> List[str]:
     all_cultivators = (
-        db.query(FlowerReview.cultivator)
-        .filter(FlowerReview.strain == strain_selected)
-        .all()
+        db.query(FlowerReview.cultivator).filter(FlowerReview.strain == strain_selected).all()
     )
     return sorted(set([result[0] for result in all_cultivators]))
 
@@ -120,7 +118,7 @@ def add_flower_vote_to_db(
         effects_explanation=effects_explanation,
         user_email=user_email,
     )
-    return add_new_vote(
+    return add_new_flower_vote(
         vote,
         db=db,
     )
@@ -136,18 +134,28 @@ async def query_flower_by_strain(
     )
 
 
-@router.get("/get-vibe-flower")
-async def query_vibe_flower_by_strain(
-    strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
+@router.get("/get_flower_description")
+async def query_flower_description_by_strain(
+    strain: str = Query(None, alias="strain"),
+    cultivator: str = Query(None, alias="cultivator"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar"),
+    db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
-    return get_flower_data_and_path(
-        db,
-        strain_select=strain,
-    )
+    flower_data = get_flower_and_description(db, strain, cultivar_email, cultivator)
+    if flower_data:
+        return flower_data
+    else:
+        raise HTTPException(status_code=404, detail="Flower or description not found")
 
 
-@router.get("/get-vibe-flower-strains", response_model=List[str])
-async def query_vibe_flower_strains(
-    db: Session = Depends(get_db)
-) -> List[str]:
-    return get_vibe_flower_strains(db)
+@router.get("/get_flower_id")
+async def query_flower_with_description_by_id(
+    flower_id: str = Query(None, alias="flower_id"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar"),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    flower_data = get_flower_and_description_by_id(db, flower_id, cultivar_email)
+    if flower_data:
+        return flower_data
+    else:
+        raise HTTPException(status_code=404, detail="Flower or description not found")
