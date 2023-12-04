@@ -8,7 +8,7 @@
         <div class="col-12">
           <div id="flowerContainer"></div>
         </div>
-        <div class="col-12">
+        <div class="col-12 pt-5">
           {% include "components/flower_review_selector.html" %}
         </div>
       </div>
@@ -36,26 +36,40 @@
     let htmlContent = '';
 
     data.forEach((flower, index) => {
-      const strain = flower[0];
-      const cultivator = flower[1];
-      const score = flower[2];
-      const url_path = flower[3];
+      const strain = flower["strain"];
+      const cultivator = flower["cultivator"];
+      const score = flower["overall_score"];
+      const url_path = flower["url_path"];
+      const description_text = flower["description_text"];
+      const effects = flower["effects"];
+      const lineage = flower["lineage"];
       console.log(url_path);
       htmlContent += `
-      <div class="row mb-4">
+      <div class="row mb-4 my-auto">
         <div class="col-md-3 mb-4 mb-md-0 ms-auto">
           <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
             <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
           </div>
         </div>
         <div class="col-md-9 col-xl-7 mb-4 mb-md-0 me-auto">
-          <h5 class="fw-bold fs-1">${strain}</h5>
-          <div class="mb-2 text-info small">
-            <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
-            <!-- Icon and other static content -->
-            <span class="fs-4">${cultivator}</span>
+          <div class="row my-auto">
+            <div class="col-12 col-lg-5">
+              <h5 class="fw-bold fs-1">${strain}</h5>
+              <div class="mb-2 text-info small">
+                <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
+                <!-- Icon and other static content -->
+                <span class="fs-4">${cultivator}</span>
+              </div>
+              <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
+            </div>
+            <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
+              <p class="d-none text-dark">${description_text}</p>
+              <p class="fs-4">Effects:</p>
+              <p class="text-dark">${effects}</p>
+              <p class="fs-4">Lineage:</p>
+              <p class="text-dark">${lineage}</p>
+            </div>
           </div>
-          <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
         </div>
       </div>`;
     });
