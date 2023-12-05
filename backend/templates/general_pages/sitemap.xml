@@ -3,39 +3,43 @@
       xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
 <url>
   <loc>https://cannabiscult.co/</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
   <loc>https://cannabiscult.co/voting-home</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://cannabiscult.co/login</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://cannabiscult.co/forgot-password</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <loc>https://cannabiscult.co/get-review?strain_selected=Ice+Cream+Cake&amp;cultivator_selected=Local+Cannabis</loc>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://cannabiscult.co/terms-of-use</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://cannabiscult.co/privacy-policy</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
   <loc>https://cannabiscult.co/unsubscribe</loc>
-  <lastmod>2023-09-26T23:17:31+00:00</lastmod>
+  <lastmod>2023-12-05T03:40:16+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 
