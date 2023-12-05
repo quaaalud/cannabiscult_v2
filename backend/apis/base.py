@@ -34,6 +34,7 @@ from fastapi import APIRouter
 import route_general_pages
 import route_subscribers
 import route_users
+from _supabase import route_flowers
 from _supabase import route_concentrates
 from _supabase import route_concentrate_rankings
 from _supabase import route_edibles
@@ -58,6 +59,11 @@ api_router.include_router(
     route_users.router,
     prefix="/users",
     tags=["user"]
+)
+api_router.include_router(
+    route_flowers.router,
+    prefix="/flowers",
+    tags=["flowers"]
 )
 api_router.include_router(
     route_edibles.router,

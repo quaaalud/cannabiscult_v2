@@ -54,29 +54,15 @@
 
 {% block content %} 
 
-  <div class="container-fluid text-center pt-3">
-    <div 
-      class="container-fluid text-center" 
-      style="padding:2em"
-      data-aos="fade-in"
-      data-aos-duration="2000"
-      data-aos-easing="ease-in-out"
-      data-aos-mirror="true"
-      data-aos-once="false"
-      data-aos-anchor-placement="top-center"
-    >
-      <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/brain_vector.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL2JyYWluX3ZlY3Rvci5zdmciLCJpYXQiOjE2OTUwOTM0MzIsImV4cCI6MTcyNjYyOTQzMn0.aORzL_pXYA8OQGUdHaMGjO9qDPKZ7mSfeTnGK0ScNuU&t=2023-09-19T03%3A17%3A12.711Z" loading="lazy">
-    </div>
+  {% include "components/homepage_elements/top_logo_header.html" %}
+  <hr class="hr hr-blurry" />
+  <div class="container align-items-center justify-items-center">
+    {% include "components/homepage_elements/homepage_features.html" %}
   </div>
-  <div style="padding-top:50px;">
-    {% include "components/flower_review_selector.html" %}
-  </div>
-  <div class="container text-center" style="height:450px; width:400px">
-    <div style="padding-top:50px;">
-      {% include "components/partner_carousel.html" %}
-    </div>
-  </div>
-  <div class="map-locator col">
+  <hr class="hr hr-blurry" />
+  {% include "components/top_rated_flower.html" %}
+  <hr class="hr hr-blurry" />
+  <div class="map-locator col py-5 mb-5">
     <div class="row text-center">
       <h1><b><u>Dispensaries Near Me</u></b></h1>
     </div>
@@ -84,7 +70,8 @@
       <div id="zenlocator-map-pg2vvfnw"></div><script type="text/javascript" src="https://js.zenlocator.com/xhtkvgxg.min.js" async defer></script>
     </div>
   </div>
-  <div class="col cult-picks">
+
+  <div class="col cult-picks pt-5 mb-10">
     <div class="container-fluid text center" style="padding:5px">
       <div class="row text-center">
         <h1 class="animate__animated animate__fadeInUp"><b><u>Cult Picks</u></b></h1>
@@ -92,7 +79,8 @@
     {% include "components/display_partner_deals.html" %}
     </div>
   </div>
-  <div class="row m-md-3 m-lg-5 pt-3 pb-5 justify-content-center">
+
+  <div class="row m-md-3 m-lg-5 mt-10 pt-5 pb-5 justify-content-center">
     <div class="container container-sm" style="max-width: 75rem; background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
       <div class="accordion" id="fromAccordion">
         <div class="accordion-item" id="fromAccordionItem">

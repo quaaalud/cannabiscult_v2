@@ -1,0 +1,80 @@
+<div style="position: relative;" data-draggable="true">
+  <section draggable="false" class="container pt-5" data-v-271253ee="">
+    <section class="mb-10">
+      <h1 class="mb-5 fs-1 text-center map-locator">
+        <u><b>Cultivar Flower Rankings</b></u><br>
+      </h1>
+      <div class="container-fluid">
+        <div class="col-12">
+          <div id="flowerContainer"></div>
+        </div>
+        <div class="col-12 pt-5">
+          {% include "components/flower_review_selector.html" %}
+        </div>
+      </div>
+    </section>
+  </section>
+</div>
+
+<script>
+  async function fetchFlowerData() {
+    try {
+      const response = await fetch('/flower_voting/get_top_flower_strains');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const flowerData = await response.json();
+
+      updateFlowerData(flowerData);
+    } catch (error) {
+      console.error('Error fetching flower data:', error);
+    }
+  }
+
+  function updateFlowerData(data) {
+    const container = document.getElementById('flowerContainer');
+    let htmlContent = '';
+
+    data.forEach((flower, index) => {
+      const strain = flower["strain"];
+      const cultivator = flower["cultivator"];
+      const score = flower["overall_score"];
+      const url_path = flower["url_path"];
+      const description_text = flower["description_text"];
+      const effects = flower["effects"];
+      const lineage = flower["lineage"];
+      console.log(url_path);
+      htmlContent += `
+      <div class="row mb-4 my-auto">
+        <div class="col-md-3 mb-4 mb-md-0 ms-auto">
+          <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
+            <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
+          </div>
+        </div>
+        <div class="col-md-9 col-xl-7 mb-4 mb-md-0 me-auto">
+          <div class="row my-auto">
+            <div class="col-12 col-lg-5">
+              <h5 class="fw-bold fs-1">${strain}</h5>
+              <div class="mb-2 text-info small">
+                <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
+                <!-- Icon and other static content -->
+                <span class="fs-4">${cultivator}</span>
+              </div>
+              <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
+            </div>
+            <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
+              <p class="d-none text-dark">${description_text}</p>
+              <p class="fs-4">Effects:</p>
+              <p class="text-dark">${effects}</p>
+              <p class="fs-4">Lineage:</p>
+              <p class="text-dark">${lineage}</p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+    });
+    container.innerHTML = htmlContent;
+  }
+
+  fetchFlowerData();
+</script>

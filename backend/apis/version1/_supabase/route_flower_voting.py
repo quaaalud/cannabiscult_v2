@@ -13,8 +13,11 @@ from fastapi import Depends
 from db.session import get_supa_db
 from db.models.flower_voting import FlowerVoting
 from db.repository.flower_voting import add_new_flower_vote
+from db.repository.flower_reviews import get_review_data_and_path
 from schemas.flower_voting import FlowerVoteCreate
 
+# New Flower Models
+from db.repository.flowers import get_flower_and_description
 
 router = APIRouter()
 
@@ -70,11 +73,22 @@ async def get_top_strains(db: Session = Depends(get_supa_db)):
     )
     scored_strains = []
     for strain in avg_ratings:
-        overall_score = (
-            sum(filter(None, strain[2:])) / 4
-        )
+        overall_score = sum(filter(None, strain[2:])) / 4
         scored_strains.append((strain[0], strain[1], round(overall_score, 1)))
     scored_strains.sort(key=lambda x: x[2], reverse=True)
-    top_strains = scored_strains[:5]
+    top_strains = scored_strains[:3]
+    return_strains = []
+    for strain_dict in top_strains:
+        try:
+            flower_data = get_flower_and_description(
+                db,
+                strain=strain_dict[0],
+                cultivar_email="aaron.childs@thesocialoutfitus.com",
+                cultivator=strain_dict[1],
+            )
+            flower_data["overall_score"] = strain_dict[2]
+            return_strains.append(flower_data)
+        except:
+            pass
 
-    return top_strains
+    return return_strains
