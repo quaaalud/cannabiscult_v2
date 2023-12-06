@@ -14,7 +14,11 @@ from db.session import get_supa_db, get_db
 from db.repository.concentrate_reviews import append_votes_to_arrays
 from db.repository.concentrate_reviews import get_review_data_and_path
 from db.repository.concentrate_reviews import get_review_data_and_path_from_id
-from db.repository.concentrates import get_concentrate_data_and_path, get_vibe_concentrate_strains
+from db.repository.concentrates import (
+    get_concentrate_data_and_path,
+    get_vibe_concentrate_strains,
+    get_concentrate_by_strain_and_cultivator,
+)
 from db.models.concentrate_reviews import ConcentrateReview
 from db.repository.concentrate_voting import add_new_vote
 from schemas.concentrate_voting import ConcentrateVoteCreate
@@ -136,6 +140,20 @@ async def query_concentrate_by_strain(
     )
 
 
+@router.get("/get_concentrate_review")
+async def query_concentrate_by_strain_and_cultivator(
+    strain: str = Query(None, alias="strain"),
+    cultivator: str = Query(None, alias="cultivator"),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    concentrate_dict = await get_concentrate_by_strain_and_cultivator(
+        db,
+        strain,
+        cultivator,
+    )
+    return concentrate_dict
+
+
 @router.get("/get-vibe-concentrate")
 async def query_vibe_concentrate_by_strain(
     strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
@@ -147,7 +165,5 @@ async def query_vibe_concentrate_by_strain(
 
 
 @router.get("/get-vibe-concentrate-strains", response_model=List[str])
-async def query_vibe_concentrate_strains(
-    db: Session = Depends(get_db)
-) -> List[str]:
+async def query_vibe_concentrate_strains(db: Session = Depends(get_db)) -> List[str]:
     return get_vibe_concentrate_strains(db)

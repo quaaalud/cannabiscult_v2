@@ -29,6 +29,30 @@ def get_concentrate_data_and_path(
     return None
 
 
+async def get_concentrate_by_strain_and_cultivator(
+        db: Session,
+        strain: str,
+        cultivator: str) -> Optional[Dict[str, Any]]:
+    concentrate = db.query(
+        Concentrate
+    ).filter(
+        (Concentrate.strain == strain),
+        (Concentrate.cultivator == cultivator)
+    ).first()
+    if concentrate:
+        return {
+            'id': concentrate.concentrate_id,
+            'cultivator': concentrate.cultivator,
+            'strain': concentrate.strain,
+            'url_path': return_image_url_from_supa_storage(
+                str(Path(concentrate.card_path))
+            ),
+            'voting_open': concentrate.voting_open,
+            'is_mystery': concentrate.is_mystery,
+        }
+    return None
+
+
 def get_vibe_concentrate_strains(db: Session) -> Optional[List[str]]:
     concentrate_list = db.query(
         Concentrate
