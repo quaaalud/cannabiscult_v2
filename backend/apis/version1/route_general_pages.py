@@ -45,6 +45,7 @@ from version1._supabase.route_flower_voting import (
     add_flower_vote_to_db,
 )
 from version1._supabase import route_concentrates
+from db.repository import concentrate_reviews
 from db.repository.concentrates import get_concentrate_data_and_path
 from version1._supabase.route_mystery_voters import get_voter_info_by_email, create_mystery_voter
 
@@ -530,16 +531,27 @@ async def get_concentrate_cultivators_for_strain_route(
 async def process_concentrate_request(
     request: Request, strain_selected: str, cultivator_selected: str, db: Session
 ):
-    review_dict = await route_concentrates.query_concentrate_by_strain(
-        strain=strain_selected, db=db
+    review_dict = await route_concentrates.get_concentrate_by_strain_and_cultivator(
+        strain=strain_selected, cultivator=cultivator_selected, db=db
     )
-    try:
+    if review_dict:
         request_dict = {
             "request": request,
         }
         response_dict = {**request_dict, **review_dict}
         return templates.TemplateResponse(
             str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
+        )
+    try:
+        review_dict = concentrate_reviews.get_review_data_and_path(
+            cultivator_select=cultivator_selected, strain_select=strain_selected, db=db
+        )
+        request_dict = {
+            "request": request,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(Path("general_pages", "concentrate_ratings.html")), response_dict
         )
     except:
         return templates.TemplateResponse(
