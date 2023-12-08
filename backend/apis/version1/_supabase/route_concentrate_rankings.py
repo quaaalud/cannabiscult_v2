@@ -9,14 +9,27 @@ Created on Mon Oct 30 21:23:18 2023
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.session import get_db
-from db.models.concentrate_rankings import Hidden_Concentrate_Ranking, Vibe_Concentrate_Ranking
+from db.models.concentrate_rankings import (
+    Hidden_Concentrate_Ranking,
+    Vibe_Concentrate_Ranking,
+    Concentrate_Ranking,
+)
 from schemas.concentrate_rankings import CreateHiddenConcentrateRanking, CreateConcentrateRanking
 from db.repository.concentrate_rankings import (
     create_hidden_concentrate_ranking,
     create_vibe_concentrate_ranking,
+    create_concentrate_ranking,
 )
 
 router = APIRouter()
+
+
+@router.post("/submit-concentrate-ranking", response_model=None)
+def submit_concentrate_ranking(
+    concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
+) -> Concentrate_Ranking:
+    submitted_ranking = create_concentrate_ranking(ranking=concentrate_ranking, db=db)
+    return submitted_ranking
 
 
 @router.post("/submit-hidden-concentrate-ranking", response_model=None)

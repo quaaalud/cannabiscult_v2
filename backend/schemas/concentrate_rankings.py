@@ -35,7 +35,8 @@ class ConcentrateRankingBase(BaseModel):
 
 class CreateConcentrateRanking(ConcentrateRankingBase):
     connoisseur: EmailStr = Field(...)
+    concentrate_id: int = Field(...)
 
 
 class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
-    concentrate_id: int = Field(...)
+    pass

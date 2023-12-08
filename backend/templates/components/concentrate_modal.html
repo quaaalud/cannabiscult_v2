@@ -681,7 +681,7 @@
         console.log(response)
         if (response.ok) {
           const data = await response.json();
-          window.location.href = "https://cannabiscult.co/success";
+          window.location.href = "/success";
         } else {
           console.log("Submission failed:", response.status, response.statusText);
         }

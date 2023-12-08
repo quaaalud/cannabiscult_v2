@@ -25,12 +25,14 @@ class Concentrate_Ranking(Base):
     smell_rating = Column(Float, nullable=False)
     flavor_rating = Column(Float, nullable=False)
     harshness_rating = Column(Float, nullable=False)
+    residuals_rating = Column(Float, nullable=False)
     effects_rating = Column(Float, nullable=False)
     color_explanation = Column(String(500))
     consistency_explanation = Column(String(500))
     flavor_explanation = Column(String(500))
     smell_explanation = Column(String(500))
     harshness_explanation = Column(String(500))
+    residuals_explanation = Column(String(500))
     effects_explanation = Column(String(500))
 
     date_posted = Column(

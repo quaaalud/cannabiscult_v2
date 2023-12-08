@@ -539,9 +539,14 @@ async def process_concentrate_request(
             "request": request,
         }
         response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(
-            str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
-        )
+        if response_dict.get('is_mystery') is True:
+            return templates.TemplateResponse(
+                str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
+            )
+        else:
+            return templates.TemplateResponse(
+                str(Path("general_pages", "concentrate_ratings.html")), response_dict
+            )
     try:
         review_dict = concentrate_reviews.get_review_data_and_path(
             cultivator_select=cultivator_selected, strain_select=strain_selected, db=db
@@ -550,6 +555,7 @@ async def process_concentrate_request(
             "request": request,
         }
         response_dict = {**request_dict, **review_dict}
+
         return templates.TemplateResponse(
             str(Path("general_pages", "concentrate_ratings.html")), response_dict
         )
