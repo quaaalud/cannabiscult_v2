@@ -112,17 +112,16 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
         .group_by(Flower_Ranking.strain, Flower_Ranking.cultivator)
         .all()
     )
-    
+
     scored_strains = []
     for strain in avg_ratings:
         overall_score = sum(filter(None, strain[2:])) / 6
         scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
     scored_strains.sort(key=lambda x: x[2], reverse=True)
     top_strains = scored_strains[:3]
-    
+
     return_strains = []
     for strain_dict in top_strains:
-        print(strain_dict)
         flower_data = get_flower_and_description(
             db,
             strain=strain_dict[0],
@@ -130,8 +129,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
             cultivator=strain_dict[1],
         )
         flower_data["overall_score"] = strain_dict[2]
-        
-        return_strains.append(flower_data)
 
+        return_strains.append(flower_data)
 
     return return_strains
