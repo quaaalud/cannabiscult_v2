@@ -19,7 +19,7 @@
 <script>
   async function fetchFlowerData() {
     try {
-      const response = await fetch('/flower_voting/get_top_flower_strains');
+      const response = await fetch('/flower_voting/get_top_rated_flower_strains');
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
