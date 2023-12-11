@@ -43,15 +43,14 @@
       const description_text = flower["description_text"];
       const effects = flower["effects"];
       const lineage = flower["lineage"];
-      console.log(url_path);
       htmlContent += `
       <div class="row mb-4 my-auto">
-        <div class="col-md-3 mb-4 mb-md-0 ms-auto">
+        <div class="col-lg-3 mb-4 mb-md-0 ms-auto">
           <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
             <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
           </div>
         </div>
-        <div class="col-md-9 col-xl-7 mb-4 mb-md-0 me-auto">
+        <div class="col-lg-9 col-xl-7 mb-4 mb-md-0 me-auto">
           <div class="row my-auto">
             <div class="col-12 col-lg-5">
               <h5 class="fw-bold fs-1">${strain}</h5>
@@ -63,11 +62,18 @@
               <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
             </div>
             <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
-              <p class="d-none text-dark">${description_text}</p>
-              <p class="fs-4">Effects:</p>
-              <p class="text-dark">${effects}</p>
-              <p class="fs-4">Lineage:</p>
-              <p class="text-dark">${lineage}</p>
+              <div class="vstack gap-0">
+                <hr class="hr d-lg-none" />
+                <p class="fs-4 text-muted text-uppercase">Effects:</p>
+                <p class="text-dark text-uppercase fw-bold">${effects}</p>
+                <hr class="hr" />
+                <p class="fs-4 text-muted text-uppercase">Lineage:</p>
+                <p class="text-dark text-uppercase fw-bold">${lineage}</p>
+                <hr class="hr d-lg-none" />
+                <p class="fs-4 text-muted text-uppercase d-lg-none">Notes:</p>
+                <p class="text-dark text-uppercase fw-bold d-lg-none">${description_text}</p>
+                <hr class="hr d-lg-none" />
+              </div>
             </div>
           </div>
         </div>

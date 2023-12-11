@@ -1,5 +1,9 @@
-<nav class="navbar navbar-expand-lg">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-light navbar-light ">
+  <!-- Container wrapper -->
   <div class="container-fluid">
+
+    <!-- Navbar brand -->
     <a class="navbar-brand" href="/#">
       <img 
         src="{{ url_for('static', path='images/logo.png') }}" 
@@ -8,103 +12,64 @@
         height="45"
       >
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
+
+    <!-- Toggle button -->
+    <button class="navbar-toggler" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <i class="fas fa-bars"></i>
     </button>
+
+    <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <!-- Link -->
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/">Home</a>
-        </li>
-        <li class="nav-item">
-          <a 
-            class="nav-link" 
-            href="https://thecannabiscult.myshopify.com/" 
-            target="_blank" 
-            rel="noopener noreferrer">
-            Merch
-          </a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Cult Picks
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <li>
-              <a 
-              class="dropdown-item" 
-              href="https://myfeelstate.com/"
-              target="_blank" 
-              rel="noopener noreferrer">
-                Feel State - STL
-              </a>
-            </li>
-            <li>
-              <a 
-              class="dropdown-item" 
-              href="https://naturemedmo.com/ofallon"
-              target="_blank" 
-              rel="noopener noreferrer">
-                NatureMed Dispensary
-              </a>
-            </li>
-            <li>
-              <a 
-              class="dropdown-item" 
-              href="https://www.swadecannabis.com"
-              target="_blank" 
-              rel="noopener noreferrer">
-                Swade Cannabis
-              </a>
-            </li>
-            <li>
-              <a 
-              class="dropdown-item" 
-              href="https://www.vividcannabis.com/"
-              target="_blank" 
-              rel="noopener noreferrer">
-                Vivid Cannabis
-              </a>
-            </li>
-            <li><hr class="dropdown-divider"></li>
-            <li>
-              <a 
-              class="dropdown-item" 
-              href="https://www.instagram.com/missouricannabisreviews/"
-              target="_blank" 
-              rel="noopener noreferrer">
-                Cultivar Reviews
-              </a>
-            </li>
-            {% if user_is_logged_in %}
-            <li class="nav-item">
-              <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
-            </li>
-            {% endif %}
-          </ul>
+          <a class="nav-link" href="/">Home</a>
         </li>
         <li class="nav-item">
-          <a href="/voting-home" class="nav-link active">Vote Now</a>
+          <a class="nav-link{% if user_is_logged_in %} active{% endif %}" href="/voting-home">Vote Now</a>
         </li>
-        {% if not user_is_logged_in %}
+        {% if user_is_logged_in %}
+        <li class="nav-item">
+          <a href="#" class="dropdown-item" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
+        </li>
+        {% else %}
         <li class="nav-item">
           <a href="/login" class="nav-link active">Login/Register</a>
         </li>
         {% endif %}
+
       </ul>
-    </div>
-    <div class="d-none d-lg-flex justify-content-end">
-      <a class="navbar-brand" href="/#">
-        <img 
-          src="{{ url_for('static', path='images/logo.png') }}" 
-          alt="Cannabis Cult Brain Logo" 
-          width="50" 
-          height="45"
-        >
-      </a>
+
+      <!-- Icons -->
+      <ul class="navbar-nav d-flex flex-row me-1">
+        <li class="nav-item me-3 me-lg-0">
+          <a class="nav-link" href="#">
+            <i class="fab fa-twitter fa-lg"></i>
+          </a>
+        </li>
+        <li class="nav-item me-3 me-lg-0">
+          <a 
+            class="nav-link" 
+            href="https://www.instagram.com/missouricannabisreviews/"
+            target="_blank" 
+            rel="noopener noreferrer"
+          >
+            <i class="fab fa-instagram fa-lg"></i>
+          </a>
+        </li>
+      </ul>
+
+      <!-- Search -->
+      <div class="pe-lg-1">
+      <form class="w-auto disabled">
+        <input type="search" class="form-control" placeholder="Search Coming Soon" aria-label="Search">
+      </form>
+      </div>
     </div>
   </div>
 </nav>
+<!-- Navbar -->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
