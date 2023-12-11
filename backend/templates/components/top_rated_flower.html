@@ -44,38 +44,53 @@
       const effects = flower["effects"];
       const lineage = flower["lineage"];
       htmlContent += `
-      <div class="row mb-4 my-auto">
-        <div class="col-lg-3 mb-4 mb-md-0 ms-auto">
-          <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
-            <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
+      <div class="container">
+        <div class="row mb-4 my-auto">
+          <div class="col-lg-3 mb-4 mb-md-0 ms-auto">
+            <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
+              <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}">
+                <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-9 col-xl-7 mb-4 mb-md-0 me-auto">
+            <div class="row my-auto">
+              <div class="col-12 col-lg-5 my-auto">
+                <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}" class="text-decoration-none text-dark">
+                  <h5 class="fs-1">${strain}</h5>
+                </a>
+                <div class="mb-2 text-info small">
+                  <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
+                  <!-- Icon and other static content -->
+                  <span class="fs-4">${cultivator}</span>
+                </div>
+                <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
+              </div>
+              <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
+                <div class="vstack gap-0">
+                  <hr class="hr d-lg-none" />
+                  <p class="fs-4 text-muted text-uppercase">Effects:</p>
+                  <p class="text-dark text-uppercase fw-bold">${effects}</p>
+                  <hr class="hr" />
+                  <p class="fs-4 text-muted text-uppercase">Lineage:</p>
+                  <p class="text-dark text-uppercase fw-bold">${lineage}</p>
+                  <hr class="hr d-lg-none" />
+                  <p class="fs-4 text-muted text-uppercase d-lg-none">Notes:</p>
+                  <p class="text-dark text-uppercase fw-bold d-lg-none pb-5">${description_text}</p>
+                  <hr class="hr d-lg-none" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="col-lg-9 col-xl-7 mb-4 mb-md-0 me-auto">
-          <div class="row my-auto">
-            <div class="col-12 col-lg-5">
-              <h5 class="fw-bold fs-1">${strain}</h5>
-              <div class="mb-2 text-info small">
-                <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
-                <!-- Icon and other static content -->
-                <span class="fs-4">${cultivator}</span>
-              </div>
-              <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
-            </div>
-            <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
-              <div class="vstack gap-0">
-                <hr class="hr d-lg-none" />
-                <p class="fs-4 text-muted text-uppercase">Effects:</p>
-                <p class="text-dark text-uppercase fw-bold">${effects}</p>
-                <hr class="hr" />
-                <p class="fs-4 text-muted text-uppercase">Lineage:</p>
-                <p class="text-dark text-uppercase fw-bold">${lineage}</p>
-                <hr class="hr d-lg-none" />
-                <p class="fs-4 text-muted text-uppercase d-lg-none">Notes:</p>
-                <p class="text-dark text-uppercase fw-bold d-lg-none">${description_text}</p>
-                <hr class="hr d-lg-none" />
-              </div>
-            </div>
+        <div class="container d-none d-lg-block mg-lg-3 pb-lg-5">
+          <div class="row mx-auto text-start justify-content-center mb-lg-5">
+          <div class="col-lg-10 my-auto">
+            <p class="fs-4 text-muted text-uppercase">Notes:</p>
+            <p class="text-dark text-uppercase fw-bold pb-5">${description_text}</p>
+            <hr class="hr" />
           </div>
+        </div>
         </div>
       </div>`;
     });
