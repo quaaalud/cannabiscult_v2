@@ -143,11 +143,19 @@ async def submit_register_form(
         create_user(user=user, db=db)
         create_supa_user(user=user)
 
+        voter = MysteryVoterCreate(
+            email=register_email,
+            name=register_name,
+            zip_code=register_zip_code,
+            phone=register_phone,
+        )
+        create_mystery_voter(voter=voter, db=db)
+
         return templates.TemplateResponse(
             str(Path("general_pages", "register_success.html")),
             {
                 "request": request,
-                "username": register_username,
+                "username": register_name,
             },
         )
     else:
@@ -155,7 +163,7 @@ async def submit_register_form(
             str(Path("general_pages", "submit-failed.html")),
             {
                 "request": request,
-                "username": register_username,
+                "username": register_name,
             },
         )
 
