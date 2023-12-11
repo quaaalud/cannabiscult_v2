@@ -143,13 +143,19 @@ async def submit_register_form(
         create_user(user=user, db=db)
         create_supa_user(user=user)
 
-        voter = MysteryVoterCreate(
-            email=register_email,
-            name=register_name,
-            zip_code=register_zip_code,
-            phone=register_phone,
-        )
-        create_mystery_voter(voter=voter, db=db)
+        existing_voter = get_voter_info_by_email(register_email.lower(), db)
+        if not existing_voter:
+            try:
+                voter = MysteryVoterCreate(
+                    email=register_email,
+                    name=register_name,
+                    zip_code=register_zip_code,
+                    phone=register_phone,
+                )
+                create_mystery_voter(voter=voter, db=db)
+            except Exception as e:
+                print(f'Error: {e}\n\n{e.with_traceback()}')
+                pass
 
         return templates.TemplateResponse(
             str(Path("general_pages", "register_success.html")),
