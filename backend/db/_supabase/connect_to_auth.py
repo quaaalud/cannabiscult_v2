@@ -20,7 +20,6 @@ from db.repository.users import add_user_to_supabase
 class SupaAuth:
 
     _client = supa_client.return_created_client()
-    
 
     @classmethod
     def create_new_supabase_user(cls, user: UserCreate):
