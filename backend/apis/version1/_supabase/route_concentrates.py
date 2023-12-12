@@ -167,3 +167,17 @@ async def query_vibe_concentrate_by_strain(
 @router.get("/get-vibe-concentrate-strains", response_model=List[str])
 async def query_vibe_concentrate_strains(db: Session = Depends(get_db)) -> List[str]:
     return get_vibe_concentrate_strains(db)
+
+
+@router.get("/get_concentrate_description")
+async def query_concentrate_description_by_strain(
+    strain: str = Query(None, alias="strain"),
+    cultivator: str = Query(None, alias="cultivator"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar"),
+    db: Session = Depends(get_db),
+) -> Dict[str, Any]:
+    concentrate_data = get_concentrate_and_description(db, strain, cultivar_email, cultivator)
+    if concentrate_data:
+        return concentrate_data
+    else:
+        raise HTTPException(status_code=404, detail="Concentrate or description not found")

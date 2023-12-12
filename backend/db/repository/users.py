@@ -27,24 +27,27 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
         is_superuser = False
 
     )
-    res = _auth.auth.sign_up(
-        {
-            "email": user.email,
-            "password": user.password,
-            "options": {
-                "data": {
-                    "username": user.username,
-                    "name": user.name,
-                    "zip_code": user.zip_code,
-                    "agree_tos": user.agree_tos,
-                    "phone": user.phone,
-                    "can_vote": user.can_vote,
-                    "is_superuser": user.is_superuser,
+    try:
+        res = _auth.auth.sign_up(
+            {
+                "email": user.email,
+                "password": user.password,
+                "options": {
+                    "data": {
+                        "username": user.username,
+                        "name": user.name,
+                        "zip_code": user.zip_code,
+                        "agree_tos": user.agree_tos,
+                        "phone": user.phone,
+                        "can_vote": user.can_vote,
+                        "is_superuser": user.is_superuser,
+                    }
                 }
             }
-        }
-    )
-    return res
+        )
+        return res
+    except:
+      pass
 
 
 def create_new_user(user:UserCreate, db:Session):

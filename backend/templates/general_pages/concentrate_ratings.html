@@ -209,6 +209,9 @@
       </a>
     </div>
   </div>
+  <section class="py-4 container" id="topRatedStrains">
+    {% include "components/top_rated_flower.html" %}
+  </section>
   {% include "components/concentrate_modal.html" %}
 </main>
 <style> 
@@ -222,7 +225,21 @@
     height: 100%; 
   }
 </style>
-   
+<script>
+  async function fetchConcentrateData() {
+    try {
+      const response = await fetch('/concentrate_voting/get_top_rated_concentrate_strains');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const concentrateData = await response.json();
+
+      updateConcentrateData(concentrateData);
+    } catch (error) {
+      console.error('Error fetching concentrate data:', error);
+    }
+  }
+</script>
 {% endblock %}
 
 {% block footer %}
