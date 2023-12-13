@@ -1,7 +1,13 @@
 {% block head %}
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<style>
+  .btn-check:checked + .btn-outline-dark {
+      background-color: black;
+      color: white;
+      border-color: black;
+  }
+</style>
 {% endblock %}
-
 <!-- Modal Structure Template -->
 <div class="modal fade w-100" id="hiddenConcentrateRankingsModal" tabindex="-1" aria-labelledby="hiddenConcentrateRankingsModalLabel" aria-hidden="true" style="min-width:100%">
   <div class="modal-dialog modal-dialog-centered">
