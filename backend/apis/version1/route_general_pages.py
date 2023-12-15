@@ -92,7 +92,7 @@ async def submit_login_form(
 ) -> templates.TemplateResponse:
 
     user = UserLogin(
-        email=login_email,
+        email=login_email.lower(),
         password=login_password,
     )
     try:
@@ -101,7 +101,7 @@ async def submit_login_form(
             str(Path("general_pages", "login_success.html")),
             {
                 "request": request,
-                "username": login_email,
+                "username": login_email.lower(),
                 "user": user,
             },
         )
@@ -110,7 +110,7 @@ async def submit_login_form(
             str(Path("general_pages", "submit-failed.html")),
             {
                 "request": request,
-                "username": login_email,
+                "username": login_email.lower(),
             },
         )
 
@@ -129,7 +129,7 @@ async def submit_register_form(
 ) -> templates.TemplateResponse:
     if register_password == register_repeat_password:
         user = UserCreate(
-            email=register_email,
+            email=str(register_email.lower()),
             password=register_password,
             name=register_name,
             username=register_username,
@@ -147,7 +147,7 @@ async def submit_register_form(
         if not existing_voter:
             try:
                 voter = MysteryVoterCreate(
-                    email=register_email,
+                    email=register_email.lower(),
                     name=register_name,
                     zip_code=register_zip_code,
                     phone=register_phone,
@@ -210,7 +210,7 @@ async def submit_new_password_form(
 
     try:
         user = update_user_password(
-            user_email=user_email,
+            user_email=user_email.lower(),
             username=username,
             new_password=new_password,
             repeated_password=repeated_password,
@@ -220,7 +220,7 @@ async def submit_new_password_form(
             str(Path("general_pages", "register_success.html")),
             {
                 "request": request,
-                "username": user_email,
+                "username": user_email.lower(),
                 "can_vote_status": user.can_vote,
             },
         )
@@ -245,7 +245,7 @@ async def submit_subscriber_form(
 ) -> templates.TemplateResponse:
 
     subscriber_data = SubscriberCreate(
-        email=email,
+        email=email.lower(),
         name=name,
         zip_code=zip_code,
         phone=phone,
@@ -257,7 +257,7 @@ async def submit_subscriber_form(
         {
             "request": request,
             "name": name,
-            "email": email,
+            "email": email.lower(),
             "phone": phone,
             "zip_code": zip_code,
         },
@@ -620,7 +620,7 @@ async def submit_concentrate_review_vote(
 ) -> templates.TemplateResponse:
 
     can_vote_status = return_current_user_vote_status(
-        user_email=current_user_email,
+        user_email=current_user_email.lower(),
         db=db,
     )
 
@@ -647,7 +647,7 @@ async def submit_concentrate_review_vote(
             flavor_explanation=flavor_explanation,
             effects_vote=effects_vote,
             effects_explanation=effects_explanation,
-            user_email=user_email,
+            user_email=user_email.lower(),
             db=db,
         )
     except:
@@ -685,7 +685,7 @@ async def submit_concentrate_review_vote(
 def check_mystery_voter_email_by_get(
     voter_email: str = Query(None, alias="voter_email"), db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
-    voter = get_voter_info_by_email(voter_email=voter_email, db=db)
+    voter = get_voter_info_by_email(voter_email=voter_email.lower(), db=db)
     if not voter:
         return {"exists": False}
     return {"exists": True}
@@ -695,7 +695,7 @@ def check_mystery_voter_email_by_get(
 def check_mystery_voter_email(
     voter_email: str = Form(...), db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
-    voter = get_voter_info_by_email(voter_email=voter_email, db=db)
+    voter = get_voter_info_by_email(voter_email=voter_email.lower(), db=db)
     if not voter:
         return {"exists": False}
     return {"exists": True}
@@ -715,7 +715,7 @@ async def submit_mystery_voter_create(
         return {"status": True}
     try:
         voter = MysteryVoterCreate(
-            email=voter_email,
+            email=voter_email.lower(),
             name=voter_name,
             zip_code=voter_zip_code,
             phone=voter_phone,
