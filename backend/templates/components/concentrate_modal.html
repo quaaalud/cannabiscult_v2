@@ -743,7 +743,8 @@
                 $('#ConcentrateVoterInfoCaptureModal').modal('show');
                 return;
               }
-              formState[question.key] = input.value;
+              const lowerCaseEmail = input.value.toLowerCase();
+              formState[question.key] = lowerCaseEmail;
             }
             else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
