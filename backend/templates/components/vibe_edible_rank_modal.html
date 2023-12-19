@@ -675,7 +675,8 @@
                 $('#vibeEdibleVoterInfoCaptureModal').modal('show');
                 return;
               }
-              formState[question.key] = input.value;
+              const lowerCasedEmail = input.value.toLowerCase();
+              formState[question.key] = lowerCasedEmail;
             }
             else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
