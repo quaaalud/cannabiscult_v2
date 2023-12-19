@@ -769,7 +769,8 @@
                 $('#voterInfoCaptureModal').modal('show');
                 return;
               }
-              formState[question.key] = input.value;
+              const lowerCaseEmail = input.value.toLowerCase();
+              formState[question.key] = lowerCaseEmail;
             }
             else if (question.key === "mystery_effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('mystery_effects_explanation').selectedOptions).map(option => option.value);

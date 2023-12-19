@@ -785,7 +785,8 @@
                 $('#vibeConcentrateVoterInfoCaptureModal').modal('show');
                 return;
               }
-              formState[question.key] = input.value;
+              const lowerCaseEmail = input.value.toLowerCase();
+              formState[question.key] = lowerCaseEmail;
               fetchAndPopulateStrains();
             }
             else if (question.key === "strain") {
