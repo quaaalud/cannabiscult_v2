@@ -11,19 +11,22 @@ from pathlib import Path
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from db.models.flower_reviews import FlowerReview
+from db.models.flowers import Flower
+from db.models.flower_rankings import Flower_Ranking
 from db._supabase.connect_to_storage import get_image_from_results
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
+
 
 def get_review_data_and_path(
         db: Session,
         cultivator_select: str,
         strain_select: str) -> FlowerReview:
     review = db.query(
-        FlowerReview
+        Flower_Ranking
     ).filter(
-        (FlowerReview.cultivator == cultivator_select) &
-        (FlowerReview.strain == strain_select)
-    ).first()
+        (Flower_Ranking.cultivator == cultivator_select) &
+        (Flower_Ranking.strain == strain_select)
+    ).all()
     if review:
         img_path = str(Path(review.card_path))
         results_bytes = get_image_from_results(

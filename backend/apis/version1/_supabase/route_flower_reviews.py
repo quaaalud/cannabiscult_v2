@@ -15,13 +15,14 @@ from db.repository.flower_reviews import append_votes_to_arrays
 from db.repository.flower_reviews import get_review_data_and_path
 from db.repository.flower_reviews import get_review_data_and_path_from_id
 from db.models.flower_reviews import FlowerReview
+from db.models.flower import Flower
 
 router = APIRouter()
 
 
 def get_all_strains(
         db: Session = Depends(get_supa_db)) -> List[str]:
-    all_strains = db.query(FlowerReview.strain).all()
+    all_strains = db.query(Flower.strain).all()
     return sorted(set([result[0] for result in all_strains]))
 
 
@@ -29,16 +30,16 @@ def get_all_strains_for_cultivator(
         cultivator_selected: str,
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_strains = db.query(
-        FlowerReview.strain
+        Flower.strain
     ).filter(
-        FlowerReview.cultivator == cultivator_selected
+        Flower.cultivator == cultivator_selected
     ).all()
     return sorted([result[0] for result in all_strains])
 
 
 def get_all_cultivators(
         db: Session = Depends(get_supa_db)) -> List[str]:
-    all_cultivators = db.query(FlowerReview.cultivator).all()
+    all_cultivators = db.query(Flower.cultivator).all()
     return sorted(
         set(
             [result[0] for result in all_cultivators if
@@ -64,9 +65,9 @@ def get_all_cultivators_for_strain(
         strain_selected: str,
         db: Session = Depends(get_supa_db)) -> List[str]:
     all_cultivators = db.query(
-        FlowerReview.cultivator
+        Flower.cultivator
     ).filter(
-        FlowerReview.strain == strain_selected
+        Flower.strain == strain_selected
     ).all()
     return sorted(set([result[0] for result in all_cultivators]))
 
