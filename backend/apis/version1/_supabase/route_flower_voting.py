@@ -122,7 +122,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
 
     return_strains = []
     for strain_dict in top_strains:
-        flower_data = get_flower_and_description(
+        flower_data = await get_flower_and_description(
             db,
             strain=strain_dict[0],
             cultivar_email="aaron.childs@thesocialoutfitus.com",

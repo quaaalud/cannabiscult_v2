@@ -13,19 +13,17 @@ from typing import Optional
 class FlowerRankingBase(BaseModel):
     strain: str
 
-    color_rating: float = Field(..., gt=0, lt=10.1)
-    consistency_rating: float = Field(..., gt=0, lt=10.1)
+    appearance_rating: float = Field(..., gt=0, lt=10.1)
+    freshness_rating: float = Field(..., gt=0, lt=10.1)
     smell_rating: float = Field(..., gt=0, lt=10.1)
     flavor_rating: float = Field(..., gt=0, lt=10.1)
     harshness_rating: float = Field(..., gt=0, lt=10.1)
-    residuals_rating: float = Field(..., gt=0, lt=10.1)
     effects_rating: float = Field(..., gt=0, lt=10.1)
-    color_explanation: Optional[str] = Field(None, max_length=500)
-    consistency_explanation: Optional[str] = Field(None, max_length=500)
+    appearance_explanation: Optional[str] = Field(None, max_length=500)
+    freshness_explanation: Optional[str] = Field(None, max_length=500)
     flavor_explanation: Optional[str] = Field(None, max_length=500)
     smell_explanation: Optional[str] = Field(None, max_length=500)
     harshness_explanation: Optional[str] = Field(None, max_length=500)
-    residuals_explanation: Optional[str] = Field(None, max_length=500)
     effects_explanation: Optional[str] = Field(None, max_length=500)
 
     flower_id: int = Field(...)
@@ -36,8 +34,10 @@ class FlowerRankingBase(BaseModel):
 
 class CreateFlowerRanking(FlowerRankingBase):
     cultivator: str
+    method_of_consumption: str = Field(...)
     connoisseur: EmailStr = Field(...)
 
 
 class CreateHiddenFlowerRanking(CreateFlowerRanking):
-    connoisseur: EmailStr = Field(...)
+    pass
+    

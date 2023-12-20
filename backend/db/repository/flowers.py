@@ -37,6 +37,9 @@ def get_description_by_flower_id(
             )
             .all()
         )
+        img_path = str(Path(flower_description.card_path))
+        results_bytes = return_image_url_from_supa_storage(img_path)
+        flower_description['card_path'] = results_bytes
         return flower_description
     except Exception as e:
         traceback.print_exc()
@@ -44,7 +47,7 @@ def get_description_by_flower_id(
         return None
 
 
-def get_flower_and_description(
+async def get_flower_and_description(
     db: Session,
     strain: str,
     cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
@@ -65,12 +68,13 @@ def get_flower_and_description(
 
         if flower_data:
             flower, description = flower_data
-
+            img_path = str(Path(flower.card_path))
+            results_bytes = return_image_url_from_supa_storage(img_path)
             flower_info = {
                 "flower_id": flower.flower_id,
                 "cultivator": flower.cultivator,
                 "strain": flower.strain,
-                "url_path": return_image_url_from_supa_storage(str(Path(flower.card_path))),
+                "url_path": results_bytes,
                 "voting_open": flower.voting_open,
                 "is_mystery": flower.is_mystery,
                 "description_id": description.description_id,

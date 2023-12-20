@@ -44,6 +44,7 @@ from version1._supabase.route_flower_reviews import (
 from version1._supabase.route_flower_voting import (
     add_flower_vote_to_db,
 )
+from db.repository.flowers import get_flower_and_description
 from version1._supabase import route_concentrates
 from db.repository import concentrate_reviews
 from db.repository.concentrates import get_concentrate_data_and_path
@@ -154,7 +155,7 @@ async def submit_register_form(
                 )
                 create_mystery_voter(voter=voter, db=db)
             except Exception as e:
-                print(f'Error: {e}\n\n{e.with_traceback()}')
+                print(f"Error: {e}\n\n{e.with_traceback()}")
                 pass
 
         return templates.TemplateResponse(
@@ -333,7 +334,9 @@ async def process_flower_request(
     request: Request, strain_selected: str, cultivator_selected: str, db: Session
 ):
     user_is_logged_in = get_current_users_email() is not None
-    review_dict = await return_selected_review(strain_selected, cultivator_selected, db=db)
+    review_dict = await get_flower_and_description(
+        db=db, strain=strain_selected, cultivator=cultivator_selected
+    )
     try:
         request_dict = {
             "request": request,
@@ -341,7 +344,7 @@ async def process_flower_request(
         }
         response_dict = {**request_dict, **review_dict}
         return templates.TemplateResponse(
-            str(Path("general_pages", "voting-home.html")), response_dict
+            str(Path("general_pages", "connoisseur_flowers.html")), response_dict
         )
     except:
         return templates.TemplateResponse(
@@ -553,7 +556,7 @@ async def process_concentrate_request(
             "request": request,
         }
         response_dict = {**request_dict, **review_dict}
-        if response_dict.get('is_mystery') is True:
+        if response_dict.get("is_mystery") is True:
             return templates.TemplateResponse(
                 str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
             )

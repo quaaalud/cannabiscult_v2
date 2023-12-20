@@ -31,5 +31,5 @@ def submit_mystery_flower_ranking(
 def submit_flower_ranking(
     ranking: CreateFlowerRanking, db: Session = Depends(get_db)
 ) -> Flower_Ranking:
-    submitted_ranking = create_flower_ranking(ranking=ranking, db=db)
+    submitted_ranking = create_flower_ranking(ranking_dict=ranking, db=db)
     return submitted_ranking

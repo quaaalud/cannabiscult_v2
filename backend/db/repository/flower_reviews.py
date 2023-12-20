@@ -11,7 +11,6 @@ from pathlib import Path
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from db.models.flower_reviews import FlowerReview
-from db.models.flowers import Flower
 from db.models.flower_rankings import Flower_Ranking
 from db._supabase.connect_to_storage import get_image_from_results
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage

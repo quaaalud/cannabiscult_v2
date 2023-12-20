@@ -38,6 +38,7 @@ from _supabase import route_flowers
 from _supabase import route_concentrates
 from _supabase import route_concentrate_rankings
 from _supabase import route_edibles
+from _supabase import route_flower_rankings
 from _supabase import route_flower_reviews
 from _supabase import route_flower_voting
 from _supabase import route_mystery_flower_review
@@ -79,6 +80,11 @@ api_router.include_router(
     route_concentrate_rankings.router,
     prefix="/concentrate_ranking",
     tags=["concentrate_ranking"]
+)
+api_router.include_router(
+    route_flower_rankings.router,
+    prefix="/flower_ranking",
+    tags=["flower_ranking"]
 )
 api_router.include_router(
     route_flower_reviews.router,
