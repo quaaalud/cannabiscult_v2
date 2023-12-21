@@ -118,7 +118,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
         overall_score = sum(filter(None, strain[2:])) / 6
         scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
     scored_strains.sort(key=lambda x: x[2], reverse=True)
-    top_strains = scored_strains[:3]
+    top_strains = scored_strains[:5]
 
     return_strains = []
     for strain_dict in top_strains:
