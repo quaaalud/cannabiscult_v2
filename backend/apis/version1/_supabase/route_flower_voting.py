@@ -133,3 +133,38 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
         return_strains.append(flower_data)
 
     return return_strains
+
+
+@router.get("/get_strain_ratings_by_id/{flower_id}", response_model=dict)
+async def get_strain_by_id(flower_id: int, db: Session = Depends(get_supa_db)):
+    # Query to calculate average ratings for a specific strain
+    avg_ratings = (
+        db.query(
+            func.avg(Flower_Ranking.appearance_rating),
+            func.avg(Flower_Ranking.smell_rating),
+            func.avg(Flower_Ranking.flavor_rating),
+            func.avg(Flower_Ranking.effects_rating),
+            func.avg(Flower_Ranking.harshness_rating),
+            func.avg(Flower_Ranking.freshness_rating)
+        )
+        .filter(Flower_Ranking.flower_id == flower_id)
+        .first()
+    )
+
+    if not avg_ratings or any(rating is None for rating in avg_ratings):
+        return {"error": "Flower not found or incomplete data"}
+
+    overall_score = sum(avg_ratings) / 6
+
+    flower_data = {
+        "flower_id": flower_id,
+        "overall_score": round(overall_score, 2),
+        "appearance_rating": avg_ratings[0],
+        "smell_rating": avg_ratings[1],
+        "flavor_rating": avg_ratings[2],
+        "effects_rating": avg_ratings[3],
+        "harshness_rating": avg_ratings[4],
+        "freshness_rating": avg_ratings[5]
+    }
+
+    return flower_data

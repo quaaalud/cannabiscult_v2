@@ -178,8 +178,8 @@
           </div>
           <div class="col-lg-3 col-md-6 mb-5 mb-md-0 position-relative">
             <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="vote_count" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Votes</h6>
+            <h5 id="freshness_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Freshness</h6>
           </div>
         </div>
       </section>
@@ -209,13 +209,33 @@
 <script>
   document.addEventListener('DOMContentLoaded', function() {
     if (terpenesList && terpenesList.length > 0) {
-      // Each label will have an equal weight
       const dataValues = terpenesList.map(() => 1);
-
-      // Initialize the chart with these labels and data values
       initTerpeneChart(terpenesList, dataValues);
     }
+    fetchAndUpdateStrainRatings();
   });
+  
+  function fetchAndUpdateStrainRatings() {
+    var flowerId = {{ flower_id }};
+    var endpoint = "/flower_voting/get_strain_ratings_by_id/" + flowerId;
+
+    fetch(endpoint)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.error) {
+            document.getElementById('flavor_rating_value').innerText = data.flavor_rating.toFixed(2);
+            document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
+            document.getElementById('effects_rating_value').innerText = data.effects_rating.toFixed(2);
+            document.getElementById('appearance_rating_value').innerText = data.appearance_rating.toFixed(2);
+            document.getElementById('smell_rating_value').innerText = data.smell_rating.toFixed(2);
+            document.getElementById('harshess_rating_value').innerText = data.harshness_rating.toFixed(2);
+            document.getElementById('freshness_rating_value').innerText = data.freshness_rating.toFixed(2);
+        } else {
+            console.error('Error fetching data:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+  }
 
   function initTerpeneChart(labels, dataValues) {
     const ctx = document.getElementById('terpeneChart').getContext('2d');
@@ -239,7 +259,6 @@
     ];
     return colors.slice(0, count);
   }
-
 </script>
 
 {% endblock %}
