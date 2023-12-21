@@ -40,7 +40,7 @@ def get_all_cultivators(db: Session = Depends(get_supa_db)) -> List[str]:
 
 
 def get_mystery_pack_cultivators(db: Session = Depends(get_supa_db)) -> List[str]:
-    all_cultivators = db.query(FlowerReview.cultivator).all()
+    all_cultivators = db.query(Flower.cultivator).all()
     return sorted(
         set([result[0] for result in all_cultivators if (str(result[0]).lower() == "connoisseur")])
     )
