@@ -243,7 +243,7 @@ select {
 
 @media (max-width: 360px) {
   .btn {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     padding: 0.4rem 0.6rem;
   }
   .btn-check {
