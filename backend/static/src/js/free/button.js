@@ -1,10 +1,10 @@
-import Data from '../mdb/dom/data';
-import EventHandler from '../mdb/dom/event-handler';
-import Manipulator from '../mdb/dom/manipulator';
-import SelectorEngine from '../mdb/dom/selector-engine';
+import { Data } from '../mdb/dom/data.js';
+import { EventHandler } from '../mdb/dom/event-handler.js';
+import { Manipulator } from '../mdb/dom/manipulator.js';
+import { SelectorEngine } from '../mdb/dom/selector-engine.js';
 
-import BSButton from '../bootstrap/mdb-prefix/button';
-import { bindCallbackEventsIfNeeded } from '../autoinit/init';
+import { BSButton } from '../bootstrap/mdb-prefix/button.js';
+import { bindCallbackEventsIfNeeded } from '../autoinit/init.js';
 
 const NAME = 'button';
 const DATA_KEY = `mdb.${NAME}`;

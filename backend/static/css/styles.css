@@ -1,5 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Hammersmith+One&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Balthazar&family=Hammersmith+One&display=swap');
+@import './mdb.min.css';
+@import './animate.min.css';
+
 
 * {
   font-family: 'Hammersmith One', sans-serif;

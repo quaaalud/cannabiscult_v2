@@ -75,7 +75,7 @@
           </div>
           <div class="col-lg-6 mb-4 mb-lg-0 h-100 pt-lg-5">
             <div class="d-flex flex-column justify-content-between pt-lg-5">
-              <div class="d-flex align-items-start mb-5 pt-lg-5">
+              <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
                     <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
@@ -83,18 +83,18 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Description</p>
-                  <p id="description_text" class="text-muted mb-0">We cannot tell you the description on the mystery reviews.</p>
+                  <p id="description_text" class="text-muted mb-0">{% if description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}</p>
                 </div>
               </div>
               <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
-                    <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                    <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1 ms-4">
-                  <p class="fw-bold mb-1">Terpenes</p>
-                  <p id="terpene_text" class="text-muted mb-0">But you can rate the strain yourself first.</p>
+                  <p class="fw-bold mb-1">Effects<br></p>
+                  <p id="effects_text" class="text-muted mb-0">{% if effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
                 </div>
               </div>
               <div class="d-flex align-items-start mb-5">
@@ -105,18 +105,27 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Lineage</p>
-                  <p id="lineage-text" class="text-muted mb-0">And we will be releasing all of the strain information as soon as we can!</p>
+                  <p id="lineage-text" class="text-muted mb-0">{% if lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
                 </div>
               </div>
               <div class="d-flex align-items-start">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
-                    <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                    <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1 ms-4">
-                  <p class="fw-bold mb-1">Effects<br></p>
-                  <p id="effects_text" class="text-muted mb-0">Don't worry, you will not have to wait long.</p>
+                  <p class="fw-bold mb-1">Terpenes</p>
+                  <script>
+                    var terpenesList = {{ terpenes_list | tojson }};
+                  </script>
+                  <div id="terpene_text" class="text-muted mb-0">
+                    {% if terpenes_list %}
+                      <canvas id="terpeneChart"></canvas>
+                    {% else %}
+                      <p>Coming Soon</p>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
             </div>
@@ -196,7 +205,43 @@
     height: 100%; 
   }
 </style>
-   
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (terpenesList && terpenesList.length > 0) {
+      // Each label will have an equal weight
+      const dataValues = terpenesList.map(() => 1);
+
+      // Initialize the chart with these labels and data values
+      initTerpeneChart(terpenesList, dataValues);
+    }
+  });
+
+  function initTerpeneChart(labels, dataValues) {
+    const ctx = document.getElementById('terpeneChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Terpenes',
+          data: dataValues,
+          backgroundColor: generateColors(labels.length),
+        }]
+      }
+    });
+  }
+  function generateColors(count) {
+    const colors = [
+      'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+      'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+      'rgba(66, 133, 244, 0.2)'
+    ];
+    return colors.slice(0, count);
+  }
+
+</script>
+
 {% endblock %}
 
 {% block footer %}

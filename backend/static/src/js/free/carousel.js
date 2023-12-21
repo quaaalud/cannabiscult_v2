@@ -1,7 +1,7 @@
-import EventHandler from '../mdb/dom/event-handler';
-import BSCarousel from '../bootstrap/mdb-prefix/carousel';
-import Manipulator from '../mdb/dom/manipulator';
-import { bindCallbackEventsIfNeeded } from '../autoinit/init';
+import { EventHandler } from '../mdb/dom/event-handler.js';
+import { BSCarousel } from '../bootstrap/mdb-prefix/carousel.js';
+import { Manipulator } from '../mdb/dom/manipulator.js';
+import { bindCallbackEventsIfNeeded } from '../autoinit/init.js';
 
 /**
  * ------------------------------------------------------------------------

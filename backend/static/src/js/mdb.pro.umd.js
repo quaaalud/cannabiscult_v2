@@ -1,50 +1,50 @@
 // BOOTSTRAP CORE COMPONENTS
-import Button from './free/button';
-import Offcanvas from './bootstrap/mdb-prefix/offcanvas';
-import Carousel from './free/carousel';
-import Popover from './free/popover';
-import ScrollSpy from './free/scrollspy';
-import Tab from './free/tab';
-import Tooltip from './free/tooltip';
+import { Button } from './free/button.js';
+import { Offcanvas } from './bootstrap/mdb-prefix/offcanvas.js';
+import { Carousel } from './free/carousel.js';
+import { Popover } from './free/popover.js';
+import { ScrollSpy } from './free/scrollspy.js';
+import { Tab } from './free/tab.js';
+import { Tooltip } from './free/tooltip.js';
 
 // MDB FREE COMPONENTS
-import Input from './free/input';
-import Collapse from './free/collapse';
-import Dropdown from './free/dropdown';
-import Ripple from './free/ripple';
-import Range from './free/range';
+import { Input } from './free/input.js';
+import { Collapse } from './free/collapse.js';
+import { Dropdown } from './free/dropdown.js';
+import { Ripple } from './free/ripple.js';
+import { Range } from './free/range.js';
 
 // MDB PRO COMPONENTS
-import Animate from './pro/animate';
-import Chart from './pro/charts/charts';
-import Lightbox from './pro/lightbox';
-import Rating from './pro/rating';
-import Sidenav from './pro/sidenav';
-import Alert from './pro/alert';
-import Toast from './pro/toast';
-import Timepicker from './pro/timepicker';
-import Navbar from './pro/navbar';
-import InfiniteScroll from './pro/infinite-scroll';
-import LazyLoad from './pro/lazy-load';
-import Datepicker from './pro/datepicker';
-import Popconfirm from './pro/popconfirm';
-import Datatable from './pro/datatable';
-import Stepper from './pro/stepper';
-import Sticky from './pro/sticky';
-import Select from './pro/select';
-import Touch from './pro/touch';
-import SmoothScroll from './pro/smooth-scroll';
-import PerfectScrollbar from './pro/perfect-scrollbar';
-import Loading from './pro/loading-management';
-import Autocomplete from './pro/autocomplete';
-import Modal from './pro/modal';
-import Clipboard from './pro/clipboard';
-import ChipsInput from './pro/chips';
-import Chip from './pro/chips/chip';
-import MultiRangeSlider from './pro/multi-range';
-import Datetimepicker from './pro/date-time-picker';
+import { Animate } from './pro/animate.js';
+import { Chart } from './pro/charts/charts.js';
+import { Lightbox } from './pro/lightbox.js';
+import { Rating } from './pro/rating.js';
+import { Sidenav } from './pro/sidenav.js';
+import { Alert } from './pro/alert.js';
+import { Toast } from './pro/toast.js';
+import { Timepicker } from './pro/timepicker/index.js';
+import { Navbar } from './pro/navbar.js';
+import { InfiniteScroll } from './pro/infinite-scroll.js';
+import { LazyLoad } from './pro/lazy-load.js';
+import { Datepicker } from './pro/datepicker/index.js';
+import { Popconfirm } from './pro/popconfirm.js';
+import { Datatable } from './pro/datatable/index.js';
+import { Stepper } from './pro/stepper.js';
+import { Sticky } from './pro/sticky.js';
+import { Select } from './pro/select/index.js';
+import { Touch } from './pro/touch/index.js';
+import { SmoothScroll } from './pro/smooth-scroll.js';
+import { PerfectScrollbar } from './pro/perfect-scrollbar.js';
+import { Loading } from './pro/loading-management/index.js';
+import { Autocomplete } from './pro/autocomplete/index.js';
+import { Modal } from './pro/modal.js';
+import { Clipboard } from './pro/clipboard.js';
+import { ChipsInput } from './pro/chips/index.js';
+import { Chip } from './pro/chips/chip.js';
+import { MultiRangeSlider } from './pro/multi-range/index.js';
+import { Datetimepicker } from './pro/date-time-picker/index.js';
 
-import initMDB from './autoinit/index.pro';
+import { initMDB } from './autoinit/index.pro.js';
 
 const mdb = {
   // FREE
