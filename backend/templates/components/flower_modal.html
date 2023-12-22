@@ -120,7 +120,7 @@
       key: "connoisseur"
     },
     {
-      title: "{{ strain }}",
+      title: "{{ strain }} by {{ cultivator }}",
       content: `
         <div class="container ps-lg-3">
           <div class="row align-items-center justify-content-center text-start g-3 mx-2">
@@ -145,16 +145,16 @@
       key: "method_of_consumption"
     },
     {
-      title: "{{ strain }}",
+      title: "{{ strain }} Apprearance Rating",
       content: `
-        <div class="container-fluid align-items-center text-center">
+        <div class="container-fluid align-items-center text-center btn-group-container">
           <div class="row pt-1">
-            <div class="col text-start">
+            <div class="col text-center">
               <label class="ps-2  modal-info-shadow" for="appearance_1_point">Not Desireable</label>
             </div>
           </div>
-          <div class="btn-group btn-group-sm" role="group" aria-label="{{ strain }} Appearance Rating">
-            <div class="row">
+          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Appearance Rating">
+            <div class="row btn-group-container">
               <input type="radio" class="btn-check btn-light" name="appearance_rating" id="appearance_rating1" value="1" autocomplete="off">
               <label class="btn btn-light" for="appearance_rating1" id="appearance_1_point">1</label>
   
@@ -169,8 +169,7 @@
   
               <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating5" value="5" autocomplete="off">
               <label class="btn btn-light" for="appearance_rating5">5</label>
-            </div>
-            <div class="row">
+              
               <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating6" value="6" autocomplete="off">
               <label class="btn btn-light" for="appearance_rating6">6</label>
   
@@ -188,7 +187,7 @@
             </div>
           </div>
           <div class="row pt-1">
-            <div class="col text-end">
+            <div class="col text-center">
               <label class="pe-2  modal-info-shadow" for="appearance_10_point">Desireable</label>
             </div>
           </div>
@@ -202,24 +201,24 @@
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
             <div class="form-outline" data-mdb-input-init>
-              <textarea class="form-control" id="appearance_explanation" name="appearance_explanation" type="text" rows="4"></textarea>
-              <label class="form-label" for="appearance_explanation" name="appearance_explanation_label" id="appearance_explanation_label">Explain your aroma rating for {{ strain }}</label>
+              <textarea class="form-control" id="appearance_explanation" name="appearance_explanation" type="text" rows="4" placeholder="Start typing here..."></textarea>
             </div>
+            <label class="form-label" for="appearance_explanation" name="appearance_explanation_label" id="appearance_explanation_label">Explain your aroma rating for {{ strain }} in the space above.</label>
           </div>
         </div>
       `,
       key: "appearance_explanation"
     },
     {
-      title: "{{ strain }} by {{ cultivator }}",
+      title: "{{ strain }} Aroma Rating",
       content: `
-        <div class="container align-items-center text-center rating-button-group">
+        <div class="container align-items-center text-center btn-group-container">
           <div class="row pt-1">
-            <div class="col text-start">
+            <div class="col text-center">
               <label class="ps-2  modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
             </div>
           </div>
-          <div class="btn-group btn-group-sm" role="group" aria-label="{{ strain }} Aroma Rating">
+          <div class="btn-group btn-group-sm btn-group-container col-10 my-auto mx-auto" role="group" aria-label="{{ strain }} Aroma Rating">
             <div class="row">
               <input type="radio" class="btn-check btn-light" name="smell_rating" id="smell_rating1" value="1" autocomplete="off">
               <label class="btn btn-light" for="smell_rating1" id="smell_1_point">1</label>
@@ -235,8 +234,7 @@
   
               <input type="radio" class="btn-check" name="smell_rating" id="smell_rating5" value="5" autocomplete="off">
               <label class="btn btn-light" for="smell_rating5">5</label>
-            </div>
-            <div class="row">
+              
               <input type="radio" class="btn-check" name="smell_rating" id="smell_rating6" value="6" autocomplete="off">
               <label class="btn btn-light" for="smell_rating6">6</label>
   
@@ -254,8 +252,8 @@
             </div>
           </div>
           <div class="row pt-1">
-            <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungeant</label>
+            <div class="col text-center">
+              <label class="modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungeant</label>
             </div>
           </div>
         </div>
@@ -263,14 +261,14 @@
       key: "smell_rating"
     },
     {
-      title: "{{ strain }} by {{ cultivator }}",
+      title: "{{ strain }} Smell Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
             <div class="form-outline" data-mdb-input-init>
               <textarea class="form-control" id="smell_explanation" name="smell_explanation" type="text" rows="4"></textarea>
-              <label class="form-label" for="smell_explanation" name="smell_explanation_label" id="smell_explanation_label" >Explain your aroma rating for {{ strain }}</label>
             </div>
+            <label class="form-label" for="smell_explanation" name="smell_explanation_label" id="smell_explanation_label" >Explain your aroma rating for {{ strain }}</label>
           </div>
         </div>
       `,
@@ -279,47 +277,51 @@
     {
       title: "{{ strain }} - Freshness Rating",
       content: `
-        <div class="container align-items-center text-center">
-          <div class="btn-group btn-group-sm" role="group" aria-label="{{ strain }} Freshness Rating">
+      <div class="container-fluid align-items-center text-center btn-group-container">
+        <div class="row pt-1">
+          <div class="col text-center">
+            <label class="ps-2  modal-info-shadow" for="freshness_1_point">Too Old or Dry</label>
+          </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Freshness Rating">
+          <div class="row btn-group-container">
             <input type="radio" class="btn-check btn-light" name="freshness_rating" id="freshness_rating1" value="1" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating1" id="freshness_1_point">1</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating2" value="2" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating2">2</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating3" value="3" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating3">3</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating4" value="4" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating4">4</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating5" value="5" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating5">5</label>
-
+            
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating6" value="6" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating6">6</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating7" value="7" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating7">7</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating8" value="8" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating8">8</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating9" value="9" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating9">9</label>
-
+      
             <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating10" value="10" autocomplete="off">
             <label class="btn btn-light" for="freshness_rating10" id="freshness_10_point">10</label>
           </div>
-          <div class="row pt-1">
-            <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="freshness_1_point">Too Old <span class="long-voting-label">or</span> Dry</label>
-            </div>
-            <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="freshness_10_point">Dank <span class="long-voting-label">with</span> Good Moisture</label>
-            </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-center">
+            <label class="pe-2  modal-info-shadow" for="freshness_10_point">Dank with Good Moisture</label>
           </div>
         </div>
+      </div>
       `,
       key: "freshness_rating"
     },
@@ -328,52 +330,59 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="freshness_explanation" name="freshness_explanation" placeholder="Explain your freshness rating for {{ strain }}" aria-label="Freshness Rating Explantion Field" autocomplete="off"/>
+              <div class="form-outline" data-mdb-input-init>
+                  <textarea class="form-control" id="freshness_explanation" name="freshness_explanation" rows="4" placeholder="Start typing here..."></textarea>
+              </div>
+              <label class="form-label" for="freshness_explanation" name="freshness_explanation_label" id="freshness_explanation_label">Explain your freshness rating for {{ strain }} in the space above.</label>
           </div>
-        </div>
+      </div>
       `,
       key: "freshness_explanation"
     },
     {
       title: "{{ strain }} - Flavor Rating",
       content: `
-      <div class="container align-items-center text-center rating-button-group">
-        <div class="btn-group btn-group-sm" role="group" aria-label="{{ strain }} Flavor Rating">
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating1" id="flavor_1_point">1</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating2">2</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating3">3</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating4">4</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating5">5</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating6">6</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating7">7</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating8">8</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating9">9</label>
-
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
-          <label class="btn btn-light" for="flavor_rating10" id="flavor_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
-          <div class="col text-start">
+          <div class="col text-center">
             <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
           </div>
-          <div class="col text-end">
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Flavor Rating">
+          <div class="row btn-group-container">
+            <input type="radio" class="btn-check btn-light" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating1" id="flavor_1_point">1</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating2">2</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating3">3</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating4">4</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating5">5</label>
+            
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating6">6</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating7">7</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating8">8</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating9">9</label>
+      
+            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
+            <label class="btn btn-light" for="flavor_rating10" id="flavor_10_point">10</label>
+          </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-center">
             <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
           </div>
         </div>
@@ -386,52 +395,59 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="flavor_explanation" name="flavor_explanation" placeholder="Explain your Flavor Rating for {{ strain }}" aria-label="Flavor Vote Explantion Field" autocomplete="off"/>
+              <div class="form-outline" data-mdb-input-init>
+                  <textarea class="form-control" id="flavor_explanation" name="flavor_explanation" rows="4" placeholder="Start typing here..."></textarea>
+              </div>
+              <label class="form-label" for="flavor_explanation" name="flavor_explanation_label" id="flavor_explanation_label">Explain your flavor rating for {{ strain }} in the space above.</label>
           </div>
-        </div>
+      </div>
       `,
       key: "flavor_explanation"
     },
     {
       title: "{{ strain }} - Smoothness on Inhale Rating",
       content: `
-      <div class="container align-items-center text-center rating-button-group">
-        <div class="btn-group btn-group-sm" role="group" aria-label="{{ strain }} Harshness Rating">
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating1" value="1" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating1" id="harshness_1_point">1</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating2" value="2" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating2">2</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating3" value="3" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating3">3</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating4" value="4" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating4">4</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating5" value="5" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating5">5</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating6" value="6" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating6">6</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating7" value="7" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating7">7</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating8" value="8" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating8">8</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating9" value="9" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating9">9</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating10" value="10" autocomplete="off">
-          <label class="btn btn-light" for="harshness_rating10" id="harshness_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
-          <div class="col text-start">
+          <div class="col text-center">
             <label class="ps-2 modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
           </div>
-          <div class="col text-end">
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Harshness Rating">
+          <div class="row btn-group-container">
+            <input type="radio" class="btn-check btn-light" name="harshness_rating" id="harshness_rating1" value="1" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating1" id="harshness_1_point">1</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating2" value="2" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating2">2</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating3" value="3" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating3">3</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating4" value="4" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating4">4</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating5" value="5" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating5">5</label>
+            
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating6" value="6" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating6">6</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating7" value="7" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating7">7</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating8" value="8" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating8">8</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating9" value="9" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating9">9</label>
+        
+            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating10" value="10" autocomplete="off">
+            <label class="btn btn-light" for="harshness_rating10" id="harshness_10_point">10</label>
+          </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-center">
             <label class="pe-2 modal-info-shadow long-voting-label" for="harshness_10_point">Enjoyable</label>
           </div>
         </div>
@@ -444,52 +460,59 @@
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your harshness rating for {{ strain }}" aria-label="Harshness Rating Explantion Field" autocomplete="off"/>
+              <div class="form-outline" data-mdb-input-init>
+                  <textarea class="form-control" id="harshness_explanation" name="harshness_explanation" rows="4" placeholder="Start typing here..."></textarea>
+              </div>
+              <label class="form-label" for="harshness_explanation" name="harshness_explanation_label" id="harshness_explanation_label">Explain your harshness rating for {{ strain }} in the space above.</label>
           </div>
-        </div>
+      </div>
       `,
       key: "harshness_explanation"
     },
     {
       title: "{{ strain }} - Effects Rating",
       content: `
-      <div class="container align-items-center text-center rating-button-group">
-        <div class="btn-group btn-group-sm" role="group" aria-label="{{ strain }} Effects Vote">
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating1" value="1" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating1" id="effects_1_point">1</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating2" value="2" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating2">2</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating3" value="3" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating3">3</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating4" value="4" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating4">4</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating5" value="5" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating5">5</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating6" value="6" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating6">6</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating7" value="7" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating7">7</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating8" value="8" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating8">8</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating9" value="9" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating9">9</label>
-
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating10" value="10" autocomplete="off">
-          <label class="btn btn-light" for="effects_rating10" id="effects_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
-          <div class="col-6 text-start">
+          <div class="col text-center">
             <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
           </div>
-          <div class="col-6 text-end">
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Effects Vote">
+          <div class="row btn-group-container">
+            <input type="radio" class="btn-check btn-light" name="effects_rating" id="effects_rating1" value="1" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating1" id="effects_1_point">1</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating2" value="2" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating2">2</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating3" value="3" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating3">3</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating4" value="4" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating4">4</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating5" value="5" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating5">5</label>
+            
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating6" value="6" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating6">6</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating7" value="7" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating7">7</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating8" value="8" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating8">8</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating9" value="9" autocomplete="off">
+            <label class="btn btn-light" for "effects_rating9">9</label>
+      
+            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating10" value="10" autocomplete="off">
+            <label class="btn btn-light" for="effects_rating10" id="effects_10_point">10</label>
+          </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-center">
             <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
           </div>
         </div>

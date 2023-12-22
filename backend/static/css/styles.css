@@ -166,18 +166,6 @@ select {
   border: 1px solid black !important;
 }
 
-/* Custom button group size */
-.btn-group-custom {
-  font-size: calc((<font-size-btn-group> + <font-size-btn-group-sm>) / 2);
-  padding: calc((<padding-btn-group> + <padding-btn-group-sm>) / 2);
-}
-
-/* Custom button size within the button group */
-.btn-group-custom .btn {
-  padding: calc((<padding-btn> + <padding-btn-sm>) / 2);
-  /* Add other properties as needed */
-}
-
 /* Label text for low/high end of scale */
 .rating-scale-label {
     font-family: 'Balthazar', serif;
@@ -186,18 +174,42 @@ select {
     font-size: smaller; /* Smaller font size for secondary text */
 }
 
-/* Target the label that comes immediately after a checked radio input */
-.btn-check:checked + .btn-light {
-  background-color: #343a40 !important; /* This is the background color for .btn-dark */
-  color: #fff !important; /* Text color for .btn-dark */
-  border-color: #343a40 !important; /* Border color for .btn-dark */
+.btn-group-container {
+  background-color: transparent; /* Makes the background transparent */
+  /* Add additional styling to match the screenshot */
+  border: none; /* Removes any border that might be present */
+  box-shadow: none; /* Removes box shadow if any */
 }
 
-/* If you want to change other properties like box-shadow when active, you can add them here */
-.btn-check:checked + .btn-light {
-  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15); /* Example box-shadow */
+.btn-group-container .btn-group {
+  background-color: transparent; /* Makes the background transparent */
+  /* Add additional styling to match the screenshot */
+  border: none; /* Removes any border that might be present */
+  box-shadow: none; /* Removes box shadow if any */
 }
 
+.btn-group-container .btn-light {
+  font-size: calc(1.0em);
+  margin: 0.1rem; /* Adds space around the buttons */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  transition: box-shadow 0.3s;
+}
+
+.btn-group-container .btn-light:hover {
+  background-color: transparent; /* Makes the background transparent */
+  /* Add additional styling to match the screenshot */
+  border: none; /* Removes any border that might be present */
+}
+
+.btn-check:checked + .btn-light {
+  background-color: #343a40 !important;
+  color: #fff !important;
+  border-color: #343a40 !important;
+}
+
+.btn-check:checked + .btn-light {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
+}
 
 @media (max-width: 485px) {
   .long-voting-label {
