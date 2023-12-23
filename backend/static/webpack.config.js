@@ -1,4 +1,7 @@
 const path = require('path');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require('webpack');
 
 module.exports = {
@@ -10,16 +13,31 @@ module.exports = {
     path: path.resolve(__dirname, 'static/dist'),
     filename: '[name].bundle.js'
   },
+  optimization: {
+    innerGraph: true,
+    flagIncludedChunks: true,
+    concatenateModules: true,
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({ test: /\.js(\?.*)?$/i }),
+      new CssMinimizerPlugin() // Added for CSS minimization
+    ],
+  },
   plugins: [
     new webpack.ProvidePlugin({
       Chart: 'chart.js',
-    })
+    }),
+    new MiniCssExtractPlugin()
   ],
   module: {
     rules: [
       {
         test: /\.css$/,
-        use: ['style-loader', 'css-loader']
+        use: [MiniCssExtractPlugin.loader, 'css-loader'] // Removed 'style-loader' and 'sass-loader' for '.css' files
+      },
+      {
+        test: /\.scss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] // Separate rule for '.scss' files if needed
       },
       {
         test: /\.js$/,
@@ -37,4 +55,7 @@ module.exports = {
   devServer: {
     contentBase: './static/dist',
   },
+  resolve: {
+    extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
+  }
 };

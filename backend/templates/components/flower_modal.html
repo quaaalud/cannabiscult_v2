@@ -155,35 +155,10 @@
           </div>
           <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Appearance Rating">
             <div class="row btn-group-container">
-              <input type="radio" class="btn-check btn-light" name="appearance_rating" id="appearance_rating1" value="1" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating1" id="appearance_1_point">1</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating2" value="2" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating2">2</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating3" value="3" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating3">3</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating4" value="4" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating4">4</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating5" value="5" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating5">5</label>
-              
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating6" value="6" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating6">6</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating7" value="7" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating7">7</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating8" value="8" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating8">8</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating9" value="9" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating9">9</label>
-  
-              <input type="radio" class="btn-check" name="appearance_rating" id="appearance_rating10" value="10" autocomplete="off">
-              <label class="btn btn-light" for="appearance_rating10" id="appearance_10_point">10</label>
+              {% for i in range(1, 11) %}
+                <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="appearance_rating" id="appearance_rating{{ i }}" value="{{ i }}" autocomplete="off">
+                <label class="btn btn-light" for="appearance_rating{{ i }}" {% if i == 1 or i == 10 %}id="appearance_{{ i }}_point"{% endif %}>{{ i }}</label>
+              {% endfor %}
             </div>
           </div>
           <div class="row pt-1">
@@ -220,35 +195,10 @@
           </div>
           <div class="btn-group btn-group-sm btn-group-container col-10 my-auto mx-auto" role="group" aria-label="{{ strain }} Aroma Rating">
             <div class="row">
-              <input type="radio" class="btn-check btn-light" name="smell_rating" id="smell_rating1" value="1" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating1" id="smell_1_point">1</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating2" value="2" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating2">2</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating3" value="3" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating3">3</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating4" value="4" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating4">4</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating5" value="5" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating5">5</label>
-              
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating6" value="6" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating6">6</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating7" value="7" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating7">7</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating8" value="8" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating8">8</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating9" value="9" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating9">9</label>
-  
-              <input type="radio" class="btn-check" name="smell_rating" id="smell_rating10" value="10" autocomplete="off">
-              <label class="btn btn-light" for="smell_rating10" id="smell_10_point">10</label>
+              {% for i in range(1, 11) %}
+                <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="smell_rating" id="smell_rating{{ i }}" value="{{ i }}" autocomplete="off">
+                <label class="btn btn-light" for="smell_rating{{ i }}" {% if i == 1 or i == 10 %}id="smell_{{ i }}_point"{% endif %}>{{ i }}</label>
+              {% endfor %}
             </div>
           </div>
           <div class="row pt-1">
@@ -285,35 +235,10 @@
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Freshness Rating">
           <div class="row btn-group-container">
-            <input type="radio" class="btn-check btn-light" name="freshness_rating" id="freshness_rating1" value="1" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating1" id="freshness_1_point">1</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating2" value="2" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating2">2</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating3" value="3" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating3">3</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating4" value="4" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating4">4</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating5" value="5" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating5">5</label>
-            
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating6" value="6" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating6">6</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating7" value="7" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating7">7</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating8" value="8" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating8">8</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating9" value="9" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating9">9</label>
-      
-            <input type="radio" class="btn-check" name="freshness_rating" id="freshness_rating10" value="10" autocomplete="off">
-            <label class="btn btn-light" for="freshness_rating10" id="freshness_10_point">10</label>
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="freshness_rating" id="freshness_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="freshness_rating{{ i }}" {% if i == 1 or i == 10 %}id="freshness_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
         </div>
         <div class="row pt-1">
@@ -350,35 +275,10 @@
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Flavor Rating">
           <div class="row btn-group-container">
-            <input type="radio" class="btn-check btn-light" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating1" id="flavor_1_point">1</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating2">2</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating3">3</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating4">4</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating5">5</label>
-            
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating6">6</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating7">7</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating8">8</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating9">9</label>
-      
-            <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
-            <label class="btn btn-light" for="flavor_rating10" id="flavor_10_point">10</label>
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="flavor_rating" id="flavor_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="flavor_rating{{ i }}" {% if i == 1 or i == 10 %}id="flavor_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
         </div>
         <div class="row pt-1">
@@ -396,7 +296,7 @@
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
               <div class="form-outline" data-mdb-input-init>
-                  <textarea class="form-control" id="flavor_explanation" name="flavor_explanation" rows="4" placeholder="Start typing here..."></textarea>
+                <textarea class="form-control" id="flavor_explanation" name="flavor_explanation" rows="4" placeholder="Start typing here..."></textarea>
               </div>
               <label class="form-label" for="flavor_explanation" name="flavor_explanation_label" id="flavor_explanation_label">Explain your flavor rating for {{ strain }} in the space above.</label>
           </div>
@@ -415,35 +315,10 @@
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Harshness Rating">
           <div class="row btn-group-container">
-            <input type="radio" class="btn-check btn-light" name="harshness_rating" id="harshness_rating1" value="1" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating1" id="harshness_1_point">1</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating2" value="2" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating2">2</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating3" value="3" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating3">3</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating4" value="4" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating4">4</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating5" value="5" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating5">5</label>
-            
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating6" value="6" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating6">6</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating7" value="7" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating7">7</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating8" value="8" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating8">8</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating9" value="9" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating9">9</label>
-        
-            <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating10" value="10" autocomplete="off">
-            <label class="btn btn-light" for="harshness_rating10" id="harshness_10_point">10</label>
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="harshness_rating" id="harshness_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="harshness_rating{{ i }}" {% if i == 1 or i == 10 %}id="harshness_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
         </div>
         <div class="row pt-1">
@@ -480,35 +355,10 @@
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Effects Vote">
           <div class="row btn-group-container">
-            <input type="radio" class="btn-check btn-light" name="effects_rating" id="effects_rating1" value="1" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating1" id="effects_1_point">1</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating2" value="2" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating2">2</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating3" value="3" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating3">3</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating4" value="4" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating4">4</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating5" value="5" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating5">5</label>
-            
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating6" value="6" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating6">6</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating7" value="7" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating7">7</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating8" value="8" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating8">8</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating9" value="9" autocomplete="off">
-            <label class="btn btn-light" for "effects_rating9">9</label>
-      
-            <input type="radio" class="btn-check" name="effects_rating" id="effects_rating10" value="10" autocomplete="off">
-            <label class="btn btn-light" for="effects_rating10" id="effects_10_point">10</label>
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="effects_rating" id="effects_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="effects_rating{{ i }}" {% if i == 1 or i == 10 %}id="effects_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
         </div>
         <div class="row pt-1">

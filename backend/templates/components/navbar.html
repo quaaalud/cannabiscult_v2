@@ -14,9 +14,93 @@
     </a>
     <!-- Search -->
     <div class="pe-lg-1 d-lg-flex order-lg-2 ms-auto">
-      <form class="w-auto">
-        <input type="search" class="form-control" placeholder="Search Coming Soon" aria-label="Search Strains">
-      </form>
+      <div class="d-flex ms-auto">
+        <form>
+          <input id="search-input" type="search" class="form-control" placeholder="Search Strains" aria-label="Search Strains" autocomplete="off">
+          <ul class="list-group" id="search-results" style="width: 100%; z-index: 1050; display: none;"></ul>
+        </form>
+        <script>
+          document.addEventListener('DOMContentLoaded', () => {
+              let searchTimeoutToken;
+          
+              function updateSearchResults(searchTerm) {
+                  // Check if the search term has at least 3 characters
+                  if (searchTerm.trim().length < 3) {
+                      document.getElementById('search-results').innerHTML = '';
+                      document.getElementById('search-results').style.display = 'none';
+                      return;
+                  }
+          
+                  if (searchTimeoutToken) {
+                      clearTimeout(searchTimeoutToken);
+                  }
+          
+                  searchTimeoutToken = setTimeout(() => {
+                      fetch(`/search/all/${encodeURIComponent(searchTerm)}`)
+                          .then(response => {
+                              if (!response.ok) {
+                                  throw new Error('Network response was not ok');
+                              }
+                              return response.json();
+                          })
+                          .then(data => {
+                              const resultList = document.getElementById('search-results');
+                              resultList.innerHTML = '';
+                              resultList.style.display = data.length ? 'block' : 'none';
+          
+                              // Organize results by product type
+                              const categorizedResults = {
+                                  Flower: [],
+                                  Concentrate: [],
+                                  Edible: [],
+                              };
+          
+                              data.forEach(item => {
+                                  if (item.type in categorizedResults) {
+                                      categorizedResults[item.type].push(item);
+                                  }
+                              });
+          
+                              // Display results
+                              Object.keys(categorizedResults).forEach(type => {
+                                  if (categorizedResults[type].length > 0) {
+                                      const typeItem = document.createElement('li');
+                                      typeItem.classList.add('list-group-item', 'list-group-item-primary', 'fw-bold');
+                                      typeItem.textContent = type;
+                                      resultList.appendChild(typeItem);
+          
+                                      categorizedResults[type].forEach(item => {
+                                          const listItem = document.createElement('li');
+                                          listItem.classList.add('list-group-item');
+          
+                                          let link;
+                                          if (item.type === 'Flower') {
+                                              link = `/get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                          } else if (item.type === 'Concentrate') {
+                                              link = `/concentrate-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                          } else if (item.type === 'Edible') {
+                                              link = `/edible-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                          }
+                                          // Display result without (type)
+                                          listItem.innerHTML = `<a href="${link}" style="text-decoration: none; color: inherit;">${item.strain} by ${item.cultivator}</a>`;
+                                          resultList.appendChild(listItem);
+                                      });
+                                  }
+                              });
+                          })
+                          .catch(error => {
+                              console.error('Error fetching search results:', error);
+                              document.getElementById('search-results').style.display = 'none';
+                          });
+                  }, 300);
+              }
+          
+              document.getElementById('search-input').addEventListener('input', (event) => {
+                  updateSearchResults(event.target.value);
+              });
+          });
+        </script>
+    </div>
     </div>
     <!-- Toggle button -->
     <button class="navbar-toggler order-lg-3" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -91,4 +175,3 @@
     </div>
   </div>
 </div>
-
