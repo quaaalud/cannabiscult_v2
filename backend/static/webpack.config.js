@@ -3,15 +3,22 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require('webpack');
+const globAll = require('glob-all'); // Import glob-all
 
 module.exports = {
   entry: {
-    main: './js/mdb.min.js',
-    styles: './css/styles.css'
+    // Use glob-all to collect all .js files recursively starting from the root
+    main: globAll.sync([
+      './**/*.js', // Match .js files
+      '!./node_modules/**', // Exclude node_modules directory
+    ], {
+      absolute: true, // Convert paths to absolute
+      deep: 5, // Collect files up to 5 directories deep
+    }),
   },
   output: {
     path: path.resolve(__dirname, 'static/dist'),
-    filename: '[name].bundle.js'
+    filename: '[name].[contenthash].bundle.js'
   },
   optimization: {
     innerGraph: true,
@@ -19,26 +26,25 @@ module.exports = {
     concatenateModules: true,
     minimize: true,
     minimizer: [
-      new TerserPlugin({ test: /\.js(\?.*)?$/i }),
-      new CssMinimizerPlugin() // Added for CSS minimization
+      new TerserPlugin({
+        test: /\.js(\?.*)?$/i,
+      }),
     ],
+    splitChunks: {
+      chunks: 'all',
+    },
+    runtimeChunk: 'single',
   },
   plugins: [
     new webpack.ProvidePlugin({
       Chart: 'chart.js',
     }),
-    new MiniCssExtractPlugin()
+    new MiniCssExtractPlugin({
+      filename: '[name].[contenthash].css',
+    }),
   ],
   module: {
     rules: [
-      {
-        test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'] // Removed 'style-loader' and 'sass-loader' for '.css' files
-      },
-      {
-        test: /\.scss$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'] // Separate rule for '.scss' files if needed
-      },
       {
         test: /\.js$/,
         exclude: /node_modules/,
@@ -48,14 +54,31 @@ module.exports = {
             presets: ['@babel/preset-env']
           }
         }
-      }
+      },
+      {
+        test: /\.(s[ac]ss|css)$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              sourceMap: true,
+            },
+          },
+        ],
+      },
     ],
   },
-  devtool: 'inline-source-map',
-  devServer: {
-    contentBase: './static/dist',
-  },
   resolve: {
-    extensions: ['.js', '.jsx', '.json', '.css', '.scss'],
-  }
+    alias: {
+      'duplicate-library': 'path/to/existing/library',
+    },
+  },
+  devtool: 'source-map',
 };
