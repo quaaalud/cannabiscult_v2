@@ -3,6 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 node_modules/
+
 # Data files to be ignored
 *.csv
 *.db
@@ -19,7 +20,6 @@ pyvenv.*
 bin/
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
