@@ -24,8 +24,8 @@ def get_edible_data_and_path(
             )
         }
     return None
-  
-  
+
+
 def get_vivd_edible_data_by_strain(
         db: Session,
         edible_strain: int) -> Optional[Dict[str, Any]]:
@@ -43,8 +43,8 @@ def get_vivd_edible_data_by_strain(
             )
         }
     return None
-  
-  
+
+
 def get_vibe_edible_data_by_strain(
         db: Session,
         edible_strain: int) -> Optional[Dict[str, Any]]:
