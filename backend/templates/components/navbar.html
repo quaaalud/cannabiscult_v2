@@ -13,11 +13,14 @@
       >
     </a>
     <!-- Search -->
-    <div class="pe-lg-1 d-lg-flex order-lg-2 ms-auto">
+    <div class="navbar-nav pe-lg-1 d-lg-flex order-lg-2 ms-auto">
       <div class="d-flex ms-auto">
         <form>
           <input id="search-input" type="search" class="form-control" placeholder="Search Strains" aria-label="Search Strains" autocomplete="off">
-          <ul class="list-group mt-2" id="search-results" style="display: none;"></ul>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-none" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false"></a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdown" id="search-results"></ul>
+          </li>
         </form>
         <script>
           document.addEventListener('DOMContentLoaded', () => {
@@ -27,7 +30,7 @@
                   // Check if the search term has at least 3 characters
                   if (searchTerm.trim().length < 3) {
                       document.getElementById('search-results').innerHTML = '';
-                      document.getElementById('search-results').style.display = 'none';
+                      $('#navbarDropdown').dropdown('hide');
                       return;
                   }
           
@@ -46,8 +49,7 @@
                           .then(data => {
                               const resultList = document.getElementById('search-results');
                               resultList.innerHTML = '';
-                              resultList.style.display = data.length ? 'block' : 'none';
-          
+
                               // Organize results by product type
                               const categorizedResults = {
                                   Flower: [],
@@ -64,15 +66,15 @@
                               // Display results
                               Object.keys(categorizedResults).forEach(type => {
                                   if (categorizedResults[type].length > 0) {
-                                      const typeItem = document.createElement('li');
-                                      typeItem.classList.add('list-group-item', 'list-group-item-primary', 'fw-bold');
-                                      typeItem.textContent = type;
-                                      resultList.appendChild(typeItem);
-          
+                                  
+                                      const typeHeading = document.createElement('li');
+                                      typeHeading.classList.add('dropdown-header');
+                                      typeHeading.textContent = type;
+                                      resultList.appendChild(typeHeading);
+                                      
                                       categorizedResults[type].forEach(item => {
                                           const listItem = document.createElement('li');
-                                          listItem.classList.add('list-group-item');
-          
+                                          listItem.classList.add('dropdown-item');
                                           let link;
                                           if (item.type === 'Flower') {
                                               link = `/get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
@@ -81,16 +83,20 @@
                                           } else if (item.type === 'Edible') {
                                               link = `/edible-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
                                           }
-                                          // Display result without (type)
                                           listItem.innerHTML = `<a href="${link}" style="text-decoration: none; color: inherit;">${item.strain} by ${item.cultivator}</a>`;
                                           resultList.appendChild(listItem);
                                       });
                                   }
                               });
+                              if (data.length) {
+                                  new bootstrap.Dropdown(document.getElementById('navbarDropdown')).show();
+                              } else {
+                                  new bootstrap.Dropdown(document.getElementById('navbarDropdown')).hide();
+                              }
                           })
                           .catch(error => {
                               console.error('Error fetching search results:', error);
-                              document.getElementById('search-results').style.display = 'none';
+                              new bootstrap.Dropdown(document.getElementById('navbarDropdown')).hide();
                           });
                   }, 300);
               }
@@ -100,7 +106,7 @@
               });
           });
         </script>
-    </div>
+      </div>
     </div>
     <!-- Toggle button -->
     <button class="navbar-toggler order-lg-3" type="button" data-mdb-toggle="collapse" data-mdb-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
