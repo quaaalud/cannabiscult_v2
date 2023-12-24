@@ -6,21 +6,20 @@ Created on Fri Dec 22 20:12:12 2023
 @author: dale
 """
 
-from typing import Type, List, Dict, Any
+from typing import Type, List, Dict, Any, Optional
 import traceback
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.future import select
 from db.base import Base
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible
+from db.models.product_types import Product_Types
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
-async def get_data_by_strain(
-    db: AsyncSession, model: Type[Base], strain: str
-) -> List[Dict[str, Any]]:
+async def get_data_by_strain(db: Session, model: Type[Base], strain: str) -> List[Dict[str, Any]]:
     try:
         result = db.execute(select(model).filter(model.strain.ilike(f"%{strain}%")))
         items = result.scalars().all()
@@ -39,7 +38,7 @@ async def get_data_by_strain(
         return []
 
 
-async def search_strain(db: AsyncSession, strain: str) -> List[Dict[str, Any]]:
+async def search_strain(db: Session, strain: str) -> List[Dict[str, Any]]:
     flower_results = await get_data_by_strain(db, Flower, strain)
     concentrate_results = await get_data_by_strain(db, Concentrate, strain)
     try:
@@ -48,3 +47,38 @@ async def search_strain(db: AsyncSession, strain: str) -> List[Dict[str, Any]]:
         edible_results = []
 
     return flower_results + concentrate_results + edible_results
+
+
+async def get_all_product_types(db: Session) -> List[str]:
+    try:
+        result = db.execute(select(Product_Types.product_type))
+        product_types = result.scalars().all()
+        return [product_type for product_type in product_types]
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching product types: {e}")
+        return []
+
+
+def get_cultivators_by_product_type(db: Session, model: Type[Base]) -> List[str]:
+    try:
+        result = db.execute(select(model.cultivator).distinct())
+        cultivators = result.scalars().all()
+        return [cultivator for cultivator in cultivators]
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching cultivators for {model.__name__}: {e}")
+        return []
+
+
+def get_strains_by_cultivator(
+    db: Session, model: Type[Base], cultivator: str
+) -> Optional[List[str]]:
+    try:
+        result = db.execute(select(model.strain).where(model.cultivator == cultivator))
+        strains = result.scalars().all()
+        return [strain for strain in strains]
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}")
+        return None

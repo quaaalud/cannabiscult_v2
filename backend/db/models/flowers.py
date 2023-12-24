@@ -28,6 +28,10 @@ class Flower(Base):
         Boolean,
         default=True,
     )
+    product_type = Column(
+        String,
+        default='flower',
+    )
 
 
 class Flower_Description(Base):
