@@ -17,6 +17,7 @@ class FlowersBase(BaseModel):
     is_mystery: bool
     card_path: str
     voting_open: bool = True
+    product_type: str = 'flower'
 
     class Config:
         orm_mode = True

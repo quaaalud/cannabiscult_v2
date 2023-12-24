@@ -10,7 +10,7 @@ from pydantic import BaseModel, Json
 from typing import Optional
 
 
-class FlowersBase(BaseModel):
+class ProductTypes(BaseModel):
     product_type: str
     extra_data: Optional[Json]
 

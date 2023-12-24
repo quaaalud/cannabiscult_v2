@@ -64,7 +64,6 @@ def get_concentrate_and_description(
             )
             .filter(Concentrate_Description.cultivar_email == cultivar_email)
         )
-        print(query)
 
         if cultivator:
             query = query.filter(Concentrate.cultivator == cultivator)

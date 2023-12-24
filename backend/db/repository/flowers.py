@@ -18,6 +18,7 @@ def get_flower_data_and_path(db: Session, strain: str) -> Optional[Dict[str, Any
             "url_path": return_image_url_from_supa_storage(str(Path(flower.card_path))),
             "voting_open": flower.voting_open,
             "is_mystery": flower.is_mystery,
+            "product_type": flower.product_type,
         }
     except Exception as e:
         traceback.print_exc()
@@ -83,6 +84,7 @@ async def get_flower_and_description(
                 "lineage": description.lineage,
                 "terpenes_list": description.terpenes_list,
                 "cultivar": description.cultivar_email,
+                "product_type": flower.product_type,
             }
 
             return flower_info
@@ -141,6 +143,7 @@ def get_flower_and_description_by_id(
                 "lineage": lineage,
                 "terpenes_list": terpenes_list,
                 "cultivar": description.cultivar_email,
+                "product_type": flower.product_type,
             }
 
             return flower_info

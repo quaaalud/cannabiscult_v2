@@ -44,95 +44,87 @@
 
 
 {% block scripts %}
-  <script>
-    window.addEventListener('DOMContentLoaded', function() {
-    
-      var typeSwitch = document.getElementById('typeSwitch');
-      var form = document.getElementById('review-form');
-      var typeLabel = document.getElementById('typeLabel');
-      var strainSelect = document.getElementById('strain_selected');
-      var cultivatorSelect = document.getElementById('cultivator_selected');
-      var submitButton = document.getElementById('submit');
-      
-      function getRouteBase() {
-        return typeSwitch.checked ? '/concentrate-' : '/';
-      }
-      
-      function getFormAction() {
-        return typeSwitch.checked ? '/concentrate-get-review' : '/get-review';
-      }
-      
-      typeLabel.textContent = typeSwitch.checked ? 'Concentrates' : 'Flower';
-      
-      typeSwitch.addEventListener('change', function() {
-        typeLabel.textContent = typeSwitch.checked ? 'Concentrates' : 'Flower';
-        strainSelect.innerHTML = ''; 
-        cultivatorSelect.innerHTML = '';
-        fetchCultivatorsAndStrains(); 
-        form.action = getFormAction();
-      });
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+  var productTypeSelect = document.getElementById('product_type_selected');
+  var cultivatorSelect = document.getElementById('cultivator_selected');
+  var strainSelect = document.getElementById('strain_selected');
   
-      function updateButtonState() {
-        submitButton.disabled = !(strainSelect.value && cultivatorSelect.value);
-      }
+  var reviewForm = document.getElementById('review-form');
+
+  function updateFormAction() {
+    var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
+    if (selectedProductType === 'Flower') {
+      reviewForm.action = '/get-review';
+    } else {
+      reviewForm.action = '/' + selectedProductType.toLowerCase() + '-get-review';
+    }
+  }
   
-      function fetchCultivatorsAndStrains() {
-        var initialLoad = !localStorage.getItem('selectedCultivator');
-        var routeBase = getRouteBase();
+  function fetchAndPopulateSelect(url, selectElement, defaultValue, callback) {
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        selectElement.innerHTML = '';
+        let defaultOptionSet = false;
   
-        fetch(routeBase + 'get-all-cultivators')
-          .then(response => response.json())
-          .then(data => {
-            cultivatorSelect.innerHTML = '';
-            var selectedCultivator = initialLoad ? data[0] : localStorage.getItem('selectedCultivator');
-            data.forEach(function(cultivator) {
-              var option = document.createElement('option');
-              option.text = cultivator;
-              option.value = cultivator;
-              if (cultivator === selectedCultivator) {
-                option.selected = true;
-              }
-              cultivatorSelect.add(option);
-            });
-  
-            var event = new Event('change');
-            cultivatorSelect.dispatchEvent(event);
+        if (Array.isArray(data)) {
+          data.forEach(item => {
+            var option = document.createElement('option');
+            option.value = item;
+            option.text = item.charAt(0).toUpperCase() + item.slice(1);
+            if (item === defaultValue) {
+              option.selected = true;
+              defaultOptionSet = true;
+            }
+            selectElement.add(option);
           });
-      }
+        } else {
+          console.error('Expected an array but received:', data);
+        }
   
-      fetchCultivatorsAndStrains();
+        if (callback && defaultOptionSet) {
+          callback();
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
   
-      cultivatorSelect.addEventListener('change', function(e) {
-        var cultivatorSelected = e.target.value;
-        localStorage.setItem('selectedCultivator', cultivatorSelected);
-        
-        fetch(getRouteBase() + 'get-strains-for-cultivator?cultivator_selected=' + cultivatorSelected)
-          .then(response => response.json())
-          .then(data => {
-            strainSelect.innerHTML = '';
-            var selectedStrain = localStorage.getItem('selectedStrain') || data[0];
-            data.forEach(function(strain) {
-              var option = document.createElement('option');
-              option.text = strain;
-              option.value = strain;
-              if (strain === selectedStrain) {
-                option.selected = true;
-              }
-              strainSelect.add(option);
-            });
-            updateButtonState();
-          });
-      });
+  function updateCultivatorOptions() {
+      var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
+      var cachedCultivator = localStorage.getItem('selectedCultivator') || 'Amaze';
+      var url = '/search/cultivators/' + selectedProductType;
+      fetchAndPopulateSelect(url, cultivatorSelect, cachedCultivator, updateStrainOptions);
+    }
   
-      strainSelect.addEventListener('change', function(e) {
-        localStorage.setItem('selectedStrain', e.target.value);
-        updateButtonState();
-      });
+    function updateStrainOptions() {
+      var selectedCultivator = cultivatorSelect.value.charAt(0).toUpperCase() + cultivatorSelect.value.slice(1);
+      var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
+      var cachedStrain = localStorage.getItem('selectedStrain') || 'Marmalaid';
+      var url = '/search/strains/' + selectedProductType + '/' + selectedCultivator;
+      fetchAndPopulateSelect(url, strainSelect, cachedStrain);
+    }
   
-      cultivatorSelect.addEventListener('change', updateButtonState);
-      strainSelect.addEventListener('change', updateButtonState);
-      
-      updateButtonState();
+    productTypeSelect.addEventListener('change', function() {
+      localStorage.setItem('selectedProductType', productTypeSelect.value);
+      updateCultivatorOptions();
+      updateFormAction();
     });
-  </script>
+  
+    cultivatorSelect.addEventListener('change', function() {
+      localStorage.setItem('selectedCultivator', cultivatorSelect.value);
+      updateStrainOptions();
+    });
+  
+    strainSelect.addEventListener('change', function() {
+      localStorage.setItem('selectedStrain', strainSelect.value);
+    });
+  
+    var cachedProductType = localStorage.getItem('selectedProductType') || 'Flower';
+    fetchAndPopulateSelect('/search/product-types', productTypeSelect, cachedProductType, updateCultivatorOptions);
+    updateFormAction();
+  });
+</script>
+
+
 {% endblock %}
