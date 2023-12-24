@@ -3,32 +3,33 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require('webpack');
-const globAll = require('glob-all'); // Import glob-all
+const globAll = require('glob-all');
+
+
+const matchedFiles = globAll.sync([
+  path.join(__dirname, '**/*.{css,js,scss}'),
+], {
+  absolute: false,
+  deep: 15,
+});
+
+console.log(matchedFiles);
 
 module.exports = {
   entry: {
-    // Use glob-all to collect all .js files recursively starting from the root
-    main: globAll.sync([
-      './**/*.js', // Match .js files
-      '!./node_modules/**', // Exclude node_modules directory
-    ], {
-      absolute: true, // Convert paths to absolute
-      deep: 5, // Collect files up to 5 directories deep
-    }),
+    main: matchedFiles.filter(item => item && path.extname(item) !== ''),
   },
   output: {
     path: path.resolve(__dirname, 'static/dist'),
     filename: '[name].[contenthash].bundle.js'
   },
   optimization: {
-    innerGraph: true,
-    flagIncludedChunks: true,
-    concatenateModules: true,
     minimize: true,
     minimizer: [
       new TerserPlugin({
         test: /\.js(\?.*)?$/i,
       }),
+      new CssMinimizerPlugin(),
     ],
     splitChunks: {
       chunks: 'all',
@@ -46,39 +47,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        use: {
-          loader: 'babel-loader',
-          options: {
-            presets: ['@babel/preset-env']
-          }
-        }
-      },
-      {
         test: /\.(s[ac]ss|css)$/,
         use: [
           MiniCssExtractPlugin.loader,
-          {
-            loader: 'css-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
-          },
+          'css-loader',
+          'sass-loader',
         ],
       },
     ],
   },
-  resolve: {
-    alias: {
-      'duplicate-library': 'path/to/existing/library',
-    },
-  },
-  devtool: 'source-map',
+  devtool: process.env.NODE_ENV === 'development' ? 'source-map' : false,
 };

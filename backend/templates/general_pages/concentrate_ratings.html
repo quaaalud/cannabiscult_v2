@@ -243,11 +243,11 @@
 </style>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    fetchAndUpdateStrainRatings();
+    fetchAndUpdatConcentrateRatings();
     
   });
   
-  function fetchAndUpdateStrainRatings() {
+  function fetchAndUpdatConcentrateRatings() {
     var endpoint = "/concentrate_reviews/get_concentrate_description?cultivator=${cultivator}&strain=${strain}";
 
     fetch(endpoint)
