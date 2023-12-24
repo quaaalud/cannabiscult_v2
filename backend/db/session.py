@@ -9,21 +9,11 @@ Created on Fri Mar 10 19:08:36 2023
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from core.config import settings
-from typing import Generator  
+from typing import Generator
 
-engine = create_engine(settings.DATABASE_URL)   
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
 
-supa_engine = create_engine(settings.SUPA_URL)
-SupaLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=supa_engine
-)
+supa_engine = engine = create_engine(settings.SUPA_URL)
+SupaLocal = sessionmaker(autocommit=False, autoflush=False, bind=supa_engine)
 
 
 def get_db() -> Generator:
@@ -32,12 +22,11 @@ def get_db() -> Generator:
         yield db
     finally:
         db.close()
-        
-        
+
+
 def get_supa_db() -> Generator:
     try:
         db = SupaLocal()
         yield db
     finally:
         db.close()
-    
