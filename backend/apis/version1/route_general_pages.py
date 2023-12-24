@@ -561,6 +561,16 @@ async def process_concentrate_request(
                 str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
             )
         else:
+            review_dict = route_concentrates.get_concentrate_and_description(
+                db=db,
+                strain=strain_selected,
+                cultivar_email="aaron.childs@thesocialoutfitus.com",
+                cultivator=cultivator_selected,
+            )
+            request_dict = {
+                "request": request,
+            }
+            response_dict = {**request_dict, **review_dict}
             return templates.TemplateResponse(
                 str(Path("general_pages", "concentrate_ratings.html")), response_dict
             )

@@ -86,7 +86,9 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Description</p>
-                  <p id="description_text" class="text-muted mb-0">{% if description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}</p>
+                  <p id="description_text" class="text-muted mb-0">
+                    {% if is_mystery %}We cannot tell you about the mystery strains.{% elif description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}
+                  </p>
                 </div>
               </div>
               <div class="d-flex align-items-start mb-5">
@@ -97,7 +99,9 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Effects<br></p>
-                  <p id="effects_text" class="text-muted mb-0">{% if effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
+                  <p id="effects_text" class="text-muted mb-0">
+                    {% if is_mystery %}But be sure to submit your ratings.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}
+                  </p>
                 </div>
               </div>
               <div class="d-flex align-items-start mb-5">
@@ -108,7 +112,9 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Lineage</p>
-                  <p id="lineage-text" class="text-muted mb-0">{% if lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
+                  <p id="lineage-text" class="text-muted mb-0">
+                    {% if is_mystery %}So our cultivators know what you think.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}
+                  </p>
                 </div>
               </div>
               <div class="d-flex align-items-start">
@@ -123,7 +129,8 @@
                     var terpenesList = {{ terpenes_list | tojson }};
                   </script>
                   <div id="terpene_text" class="text-muted mb-0">
-                    {% if terpenes_list %}
+                    {% if is_mystery %}<p>And you will see all the results soon!</p>
+                    {% elif terpenes_list %}
                       <canvas id="terpeneChart"></canvas>
                     {% else %}
                       <p>Coming Soon</p>

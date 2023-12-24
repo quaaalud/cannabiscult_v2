@@ -8,13 +8,14 @@ Created on Mon Sep  4 17:26:25 2023
 
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
-from fastapi import Depends, Query
+from fastapi import Depends, Query, HTTPException
 from typing import List, Dict, Any
 from db.session import get_supa_db, get_db
 from db.repository.concentrate_reviews import append_votes_to_arrays
 from db.repository.concentrate_reviews import get_review_data_and_path
 from db.repository.concentrate_reviews import get_review_data_and_path_from_id
 from db.repository.concentrates import (
+    get_concentrate_and_description,
     get_concentrate_data_and_path,
     get_vibe_concentrate_strains,
     get_concentrate_by_strain_and_cultivator,

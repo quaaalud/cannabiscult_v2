@@ -68,14 +68,18 @@
   <div style="position: relative;" data-draggable="true">
     <section draggable="false" class="container pt-3" data-v-271253ee="">
       <section class="mb-10">
-        <h1 class="fw-bold mb-5 text-center">Cultivar Reviews</h1>
-        <div class="row gx-lg-5 align-items-start d-flex justify-content-between">
-          <div class="col-lg-6 mb-5 mb-lg-0">
-            {% include "components/concentrate_card.html" %}
+        <div class="container mb-5">
+          <h1 class="fw-bold mb-5 text-center">Cultivar Reviews</h1>
+        </div>
+        <div class="row gx-lg-5 align-items-start d-flex justify-content-between mx-auto my-auto">
+          <div class="col-12 col-lg-6 mb-5 mb-lg-0 my-auto mx-auto">
+            <div class="container pt-md-5">
+              {% include "components/concentrate_card.html" %}
+            </div>
           </div>
-          <div class="col-lg-6 mb-4 mb-lg-0 h-100 pt-lg-5">
+          <div class="col-12 col-lg-6 mb-4 mb-lg-0 h-100 pt-lg-5">
             <div class="d-flex flex-column justify-content-between pt-lg-5">
-              <div class="d-flex align-items-start mb-5 pt-lg-5">
+              <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
                     <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
@@ -83,18 +87,22 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Description</p>
-                  <p id="description_text" class="text-muted mb-0">Coming Soon.</p>
+                  <p id="description_text" class="text-muted">
+                    {% if is_mystery %}We cannot tell you about the mystery strains.{% elif description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}
+                  </p>
                 </div>
               </div>
               <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
-                    <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                    <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1 ms-4">
-                  <p class="fw-bold mb-1">Terpenes</p>
-                  <p id="terpene_text" class="text-muted mb-0">Coming Soon.</p>
+                  <p class="fw-bold mb-1">Effects<br></p>
+                  <p id="effects_text" class="text-muted">
+                    {% if is_mystery %}But be sure to submit your ratings.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}
+                  </p>
                 </div>
               </div>
               <div class="d-flex align-items-start mb-5">
@@ -105,18 +113,26 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Lineage</p>
-                  <p id="lineage-text" class="text-muted mb-0">Coming Soon</p>
+                  <p id="lineage-text" class="text-muted">
+                    {% if is_mystery %}So our cultivators know what you think.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}
+                  </p>
                 </div>
               </div>
-              <div class="d-flex align-items-start">
+              <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
-                    <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                    <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
                   </div>
                 </div>
                 <div class="flex-grow-1 ms-4">
-                  <p class="fw-bold mb-1">Effects<br></p>
-                  <p id="effects_text" class="text-muted mb-0">Coming Soon</p>
+                  <p class="fw-bold mb-1">Terpenes</p>
+                  <div id="terpene_text" class="text-muted mb-0">
+                    {% if is_mystery %}
+                      <p>And you will see all the results soon!</p>
+                    {% else %}
+                      <canvas id="terpeneChart"></canvas>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
             </div>
@@ -131,8 +147,8 @@
         <div class="row gx-lg-5">
           <div class="col-md-4 mb-4">
             <h2 id="flavor_rating_value" class="fw-bold display-5 text-info mb-3">
-              {% if flavor %}
-                    {{ flavor }}
+              {% if flavor_rating %}
+                    {{ flavor_rating }}
                 {% else %}
                     ?
                 {% endif %}
@@ -141,8 +157,8 @@
           </div>
           <div class="col-md-4 mb-4">
             <h2 id="overall_rating_value" class="fw-bold display-5 text-info mb-3">
-              {% if overall %}
-                    {{ overall }}
+              {% if overall_rating %}
+                    {{ overall_rating }}
                 {% else %}
                     ?
                 {% endif %}
@@ -151,8 +167,8 @@
           </div>
           <div class="col-md-4 mb-4">
             <h2 id="effects_rating_value" class="fw-bold display-5 text-info mb-3">
-              {% if effects %}
-                    {{ effects }}
+              {% if effects_rating %}
+                    {{ effects_rating }}
                 {% else %}
                     ?
                 {% endif %}
@@ -172,7 +188,7 @@
             <h5 id="appearance_rating_value" class="text-info fw-bold mb-3">
               -
             </h5>
-            <h6 class="fw-normal mb-0">Appearance<br></h6>
+            <h6 class="fw-normal mb-0">Color<br></h6>
             <hr class="divider-vertical d-none d-md-block">
           </div>
           <div class="col-lg-3 col-md-6 mb-5 mb-md-5 mb-lg-0 position-relative">
@@ -225,6 +241,63 @@
     height: 100%; 
   }
 </style>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    fetchAndUpdateStrainRatings();
+    
+  });
+  
+  function fetchAndUpdateStrainRatings() {
+    var endpoint = "/concentrate_reviews/get_concentrate_description?cultivator=${cultivator}&strain=${strain}";
+
+    fetch(endpoint)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.error) {
+            document.getElementById('flavor_rating_value').innerText = data.flavor_rating.toFixed(2);
+            document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
+            document.getElementById('effects_rating_value').innerText = data.effects_rating.toFixed(2);
+            document.getElementById('color_rating_value').innerText = data.color_rating.toFixed(2);
+            document.getElementById('smell_rating_value').innerText = data.smell_rating.toFixed(2);
+            document.getElementById('harshess_rating_value').innerText = data.harshness_rating.toFixed(2);
+            document.getElementById('consistency_rating_value').innerText = data.consistency_rating.toFixed(2);
+            
+            let terpenesList = data.terpenes_list
+            if (terpenesList && terpenesList.length > 0) {
+              const dataValues = terpenesList.map(() => 1);
+              console.log(terpenesList);
+              initTerpeneChart(terpenesList, dataValues);
+            }
+        } else {
+            console.error('Error fetching data:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  function initTerpeneChart(labels, dataValues) {
+    const ctx = document.getElementById('terpeneChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Terpenes',
+          data: dataValues,
+          backgroundColor: generateColors(labels.length),
+        }]
+      }
+    });
+  }
+  function generateColors(count) {
+    const colors = [
+      'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+      'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+      'rgba(66, 133, 244, 0.2)'
+    ];
+    return colors.slice(0, count);
+  }
+</script>
 <script>
   async function fetchFlowerData() {
     try {
