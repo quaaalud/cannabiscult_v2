@@ -69,7 +69,8 @@ window.addEventListener('DOMContentLoaded', function() {
             }
             selectElement.add(option);
           });
-
+          updateCultivatorOptions();
+          updateStrainOptions();
           if (callback && defaultOptionSet) {
             callback();
           } else if (callback && !defaultOptionSet && selectElement === productTypeSelect) {
@@ -86,6 +87,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
     var cachedCultivator = localStorage.getItem('selectedCultivator') || 'Proper';
     var url = '/search/cultivators/' + selectedProductType;
+    updateStrainOptions();
     fetchAndPopulateSelect(url, cultivatorSelect, cachedCultivator, updateStrainOptions);
   }
 
