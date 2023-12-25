@@ -67,16 +67,18 @@
 <main class="container pt-5">
   <section draggable="false" class="container pt-3" data-v-271253ee="">
     <section class="mb-10">
-      <div class="container mb-lg-5">
-        <h1 class="fw-bold mb-5 text-center">Cultivar Reviews</h1>
+      <div class="container pb-5">
+        <div class="row mx-auto pb-xl-5">
+          <h1 class="fw-bold text-center">Cultivar Reviews</h1>
+        </div>
       </div>
-      <div class="row gx-lg-5 align-items-start d-flex justify-content-between mx-auto my-auto">
-        <div class="col-12 col-lg-6 mb-5 mb-lg-0 mx-auto my-auto">
+      <div class="row gx-lg-5 align-items-start d-flex justify-content-between mx-auto">
+        <div class="col-12 col-lg-6 mb-5 mb-lg-0 mx-auto">
           {% include "components/hidden-concentrate-card.html" %}
         </div>
-        <div class="col-12 col-lg-6 mb-4 mb-lg-0 h-100 pt-lg-5">
-          <div class="d-flex flex-column justify-content-between pt-lg-5">
-            <div class="d-flex align-items-start mb-5 pt-lg-5">
+        <div class="col-12 col-lg-6 mb-4 mb-lg-0 h-100">
+          <div class="d-flex flex-column justify-content-between">
+            <div class="d-flex align-items-start mb-5 pt-lg-3 pt-xl-5">
               <div class="flex-shrink-0">
                 <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
                   <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
@@ -90,17 +92,6 @@
             <div class="d-flex align-items-start mb-5">
               <div class="flex-shrink-0">
                 <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
-                  <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-4">
-                <p class="fw-bold mb-1">Terpenes</p>
-                <p id="terpene_text" class="text-muted mb-0">But you can rate the strain yourself first.</p>
-              </div>
-            </div>
-            <div class="d-flex align-items-start mb-5">
-              <div class="flex-shrink-0">
-                <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
                   <i class="fas fa-timeline fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
                 </div>
               </div>
@@ -109,7 +100,7 @@
                 <p id="lineage-text" class="text-muted mb-0">And we will be releasing all of the strain information as soon as we can!</p>
               </div>
             </div>
-            <div class="d-flex align-items-start">
+            <div class="d-flex align-items-start mb-5">
               <div class="flex-shrink-0">
                 <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
                   <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
@@ -118,6 +109,17 @@
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Effects<br></p>
                 <p id="effects_text" class="text-muted mb-0">Don't worry, you will not have to wait long.</p>
+              </div>
+            </div>
+            <div class="d-flex align-items-start">
+              <div class="flex-shrink-0">
+                <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
+                  <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1 ms-4">
+                <p class="fw-bold mb-1">Terpenes</p>
+                <p id="terpene_text" class="text-muted mb-0">But you can rate the strain yourself first.</p>
               </div>
             </div>
           </div>
@@ -166,8 +168,8 @@
         </div>
         <div class="col-lg-3 col-md-6 mb-5 mb-md-0 position-relative">
           <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
-          <h5 id="vote_count" class="text-info fw-bold mb-3">?</h5>
-          <h6 class="fw-normal mb-0">Votes</h6>
+          <h5 id="harshness_rating_value" class="text-info fw-bold mb-3">?</h5>
+          <h6 class="fw-normal mb-0">Smoothness</h6>
         </div>
       </div>
     </section>
