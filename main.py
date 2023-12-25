@@ -62,7 +62,13 @@ def include_router(app):
 
 def configure_static(app):
     global STATIC_DIR
-    app.mount(str(STATIC_DIR), StaticFiles(directory=str(STATIC_DIR)), name="static")
+    app.mount(
+        str(STATIC_DIR),
+        StaticFiles(directory=str(STATIC_DIR)),
+        name="static",
+        docs_url=None,
+        redoc_url=None,
+    )
 
 
 def create_tables():
@@ -80,7 +86,7 @@ def start_application():
         allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"]
+        allow_headers=["*"],
     )
     app.add_middleware(GZipMiddleware, minimum_size=1000)
     return app
