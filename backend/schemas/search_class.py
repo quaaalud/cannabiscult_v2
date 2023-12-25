@@ -16,6 +16,9 @@ class SearchResultItem(BaseModel):
     type: str
     url_path: str
 
+    class Config:
+        orm_mode = True
+
 
 class SearchResults(BaseModel):
     results: List[SearchResultItem]

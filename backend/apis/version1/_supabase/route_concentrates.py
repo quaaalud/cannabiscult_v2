@@ -97,7 +97,7 @@ def add_new_votes_to_concentrate_values(
         pass
 
 
-@router.post("/")
+@router.post("/", response_model=Dict[str, Any])
 def add_concentrate_vote_to_db(
     cultivator_selected: str,
     strain_selected: str,
@@ -131,7 +131,7 @@ def add_concentrate_vote_to_db(
     )
 
 
-@router.get("/get-concentrate")
+@router.get("/get-concentrate", response_model=Dict[str, Any])
 async def query_concentrate_by_strain(
     strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
@@ -141,7 +141,7 @@ async def query_concentrate_by_strain(
     )
 
 
-@router.get("/get_concentrate_review")
+@router.get("/get_concentrate_review", response_model=Dict[str, Any])
 async def query_concentrate_by_strain_and_cultivator(
     strain: str = Query(None, alias="strain"),
     cultivator: str = Query(None, alias="cultivator"),
@@ -155,7 +155,7 @@ async def query_concentrate_by_strain_and_cultivator(
     return concentrate_dict
 
 
-@router.get("/get-vibe-concentrate")
+@router.get("/get-vibe-concentrate", response_model=Dict[str, Any])
 async def query_vibe_concentrate_by_strain(
     strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
@@ -170,7 +170,7 @@ async def query_vibe_concentrate_strains(db: Session = Depends(get_db)) -> List[
     return get_vibe_concentrate_strains(db)
 
 
-@router.get("/get_concentrate_description")
+@router.get("/get_concentrate_description", response_model=Dict[str, Any])
 async def query_concentrate_description_by_strain(
     strain: str = Query(None, alias="strain"),
     cultivator: str = Query(None, alias="cultivator"),

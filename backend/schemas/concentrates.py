@@ -11,16 +11,15 @@ from pydantic import BaseModel
 
 class ConcentratesBase(BaseModel):
     concentrate_id: int
-    cultivator: str 
+    cultivator: str
     strain: str
     is_mystery: bool
     card_path: str
     voting_open: bool = True
-    
-    class Config():
+
+    class Config:
         from_attributes = True
-        
-        
+
+
 class HiddenConcentrate(ConcentratesBase):
     pass
-    

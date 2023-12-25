@@ -10,6 +10,7 @@ from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from fastapi import Depends
+from typing import Dict, Any
 from db.session import get_supa_db
 from db.models.flower_voting import FlowerVoting
 from db.models.flower_rankings import Flower_Ranking
@@ -23,7 +24,7 @@ from db.repository.flowers import get_flower_and_description
 router = APIRouter()
 
 
-@router.post("/")
+@router.post("/", response_model=Dict[str, Any])
 def add_flower_vote_to_db(
     cultivator_selected: str,
     strain_selected: str,

@@ -14,7 +14,7 @@ from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
-from typing import List, Optional, Dict
+from typing import List, Optional, Dict, Any
 from db.session import get_db
 from core.config import settings, Config
 from db.repository.edibles import get_vivd_edible_data_by_strain
@@ -355,11 +355,13 @@ async def process_flower_request(
         )
 
 
-@general_pages_router.post("/get-review")
+@general_pages_router.post("/get-review", response_model=Dict[str, Any])
 async def handle_flower_review_get(
     request: Request,
+    *,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
+    product_type_selected_selected: str = Form('flower'),
     db: Session = Depends(get_db),
 ):
     return await process_flower_request(request, strain_selected, cultivator_selected, db)

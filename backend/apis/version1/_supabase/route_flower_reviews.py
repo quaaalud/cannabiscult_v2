@@ -9,7 +9,7 @@ Created on Mon Jul  3 16:36:02 2023
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from fastapi import Depends
-from typing import List
+from typing import List, Dict, Any
 from db.session import get_supa_db
 from db.repository.flower_reviews import append_votes_to_arrays
 from db.repository.flower_reviews import get_review_data_and_path
@@ -53,7 +53,7 @@ def get_all_cultivators_for_strain(
     return sorted(set([result[0] for result in all_cultivators]))
 
 
-@router.get("/get_flower_from_strain_and_cultivator", response_model=dict)
+@router.get("/get_flower_from_strain_and_cultivator", response_model=Dict[str, Any])
 async def return_selected_review(
     strain_selected: str, cultivator_selected: str, db: Session = Depends(get_supa_db)
 ):

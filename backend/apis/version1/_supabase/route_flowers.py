@@ -90,7 +90,7 @@ def add_new_votes_to_flower_values(
         pass
 
 
-@router.post("/")
+@router.post("/", response_model=Dict[str, Any])
 def add_flower_vote_to_db(
     cultivator_selected: str,
     strain_selected: str,
@@ -124,7 +124,7 @@ def add_flower_vote_to_db(
     )
 
 
-@router.get("/get-flower")
+@router.get("/get-flower", response_model=Dict[str, Any])
 async def query_flower_by_strain(
     strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
@@ -134,7 +134,7 @@ async def query_flower_by_strain(
     )
 
 
-@router.get("/get_flower_description")
+@router.get("/get_flower_description", response_model=Dict[str, Any])
 async def query_flower_description_by_strain(
     strain: str = Query(None, alias="strain"),
     cultivator: str = Query(None, alias="cultivator"),
@@ -148,7 +148,7 @@ async def query_flower_description_by_strain(
         raise HTTPException(status_code=404, detail="Flower or description not found")
 
 
-@router.get("/get_flower_id")
+@router.get("/get_flower_id", response_model=Dict[str, Any])
 async def query_flower_with_description_by_id(
     flower_id: str = Query(None, alias="flower_id"),
     cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar"),

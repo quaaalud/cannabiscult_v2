@@ -9,7 +9,7 @@ Created on Fri Dec 22 20:27:46 2023
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.session import get_db
-from typing import List
+from typing import List, Optional
 from schemas.search_class import SearchResultItem
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
@@ -91,7 +91,7 @@ async def get_strains(
     return strains
 
 
-@router.get("/random/cultivator/{product_type}", response_model=str)
+@router.get("/random/cultivator/{product_type}", response_model=Optional[str])
 async def get_random_cultivator_search(
     product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
 ):
@@ -106,7 +106,7 @@ async def get_random_cultivator_search(
     return random_cultivator
 
 
-@router.get("/random/strain/{product_type}", response_model=str)
+@router.get("/random/strain/{product_type}", response_model=Optional[str])
 async def get_random_strain_search(
     product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
 ):

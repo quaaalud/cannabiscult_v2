@@ -19,49 +19,44 @@ router = APIRouter()
 
 
 @router.post("/get-all-mystery-edibles", response_model=List[str])
-async def get_all_mystery_edibles(
-        db: Session = Depends(get_db)
-) -> List[str]:
+async def get_all_mystery_edibles(db: Session = Depends(get_db)) -> List[str]:
     all_strains = db.query(MysteryEdible.strain).all()
     return sorted(set([result[0] for result in all_strains]))
 
 
-@router.get("/get-mystery-edible")
+@router.get("/get-mystery-edible", response_model=Dict[str, Any])
 async def get_return_selected_mystery_edible(
-    strain_selected: str = Query(None, alias="strain_selected"),
-    db: Session = Depends(get_db)
+    strain_selected: str = Query(None, alias="strain_selected"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     return get_edible_data_and_path(
         db,
         strain_select=strain_selected,
     )
-  
-@router.post("/get-mystery-edible")  
-async def post_return_selected_mystery_edible(
-        strain_selected: str,
-        db: Session = Depends(get_db)
-) -> Dict[str, Any]:
-    return get_edible_data_and_path(
-        db,
-        strain_select=strain_selected,
-    )
-  
 
-@router.get("/get-vivid-edible")
+
+@router.post("/get-mystery-edible", response_model=Dict[str, Any])
+async def post_return_selected_mystery_edible(
+    strain_selected: str, db: Session = Depends(get_db)
+) -> Dict[str, Any]:
+    return get_edible_data_and_path(
+        db,
+        strain_select=strain_selected,
+    )
+
+
+@router.get("/get-vivid-edible", response_model=Dict[str, Any])
 async def query_vivd_edible_data_by_strain(
-    edible_strain: str = Query(None, alias="edible_strain"),
-    db: Session = Depends(get_db)
+    edible_strain: str = Query(None, alias="edible_strain"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     return get_vivd_edible_data_by_strain(
         db,
         edible_strain=edible_strain,
     )
-  
-  
-@router.get("/get-vibe-edible")
+
+
+@router.get("/get-vibe-edible", response_model=Dict[str, Any])
 async def query_vibe_edible_data_by_strain(
-    edible_strain: str = Query(None, alias="edible_strain"),
-    db: Session = Depends(get_db)
+    edible_strain: str = Query(None, alias="edible_strain"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
     return get_vibe_edible_data_by_strain(
         db,
