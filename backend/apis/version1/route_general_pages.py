@@ -368,8 +368,10 @@ async def handle_flower_review_get(
 @general_pages_router.get("/get-review")
 async def handle_flower_review_post(
     request: Request,
+    *,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
+    product_type_selected: str = Query('flower', alias="product_type_selected"),
     db: Session = Depends(get_db),
 ):
     return await process_flower_request(request, strain_selected, cultivator_selected, db)

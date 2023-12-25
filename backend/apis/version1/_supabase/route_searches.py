@@ -19,10 +19,20 @@ from db.repository.search_class import (
     get_all_product_types,
     get_cultivators_by_product_type,
     get_strains_by_cultivator,
+    get_random_cultivator,
+    get_random_strain,
 )
 
 
 router = APIRouter()
+
+
+product_type_to_model = {
+    "Flower": Flower,
+    "Concentrate": Concentrate,
+    "Edible": Edible,
+    # Add other product types here
+}
 
 
 @router.get("/all/{search_term}", response_model=List[SearchResultItem])
@@ -47,15 +57,11 @@ async def get_product_types(db: Session = Depends(get_db)):
 
 
 @router.get("/cultivators/{product_type}", response_model=List[str])
-async def get_cultivators(product_type: str, db: Session = Depends(get_db)):
-    product_type_to_model = {
-        "Flower": Flower,
-        "Concentrate": Concentrate,
-        "Edible": Edible,
-        # Add other product types here
-    }
+async def get_cultivators(
+    product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
+):
 
-    model = product_type_to_model.get(product_type)
+    model = product_type_dict.get(product_type)
     if not model:
         raise HTTPException(status_code=404, detail="Product type not found")
 
@@ -67,15 +73,14 @@ async def get_cultivators(product_type: str, db: Session = Depends(get_db)):
 
 
 @router.get("/strains/{product_type}/{cultivator}", response_model=List[str])
-async def get_strains(product_type: str, cultivator: str, db: Session = Depends(get_db)):
-    product_type_to_model = {
-        "Flower": Flower,
-        "Concentrate": Concentrate,
-        "Edible": Edible,
-        # Add other product types here
-    }
+async def get_strains(
+    product_type: str,
+    cultivator: str,
+    product_type_dict=product_type_to_model,
+    db: Session = Depends(get_db),
+):
 
-    model = product_type_to_model.get(product_type)
+    model = product_type_dict.get(product_type)
     if not model:
         raise HTTPException(status_code=404, detail="Product type not found")
 
@@ -84,3 +89,33 @@ async def get_strains(product_type: str, cultivator: str, db: Session = Depends(
         raise HTTPException(status_code=500, detail="An error occurred")
 
     return strains
+
+
+@router.get("/random/cultivator/{product_type}", response_model=str)
+async def get_random_cultivator_search(
+    product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
+):
+    model = product_type_dict.get(product_type)
+    if not model:
+        raise HTTPException(status_code=404, detail="Product type not found")
+
+    random_cultivator = get_random_cultivator(db, model)
+    if not random_cultivator:
+        raise HTTPException(status_code=404, detail="No cultivators found")
+
+    return random_cultivator
+
+
+@router.get("/random/strain/{product_type}", response_model=str)
+async def get_random_strain_search(
+    product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
+):
+    model = product_type_dict.get(product_type)
+    if not model:
+        raise HTTPException(status_code=404, detail="Product type not found")
+
+    random_strain = get_random_strain(db, model)
+    if not random_strain:
+        raise HTTPException(status_code=404, detail="No strains found")
+
+    return random_strain

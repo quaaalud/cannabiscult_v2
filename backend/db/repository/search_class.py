@@ -10,6 +10,7 @@ from typing import Type, List, Dict, Any, Optional
 import traceback
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.sql import func
 from sqlalchemy.future import select
 from db.base import Base
 from db.models.flowers import Flower
@@ -82,3 +83,29 @@ def get_strains_by_cultivator(
         traceback.print_exc()
         print(f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}")
         return None
+
+
+def get_random_cultivator(db: Session, model: Type[Base]) -> str:
+    try:
+        result = db.execute(
+            select(model.cultivator).distinct().order_by(func.random()).limit(1)
+        )
+        random_cultivator = result.scalar_one()
+        return random_cultivator
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching random cultivator for {model.__name__}: {e}")
+        return ""
+
+
+def get_random_strain(db: Session, model: Type[Base]) -> str:
+    try:
+        result = db.execute(
+            select(model.strain).distinct().order_by(func.random()).limit(1)
+        )
+        random_strain = result.scalar_one()
+        return random_strain
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching random strain for {model.__name__}: {e}")
+        return ""
