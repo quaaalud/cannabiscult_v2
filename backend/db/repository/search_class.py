@@ -78,7 +78,7 @@ def get_strains_by_cultivator(
     try:
         result = db.execute(select(model.strain).where(model.cultivator == cultivator))
         strains = result.scalars().all()
-        return [strain for strain in strains]
+        return [strain for strain in strains if 'test' not in strain.lower()]
     except Exception as e:
         traceback.print_exc()
         print(f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}")

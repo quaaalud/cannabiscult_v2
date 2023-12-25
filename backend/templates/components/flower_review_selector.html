@@ -45,12 +45,22 @@ window.addEventListener('DOMContentLoaded', function() {
   var cultivatorSelect = document.getElementById('cultivator_selected');
   var strainSelect = document.getElementById('strain_selected');
   var reviewForm = document.getElementById('review-form');
-
-
+  
+  function getFormAction() {
+    switch (productTypeSelect.value.toLowerCase()) {
+      case 'concentrate':
+        return '/concentrate-get-review';
+      case 'edible':
+        return '/edible-get-review';
+      default:
+        return '/get-review';
+    }
+  }
+  
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-
+  
   function fetchAndPopulateSelect(url, selectElement, callback) {
     fetch(url)
       .then(response => response.json())
@@ -72,6 +82,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var selectedProductType = capitalizeFirstLetter(productTypeSelect.value);
     var url = '/search/cultivators/' + selectedProductType;
     fetchAndPopulateSelect(url, cultivatorSelect, updateStrainOptions);
+    reviewForm.action = getFormAction();
   }
 
   function updateStrainOptions() {
@@ -85,9 +96,9 @@ window.addEventListener('DOMContentLoaded', function() {
   cultivatorSelect.addEventListener('change', updateStrainOptions);
 
   fetchAndPopulateSelect('/search/product-types', productTypeSelect, function() {
+    reviewForm.action = getFormAction();
     updateCultivatorOptions();
   });
-
 });
 </script>
 {% endblock %}

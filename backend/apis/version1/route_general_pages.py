@@ -600,8 +600,10 @@ async def process_concentrate_request(
 @general_pages_router.post("/concentrate-get-review")
 async def handle_concentrate_review_get(
     request: Request,
+    *,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
+    product_type_selected: str = Form('concentrate'),
     db: Session = Depends(get_db),
 ):
     return await process_concentrate_request(request, strain_selected, cultivator_selected, db)
@@ -610,8 +612,10 @@ async def handle_concentrate_review_get(
 @general_pages_router.get("/concentrate-get-review")
 async def handle_concentrate_review_post(
     request: Request,
+    *,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
+    product_type_selected: str = Query('concentrate', alias="product_type_selected"),
     db: Session = Depends(get_db),
 ):
     return await process_concentrate_request(request, strain_selected, cultivator_selected, db)
