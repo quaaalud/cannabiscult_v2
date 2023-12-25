@@ -66,8 +66,6 @@ def configure_static(app):
         str(STATIC_DIR),
         StaticFiles(directory=str(STATIC_DIR)),
         name="static",
-        docs_url=None,
-        redoc_url=None,
     )
 
 
@@ -77,7 +75,12 @@ def create_tables():
 
 
 def start_application():
-    app = FastAPI(title=settings.PROJECT_NAME, version=settings.PROJECT_VERSION)
+    app = FastAPI(
+        title=settings.PROJECT_NAME,
+        version=settings.PROJECT_VERSION,
+        docs_url=None,
+        redoc_url=None,
+    )
     include_router(app)
     configure_static(app)
     create_tables()
@@ -89,6 +92,7 @@ def start_application():
         allow_headers=["*"],
     )
     app.add_middleware(GZipMiddleware, minimum_size=1000)
+
     return app
 
 
