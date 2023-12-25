@@ -51,15 +51,6 @@ window.addEventListener('DOMContentLoaded', function() {
   var strainSelect = document.getElementById('strain_selected');
   
   var reviewForm = document.getElementById('review-form');
-
-  function updateFormAction() {
-    var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
-    if (selectedProductType === 'Flower') {
-      reviewForm.action = '/get-review';
-    } else {
-      reviewForm.action = '/' + selectedProductType.toLowerCase() + '-get-review';
-    }
-  }
   
   function fetchAndPopulateSelect(url, selectElement, defaultValue, callback) {
     fetch(url)
@@ -108,7 +99,6 @@ window.addEventListener('DOMContentLoaded', function() {
     productTypeSelect.addEventListener('change', function() {
       localStorage.setItem('selectedProductType', productTypeSelect.value);
       updateCultivatorOptions();
-      updateFormAction();
     });
   
     cultivatorSelect.addEventListener('change', function() {
@@ -122,7 +112,6 @@ window.addEventListener('DOMContentLoaded', function() {
   
     var cachedProductType = localStorage.getItem('selectedProductType') || 'Flower';
     fetchAndPopulateSelect('/search/product-types', productTypeSelect, cachedProductType, updateCultivatorOptions);
-    updateFormAction();
   });
 </script>
 
