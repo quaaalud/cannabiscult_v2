@@ -49,16 +49,15 @@ window.addEventListener('DOMContentLoaded', function() {
   var productTypeSelect = document.getElementById('product_type_selected');
   var cultivatorSelect = document.getElementById('cultivator_selected');
   var strainSelect = document.getElementById('strain_selected');
-  
   var reviewForm = document.getElementById('review-form');
-  
+
   function fetchAndPopulateSelect(url, selectElement, defaultValue, callback) {
     fetch(url)
       .then(response => response.json())
       .then(data => {
         selectElement.innerHTML = '';
         let defaultOptionSet = false;
-  
+
         if (Array.isArray(data)) {
           data.forEach(item => {
             var option = document.createElement('option');
@@ -70,50 +69,55 @@ window.addEventListener('DOMContentLoaded', function() {
             }
             selectElement.add(option);
           });
+
+          if (callback && defaultOptionSet) {
+            callback();
+          } else if (callback && !defaultOptionSet && selectElement === productTypeSelect) {
+            callback();
+          }
         } else {
           console.error('Expected an array but received:', data);
-        }
-  
-        if (callback && defaultOptionSet) {
-          callback();
         }
       })
       .catch(error => console.error('Error:', error));
   }
-  
+
   function updateCultivatorOptions() {
-      var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
-      var cachedCultivator = localStorage.getItem('selectedCultivator') || 'Amaze';
-      var url = '/search/cultivators/' + selectedProductType;
-      fetchAndPopulateSelect(url, cultivatorSelect, cachedCultivator, updateStrainOptions);
-    }
-  
-    function updateStrainOptions() {
-      var selectedCultivator = cultivatorSelect.value.charAt(0).toUpperCase() + cultivatorSelect.value.slice(1);
-      var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
-      var cachedStrain = localStorage.getItem('selectedStrain') || 'Marmalaid';
-      var url = '/search/strains/' + selectedProductType + '/' + selectedCultivator;
-      fetchAndPopulateSelect(url, strainSelect, cachedStrain);
-    }
-  
-    productTypeSelect.addEventListener('change', function() {
-      localStorage.setItem('selectedProductType', productTypeSelect.value);
-      updateCultivatorOptions();
-    });
-  
-    cultivatorSelect.addEventListener('change', function() {
-      localStorage.setItem('selectedCultivator', cultivatorSelect.value);
-      updateStrainOptions();
-    });
-  
-    strainSelect.addEventListener('change', function() {
-      localStorage.setItem('selectedStrain', strainSelect.value);
-    });
-  
-    var cachedProductType = localStorage.getItem('selectedProductType') || 'Flower';
-    fetchAndPopulateSelect('/search/product-types', productTypeSelect, cachedProductType, updateCultivatorOptions);
+    var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
+    var cachedCultivator = localStorage.getItem('selectedCultivator') || 'Proper';
+    var url = '/search/cultivators/' + selectedProductType;
+    fetchAndPopulateSelect(url, cultivatorSelect, cachedCultivator, updateStrainOptions);
+  }
+
+  function updateStrainOptions() {
+    var selectedCultivator = cultivatorSelect.value;
+    var selectedProductType = productTypeSelect.value.charAt(0).toUpperCase() + productTypeSelect.value.slice(1);
+    var cachedStrain = localStorage.getItem('selectedStrain') || 'Biscotti';
+    var url = '/search/strains/' + selectedProductType + '/' + selectedCultivator;
+    fetchAndPopulateSelect(url, strainSelect, cachedStrain);
+  }
+
+  productTypeSelect.addEventListener('change', function() {
+    localStorage.setItem('selectedProductType', productTypeSelect.value);
+    updateCultivatorOptions();
   });
+
+  cultivatorSelect.addEventListener('change', function() {
+    localStorage.setItem('selectedCultivator', cultivatorSelect.value);
+    updateStrainOptions();
+  });
+
+  strainSelect.addEventListener('change', function() {
+    localStorage.setItem('selectedStrain', strainSelect.value);
+  });
+
+  var cachedProductType = localStorage.getItem('selectedProductType') || 'Flower';
+  updateCultivatorOptions();
+  updateStrainOptions();
+  fetchAndPopulateSelect('/search/product-types', productTypeSelect, cachedProductType, updateCultivatorOptions);
+});
 </script>
+
 
 
 {% endblock %}
