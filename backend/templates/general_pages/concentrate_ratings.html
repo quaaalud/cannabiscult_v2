@@ -187,7 +187,7 @@
         <div class="row">
           <div class="col-lg-3 col-md-6 mb-5 mb-md-5 mb-lg-0 position-relative">
             <i class="fas fa-eye fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="appearance_rating_value" class="text-info fw-bold mb-3">
+            <h5 id="color_rating_value" class="text-info fw-bold mb-3">
               -
             </h5>
             <h6 class="fw-normal mb-0">Color<br></h6>
@@ -245,10 +245,12 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    fetchAndUpdatConcentrateRatings();
+  document.addEventListener('DOMContentLoaded', async function() {
+    await fetchAndUpdatConcentrateDescription();
+    await fetchAndUpdateConcentrateRatings();
   });
-  function fetchAndUpdatConcentrateRatings() {
+
+  async function fetchAndUpdatConcentrateDescription() {
     var cultivator = "{{ cultivator }}";
     var strain = "{{ strain }}";
     var endpoint = "/concentrate_reviews/get_concentrate_description?cultivator=" + encodeURIComponent(cultivator) + "&strain=" + encodeURIComponent(strain);
@@ -269,6 +271,34 @@
         }
     })
     .catch(error => console.error('Error:', error));
+  }
+
+  async function fetchAndUpdateConcentrateRatings() {
+    const concentrateId = {{ concentrate_id }};
+    const endpoint = "/concentrate_ranking/get_concentrate_ratings_by_id/" + concentrateId;
+  
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const ratingsData = await response.json();
+      
+      if (!ratingsData.error) {
+          document.getElementById('flavor_rating_value').textContent = ratingsData.flavor_rating || '?';
+          document.getElementById('overall_rating_value').textContent = ratingsData.overall_score || '?';
+          document.getElementById('effects_rating_value').textContent = ratingsData.effects_rating || '?';
+          document.getElementById('harshness_rating_value').textContent = ratingsData.harshness_rating || '?';
+          document.getElementById('color_rating_value').textContent = ratingsData.color_rating || '?';
+          document.getElementById('smell_rating_value').textContent = ratingsData.smell_rating || '?';
+          document.getElementById('consistency_rating_value').textContent = ratingsData.consistency_rating || '?';
+          document.getElementById('residuals_rating_value').textContent = ratingsData.residuals_rating || '?';
+        } else {
+          console.error('Error fetching data:', ratingsData.error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
   }
 
   function initTerpeneChart(labels, dataValues) {

@@ -7,6 +7,8 @@ Created on Mon Oct 30 21:23:18 2023
 """
 
 from fastapi import APIRouter, Depends
+from sqlalchemy import func
+from typing import List, Dict, Any
 from sqlalchemy.orm import Session
 from db.session import get_db
 from db.models.concentrate_rankings import (
@@ -20,6 +22,7 @@ from db.repository.concentrate_rankings import (
     create_vibe_concentrate_ranking,
     create_concentrate_ranking,
 )
+from db.repository.concentrates import get_concentrate_and_description
 
 router = APIRouter()
 
@@ -46,3 +49,122 @@ def submit_vibe_concentrate_ranking(
 ) -> Vibe_Concentrate_Ranking:
     submitted_ranking = create_vibe_concentrate_ranking(ranking=ranking, db=db)
     return submitted_ranking
+
+
+@router.get("/get_top_concentrate_strains", response_model=List[Dict[str, Any]])
+async def get_top_concentrate_strains(db: Session = Depends(get_db)):
+    avg_ratings = (
+        db.query(
+            Concentrate_Ranking.strain,
+            Concentrate_Ranking.cultivator,
+            func.avg(Concentrate_Ranking.color_rating),
+            func.avg(Concentrate_Ranking.consistency_rating),
+            func.avg(Concentrate_Ranking.smell_rating),
+            func.avg(Concentrate_Ranking.flavor_rating),
+            func.avg(Concentrate_Ranking.effects_rating),
+            func.avg(Concentrate_Ranking.harshness_rating),
+            func.avg(Concentrate_Ranking.residuals_rating),
+        )
+        .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
+        .all()
+    )
+
+    scored_strains = []
+    for strain in avg_ratings:
+        overall_score = sum(filter(None, strain[2:])) / 7  # Adjust for the number of ratings
+        scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
+    scored_strains.sort(key=lambda x: x[2], reverse=True)
+    top_strains = scored_strains[:3]
+
+    return_strains = []
+    for strain_dict in top_strains:
+        try:
+            concentrate_data = await get_concentrate_and_description(
+                db, strain=strain_dict[0], cultivator=strain_dict[1]
+            )
+            concentrate_data["overall_score"] = strain_dict[2]
+            return_strains.append(concentrate_data)
+        except:
+            pass
+
+    return return_strains
+
+
+@router.get("/get_top_rated_concentrate_strains", response_model=list)
+async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n: int = 5):
+    avg_ratings = (
+        db.query(
+            Concentrate_Ranking.strain,
+            Concentrate_Ranking.cultivator,
+            func.avg(Concentrate_Ranking.color_rating),
+            func.avg(Concentrate_Ranking.consistency_rating),
+            func.avg(Concentrate_Ranking.smell_rating),
+            func.avg(Concentrate_Ranking.flavor_rating),
+            func.avg(Concentrate_Ranking.effects_rating),
+            func.avg(Concentrate_Ranking.harshness_rating),
+            func.avg(Concentrate_Ranking.residuals_rating),
+        )
+        .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
+        .all()
+    )
+
+    scored_strains = [
+        (strain, cultivator, round(sum(filter(None, ratings[2:])) / 7, 2))
+        for strain, cultivator, *ratings in avg_ratings
+    ]
+
+    top_strains = sorted(scored_strains, key=lambda x: x[2], reverse=True)[:top_n]
+
+    return_strains = []
+    for strain, cultivator, score in top_strains:
+        try:
+            concentrate_data = await get_concentrate_and_description(
+                db, strain=strain, cultivator=cultivator
+            )
+            concentrate_data["overall_score"] = score
+            return_strains.append(concentrate_data)
+        except Exception as e:
+            pass
+
+    return return_strains
+
+
+@router.get("/get_concentrate_ratings_by_id/{concentrate_id}", response_model=Dict[str, Any])
+async def get_concentrate_ratings_by_id(concentrate_id: int, db: Session = Depends(get_db)):
+    avg_ratings = (
+        db.query(
+            func.avg(Concentrate_Ranking.color_rating),
+            func.avg(Concentrate_Ranking.consistency_rating),
+            func.avg(Concentrate_Ranking.smell_rating),
+            func.avg(Concentrate_Ranking.flavor_rating),
+            func.avg(Concentrate_Ranking.effects_rating),
+            func.avg(Concentrate_Ranking.harshness_rating),
+            func.avg(Concentrate_Ranking.residuals_rating),
+        )
+        .filter(Concentrate_Ranking.concentrate_id == concentrate_id)
+        .first()
+    )
+
+    if not avg_ratings or any(rating is None for rating in avg_ratings):
+        return {"error": "Concentrate not found or incomplete data"}
+
+    ratings_dict = {
+        "concentrate_id": concentrate_id,
+        "color_rating": avg_ratings[0],
+        "consistency_rating": avg_ratings[1],
+        "smell_rating": avg_ratings[2],
+        "flavor_rating": avg_ratings[3],
+        "effects_rating": avg_ratings[4],
+        "harshness_rating": avg_ratings[5],
+        "residuals_rating": avg_ratings[6],
+    }
+
+    ratings_values = list(filter(None, avg_ratings))
+    if ratings_values:
+
+        overall_score = sum(ratings_values) / len(ratings_values)
+        ratings_dict["overall_score"] = round(overall_score, 2)
+    else:
+        ratings_dict["overall_score"] = None
+
+    return ratings_dict

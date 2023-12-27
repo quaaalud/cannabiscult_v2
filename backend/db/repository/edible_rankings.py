@@ -15,9 +15,7 @@ from schemas.edible_rankings import CreateVibeEdibleRanking
 from db.models.edible_rankings import Vibe_Edible_Ranking
 
 
-def create_mystery_edible_ranking(
-        edible_ranking: CreateMysteryEdibleRanking,
-        db:Session):
+def create_mystery_edible_ranking(edible_ranking: CreateMysteryEdibleRanking, db: Session):
     ranking_data_dict = edible_ranking.dict()
     created_edible_ranking = MysteryEdibleRanking(**ranking_data_dict)
     try:
@@ -29,11 +27,9 @@ def create_mystery_edible_ranking(
         db.refresh(created_edible_ranking)
     finally:
         return created_edible_ranking
-      
-      
-def create_vivid_edible_ranking(
-        edible_ranking: CreateVividEdibleRanking,
-        db:Session):
+
+
+def create_vivid_edible_ranking(edible_ranking: CreateVividEdibleRanking, db: Session):
     ranking_data_dict = edible_ranking.dict()
     created_edible_ranking = Vivid_Edible_Ranking(**ranking_data_dict)
     try:
@@ -45,11 +41,9 @@ def create_vivid_edible_ranking(
         db.refresh(created_edible_ranking)
     finally:
         return created_edible_ranking
-      
-      
-def create_vibe_edible_ranking(
-        edible_ranking: CreateVibeEdibleRanking,
-        db:Session):
+
+
+def create_vibe_edible_ranking(edible_ranking: CreateVibeEdibleRanking, db: Session):
     ranking_data_dict = edible_ranking.dict()
     created_edible_ranking = Vibe_Edible_Ranking(**ranking_data_dict)
     try:

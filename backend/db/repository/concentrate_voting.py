@@ -18,22 +18,21 @@ def date_handler(obj):
     else:
         raise TypeError("Type %s not serializable" % type(obj))
 
-def add_new_vote(
-        concentrate_vote: ConcentrateVoteCreate,
-        db:Session):
+
+def add_new_vote(concentrate_vote: ConcentrateVoteCreate, db: Session):
     vote = ConcentrateVoting(
-        created_at = date_handler(datetime.datetime.now()),
-        cultivator_selected = str(concentrate_vote.cultivator_selected),
-        strain_selected = str(concentrate_vote.strain_selected),
-        structure_vote = float(concentrate_vote.structure_vote),
-        structure_explanation = str(concentrate_vote.structure_explanation),
-        nose_vote = float(concentrate_vote.nose_vote),
-        nose_explanation = str(concentrate_vote.nose_explanation),
-        flavor_vote = float(concentrate_vote.flavor_vote),
-        flavor_explanation = str(concentrate_vote.flavor_explanation),
-        effects_vote = float(concentrate_vote.effects_vote),
-        effects_explanation = str(concentrate_vote.effects_explanation),
-        user_email = str(concentrate_vote.user_email),
+        created_at=date_handler(datetime.datetime.now()),
+        cultivator_selected=str(concentrate_vote.cultivator_selected),
+        strain_selected=str(concentrate_vote.strain_selected),
+        structure_vote=float(concentrate_vote.structure_vote),
+        structure_explanation=str(concentrate_vote.structure_explanation),
+        nose_vote=float(concentrate_vote.nose_vote),
+        nose_explanation=str(concentrate_vote.nose_explanation),
+        flavor_vote=float(concentrate_vote.flavor_vote),
+        flavor_explanation=str(concentrate_vote.flavor_explanation),
+        effects_vote=float(concentrate_vote.effects_vote),
+        effects_explanation=str(concentrate_vote.effects_explanation),
+        user_email=str(concentrate_vote.user_email),
     )
     try:
         db.add(vote)

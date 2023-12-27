@@ -137,7 +137,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
 
 
 @router.get("/get_strain_ratings_by_id/{flower_id}", response_model=dict)
-async def get_strain_by_id(flower_id: int, db: Session = Depends(get_supa_db)):
+async def get_strain_ratings_by_id(flower_id: int, db: Session = Depends(get_supa_db)):
     # Query to calculate average ratings for a specific strain
     avg_ratings = (
         db.query(
