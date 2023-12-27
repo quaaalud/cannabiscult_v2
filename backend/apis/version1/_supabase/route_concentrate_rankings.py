@@ -6,7 +6,7 @@ Created on Mon Oct 30 21:23:18 2023
 @author: dale
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import func
 from typing import List, Dict, Any
 from sqlalchemy.orm import Session
@@ -26,6 +26,7 @@ from db.repository.concentrate_rankings import (
     create_vibe_concentrate_ranking,
     create_concentrate_ranking,
     return_all_hidden_concentrate_rankings,
+    ConcentrateMysteryVotes,
 )
 from db.repository.concentrates import get_concentrate_and_description
 
@@ -181,7 +182,43 @@ async def get_concentrate_ratings_by_id(concentrate_id: int, db: Session = Depen
     return ratings_dict
 
 
-@router.get("/connoisseur_ranking_results", response_model=List[HiddenConcentrateRanking])
+@router.get("/connoisseur_ranking_results", response_model=None)
 async def get_concentrate_rankings(db: Session = Depends(get_db)):
-    all_rankings = return_all_hidden_concentrate_rankings(db=db)
-    return all_rankings
+    try:
+        all_rankings = return_all_hidden_concentrate_rankings(db=db)
+
+        return all_rankings
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/recent_voting_results", response_model=Dict[str, Any])
+async def get_voting_results(db: Session = Depends(get_db)):
+    try:
+        rankings = return_all_hidden_concentrate_rankings(db=db)
+        if not rankings:
+            raise HTTPException(status_code=404, detail="No data found")
+
+        concentrate_votes = ConcentrateMysteryVotes(rankings)
+
+        all_ratings_over_time = concentrate_votes._plot_all_ratings_over_time(
+            concentrate_votes.all_ratings_over_time
+        )
+        average_ratings = concentrate_votes.plot_average_ratings_by_users(
+            concentrate_votes.votes_by_user
+        )
+        top_strains_by_category = concentrate_votes.plot_top_strains_by_category(
+            concentrate_votes.strain_rankings
+        )
+        strain_comparison = concentrate_votes.plot_strain_comparison(concentrate_votes.raw_data)
+        user_preferences = concentrate_votes.plot_user_preferences(concentrate_votes.votes_by_user)
+        users_vs_votes = concentrate_votes.plot_users_vs_votes(concentrate_votes.votes_by_user)
+
+        return {
+            "average_ratings": average_ratings,
+            "top_strains_by_category": top_strains_by_category,
+            "user_preferences": user_preferences,
+            "users_vs_votes": users_vs_votes,
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

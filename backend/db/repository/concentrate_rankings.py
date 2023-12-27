@@ -7,6 +7,7 @@ Created on Mon Oct 30 21:10:27 2023
 """
 
 from typing import List
+import json
 from sqlalchemy.orm import Session
 from schemas.concentrate_rankings import (
     CreateHiddenConcentrateRanking,
@@ -67,7 +68,8 @@ def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sessi
 
 def return_all_hidden_concentrate_rankings(db: Session):
     try:
-        return db.query(Hidden_Concentrate_Ranking).all()
+        rankings = db.query(Hidden_Concentrate_Ranking).all()
+        return [HiddenConcentrateRanking.from_orm(ranking) for ranking in rankings]
     except:
         print("No concentrate ranking results returned")
         pass
@@ -81,26 +83,28 @@ class ConcentrateMysteryVotes:
         "CP3": "Mississippi Nights - Vibe",
     }
 
-    def __init__(self, votes_path: str, voters_data_path: str = None):
-        self.raw_data = self.import_data(Path(votes_path))
+    def __init__(self, rankings: List[HiddenConcentrateRanking]):
+        self.raw_data = self.import_data(rankings)
         self.all_ratings_over_time = self._average_ratings_over_time(self.raw_data)
         self.votes_by_user = self._group_ratings_by_user_and_strain(self.raw_data)
         self.strain_rankings = self._group_strain_and_rank_by_total(self.raw_data)
         self.voters_favorite_strains = self.find_favorite_strains(self.votes_by_user)
-        if voters_data_path:
-            self.voters_raw_data = self.import_data(Path(voters_data_path))
-            self.filter_voters_data()
 
     @classmethod
     def import_data(cls, rankings: List[HiddenConcentrateRanking]) -> pd.DataFrame:
-        # Convert list of objects to a DataFrame
         data = [
             {
                 "strain": ranking.strain,
                 "color_rating": ranking.color_rating,
+                "connoisseur": ranking.connoisseur,
                 "consistency_rating": ranking.consistency_rating,
-                # ... include other relevant fields
+                "smell_rating": ranking.smell_rating,
+                "flavor_rating": ranking.flavor_rating,
+                "residuals_rating": ranking.residuals_rating,
+                "harshness_rating": ranking.harshness_rating,
+                "effects_rating": ranking.effects_rating,
                 "date_posted": ranking.date_posted,
+                "id": ranking.id,
             }
             for ranking in rankings
         ]
@@ -129,7 +133,7 @@ class ConcentrateMysteryVotes:
             )
         except KeyError:
             return (
-                df.drop_duplicates(subset=["id", "email"])
+                df.drop_duplicates(subset=["id", "connoisseur"])
                 .drop(
                     columns=["id"],
                 )
@@ -210,14 +214,15 @@ class ConcentrateMysteryVotes:
                 "datetime",
             ]
         )
-        return pd.merge(
-            voting_results_df, temp_users_df, how="inner", on="connoisseur"
-        ).drop_duplicates(
-            subset=[
-                "strain",
-                "connoisseur",
-            ],
-            keep="last",
+        return (
+            pd.merge(voting_results_df, temp_users_df, how="inner", on="connoisseur")
+            .drop_duplicates(
+                subset=[
+                    "strain",
+                    "connoisseur",
+                ],
+                keep="last",
+            )
         )
 
     @staticmethod
@@ -232,55 +237,37 @@ class ConcentrateMysteryVotes:
 
     @staticmethod
     def _plot_all_ratings_over_time(data_df: pd.DataFrame, date_col: str = "date_posted"):
-        df = data_df.copy()
-        color_palette = sns.color_palette("husl", len(df.columns))
-        df[date_col] = pd.to_datetime(df[date_col])
-        vote_columns = [
-            col for col in df.columns if col.endswith("_rating") and col != "total_rating"
-        ]
-        unique_strains = df["strain"].unique()
+        unique_strains = data_df["strain"].unique()
+        plots = {}
         for strain in unique_strains:
-            strain_df = df[df["strain"] == strain]
-            plt.figure(figsize=(14, 6))
-            plt.title(f"Time-series Plot for {strain}")
-
-            for idx, col in enumerate(vote_columns):
-                sns.lineplot(x=date_col, y=col, data=strain_df, label=col, color=color_palette[idx])
-            plt.xlabel("Time")
-            plt.ylabel("Vote Value")
-            plt.legend(title="Vote Categories")
-            plt.show()
+            strain_df = data_df[data_df["strain"] == strain]
+            fig = px.line(
+                strain_df,
+                x=date_col,
+                y=[col for col in strain_df.columns if "_rating" in col],
+                title=f"Time-series Plot for {strain}",
+            )
+            plots[strain] = json.loads(fig.to_json())
+        return plots
 
     @staticmethod
     def _plot_all_ratings_cumulative_over_time(
         data_df: pd.DataFrame, date_col: str = "date_posted"
     ):
-        df = data_df.copy()
-        color_palette = sns.color_palette("husl", len(df.columns))
-        df[date_col] = pd.to_datetime(df[date_col])
-        vote_columns = [
-            col for col in df.columns if col.endswith("_rating") and col != "total_rating"
-        ]
-        unique_strains = df["strain"].unique()
+        unique_strains = data_df["strain"].unique()
+        plots = {}
         for strain in unique_strains:
-            strain_df = df[df["strain"] == strain].sort_values(by=date_col)
-            plt.figure(figsize=(14, 6))
-
-            plt.title(f"Time-series Plot for {strain} (Cumulative Moving Average)")
-
-            for idx, col in enumerate(vote_columns):
+            strain_df = data_df[data_df["strain"] == strain].sort_values(by=date_col)
+            for col in [c for c in strain_df.columns if "_rating" in c]:
                 strain_df[f"{col}_cma"] = strain_df[col].expanding().mean()
-                sns.lineplot(
-                    x="date_posted",
-                    y=f"{col}_cma",
-                    data=strain_df,
-                    label=col,
-                    color=color_palette[idx],
-                )
-            plt.xlabel("Date Posted")
-            plt.ylabel("Cumulative Moving Average of Vote Value")
-            plt.legend(title="Vote Categories")
-            plt.show()
+            fig = px.line(
+                strain_df,
+                x=date_col,
+                y=[f"{col}_cma" for col in strain_df.columns if "_cma" in col],
+                title=f"Cumulative Moving Average for {strain}",
+            )
+            plots[strain] = json.loads(fig.to_json())
+        return plots
 
     @staticmethod
     def plot_methods_of_consumption_by_strain(data_df: pd.DataFrame):
@@ -302,22 +289,25 @@ class ConcentrateMysteryVotes:
         vote_columns = [
             col for col in df.columns if col.endswith("_rating") and col != "total_rating"
         ]
-        plt.figure(figsize=(14, 6))
-        plt.title("Distribution of Average Votes Across Users")
-        sns.boxplot(data=df[vote_columns], palette="husl")
-        plt.ylabel("Average Vote Value")
-        plt.xlabel("Vote Categories")
-        plt.show()
+        fig = px.box(
+            df,
+            y=vote_columns,
+            labels={"value": "Average Vote Value", "variable": "Vote Categories"},
+            title="Distribution of Average Votes Across Users",
+        )
+        return json.loads(fig.to_json())
 
     @staticmethod
     def plot_popular_strains_by_users(data_df: pd.DataFrame):
         df = data_df.copy()
-        plt.figure(figsize=(14, 6))
-        plt.title("Popular Strains Among Users")
-        sns.countplot(data=df, y="strain", order=df["strain"].value_counts().index, palette="husl")
-        plt.ylabel("Strain")
-        plt.xlabel("Count")
-        plt.show()
+        fig = px.bar(
+            df,
+            y="strain",
+            title="Popular Strains Among Users",
+            labels={"y": "Strain", "x": "Count"},
+            category_orders={"strain": df["strain"].value_counts().index.tolist()},
+        )
+        return json.loads(fig.to_json())
 
     @staticmethod
     def plot_top_strains_by_category(data_df: pd.DataFrame):
@@ -325,38 +315,33 @@ class ConcentrateMysteryVotes:
         vote_columns = [
             col for col in df.columns if col.endswith("_rating") and col != "total_rating"
         ]
-        plt.figure(figsize=(14, 6))
-        plt.title("Top Strains in Each Vote Category")
-        sns.barplot(
-            data=df.melt(
-                id_vars="strain",
-                value_vars=vote_columns,
-                var_name="Vote Category",
-                value_name="Average Vote",
-            ),
+        melted_df = df.melt(
+            id_vars="strain",
+            value_vars=vote_columns,
+            var_name="Vote Category",
+            value_name="Average Vote",
+        )
+        fig = px.bar(
+            melted_df,
             x="Vote Category",
             y="Average Vote",
-            hue="strain",
-            palette="husl",
+            color="strain",
+            title="Top Strains in Each Vote Category",
         )
-        plt.ylabel("Average Vote Value")
-        plt.xlabel("Vote Categories")
-        plt.legend(title="Strains", bbox_to_anchor=(1.05, 1), loc="upper left")
-        plt.tight_layout()
-        plt.show()
+        return json.loads(fig.to_json())
 
     @staticmethod
     def plot_geographical_distribution(data_df: pd.DataFrame):
         df = data_df.copy()
-        plt.figure(figsize=(14, 6))
-        plt.title("Geographical Distribution of Voters")
-        sns.countplot(
-            data=df, x="zip_code", order=df["zip_code"].value_counts().index, palette="husl"
+        fig = px.bar(
+            df,
+            x="zip_code",
+            title="Geographical Distribution of Voters",
+            labels={"x": "Zip Code", "y": "Count"},
+            category_orders={"zip_code": df["zip_code"].value_counts().index.tolist()},
         )
-        plt.ylabel("Count")
-        plt.xlabel("Zip Code")
-        plt.xticks(rotation=45)
-        plt.show()
+        fig.update_layout(xaxis_tickangle=-45)
+        return json.loads(fig.to_json())
 
     @staticmethod
     def plot_rating_correlation(data_df: pd.DataFrame):
@@ -365,59 +350,65 @@ class ConcentrateMysteryVotes:
         plt.title("Correlation Heatmap of Ratings")
         plt.show()
 
-    # New function: Box Plot for Rating Distributions
     @staticmethod
     def plot_rating_distributions(data_df: pd.DataFrame):
-        plt.figure(figsize=(14, 6))
-        sns.boxplot(data=data_df)
-        plt.title("Distribution of Ratings Across Strains")
-        plt.ylabel("Ratings")
-        plt.xlabel("Rating Categories")
-        plt.show()
+        fig = px.box(
+            data_df,
+            labels={"value": "Ratings", "variable": "Rating Categories"},
+            title="Distribution of Ratings Across Strains",
+        )
+        return json.loads(fig.to_json())
 
     @staticmethod
     def plot_detailed_rating_distributions(data_df: pd.DataFrame):
-        plt.figure(figsize=(14, 6))
-        sns.violinplot(data=data_df)
-        plt.title("Detailed Distribution of Ratings Across Strains")
-        plt.ylabel("Ratings")
-        plt.xlabel("Rating Categories")
-        plt.show()
+        fig = px.violin(
+            data_df,
+            labels={"value": "Ratings", "variable": "Rating Categories"},
+            title="Detailed Distribution of Ratings Across Strains",
+        )
+        return json.loads(fig.to_json())
 
     @staticmethod
     def plot_strain_comparison(data_df: pd.DataFrame):
+        plots = {}
         vote_categories = [col for col in data_df.columns if "_rating" in col]
         for category in vote_categories:
-            plt.figure(figsize=(10, 6))
-            sns.barplot(data=data_df, x="strain", y=category, palette="viridis")
-            plt.title(f"Strain Comparison in {category}")
-            plt.ylabel("Average Rating")
-            plt.xlabel("Strain")
-            plt.show()
+            fig = px.bar(
+                data_df,
+                x="strain",
+                y=category,
+                color="strain",
+                title=f"Strain Comparison in {category}",
+                labels={"y": "Average Rating", "x": "Strain"},
+            )
+            plots[category] = json.loads(fig.to_json())
+        return plots
 
     @staticmethod
     def plot_user_preferences(data_df: pd.DataFrame):
         user_pref = data_df.groupby(["connoisseur", "strain"]).mean()["total_rating"]
-        user_pref.unstack().plot(kind="bar", stacked=True, figsize=(14, 8))
-        plt.title("User Preferences for Different Strains")
-        plt.ylabel("Total Vote")
-        plt.xlabel("User")
-        plt.legend(title="Strains", bbox_to_anchor=(1.05, 1), loc="upper left")
-        plt.show()
+        fig = px.bar(
+            user_pref.reset_index(),
+            x="connoisseur",
+            y="total_rating",
+            color="strain",
+            title="User Preferences for Different Strains",
+            labels={"total_rating": "Total Vote", "connoisseur": "User"},
+        )
+        return json.loads(fig.to_json())
 
-    # Function for Visualizing All Users' Votes
     @staticmethod
     def plot_users_vs_votes(data_df: pd.DataFrame):
-        plt.figure(figsize=(14, 10))
-        sns.heatmap(
-            data_df.pivot_table(index="connoisseur", columns="strain", values="total_rating"),
-            annot=True,
-            cmap="coolwarm",
+        heatmap_data = data_df.pivot_table(
+            index="connoisseur", columns="strain", values="total_rating"
         )
-        plt.title("Heatmap of User Votes for Each Strain")
-        plt.ylabel("User")
-        plt.xlabel("Strain")
-        plt.show()
+        fig = px.imshow(
+            heatmap_data,
+            aspect="auto",
+            labels=dict(x="Strain", y="User", color="Total Rating"),
+            title="Heatmap of User Votes for Each Strain",
+        )
+        return json.loads(fig.to_json())
 
     @staticmethod
     def generate_interactive_plot(data_df: pd.DataFrame) -> dict:

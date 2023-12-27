@@ -1,0 +1,47 @@
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
+<div class="container text_center">
+  <h1 class="mt_5 mb_3">Concentrate Pack Results</h1>
+  <select id="chart-selector" class="mb_3 form-select">
+    <option value="user_preferences_chart">User Preferences</option>
+    <option value="average_ratings_chart">Average Ratings</option>
+    <option value="top_strains_by_category_chart">Top Strains by Category</option>
+    <option value="users_vs_votes_chart">Users vs Votes</option>
+  </select>
+  <div id="user_preferences_chart" class="chart"></div>
+    <div id="average_ratings_chart" class="chart"></div>
+    <div id="top_strains_by_category_chart" class="chart"></div>
+    <div id="users_vs_votes_chart" class="chart"></div>
+  </div>
+</div>
+
+<script defer>
+  document.addEventListener('DOMContentLoaded', function() {
+      const endpoint = '/concentrate_ranking/recent_voting_results';
+      const chartSelector = document.getElementById('chart-selector');
+  
+      fetch(endpoint)
+          .then(response => {
+              if (!response.ok) {
+                  throw new Error(`HTTP error! Status: ${response.status}`);
+              }
+              return response.json();
+          })
+          .then(data => {
+              for (let key in data) {
+                  if (data.hasOwnProperty(key)) {
+                      Plotly.newPlot(key + '_chart', data[key]);
+                      document.getElementById(key + '_chart').style.display = 'none';
+                  }
+              }
+              document.getElementById(chartSelector.value).style.display = 'block';
+              chartSelector.addEventListener('change', function() {
+                  document.querySelectorAll('.chart').forEach(chart => chart.style.display = 'none');
+                  document.getElementById(this.value).style.display = 'block';
+              });
+          })
+          .catch(error => {
+              console.error('Error fetching data:', error);
+          });
+  });
+</script>
+
