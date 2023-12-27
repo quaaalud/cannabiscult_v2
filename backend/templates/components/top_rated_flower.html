@@ -1,20 +1,19 @@
-<div style="position: relative;" data-draggable="true">
-  <section draggable="false" class="container pt-5" data-v-271253ee="">
-    <section class="mb-10">
-      <h1 class="mb-5 fs-1 text-center map-locator">
-        <u><b>Cultivar Flower Rankings</b></u><br>
-      </h1>
-      <div class="container-fluid">
-        <div class="col-12">
-          <div id="flowerContainer"></div>
-        </div>
-        <div class="col-12 pt-5">
-          {% include "components/flower_review_selector.html" %}
-        </div>
+<section draggable="false" class="container pt-5" data-v-271253ee="">
+  <section class="mb-10">
+    <h1 class="mb-5 fs-1 text-center map-locator">
+      <u><b>Cultivar Flower Rankings</b></u><br>
+    </h1>
+    <div class="container-fluid">
+      <div class="col-12">
+        <div id="flowerContainer"></div>
       </div>
-    </section>
+      <div class="col-12 pt-5">
+        {% include "components/flower_review_selector.html" %}
+      </div>
+    </div>
   </section>
-</div>
+</section>
+
 
 <script>
   async function fetchFlowerData() {

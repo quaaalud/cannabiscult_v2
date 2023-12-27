@@ -16,15 +16,13 @@ from db.models.concentrate_rankings import (
 def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = ranking.dict()
     created_ranking = Concentrate_Ranking(**ranking_data_dict)
-    try:
-        db.add(created_ranking)
-    except:
-        db.rollback()
-    else:
-        db.commit()
-        db.refresh(created_ranking)
-    finally:
-        return created_ranking
+
+    db.add(created_ranking)
+
+    db.commit()
+    db.refresh(created_ranking)
+
+    return created_ranking
 
 
 def create_hidden_concentrate_ranking(hidden_ranking: CreateHiddenConcentrateRanking, db: Session):

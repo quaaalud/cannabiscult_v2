@@ -2,46 +2,28 @@ const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
-const webpack = require('webpack');
-const globAll = require('glob-all');
-
-
-const matchedFiles = globAll.sync([
-  path.join(__dirname, '**/*.{css,js,scss}'),
-], {
-  absolute: false,
-  deep: 15,
-});
-
-console.log(matchedFiles);
+const glob = require("glob");
 
 module.exports = {
   entry: {
-    main: matchedFiles.filter(item => item && path.extname(item) !== ''),
+    main: path.resolve(__dirname, 'js/mdb.min.js'), // Assuming init.js is the entry point for JS
+    styles: path.resolve(__dirname,'src/mdb/scss/mdb.pro.scss'), 
   },
   output: {
     path: path.resolve(__dirname, 'static/dist'),
-    filename: '[name].[contenthash].bundle.js'
+    filename: '[name].bundle.js', // Outputs main.bundle.js for JS
+    publicPath: '/',
   },
   optimization: {
     minimize: true,
     minimizer: [
-      new TerserPlugin({
-        test: /\.js(\?.*)?$/i,
-      }),
-      new CssMinimizerPlugin(),
+      new TerserPlugin(), // Minify JS
+      new CssMinimizerPlugin(), // Minify CSS
     ],
-    splitChunks: {
-      chunks: 'all',
-    },
-    runtimeChunk: 'single',
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      Chart: 'chart.js',
-    }),
     new MiniCssExtractPlugin({
-      filename: '[name].[contenthash].css',
+      filename: 'styles.bundle.css', // Outputs styles.bundle.css for CSS
     }),
   ],
   module: {
@@ -53,6 +35,10 @@ module.exports = {
           'css-loader',
           'sass-loader',
         ],
+      },
+      {
+        test: /\.js$/,
+        use: 'babel-loader',
       },
     ],
   },

@@ -65,7 +65,6 @@
 
 {% block content %}
 <main class="container pt-5">
-
     <section draggable="false" class="container pt-3" data-v-271253ee="">
       <section class="mb-10">
         <div class="container mb-5 mx-auto">
@@ -259,11 +258,9 @@
     .then(response => response.json())
     .then(data => {
         if (!data.error) {
-            console.log(data);
             let terpenesList = data.terpenes_list
             if (terpenesList && terpenesList.length > 0) {
               const dataValues = terpenesList.map(() => 1);
-              console.log(terpenesList);
               initTerpeneChart(terpenesList, dataValues);
             }
         } else {
@@ -285,14 +282,16 @@
       const ratingsData = await response.json();
       
       if (!ratingsData.error) {
-          document.getElementById('flavor_rating_value').textContent = ratingsData.flavor_rating || '?';
-          document.getElementById('overall_rating_value').textContent = ratingsData.overall_score || '?';
-          document.getElementById('effects_rating_value').textContent = ratingsData.effects_rating || '?';
-          document.getElementById('harshness_rating_value').textContent = ratingsData.harshness_rating || '?';
-          document.getElementById('color_rating_value').textContent = ratingsData.color_rating || '?';
-          document.getElementById('smell_rating_value').textContent = ratingsData.smell_rating || '?';
-          document.getElementById('consistency_rating_value').textContent = ratingsData.consistency_rating || '?';
-          document.getElementById('residuals_rating_value').textContent = ratingsData.residuals_rating || '?';
+          const formatRating = (rating) => {
+            return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+          };
+          document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
+          document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
+          document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
+          document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
+          document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
+          document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
+          document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
         } else {
           console.error('Error fetching data:', ratingsData.error);
         }

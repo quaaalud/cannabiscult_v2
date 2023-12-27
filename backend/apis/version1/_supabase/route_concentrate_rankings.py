@@ -122,6 +122,12 @@ async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n
                 db, strain=strain, cultivator=cultivator
             )
             concentrate_data["overall_score"] = score
+            for key, val in concentrate_data.items():
+                try:
+                    concentrate_data[key] = round(val, 2)
+                except:
+                    pass
+
             return_strains.append(concentrate_data)
         except Exception as e:
             pass
@@ -150,13 +156,13 @@ async def get_concentrate_ratings_by_id(concentrate_id: int, db: Session = Depen
 
     ratings_dict = {
         "concentrate_id": concentrate_id,
-        "color_rating": avg_ratings[0],
-        "consistency_rating": avg_ratings[1],
-        "smell_rating": avg_ratings[2],
-        "flavor_rating": avg_ratings[3],
-        "effects_rating": avg_ratings[4],
-        "harshness_rating": avg_ratings[5],
-        "residuals_rating": avg_ratings[6],
+        "color_rating": round(avg_ratings[0], 2) if avg_ratings[0] is not None else None,
+        "consistency_rating": round(avg_ratings[1], 2) if avg_ratings[1] is not None else None,
+        "smell_rating": round(avg_ratings[2], 2) if avg_ratings[2] is not None else None,
+        "flavor_rating": round(avg_ratings[3], 2) if avg_ratings[3] is not None else None,
+        "effects_rating": round(avg_ratings[4], 2) if avg_ratings[4] is not None else None,
+        "harshness_rating": round(avg_ratings[5], 2) if avg_ratings[5] is not None else None,
+        "residuals_rating": round(avg_ratings[6], 2) if avg_ratings[6] is not None else None,
     }
 
     ratings_values = list(filter(None, avg_ratings))
