@@ -16,11 +16,16 @@ from db.models.concentrate_rankings import (
     Vibe_Concentrate_Ranking,
     Concentrate_Ranking,
 )
-from schemas.concentrate_rankings import CreateHiddenConcentrateRanking, CreateConcentrateRanking
+from schemas.concentrate_rankings import (
+    CreateHiddenConcentrateRanking,
+    CreateConcentrateRanking,
+    HiddenConcentrateRanking,
+)
 from db.repository.concentrate_rankings import (
     create_hidden_concentrate_ranking,
     create_vibe_concentrate_ranking,
     create_concentrate_ranking,
+    return_all_hidden_concentrate_rankings,
 )
 from db.repository.concentrates import get_concentrate_and_description
 
@@ -90,7 +95,7 @@ async def get_top_concentrate_strains(db: Session = Depends(get_db)):
     return return_strains
 
 
-@router.get("/get_top_rated_concentrate_strains", response_model=list)
+@router.get("/get_top_rated_concentrate_strains", response_model=list[Any])
 async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n: int = 5):
     avg_ratings = (
         db.query(
@@ -174,3 +179,9 @@ async def get_concentrate_ratings_by_id(concentrate_id: int, db: Session = Depen
         ratings_dict["overall_score"] = None
 
     return ratings_dict
+
+
+@router.get("/connoisseur_ranking_results", response_model=List[HiddenConcentrateRanking])
+async def get_concentrate_rankings(db: Session = Depends(get_db)):
+    all_rankings = return_all_hidden_concentrate_rankings(db=db)
+    return all_rankings
