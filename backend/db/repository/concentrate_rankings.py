@@ -246,6 +246,14 @@ class ConcentrateMysteryVotes:
                 y=[col for col in strain_df.columns if "_rating" in col],
                 title=f"Time-series Plot for {strain}",
             )
+            fig.update_layout(
+                legend=dict(
+                    yanchor="bottom",
+                    y=-1.6,  # You may need to adjust this value
+                    xanchor="center",
+                    x=0.3
+                ),
+            )
             plots[strain] = json.loads(fig.to_json())
         return plots
 
@@ -264,6 +272,14 @@ class ConcentrateMysteryVotes:
                 x=date_col,
                 y=[f"{col}_cma" for col in strain_df.columns if "_cma" in col],
                 title=f"Cumulative Moving Average for {strain}",
+            )
+            fig.update_layout(
+                legend=dict(
+                    yanchor="bottom",
+                    y=-1.6,  # You may need to adjust this value
+                    xanchor="center",
+                    x=0.3
+                ),
             )
             plots[strain] = json.loads(fig.to_json())
         return plots
@@ -294,6 +310,14 @@ class ConcentrateMysteryVotes:
             labels={"value": "Average Vote Value", "variable": "Vote Categories"},
             title="Distribution of Average Votes Across Users",
         )
+        fig.update_layout(
+            legend=dict(
+                yanchor="bottom",
+                y=-1.6,  # You may need to adjust this value
+                xanchor="center",
+                x=0.3
+            ),
+        )
         return json.loads(fig.to_json())
 
     @staticmethod
@@ -305,6 +329,14 @@ class ConcentrateMysteryVotes:
             title="Popular Strains Among Users",
             labels={"y": "Strain", "x": "Count"},
             category_orders={"strain": df["strain"].value_counts().index.tolist()},
+        )
+        fig.update_layout(
+            legend=dict(
+                yanchor="bottom",
+                y=-1.6,  # You may need to adjust this value
+                xanchor="center",
+                x=0.3
+            ),
         )
         return json.loads(fig.to_json())
 
@@ -327,6 +359,14 @@ class ConcentrateMysteryVotes:
             color="strain",
             title="Top Strains in Each Vote Category",
             barmode="group"
+        )
+        fig.update_layout(
+            legend=dict(
+                yanchor="bottom",
+                y=-1.6,  # You may need to adjust this value
+                xanchor="center",
+                x=0.3
+            ),
         )
         return json.loads(fig.to_json())
 
@@ -398,6 +438,14 @@ class ConcentrateMysteryVotes:
                     if _ % 2 == 0
                     else 20,  # Shift annotations left and right to avoid overlap
                 )
+            fig.update_layout(
+                legend=dict(
+                    yanchor="bottom",
+                    y=-1.6,  # You may need to adjust this value
+                    xanchor="center",
+                    x=0.3
+                ),
+            )
             plots[category] = json.loads(fig.to_json())
         return plots
 
@@ -415,6 +463,14 @@ class ConcentrateMysteryVotes:
             labels={"total_rating": "Average Rating", "connoisseur": "User"},
             category_orders={"connoisseur": sorted(data_df["connoisseur"].unique())}
         )
+        fig.update_layout(
+            legend=dict(
+                yanchor="bottom",
+                y=-1.6,  # You may need to adjust this value
+                xanchor="center",
+                x=0.3
+            ),
+        )
         return json.loads(fig.to_json())
 
     @staticmethod
@@ -427,6 +483,14 @@ class ConcentrateMysteryVotes:
             aspect="auto",
             labels=dict(x="Strain", y="User", color="Total Rating"),
             title="Heatmap of User Votes for Each Strain",
+        )
+        fig.update_layout(
+            legend=dict(
+                yanchor="bottom",
+                y=-1.6,  # You may need to adjust this value
+                xanchor="center",
+                x=0.3
+            ),
         )
         return json.loads(fig.to_json())
 

@@ -1,7 +1,7 @@
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
-<div class="container text_center mx-auto my-auto my-5" id="myPlotlyDiv">
+<div class="container text_start my-5" id="myPlotlyDiv">
   <h2 class="mt-5 mb-3">Concentrate Pack Results</h2>
-  <div class="row my-auto mx-auto">
+  <div class="row align-content-start">
     <select id="chart-selector" class="mb_3 form-select">
       <option value="top_strains_by_category_chart">Top Strains by Category</option>
       <option value="user_preferences_chart">User Preferences</option>
@@ -19,7 +19,7 @@
       <option value="users_vs_votes_chart">Users vs Votes</option>
     </select>
   </div>
-    <div class="row my-auto mx-auto">
+    <div class="row plot-container">
       <div id="top_strains_by_category_chart" class="chart"></div>
       <div id="user_preferences_chart" class="chart"></div>
       <div id="fruit_gusherz_time_chart" class="chart"></div>
@@ -37,7 +37,11 @@
     </div>
   </div>
 </div>
-
+<style>
+.plot-container {
+    width: 100%;
+}
+</style>
 <script defer>
   document.addEventListener('DOMContentLoaded', function() {
       const endpoint = '/concentrate_ranking/recent_voting_results';
@@ -55,7 +59,6 @@
                 if (data.hasOwnProperty(key)) {
                     const layout = {
                         responsive: true,
-                        margin: { l: 50, r: 50, b: 100, t: 100, pad: 4 },
                     };
                     Plotly.newPlot(key + '_chart', data[key], layout);
                     document.getElementById(key + '_chart').style.display = 'none';
