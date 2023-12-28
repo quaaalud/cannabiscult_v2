@@ -1,5 +1,5 @@
 <script src="https://cdn.plot.ly/plotly-2.27.0.min.js" charset="utf-8"></script>
-<div class="container text_center mx-auto my-auto">
+<div class="container text_center mx-auto my-auto my-5" id="myPlotlyDiv">
   <h2 class="mt-5 mb-3">Concentrate Pack Results</h2>
   <div class="row my-auto mx-auto">
     <select id="chart-selector" class="mb_3 form-select">
@@ -19,20 +19,22 @@
       <option value="users_vs_votes_chart">Users vs Votes</option>
     </select>
   </div>
-    <div id="top_strains_by_category_chart" class="chart"></div>
-    <div id="user_preferences_chart" class="chart"></div>
-    <div id="fruit_gusherz_time_chart" class="chart"></div>
-    <div id="mississippi_time_chart" class="chart"></div>
-    <div id="papaya_time_chart" class="chart"></div>
-    <div id="color_compare_chart" class="chart"></div>
-    <div id="consistency_compare_chart" class="chart"></div>
-    <div id="smell_compare_chart" class="chart"></div>
-    <div id="flavor_compare_chart" class="chart"></div>
-    <div id="residuals_compare_chart" class="chart"></div>
-    <div id="harshness_compare_chart" class="chart"></div>
-    <div id="effects_compare_chart" class="chart"></div>
-    <div id="average_ratings_chart" class="chart"></div>
-    <div id="users_vs_votes_chart" class="chart"></div>
+    <div class="row my-auto mx-auto">
+      <div id="top_strains_by_category_chart" class="chart"></div>
+      <div id="user_preferences_chart" class="chart"></div>
+      <div id="fruit_gusherz_time_chart" class="chart"></div>
+      <div id="mississippi_time_chart" class="chart"></div>
+      <div id="papaya_time_chart" class="chart"></div>
+      <div id="color_compare_chart" class="chart"></div>
+      <div id="consistency_compare_chart" class="chart"></div>
+      <div id="smell_compare_chart" class="chart"></div>
+      <div id="flavor_compare_chart" class="chart"></div>
+      <div id="residuals_compare_chart" class="chart"></div>
+      <div id="harshness_compare_chart" class="chart"></div>
+      <div id="effects_compare_chart" class="chart"></div>
+      <div id="average_ratings_chart" class="chart"></div>
+      <div id="users_vs_votes_chart" class="chart"></div>
+    </div>
   </div>
 </div>
 
@@ -53,7 +55,7 @@
                 if (data.hasOwnProperty(key)) {
                     const layout = {
                         responsive: true,
-                        margin: { l: 50, r: 50, b: 100, t: 100, pad: 4 } ,
+                        margin: { l: 50, r: 50, b: 100, t: 100, pad: 4 },
                     };
                     Plotly.newPlot(key + '_chart', data[key], layout);
                     document.getElementById(key + '_chart').style.display = 'none';
