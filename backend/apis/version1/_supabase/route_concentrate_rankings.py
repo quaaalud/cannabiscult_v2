@@ -204,6 +204,7 @@ async def get_voting_results(db: Session = Depends(get_db)):
         all_ratings_over_time = concentrate_votes._plot_all_ratings_over_time(
             concentrate_votes.all_ratings_over_time
         )
+
         average_ratings = concentrate_votes.plot_average_ratings_by_users(
             concentrate_votes.votes_by_user
         )
@@ -211,14 +212,25 @@ async def get_voting_results(db: Session = Depends(get_db)):
             concentrate_votes.strain_rankings
         )
         strain_comparison = concentrate_votes.plot_strain_comparison(concentrate_votes.raw_data)
+
         user_preferences = concentrate_votes.plot_user_preferences(concentrate_votes.votes_by_user)
         users_vs_votes = concentrate_votes.plot_users_vs_votes(concentrate_votes.votes_by_user)
 
         return {
             "average_ratings": average_ratings,
             "top_strains_by_category": top_strains_by_category,
+            "fruit_gusherz_time": all_ratings_over_time["Fruit Gusherz - Vivid"],
+            "mississippi_time": all_ratings_over_time["Mississippi Nights - Vibe"],
+            "papaya_time": all_ratings_over_time["Papaya - Local"],
             "user_preferences": user_preferences,
             "users_vs_votes": users_vs_votes,
+            "color_compare": strain_comparison['color_rating'],
+            "consistency_compare": strain_comparison['consistency_rating'],
+            "smell_compare": strain_comparison['smell_rating'],
+            "flavor_compare": strain_comparison['flavor_rating'],
+            "residuals_compare": strain_comparison['residuals_rating'],
+            "harshness_compare": strain_comparison['harshness_rating'],
+            "effects_compare": strain_comparison['effects_rating'],
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

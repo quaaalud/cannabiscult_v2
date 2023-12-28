@@ -214,15 +214,14 @@ class ConcentrateMysteryVotes:
                 "datetime",
             ]
         )
-        return (
-            pd.merge(voting_results_df, temp_users_df, how="inner", on="connoisseur")
-            .drop_duplicates(
-                subset=[
-                    "strain",
-                    "connoisseur",
-                ],
-                keep="last",
-            )
+        return pd.merge(
+            voting_results_df, temp_users_df, how="inner", on="connoisseur"
+        ).drop_duplicates(
+            subset=[
+                "strain",
+                "connoisseur",
+            ],
+            keep="last",
         )
 
     @staticmethod
@@ -327,6 +326,7 @@ class ConcentrateMysteryVotes:
             y="Average Vote",
             color="strain",
             title="Top Strains in Each Vote Category",
+            barmode="group"
         )
         return json.loads(fig.to_json())
 
@@ -373,27 +373,47 @@ class ConcentrateMysteryVotes:
         plots = {}
         vote_categories = [col for col in data_df.columns if "_rating" in col]
         for category in vote_categories:
-            fig = px.bar(
+            fig = px.violin(
                 data_df,
                 x="strain",
                 y=category,
                 color="strain",
                 title=f"Strain Comparison in {category}",
                 labels={"y": "Average Rating", "x": "Strain"},
+                box=True,
+                points="all",
             )
+            fig.update_traces(marker=dict(size=12))
+            count_df = data_df.groupby(["strain", category]).size().reset_index(name="counts")
+
+            # Add annotations for each count
+            for _, row in count_df.iterrows():
+                fig.add_annotation(
+                    x=row["strain"],
+                    y=row[category],
+                    text=str(row["counts"]),
+                    showarrow=False,
+                    font=dict(color="black", size=10),
+                    xshift=-20
+                    if _ % 2 == 0
+                    else 20,  # Shift annotations left and right to avoid overlap
+                )
             plots[category] = json.loads(fig.to_json())
         return plots
 
     @staticmethod
     def plot_user_preferences(data_df: pd.DataFrame):
-        user_pref = data_df.groupby(["connoisseur", "strain"]).mean()["total_rating"]
+        user_pref = data_df.groupby(["connoisseur", "strain"]).mean()["total_rating"].reset_index()
+
         fig = px.bar(
-            user_pref.reset_index(),
+            user_pref,
             x="connoisseur",
             y="total_rating",
             color="strain",
+            barmode="group",
             title="User Preferences for Different Strains",
-            labels={"total_rating": "Total Vote", "connoisseur": "User"},
+            labels={"total_rating": "Average Rating", "connoisseur": "User"},
+            category_orders={"connoisseur": sorted(data_df["connoisseur"].unique())}
         )
         return json.loads(fig.to_json())
 
