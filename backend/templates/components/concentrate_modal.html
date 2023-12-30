@@ -39,7 +39,7 @@
 </div>
 
 <!-- Voter Info Capture Modal -->
-<div class="modal fade" id="ConcentrateVoterInfoCaptureModal" tabindex="-1" aria-labelledby="ConcentrateVoterInfoCaptureModalLabel" aria-="true">
+<div class="modal fade" id="ConcentrateVoterInfoCaptureModal" tabindex="-1" aria-labelledby="ConcentrateVoterInfoCaptureModalLabel">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -55,7 +55,7 @@
             <input type="text" class="form-control" placeholder="Enter Your Name" id="connoisseur_name" name="connoisseur_name" autocomplete="name">
           </div>
           <div class="mb-3">
-            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="connoisseur" autocomplete="email" required>
+            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="new_connoisseur" autocomplete="email" required>
           </div>
           <div class="mb-3">
             <input type="text" class="form-control" placeholder="Enter Your Phone Number" id="connoisseur_phone" name="connoisseur_phone" autocomplete="phone">
@@ -108,6 +108,7 @@
 
 
 {% block scripts %}
+<script src="{{ url_for('static', path='dist/mdb-bootstrap-bundle.js') }}"></script>
 <script>
   const questions = [
     {
@@ -452,7 +453,8 @@
     
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
-        document.getElementById("newUserBackBtn").onclick = function() {
+    
+    document.getElementById("newUserBackBtn").onclick = function() {
       $('#ConcentrateVoterInfoCaptureModal').modal('hide');
     };
 
@@ -623,7 +625,7 @@
             formState[question.key] = radioVal;
           }
 
-          $('#ConcentrateVoterInfoCaptureModal').on('.bs.modal', function () {
+          $('#ConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
             step++;
             loadQuestion();
             updatePageLabel()
@@ -648,7 +650,7 @@
       backBtn.onclick = function () {
         $('#ConcentrateVoterInfoCaptureModal').modal('hide');
 
-        $('#ConcentrateVoterInfoCaptureModal').on('.bs.modal', function () {
+        $('#ConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
           step--;
           loadQuestion();
           updatePageLabel()
