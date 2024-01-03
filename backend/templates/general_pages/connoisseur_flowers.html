@@ -76,7 +76,7 @@
               {% include "components/flower_card.html" %}
             </div>
           </div>
-          <div class="col-lg-6 col-12 mb-4 mb-lg-0 h-100 pt-lg-1 mx-auto my-auto">
+          <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 my-auto{% endif %} pt-lg-1 mx-auto">
             <div class="d-flex flex-column justify-content-between pt-lg-5">
               <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
@@ -130,10 +130,12 @@
                   </script>
                   <div id="terpene_text" class="text-muted mb-0">
                     {% if is_mystery %}<p>And you will see all the results soon!</p>
-                    {% elif terpenes_list %}
-                      <canvas id="terpeneChart"></canvas>
                     {% else %}
-                      <p>Coming Soon</p>
+                      {% if terpenes_list %}
+                        <canvas id="terpeneChart"></canvas>
+                      {% else %}
+                        <p>Coming Soon</p>
+                      {% endif %}
                     {% endif %}
                   </div>
                 </div>
@@ -214,11 +216,16 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    if (terpenesList && terpenesList.length > 0) {
-      const dataValues = terpenesList.map(() => 1);
-      initTerpeneChart(terpenesList, dataValues);
+    var isMystery = {{ is_mystery | tojson | safe }};
+    if (isMystery) { 
+      return
+    } else {
+      if (terpenesList && terpenesList.length > 0) {
+        const dataValues = terpenesList.map(() => 1);
+        initTerpeneChart(terpenesList, dataValues);
+      }
+      fetchAndUpdateStrainRatings();
     }
-    fetchAndUpdateStrainRatings();
   });
   
   function fetchAndUpdateStrainRatings() {
