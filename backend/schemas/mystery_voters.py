@@ -7,17 +7,20 @@ Created on Mon Sep 11 21:55:38 2023
 """
 
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 class MysteryVoterCreate(BaseModel):
-    email : EmailStr  
-    name : str
-    zip_code : str
-    phone : str
-    
+    email: EmailStr
+    name: str
+    zip_code: str
+    phone: str
+    industry_employer: Optional[str] = None
+    industry_job_title: Optional[str] = None
+
 
 class ShowMysteryVoter(BaseModel):
-    email : EmailStr
+    email: EmailStr
 
-    class Config():
+    class Config:
         from_attributes = True

@@ -40,6 +40,16 @@ class MysteryVoter(Base):
         nullable=True,
         unique=False,
     )
+    industry_employer = Column(
+        String,
+        nullable=True,
+        unique=False,
+    )
+    industry_job_title = Column(
+        String,
+        nullable=True,
+        unique=False,
+    )
     agree_tos = Column(
         Boolean(),
         default=True

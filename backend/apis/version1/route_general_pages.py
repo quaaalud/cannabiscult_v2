@@ -728,6 +728,8 @@ async def submit_mystery_voter_create(
     voter_email: str = Form(...),
     voter_phone: str = Form(None),
     voter_zip_code: str = Form(None),
+    voter_industry_employer: str = Form(None),
+    voter_industry_job_title: str = Form(None),
     db: Session = Depends(get_db),
 ) -> Optional[bool]:
     existing_voter = get_voter_info_by_email(voter_email, db)
@@ -740,6 +742,8 @@ async def submit_mystery_voter_create(
             name=voter_name,
             zip_code=voter_zip_code,
             phone=voter_phone,
+            industry_employer=voter_industry_employer,
+            industry_job_title=voter_industry_job_title,
         )
         create_mystery_voter(voter=voter, db=db)
         return {"status": True}
