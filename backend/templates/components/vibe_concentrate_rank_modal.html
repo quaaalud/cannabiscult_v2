@@ -712,7 +712,29 @@
     const backBtn = document.getElementById('backBtn');
     
     async function submitForm(formState) {
+      
       try {
+        const strain = formState.strain;
+
+        if (!strain) {
+          throw new Error('Strain value is missing from the form state');
+        }
+
+        const concentrateUrl = `/concentrate_reviews/get-concentrate?strain=${encodeURIComponent(strain)}`;
+
+        const concentrateResponse = await fetch(concentrateUrl);
+        if (!concentrateResponse.ok) {
+          throw new Error(`Failed to fetch concentrate data: ${concentrateResponse.status}`);
+        }
+        const concentrateData = await concentrateResponse.json();
+        
+        if (concentrateData && concentrateData.id) {
+          formState.concentrate_id = concentrateData.id;
+        } else {
+          throw new Error('Concentrate ID not found');
+        }
+        console.log(formState);
+        // Submitting the updated form data
         const response = await fetch('/concentrate_ranking/submit-vibe-concentrate-ranking', {
           method: 'POST',
           headers: {
@@ -720,7 +742,9 @@
           },
           body: JSON.stringify(formState)
         });
-        console.log(response)
+        console.log(response);
+    
+        // Handling the response
         if (response.ok) {
           const data = await response.json();
           window.location.href = "https://cannabiscult.co/vibe_concentrate_ratings";
@@ -731,6 +755,7 @@
         console.error("Error during submission:", error);
       }
     }
+
     
     function updatePageLabel() {
       const currentQuestionIndex = step+1

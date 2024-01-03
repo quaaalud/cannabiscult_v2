@@ -1,12 +1,12 @@
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>vibe {{ edible }} - Cannabis Cult</title>
+  <title>Vibe {{ edible }} - Cannabis Cult</title>
 {% endblock %} 
 
 {% block head %}
 <meta 
-  content="Cannabis Cult {{ edible }} Cultivar Rating Page." 
+  content="Cannabis Cult & Vibes {{ edible }} Cultivar Rating Page." 
   name="description"
 />
 <meta 
@@ -40,11 +40,11 @@
 />
 <meta 
   property="twitter:title" 
-  content="Cannabis Cult Cultivar - Vibe {% if strain %}{{ edible }} {% endif %}Reviews" 
+  content="Cannabis Cult Cultivar - Vibe {% if edible %}{{ edible }} {% endif %}Reviews" 
 />
 <meta 
   property="twitter:description" 
-  content="Vibe's {{ edible }} Cultivar Review Page on CannabisCult.co" 
+  content="Vibe's Edibles Cultivar Review Page on CannabisCult.co" 
 />
 <meta 
   property="twitter:image" 
@@ -56,7 +56,7 @@
 />
 <link 
   rel="canonical" 
-  href="https://cannabiscult.co/vibe-edible-rankings{% if strain %}/get-vibe-edible?{{ edible }}{% endif %}"
+  href="https://cannabiscult.co/vibe-edible-rankings{% if edible %}/get-vibe-edible?{{ edible }}{% endif %}"
 />
 {% endblock %}
 
@@ -64,13 +64,13 @@
 {% endblock %}
 
 {% block content %}
-<main class="container-fluid">
-  <div class="pt-4 pt-md-5">
+<main class="container-fluid pt-5">
+  <div class="pt-5">
   {% include "components/vibe_edible_rank_card.html" %}
   </div>
   {% include "components/vibe_edible_rank_modal.html" %}
   <div class="text-center">
-    <div class="container-fluid text-center pb-5">
+    <div class="container-fluid text-center py-5">
       <a href="/">
         <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
       </a>
@@ -83,4 +83,5 @@
 {% endblock %}
 
 {% block scripts %}
+
 {% endblock %}

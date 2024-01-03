@@ -73,7 +73,6 @@ class Hidden_Concentrate_Ranking(Base):
         default=func.now(),
         nullable=False,
     )
-    concentrate_id = Column(Integer, nullable=False)
 
 
 class Vibe_Concentrate_Ranking(Base):
@@ -100,6 +99,7 @@ class Vibe_Concentrate_Ranking(Base):
     harshness_explanation = Column(String(500))
     residuals_explanation = Column(String(500))
     effects_explanation = Column(String(500))
+    concentrate_id = Column(Integer, nullable=False)
 
     date_posted = Column(
         Date,
