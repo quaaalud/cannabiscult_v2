@@ -37,6 +37,7 @@ class Flower_Ranking(Base):
     flavor_explanation = Column(String(500))
     harshness_explanation = Column(String(500))
     effects_explanation = Column(String(500))
+    pack_code = Column(String(99), nullable=True)
 
     date_posted = Column(
         Date,
@@ -72,6 +73,7 @@ class Hidden_Flower_Ranking(Base):
     flavor_explanation = Column(String(500))
     harshness_explanation = Column(String(500))
     effects_explanation = Column(String(500))
+    pack_code = Column(String(99), nullable=True)
 
     date_posted = Column(
         Date,

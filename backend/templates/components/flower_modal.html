@@ -659,10 +659,24 @@
       } else {
         nextBtn.textContent = 'Submit';
         nextBtn.onclick = function () {
+          formState['pack_code'] = document.getElementById('packCodeInput').value; // Add pack_code to formState
+          console.log(formState);
           submitForm(formState);
         };
         modalTitle.textContent = 'All questions completed.';
-        modalBody.textContent = 'Your ratings for {{ strain }} are completed.';
+        
+        // Create pack_code input field
+        const packCodeInput = document.createElement('input');
+        packCodeInput.setAttribute('type', 'text');
+        packCodeInput.setAttribute('id', 'packCodeInput');
+        packCodeInput.setAttribute('name', 'pack_code');
+        packCodeInput.setAttribute('placeholder', 'Enter Pack Code');
+        packCodeInput.className = 'form-control my-5'; // Add Bootstrap class for styling
+      
+        // Clear existing content and add new content
+        modalBody.innerHTML = '';
+        modalBody.appendChild(document.createTextNode('Your ratings for {{ strain }} are completed. Please enter your pack code:'));
+        modalBody.appendChild(packCodeInput);
       }
       backBtn.onclick = function () {
         $('#FlowerVoterInfoCaptureModal').modal('hide');

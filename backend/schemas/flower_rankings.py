@@ -26,6 +26,7 @@ class FlowerRankingBase(BaseModel):
     harshness_explanation: Optional[str] = Field(None, max_length=500)
     effects_explanation: Optional[str] = Field(None, max_length=500)
 
+    pack_code: Optional[str] = Field(None, max_length=99)
     flower_id: int = Field(...)
 
     class Config:
@@ -40,4 +41,3 @@ class CreateFlowerRanking(FlowerRankingBase):
 
 class CreateHiddenFlowerRanking(CreateFlowerRanking):
     pass
-    
