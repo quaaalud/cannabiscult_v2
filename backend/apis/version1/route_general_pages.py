@@ -440,7 +440,6 @@ async def handle_vibe_concentrate_post(
         db,
         strain=strain,
     )
-    print(concentrate_dict)
     response_dict = {"request": request, **concentrate_dict}
     return templates.TemplateResponse(
         str(Path("general_pages", "vibe-concentrate-ratings.html")), response_dict

@@ -665,7 +665,6 @@
         })
       .then(response => response.json())
       .then(data => {
-        console.log(data.status)
         if (data.status === true) {
           $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
           step = 0;
@@ -733,7 +732,6 @@
         } else {
           throw new Error('Concentrate ID not found');
         }
-        console.log(formState);
         // Submitting the updated form data
         const response = await fetch('/concentrate_ranking/submit-vibe-concentrate-ranking', {
           method: 'POST',
@@ -742,8 +740,7 @@
           },
           body: JSON.stringify(formState)
         });
-        console.log(response);
-    
+
         // Handling the response
         if (response.ok) {
           const data = await response.json();

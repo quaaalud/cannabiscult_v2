@@ -468,7 +468,6 @@
         })
       .then(response => response.json())
       .then(data => {
-        console.log(data.status)
         if (data.status === true) {
           $('#FlowerVoterInfoCaptureModal').modal('hide');
           step = 0;
@@ -525,7 +524,6 @@
           },
           body: JSON.stringify(formState)
         });
-        console.log(response)
         if (response.ok) {
           const data = await response.json();
           window.location.href = "/success";
