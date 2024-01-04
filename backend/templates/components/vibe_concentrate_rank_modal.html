@@ -136,44 +136,23 @@
     {
       title: "Vibe Concentrates - Color Rating",
       content: `
-        <div class="container">
-          <div class="btn-group" role="group" aria-label="Vibe Concentrates Color Rating">
-            <input type="radio" class="btn-check btn-outline-dark" name="color_rating" id="color_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating1" id="color_1_point">1</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating2" value="2" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating2">2</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating3" value="3" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating3">3</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating4" value="4" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating4">4</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating5" value="5" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating5">5</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating6" value="6" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating6">6</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating7" value="7" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating7">7</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating8" value="8" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating8">8</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating9" value="9" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating9">9</label>
-
-            <input type="radio" class="btn-check" name="color_rating" id="color_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="color_rating10" id="color_10_point">10</label>
-          </div>
+        <div class="container-fluid align-items-center text-center btn-group-container">
           <div class="row pt-1">
             <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="color_1_point">Not Healthy</label>
+              <label class="ps-2 modal-info-shadow" for="color_1_point">Not Healthy</label>
             </div>
+          </div>
+          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrates Color Rating">
+            <div class="row btn-group-container">
+              {% for i in range(1, 11) %}
+                <input type="radio" class="btn-check btn-light" name="color_rating" id="color_rating{{ i }}" value="{{ i }}" autocomplete="off">
+                <label class="btn btn-light" for="color_rating{{ i }}" {% if i == 1 or i == 10 %}id="color_{{ i }}_point"{% endif %}>{{ i }}</label>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="row pt-1">
             <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="color_10_point">Very Healthy</label>
+              <label class="pe-2 modal-info-shadow" for="color_10_point">Very Healthy</label>
             </div>
           </div>
         </div>
@@ -194,47 +173,26 @@
     {
       title: "Vibe Concentrates - Aroma Rating",
       content: `
-        <div class="container">
-          <div class="btn-group" role="group" aria-label="Vibe Concentrates Aroma Rating">
-            <input type="radio" class="btn-check btn-outline-dark" name="smell_rating" id="smell_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating1" id="smell_1_point">1</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating2" value="2" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating2">2</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating3" value="3" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating3">3</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating4" value="4" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating4">4</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating5" value="5" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating5">5</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating6" value="6" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating6">6</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating7" value="7" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating7">7</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating8" value="8" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating8">8</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating9" value="9" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating9">9</label>
-
-            <input type="radio" class="btn-check" name="smell_rating" id="smell_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="smell_rating10" id="smell_10_point">10</label>
-          </div>
-          <div class="row pt-1">
-            <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
-            </div>
-            <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungeant</label>
-            </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
           </div>
         </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrates Aroma Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="smell_rating" id="smell_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="smell_rating{{ i }}" {% if i == 1 or i == 10 %}id="smell_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungent</label>
+          </div>
+        </div>
+      </div>
       `,
       key: "smell_rating"
     },
@@ -252,47 +210,26 @@
     {
       title: "Vibe Conentrates - Consistency Rating",
       content: `
-        <div class="container">
-          <div class="btn-group" role="group" aria-label="Vibe Conentrate Consistency Rating">
-            <input type="radio" class="btn-check btn-outline-dark" name="consistency_rating" id="consistency_rating1" value="1" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating1" id="consistency_1_point">1</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating2" value="2" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating2">2</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating3" value="3" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating3">3</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating4" value="4" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating4">4</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating5" value="5" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating5">5</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating6" value="6" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating6">6</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating7" value="7" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating7">7</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating8" value="8" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating8">8</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating9" value="9" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating9">9</label>
-
-            <input type="radio" class="btn-check" name="consistency_rating" id="consistency_rating10" value="10" autocomplete="off">
-            <label class="btn btn-outline-dark" for="consistency_rating10" id="consistency_10_point">10</label>
-          </div>
-          <div class="row pt-1">
-            <div class="col text-start">
-              <label class="ps-2  modal-info-shadow" for="consistency_1_point">Not Desireable</label>
-            </div>
-            <div class="col text-end">
-              <label class="pe-2  modal-info-shadow" for="consistency_10_point">Desireable</label>
-            </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
+        <div class="row pt-1">
+          <div class="col text-start">
+            <label class="ps-2 modal-info-shadow" for="consistency_1_point">Not Desirable</label>
           </div>
         </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Consistency Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="consistency_rating" id="consistency_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="consistency_rating{{ i }}" {% if i == 1 or i == 10 %}id="consistency_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row pt-1">
+          <div class="col text-end">
+            <label class="pe-2 modal-info-shadow" for="consistency_10_point">Desirable</label>
+          </div>
+        </div>
+      </div>
       `,
       key: "consistency_rating"
     },
@@ -310,42 +247,21 @@
     {
       title: "Vibe Conentrates - Flavor Rating",
       content: `
-      <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe Concentrate Flavor Rating">
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating1" value="1" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating1" id="flavor_1_point">1</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating2" value="2" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating2">2</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating3" value="3" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating3">3</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating4" value="4" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating4">4</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating5" value="5" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating5">5</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating6" value="6" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating6">6</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating7" value="7" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating7">7</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating8" value="8" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating8">8</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating9" value="9" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating9">9</label>
-        
-          <input type="radio" class="btn-check" name="flavor_rating" id="flavor_rating10" value="10" autocomplete="off">
-          <label class="btn btn-outline-dark" for="flavor_rating10" id="flavor_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
           <div class="col text-start">
-            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label> 
+            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
           </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Flavor Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="flavor_rating" id="flavor_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="flavor_rating{{ i }}" {% if i == 1 or i == 10 %}id="flavor_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row pt-1">
           <div class="col text-end">
             <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
           </div>
@@ -368,42 +284,21 @@
     {
       title: "Smoothness on Inhale Rating",
       content: `
-      <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe Conentrate Harshness Rating">
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating1" value="1" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating1" id="harshness_1_point">1</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating2" value="2" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating2">2</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating3" value="3" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating3">3</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating4" value="4" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating4">4</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating5" value="5" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating5">5</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating6" value="6" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating6">6</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating7" value="7" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating7">7</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating8" value="8" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating8">8</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating9" value="9" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating9">9</label>
-
-          <input type="radio" class="btn-check" name="harshness_rating" id="harshness_rating10" value="10" autocomplete="off">
-          <label class="btn btn-outline-dark" for="harshness_rating10" id="harshness_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
           <div class="col text-start">
             <label class="ps-2 modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
           </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Harshness Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="harshness_rating" id="harshness_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="harshness_rating{{ i }}" {% if i == 1 or i == 10 %}id="harshness_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row pt-1">
           <div class="col text-end">
             <label class="pe-2 modal-info-shadow long-voting-label" for="harshness_10_point">Smooth & Enjoyable</label>
           </div>
@@ -426,42 +321,21 @@
     {
       title: "Residuals Rating",
       content: `
-      <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Vibe Residuals Rating">
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating1" value="1" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating1" id="residuals_1_point">1</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating2" value="2" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating2">2</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating3" value="3" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating3">3</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating4" value="4" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating4">4</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating5" value="5" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating5">5</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating6" value="6" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating6">6</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating7" value="7" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating7">7</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating8" value="8" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating8">8</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating9" value="9" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating9">9</label>
-
-          <input type="radio" class="btn-check" name="residuals_rating" id="residuals_rating10" value="10" autocomplete="off">
-          <label class="btn btn-outline-dark" for="residuals_rating10" id="residuals_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
           <div class="col text-start">
             <label class="ps-2 modal-info-shadow long-voting-label" for="residuals_1_point">Thick, Dirty Melt</label>
           </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Residuals Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="residuals_rating" id="residuals_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="residuals_rating{{ i }}" {% if i == 1 or i == 10 %}id="residuals_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row pt-1">
           <div class="col text-end">
             <label class="pe-2 modal-info-shadow long-voting-label" for="residuals_10_point">Clean Melt</label>
           </div>
@@ -484,44 +358,23 @@
     {
       title: "Vibe Conentrates - Effects Rating",
       content: `
-      <div class="container align-items-center text-center">
-        <div class="btn-group" role="group" aria-label="Connoisseur Effects Vote">
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating1" value="1" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating1" id="effects_1_point">1</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating2" value="2" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating2">2</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating3" value="3" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating3">3</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating4" value="4" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating4">4</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating5" value="5" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating5">5</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating6" value="6" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating6">6</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating7" value="7" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating7">7</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating8" value="8" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating8">8</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating9" value="9" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating9">9</label>
-        
-          <input type="radio" class="btn-check" name="effects_rating" id="effects_rating10" value="10" autocomplete="off">
-          <label class="btn btn-outline-dark" for="effects_rating10" id="effects_10_point">10</label>
-        </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1">
           <div class="col-6 text-start">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label> 
+            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
           </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Connoisseur Effects Vote">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="effects_rating" id="effects_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="effects_rating{{ i }}" {% if i == 1 or i == 10 %}id="effects_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="row pt-1">
           <div class="col-6 text-end">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label> 
+            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
           </div>
         </div>
       </div>
