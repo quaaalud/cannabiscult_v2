@@ -15,7 +15,7 @@ from sqlalchemy.future import select
 from db.base import Base
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
-from db.models.edibles import Edible
+from db.models.edibles import Edible, VibeEdible
 from db.models.product_types import Product_Types
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
@@ -49,7 +49,11 @@ async def search_strain(db: Session, strain: str) -> List[Dict[str, Any]]:
     flower_results = await get_data_by_strain(db, Flower, strain)
     concentrate_results = await get_data_by_strain(db, Concentrate, strain)
     try:
-        edible_results = await get_data_by_strain(db, Edible, strain)
+        general_edibles = await get_data_by_strain(db, Edible, strain)
+        vibe_edibles = await get_data_by_strain(db, VibeEdible, strain)
+
+        edible_results = [*general_edibles, *vibe_edibles]
+
     except ProgrammingError:
         edible_results = []
 
@@ -70,10 +74,10 @@ async def get_all_product_types(db: Session) -> List[str]:
 def get_cultivators_by_product_type(db: Session, model: Type[Base]) -> List[str]:
     try:
         result = db.execute(
-          select(model.cultivator)
-          .filter(model.cultivator != "Cultivar")
-          .filter(model.cultivator != "Connoisseur")
-          .distinct()
+            select(model.cultivator)
+            .filter(model.cultivator != "Cultivar")
+            .filter(model.cultivator != "Connoisseur")
+            .distinct()
         )
         cultivators = result.scalars().all()
         return [cultivator for cultivator in cultivators]
@@ -88,14 +92,14 @@ def get_strains_by_cultivator(
 ) -> Optional[List[str]]:
     try:
         result = db.execute(
-          select(model.strain)
-          .where(model.cultivator == cultivator)
-          .filter(model.cultivator != "Cultivar")
-          .filter(model.cultivator != "Connoisseur")
-          .filter(model.strain.ilike("%Test%") == False)
+            select(model.strain)
+            .where(model.cultivator == cultivator)
+            .filter(model.cultivator != "Cultivar")
+            .filter(model.cultivator != "Connoisseur")
+            .filter(model.strain.ilike("%Test%") == False)
         )
         strains = result.scalars().all()
-        return [strain for strain in strains if 'test' not in strain.lower()]
+        return [strain for strain in strains if "test" not in strain.lower()]
     except Exception as e:
         traceback.print_exc()
         print(f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}")
@@ -104,9 +108,7 @@ def get_strains_by_cultivator(
 
 def get_random_cultivator(db: Session, model: Type[Base]) -> str:
     try:
-        result = db.execute(
-            select(model.cultivator).distinct().order_by(func.random()).limit(1)
-        )
+        result = db.execute(select(model.cultivator).distinct().order_by(func.random()).limit(1))
         random_cultivator = result.scalar_one()
         return random_cultivator
     except Exception as e:
@@ -117,9 +119,7 @@ def get_random_cultivator(db: Session, model: Type[Base]) -> str:
 
 def get_random_strain(db: Session, model: Type[Base]) -> str:
     try:
-        result = db.execute(
-            select(model.strain).distinct().order_by(func.random()).limit(1)
-        )
+        result = db.execute(select(model.strain).distinct().order_by(func.random()).limit(1))
         random_strain = result.scalar_one()
         return random_strain
     except Exception as e:
