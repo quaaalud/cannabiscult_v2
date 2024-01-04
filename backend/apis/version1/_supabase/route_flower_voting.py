@@ -71,6 +71,7 @@ async def get_top_strains(db: Session = Depends(get_supa_db)):
             func.avg(FlowerVoting.effects_vote),
         )
         .filter(Flower_Ranking.cultivator != "Connoisseur")
+        .filter(Flower_Ranking.strain.ilike("%Test%") == False)
         .group_by(FlowerVoting.strain_selected, FlowerVoting.cultivator_selected)
         .all()
     )
@@ -112,10 +113,10 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
             func.avg(Flower_Ranking.freshness_rating),
         )
         .filter(Flower_Ranking.cultivator != "Connoisseur")
+        .filter(Flower_Ranking.strain.ilike("%Test%") == False)
         .group_by(Flower_Ranking.strain, Flower_Ranking.cultivator)
         .all()
     )
-
     scored_strains = []
     for strain in avg_ratings:
         overall_score = sum(filter(None, strain[2:])) / 6
@@ -148,7 +149,7 @@ async def get_strain_ratings_by_id(flower_id: int, db: Session = Depends(get_sup
             func.avg(Flower_Ranking.flavor_rating),
             func.avg(Flower_Ranking.effects_rating),
             func.avg(Flower_Ranking.harshness_rating),
-            func.avg(Flower_Ranking.freshness_rating)
+            func.avg(Flower_Ranking.freshness_rating),
         )
         .filter(Flower_Ranking.flower_id == flower_id)
         .first()
@@ -167,7 +168,7 @@ async def get_strain_ratings_by_id(flower_id: int, db: Session = Depends(get_sup
         "flavor_rating": avg_ratings[2],
         "effects_rating": avg_ratings[3],
         "harshness_rating": avg_ratings[4],
-        "freshness_rating": avg_ratings[5]
+        "freshness_rating": avg_ratings[5],
     }
 
     return flower_data

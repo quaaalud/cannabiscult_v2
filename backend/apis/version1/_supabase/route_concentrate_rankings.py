@@ -73,6 +73,7 @@ async def get_top_concentrate_strains(db: Session = Depends(get_db)):
             func.avg(Concentrate_Ranking.residuals_rating),
         )
         .filter(Concentrate_Ranking.cultivator != "Cultivar")
+        .filter(Concentrate_Ranking.strain.ilike('%Test%') == False)
         .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
         .all()
     )
@@ -113,6 +114,7 @@ async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n
             func.avg(Concentrate_Ranking.residuals_rating),
         )
         .filter(Concentrate_Ranking.cultivator != "Cultivar")
+        .filter(Concentrate_Ranking.strain.ilike('%Test%') == False)
         .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
         .all()
     )
