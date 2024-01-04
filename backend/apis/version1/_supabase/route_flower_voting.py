@@ -70,6 +70,7 @@ async def get_top_strains(db: Session = Depends(get_supa_db)):
             func.avg(FlowerVoting.flavor_vote),
             func.avg(FlowerVoting.effects_vote),
         )
+        .filter(Flower_Ranking.cultivator != "Connoisseur")
         .group_by(FlowerVoting.strain_selected, FlowerVoting.cultivator_selected)
         .all()
     )
@@ -110,6 +111,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
             func.avg(Flower_Ranking.harshness_rating),
             func.avg(Flower_Ranking.freshness_rating),
         )
+        .filter(Flower_Ranking.cultivator != "Connoisseur")
         .group_by(Flower_Ranking.strain, Flower_Ranking.cultivator)
         .all()
     )

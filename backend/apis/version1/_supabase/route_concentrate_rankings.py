@@ -34,7 +34,7 @@ router = APIRouter()
 
 
 @router.post("/submit-concentrate-ranking", response_model=None)
-def submit_concentrate_ranking(
+async def submit_concentrate_ranking(
     concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Concentrate_Ranking:
     submitted_ranking = create_concentrate_ranking(ranking=concentrate_ranking, db=db)
@@ -50,10 +50,11 @@ def submit_mystery_concentrate_ranking(
 
 
 @router.post("/submit-vibe-concentrate-ranking", response_model=None)
-def submit_vibe_concentrate_ranking(
+async def submit_vibe_concentrate_ranking(
     ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Vibe_Concentrate_Ranking:
-    submitted_ranking = create_vibe_concentrate_ranking(ranking=ranking, db=db)
+    create_vibe_concentrate_ranking(ranking=ranking, db=db)
+    submitted_ranking = create_concentrate_ranking(ranking=ranking, db=db)
     return submitted_ranking
 
 
@@ -71,6 +72,7 @@ async def get_top_concentrate_strains(db: Session = Depends(get_db)):
             func.avg(Concentrate_Ranking.harshness_rating),
             func.avg(Concentrate_Ranking.residuals_rating),
         )
+        .filter(Concentrate_Ranking.cultivator != "Cultivar")
         .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
         .all()
     )
@@ -110,6 +112,7 @@ async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n
             func.avg(Concentrate_Ranking.harshness_rating),
             func.avg(Concentrate_Ranking.residuals_rating),
         )
+        .filter(Concentrate_Ranking.cultivator != "Cultivar")
         .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
         .all()
     )
