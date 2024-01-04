@@ -50,13 +50,12 @@ async def search_strain(db: Session, strain: str) -> List[Dict[str, Any]]:
     concentrate_results = await get_data_by_strain(db, Concentrate, strain)
     try:
         general_edibles = await get_data_by_strain(db, Edible, strain)
-        vibe_edibles = await get_data_by_strain(db, VibeEdible, strain)
-
-        edible_results = [*general_edibles, *vibe_edibles]
-
     except ProgrammingError:
-        edible_results = []
-
+        general_edibles = []
+    vibe_edibles = await get_data_by_strain(db, VibeEdible, strain)
+    for item in vibe_edibles:
+        item['type'] = 'Edible'
+    edible_results = [*general_edibles, *vibe_edibles]
     return flower_results + concentrate_results + edible_results
 
 
