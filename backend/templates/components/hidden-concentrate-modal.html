@@ -73,13 +73,30 @@
           <div class="mb-3">
             <input type="text" class="form-control" placeholder="Enter Your Zip Code" id="connoisseur_zip_code" name="connoisseur_zip_code" autocomplete="on">
           </div>
-          <div class="conainer ps-1">
-            <div class="form-check ps-4">
-              <input class="form-check-input me-2" type="checkbox" value="" id="register_check" name="register_check" checked
-                aria-describedby="registerCheckHelpText" />
-              <label class="form-check-label" for="register_check">
-                I have read and agree to the <a href="/privacy-policy" style="color:#301934" target="_blank" rel="noopener noreferrer">privacy policy</a> & <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer">user agreement</a>
-              </label>
+          <div class="form-check mb-3 pt-2">
+            <input class="form-check-input" type="checkbox" id="cannabisIndustryCheck">
+            <label class="form-check-label" for="cannabisIndustryCheck">
+              Employed in the Cannabis Industry
+            </label>
+          </div>
+          <div id="employmentQuestions" style="display: none;">
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Enter Your Place of Employment" id="connoisseur_employer" name="connoisseur_employer" autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Enter Your Job Title" id="connoisseur_job_title" name="connoisseur_job_title" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-check mb-3">
+            <div class="row g-0 pt-2">
+              <div class="col-auto"> <!-- This will contain the checkbox -->
+                <input class="form-check-input" type="checkbox" id="register_check" name="register_check" aria-describedby="registerCheckHelpText" checked/>
+              </div>
+              <div class="col"> <!-- This will contain the label -->
+                <label class="form-check-label" for="register_check">
+                  I have read and agree to the <a href="/privacy-policy" style="color:#301934" target="_blank" rel="noopener noreferrer">privacy policy</a> & <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer">user agreement</a>
+                </label>
+              </div>
             </div>
           </div>
         </form>
@@ -605,6 +622,16 @@
   window.addEventListener('resize', adjustButtonSize);
 
   document.addEventListener("DOMContentLoaded", function() {
+    var checkbox = document.getElementById('cannabisIndustryCheck');
+    var employmentDiv = document.getElementById('employmentQuestions');
+  
+    checkbox.addEventListener('change', function() {
+      if (checkbox.checked) {
+        employmentDiv.style.display = 'block';
+      } else {
+        employmentDiv.style.display = 'none';
+      }
+    });
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
         document.getElementById("newUserBackBtn").onclick = function() {
@@ -621,6 +648,8 @@
         formData.append('voter_email', lowerCasedEmail);
         formData.append('voter_phone', document.getElementById("connoisseur_phone").value);
         formData.append('voter_zip_code', document.getElementById("connoisseur_zip_code").value);
+        formData.append('voter_industry_employer', document.getElementById("connoisseur_employer").value);
+        formData.append('voter_industry_job_title', document.getElementById("connoisseur_job_title").value);
 
         fetch("/submit-new-voter", {
           method: "POST",
