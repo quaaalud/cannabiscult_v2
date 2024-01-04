@@ -361,7 +361,7 @@ async def handle_flower_review_get(
     *,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
-    product_type_selected_selected: str = Form('flower'),
+    product_type_selected_selected: str = Form("flower"),
     db: Session = Depends(get_db),
 ):
     return await process_flower_request(request, strain_selected, cultivator_selected, db)
@@ -373,7 +373,7 @@ async def handle_flower_review_post(
     *,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
-    product_type_selected: str = Query('flower', alias="product_type_selected"),
+    product_type_selected: str = Query("flower", alias="product_type_selected"),
     db: Session = Depends(get_db),
 ):
     return await process_flower_request(request, strain_selected, cultivator_selected, db)
@@ -410,14 +410,23 @@ async def handle_vivid_edible_post(
 
 
 @general_pages_router.get("/get-vibe-edible")
+@general_pages_router.get("/edible-get-review")
 async def handle_vibe_edible_post(
     request: Request,
     edible_strain: str = Query(None, alias="edible_strain"),
+    product_type_selected: str = Query(None, alias="product_type_selected"),
+    cultivator_selected: str = Query(None, alias="cultivator_selected"),
+    strain_selected: str = Query(None, alias="strain_selected"),
     db: Session = Depends(get_db),
 ):
+    # Decide which strain to use based on the provided parameters
+    strain_to_use = strain_selected if strain_selected else edible_strain
+
+    # Additional logic to handle product_type_selected and cultivator_selected if needed
+
     edible_dict = get_vibe_edible_data_by_strain(
         db,
-        edible_strain=edible_strain,
+        edible_strain=strain_to_use,
     )
     response_dict = {"request": request, **edible_dict}
     return templates.TemplateResponse(
@@ -605,7 +614,7 @@ async def handle_concentrate_review_get(
     *,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
-    product_type_selected: str = Form('concentrate'),
+    product_type_selected: str = Form("concentrate"),
     db: Session = Depends(get_db),
 ):
     return await process_concentrate_request(request, strain_selected, cultivator_selected, db)
@@ -617,7 +626,7 @@ async def handle_concentrate_review_post(
     *,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
-    product_type_selected: str = Query('concentrate', alias="product_type_selected"),
+    product_type_selected: str = Query("concentrate", alias="product_type_selected"),
     db: Session = Depends(get_db),
 ):
     return await process_concentrate_request(request, strain_selected, cultivator_selected, db)

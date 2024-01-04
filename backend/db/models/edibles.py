@@ -12,88 +12,43 @@ from db.base_class import Base
 
 
 class Edible(Base):
-    __table_args__ = {'schema': 'public'}
-    
+    __table_args__ = {"schema": "public"}
+
     edible_id = Column(
-        BigInteger,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-        nullable=False
+        BigInteger, primary_key=True, index=True, autoincrement="auto", nullable=False
     )
-    cultivator = Column(
-        String,
-        nullable=False
-    )
-    strain = Column(
-        String,
-        nullable=False
-    )
-    card_path = Column(
-        String,
-        nullable=True
-    )
+    cultivator = Column(String, nullable=False)
+    strain = Column(String, nullable=False)
+    card_path = Column(String, nullable=True)
 
 
 class MysteryEdible(Base):
-    __table_args__ = {'schema': 'public'}
-    
+    __table_args__ = {"schema": "public"}
+
     mystery_edible_id = Column(
-        BigInteger,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-        nullable=False
+        BigInteger, primary_key=True, index=True, autoincrement="auto", nullable=False
     )
-    cultivator = Column(
-        String,
-        nullable=False
-    )
-    strain = Column(
-        String,
-        nullable=False
-    )
-    card_path = Column(
-        String,
-        nullable=True
-    )
+    cultivator = Column(String, nullable=False)
+    strain = Column(String, nullable=False)
+    card_path = Column(String, nullable=True)
 
 
 class VividEdible(Base):
-    __table_args__ = {'schema': 'public'}
-    
+    __table_args__ = {"schema": "public"}
+
     vivid_edible_id = Column(
-        BigInteger,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-        nullable=False
+        BigInteger, primary_key=True, index=True, autoincrement="auto", nullable=False
     )
-    strain = Column(
-        String,
-        nullable=False
-    )
-    card_path = Column(
-        String,
-        nullable=True
-    )
-    
-    
+    strain = Column(String, nullable=False)
+    card_path = Column(String, nullable=True)
+
+
 class VibeEdible(Base):
-    __table_args__ = {'schema': 'public'}
-    
+    __table_args__ = {"schema": "public"}
+
     vibe_edible_id = Column(
-        BigInteger,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-        nullable=False
+        BigInteger, primary_key=True, index=True, autoincrement="auto", nullable=False
     )
-    strain = Column(
-        String,
-        nullable=False
-    )
-    card_path = Column(
-        String,
-        nullable=True
-    )
+    strain = Column(String, nullable=False)
+    card_path = Column(String, nullable=True)
+    cultivator = Column(String, server_default="Vibe", nullable=True)

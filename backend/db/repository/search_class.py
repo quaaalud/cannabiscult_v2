@@ -22,7 +22,13 @@ from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 async def get_data_by_strain(db: Session, model: Type[Base], strain: str) -> List[Dict[str, Any]]:
     try:
-        result = db.execute(select(model).filter(model.strain.ilike(f"%{strain}%")))
+        result = db.execute(
+            select(model)
+            .filter(model.cultivator != "Cultivar")
+            .filter(model.cultivator != "Connoisseur")
+            .filter(model.strain.ilike(f"%{strain}%"))
+            .filter(model.strain.ilike("%Test%") == False)
+        )
         items = result.scalars().all()
         return [
             {
@@ -63,7 +69,12 @@ async def get_all_product_types(db: Session) -> List[str]:
 
 def get_cultivators_by_product_type(db: Session, model: Type[Base]) -> List[str]:
     try:
-        result = db.execute(select(model.cultivator).distinct())
+        result = db.execute(
+          select(model.cultivator)
+          .filter(model.cultivator != "Cultivar")
+          .filter(model.cultivator != "Connoisseur")
+          .distinct()
+        )
         cultivators = result.scalars().all()
         return [cultivator for cultivator in cultivators]
     except Exception as e:
@@ -76,7 +87,13 @@ def get_strains_by_cultivator(
     db: Session, model: Type[Base], cultivator: str
 ) -> Optional[List[str]]:
     try:
-        result = db.execute(select(model.strain).where(model.cultivator == cultivator))
+        result = db.execute(
+          select(model.strain)
+          .where(model.cultivator == cultivator)
+          .filter(model.cultivator != "Cultivar")
+          .filter(model.cultivator != "Connoisseur")
+          .filter(model.strain.ilike("%Test%") == False)
+        )
         strains = result.scalars().all()
         return [strain for strain in strains if 'test' not in strain.lower()]
     except Exception as e:
