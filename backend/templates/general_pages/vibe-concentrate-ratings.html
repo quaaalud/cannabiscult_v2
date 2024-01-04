@@ -64,16 +64,24 @@
 {% endblock %}
 
 {% block content %}
-<main class="container-fluid">
-  <div class="pt-4 pt-md-5">
-  {% include "components/vibe_concentrate_rank_card.html" %}
+<main class="container-fluid pt-5">
+  <div class="container pb-5">
+    <div class="row mx-auto pb-xl-5">
+      <h1 class="fw-bold text-center">Vibe Cultivar Concentrate Ratings</h1>
+    </div>
   </div>
-  {% include "components/vibe_concentrate_rank_modal.html" %}
-  <div class="text-center">
-    <div class="container-fluid text-center pb-5">
-      <a href="/">
-        <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
-      </a>
+  <div class="pt-4 pt-md-5">
+    {% include "components/vibe_concentrate_rank_card.html" %}
+  </div>
+    {% include "components/vibe_concentrate_rank_modal.html" %}
+  <div class="container align-items-center justify-items-center pt-3">
+    {% include "components/homepage_elements/homepage_features.html" %}
+  </div>
+  <div class="container py-5">
+    <div class="row mx-auto">
+      <div class="col-auto mx-auto">
+        <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvY2FyZF9hc3NldHMvQ3VsdCBDbGFzc2ljICBDdWx0aXZhciBFbWJsZW0ud2VicCIsImlhdCI6MTcwNDI0NzM4NywiZXhwIjoxNzM1NzgzMzg3fQ.xqhIiGk-3ZNcW45AtAdi7kFMzltAdusrdUf1U0o826E&t=2024-01-03T02%3A03%3A07.801Z"/>
+      </div>
     </div>
   </div>
 </main>
