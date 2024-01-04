@@ -165,9 +165,9 @@
       title: "{{ strain }} Apprearance Rating",
       content: `
         <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1">
-            <div class="col text-center">
-              <label class="ps-2  modal-info-shadow" for="appearance_1_point">Not Desireable</label>
+          <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="appearance_1_point">Not Desireable</label>
             </div>
           </div>
           <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Appearance Rating">
@@ -178,9 +178,9 @@
               {% endfor %}
             </div>
           </div>
-          <div class="row pt-1">
-            <div class="col text-center">
-              <label class="pe-2  modal-info-shadow" for="appearance_10_point">Desireable</label>
+          <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="appearance_10_point">Desireable</label>
             </div>
           </div>
         </div>
@@ -205,9 +205,9 @@
       title: "{{ strain }} Aroma Rating",
       content: `
         <div class="container align-items-center text-center btn-group-container">
-          <div class="row pt-1">
-            <div class="col text-center">
-              <label class="ps-2  modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
+          <div class="row pt-1 mx-auto">
+              <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
             </div>
           </div>
           <div class="btn-group btn-group-sm btn-group-container col-10 my-auto mx-auto" role="group" aria-label="{{ strain }} Aroma Rating">
@@ -218,8 +218,8 @@
               {% endfor %}
             </div>
           </div>
-          <div class="row pt-1">
-            <div class="col text-center">
+          <div class="row pt-1 mx-auto">
+              <div class="col-6 text-center mx-auto">
               <label class="modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungeant</label>
             </div>
           </div>
@@ -245,9 +245,9 @@
       title: "{{ strain }} - Freshness Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2  modal-info-shadow" for="freshness_1_point">Too Old or Dry</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="freshness_1_point">Too Old or Dry</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Freshness Rating">
@@ -258,9 +258,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2  modal-info-shadow" for="freshness_10_point">Dank with Good Moisture</label>
+        <<div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="freshness_10_point">Dank with Good Moisture</label>
           </div>
         </div>
       </div>
@@ -285,9 +285,9 @@
       title: "{{ strain }} - Flavor Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Flavor Rating">
@@ -298,9 +298,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
           </div>
         </div>
       </div>
@@ -325,9 +325,9 @@
       title: "{{ strain }} - Smoothness on Inhale Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Harshness Rating">
@@ -338,9 +338,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="harshness_10_point">Enjoyable</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="harshness_10_point">Enjoyable</label>
           </div>
         </div>
       </div>
@@ -365,9 +365,9 @@
       title: "{{ strain }} - Effects Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Effects Vote">
@@ -378,9 +378,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
           </div>
         </div>
       </div>

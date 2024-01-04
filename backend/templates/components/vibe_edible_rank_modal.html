@@ -140,8 +140,8 @@
       title: "Select Your Flavor",
       content: `
         <div class="container px-4">
-          <div class="row px-4 py-2 py-lg-3">
-            <p>Please select the flavor you are voting on:</p>
+          <div class="row px-4 py-2 py-lg-3 text-start">
+            <p class="ps-0 pb-3">Please select the flavor you are voting on:</p>
             <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="flavor" id="flavor">
               <option selected>Select Flavor</option>
               <option value="Black Cherry">Black Cherry</option>
@@ -159,9 +159,9 @@
       title: "{{ edible }} - Appearance Rating",
       content: `
         <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1">
-            <div class="col text-center">
-              <label class="ps-2 modal-info-shadow" for="appearance_1_point">Ugly</label>
+          <div class="row pt-1 mx-auto">
+              <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="appearance_1_point">Ugly</label>
             </div>
           </div>
           <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe {{ edible }} Appearance Rating">
@@ -172,9 +172,9 @@
               {% endfor %}
             </div>
           </div>
-          <div class="row pt-1">
-            <div class="col text-center">
-              <label class="pe-2 modal-info-shadow" for="appearance_10_point">Appealing</label>
+          <div class="row pt-1 mx-auto">
+              <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="appearance_10_point">Appealing</label>
             </div>
           </div>
         </div>
@@ -196,9 +196,9 @@
       title: "{{ edible }} - Feel Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2 modal-info-shadow" for="feel_1_point">Too Hard<span class="long-voting-label"> or </span>Sweaty</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="feel_1_point">Too Hard<span class="long-voting-label"> or </span>Sweaty</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe {{ edible }} Feel Rating">
@@ -209,9 +209,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2 modal-info-shadow" for="feel_10_point">Firm<span class="long-voting-label"> and </span>Dry</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="feel_10_point">Firm<span class="long-voting-label"> and </span>Dry</label>
           </div>
         </div>
       </div>
@@ -233,9 +233,9 @@
       title: "{{ edible }} - Chew Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2 modal-info-shadow long-voting-label" for="chew_1_point">Nasty, Gross</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="chew_1_point">Nasty, Gross</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe {{ edible }} Chew Rating">
@@ -246,9 +246,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2 modal-info-shadow long-voting-label" for="chew_10_point">Enjoyable, Addicting</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="chew_10_point">Enjoyable, Addicting</label>
           </div>
         </div>
       </div>
@@ -270,9 +270,9 @@
       title: "{{ edible }} - Flavor Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="ps-2 modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe {{ edible }} Flavor Rating">
@@ -283,9 +283,9 @@
             {% endfor %}
           </div>
         </div>
-        <div class="row pt-1">
-          <div class="col text-center">
-            <label class="pe-2 modal-info-shadow" for="flavor_10_point">Tasty Flavor<span class="long-voting-label"> as </span>Described</label>
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_10_point">Tasty Flavor<span class="long-voting-label"> as </span>Described</label>
           </div>
         </div>
       </div>
@@ -338,8 +338,8 @@
       title: "{{ edible }} - Effects Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-        <div class="row py-1">
-          <div class="col text-center">
+        <div class="row pt-1 mx-auto">
+            <div class="col-6 text-center mx-auto">
             <label class="modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
           </div>
         </div>
@@ -350,10 +350,10 @@
               <label class="btn btn-light" for="effects_rating{{ i }}" {% if i == 1 or i == 10 %}id="effects_{{ i }}_point"{% endif %}>{{ i }}</label>
             {% endfor %}
           </div>
-          <div class="row py-1">
-            <div class="col text-center">
-              <label class="modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
-            </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
           </div>
         </div>
       </div>
@@ -600,6 +600,14 @@
               const lowerCasedEmail = input.value.toLowerCase();
               formState[question.key] = lowerCasedEmail;
             }
+            else if (question.key === "flavor") {
+              const selectedOption = input.value;
+              if (selectedOption === "Select Flavor") {
+                alert("Please select a flavor so we know which {{ edible }} you are rating."); 
+                return;
+              }
+              formState['flavor'] = selectedOption;
+            } 
             else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
