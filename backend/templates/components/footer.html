@@ -1,54 +1,36 @@
 {% block footer %}
-
-<footer class="footer mt-auto py-3 bg-light">
-  <div class="container text-center">
-    <span class="text-muted" style="padding-bottom: 1em">
-      Vist our social media pages and connect with us today
-    </span>
-    <div class="row align-items-center" style="padding: 1em">
-      <div class="col">
-        <a href="https://www.facebook.com/100089202138069">
-          <img 
-            src="{{ url_for('static', path='images/Facebook.png') }}"
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-        </a>
-      </div>
-      <div class="col">
-        <a href="https://www.instagram.com/missouricannabisreviews/">
-          <img 
-            src="{{ url_for('static', path='images/Instagram.png') }}"
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-        </a>
-      </div>
-      <div class="col">
-        <a href="https://twitter.com/TheCannabisCvlt">
-          <img 
-            src="{{ url_for('static', path='images/Twitter.png') }}"
-            target="_blank" 
-            rel="noopener noreferrer"
-          >
-        </a>
-      </div>
+<footer class="text-center text-lg-start" style="background-color: rgba(48, 25, 52, 0.05);">
+  <div class="row">
+    <div class="col-auto mx-auto pt-5">
+      <p style="color: rgba(48, 25, 52, 1.0)">Support Us with a Follow on Social Media</p>
     </div>
   </div>
-  <div class="container text-center" style="padding-top:1em">
-    <div class="row justify-content-end align-items-end">
-      <div class="col-6">
-        <span class="text-muted">© 2023 The Social Outfit. All Rights Reserved</span>
-      </div>
-      <div class="col-3">
-        <a href="/unsubscribe" 
-           target="_blank" 
-           rel="noopener noreferrer"
-           class="text-muted">
-           Unsubscribe
-        </a>
-      </div>
-    </div>
+  <div class="container d-flex justify-content-center pt-3 pb-5">
+    <button type="button" class="btn btn-primary btn-lg btn-floating mx-2" style="background-color: #301934;">
+      <a class="text-white" href="https://www.reddit.com/r/thecannabiscult/" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-reddit-alien fa-lg"></i>
+      </a>
+    </button>
+    <button type="button" class="btn btn-primary btn-lg btn-floating mx-2" style="background-color: #301934;">
+      <a class="text-white" href="https://www.facebook.com/100089202138069" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-facebook-f fa-lg"></i>
+      </a>
+    </button>
+    <button type="button" class="btn btn-primary btn-lg btn-floating mx-2" style="background-color: #301934;">
+      <a class="text-white" href="https://www.instagram.com/missouricannabisreviews" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram fa-lg"></i>
+      </a>
+    </button>
+    <button type="button" class="btn btn-primary btn-lg btn-floating mx-2" style="background-color: #301934;">
+      <a class="text-white" href="https://twitter.com/TheCannabisCvlt" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-twitter fa-lg"></i>
+      </a>
+    </button>
   </div>
+  <!-- Copyright -->
+  <div class="text-center p-3 text-white" style="background-color: rgba(48, 25, 52, 1.0);">
+    © 2024 The Social Outfit. All Rights Reserved
+  </div>
+  <!-- Copyright -->
 </footer>
 {% endblock %}

@@ -18,10 +18,9 @@
     <!-- MDB -->
     <link rel="stylesheet" href="{{ url_for('static', path='plugins/css/all.min.css') }}" />
     <link href="{{ url_for('static', path='static/dist/styles.bundle.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', path='src/aos/aos.css') }}" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest/dist/umd/supabase.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@latest/dist/umd/supabase.min.js" async></script>
     <script 
       type="text/javascript" 
       src="{{ url_for('static', path='src/aos/aos.js') }}"
@@ -31,6 +30,7 @@
       type="text/javascript" 
       src="{{ url_for('static', path='src/auth/auth.js') }}"
     ></script>
+    <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
     {% block title %}
     {% endblock %}
   </head>
