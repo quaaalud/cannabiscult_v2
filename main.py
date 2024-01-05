@@ -64,7 +64,7 @@ def configure_static(app):
     global STATIC_DIR
     app.mount(
         str(STATIC_DIR),
-        StaticFiles(directory=str(STATIC_DIR)),
+        StaticFiles(directory=str(STATIC_DIR),  follow_symlink=True),
         name="static",
     )
 
