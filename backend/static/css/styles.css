@@ -211,6 +211,49 @@ select {
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .15);
 }
 
+.custom-gradient-button {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(to right, #ffffff, #e0e0e0); /* Subtle gradient from white to light grey */
+  color: #000000; /* Starting text color as black for contrast */
+  border: none;
+  padding: 10px 20px;
+  transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  /* Add other styles as needed */
+}
+
+.custom-gradient-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%; /* Default to full width for the subtle gradient */
+  height: 100%;
+  background: linear-gradient(to right, #000000 0%, #ffffff 100%);
+  opacity: 0; /* Hide the hover gradient initially */
+  transition: opacity 0.5s ease, width 0.5s ease; /* Transition for the hover effect */
+  z-index: 0;
+}
+
+.custom-gradient-button:hover,
+.custom-gradient-button:focus,
+.custom-gradient-button:active {
+  color: #301934; /* Text color changes to dark purple for better contrast on hover */
+}
+
+.custom-gradient-button:hover::before,
+.custom-gradient-button:focus::before,
+.custom-gradient-button:active::before {
+  opacity: 1; /* Reveal the hover gradient */
+}
+
+.custom-gradient-button span {
+  position: relative;
+  z-index: 1;
+}
+
+
 @media (max-width: 485px) {
   .long-voting-label {
     font-size: 0.85rem;
