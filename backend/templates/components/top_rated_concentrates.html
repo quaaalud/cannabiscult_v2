@@ -1,0 +1,99 @@
+<section draggable="false" class="container pt-5" data-v-271253ee="">
+  <section class="mb-10">
+    <h1 class="mb-5 fs-1 text-center map-locator">
+      <u><b>Cultivar Flower Rankings</b></u><br>
+    </h1>
+    <div class="container-fluid">
+      <div class="col-12">
+        <div id="flowerContainer"></div>
+      </div>
+      <div class="col-12 pt-5">
+        {% include "components/flower_review_selector.html" %}
+      </div>
+    </div>
+  </section>
+</section>
+
+
+<script>
+  async function fetchFlowerData() {
+    try {
+      const response = await fetch('/flower_voting/get_top_rated_flower_strains');
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const flowerData = await response.json();
+
+      updateFlowerData(flowerData);
+    } catch (error) {
+      console.error('Error fetching flower data:', error);
+    }
+  }
+
+  function updateFlowerData(data) {
+    const container = document.getElementById('flowerContainer');
+    let htmlContent = '';
+
+    data.forEach((flower, index) => {
+      const strain = flower["strain"];
+      const cultivator = flower["cultivator"];
+      const score = flower["overall_score"];
+      const url_path = flower["url_path"];
+      const description_text = flower["description_text"];
+      const effects = flower["effects"];
+      const lineage = flower["lineage"];
+      htmlContent += `
+      <div class="container">
+        <div class="row mb-4 my-auto">
+          <div class="col-lg-3 mb-4 mb-md-0 ms-auto">
+            <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
+              <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}">
+                <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
+              </a>
+            </div>
+          </div>
+          <div class="col-lg-9 col-xl-7 mb-4 mb-md-0 me-auto">
+            <div class="row my-auto">
+              <div class="col-12 col-lg-5 my-auto">
+                <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}" class="text-decoration-none text-dark">
+                  <h5 class="fs-1">${strain}</h5>
+                </a>
+                <div class="mb-2 text-info small">
+                  <span class="fs-4">${cultivator}</span>
+                  <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
+                </div>
+                <p class="fs-1 text-dark">${score} <span class="fs-2">Overall</span></p>
+              </div>
+              <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
+                <div class="vstack gap-0">
+                  <hr class="hr d-lg-none" />
+                  <p class="fs-4 text-muted text-uppercase">Effects:</p>
+                  <p class="text-dark text-uppercase fw-bold">${effects}</p>
+                  <hr class="hr" />
+                  <p class="fs-4 text-muted text-uppercase">Lineage:</p>
+                  <p class="text-dark text-uppercase fw-bold">${lineage}</p>
+                  <hr class="hr d-lg-none" />
+                  <p class="fs-4 text-muted text-uppercase d-lg-none">Notes:</p>
+                  <p class="text-dark text-uppercase fw-bold d-lg-none pb-5">${description_text}</p>
+                  <hr class="hr d-lg-none" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container d-none d-lg-block mg-lg-3 pb-lg-5">
+          <div class="row mx-auto text-start justify-content-center mb-lg-5">
+          <div class="col-lg-10 my-auto">
+            <p class="fs-4 text-muted text-uppercase">Notes:</p>
+            <p class="text-dark text-uppercase fw-bold pb-5">${description_text}</p>
+            <hr class="hr" />
+          </div>
+        </div>
+        </div>
+      </div>`;
+    });
+    container.innerHTML = htmlContent;
+  }
+
+  fetchFlowerData();
+</script>
