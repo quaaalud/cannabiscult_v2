@@ -10,7 +10,7 @@ import random
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.session import get_db
-from typing import List, Optional
+from typing import List, Optional, Any
 from schemas.search_class import SearchResultItem
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
@@ -46,7 +46,7 @@ async def get_search_matches(search_term: str, db: Session = Depends(get_db)):
     return results
 
 
-@router.get("/product-types", response_model=List[str])
+@router.get("/product-types", response_model=List[Any])
 async def get_product_types(db: Session = Depends(get_db)):
     try:
         product_types = await get_all_product_types(db)
@@ -57,7 +57,7 @@ async def get_product_types(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/cultivators/{product_type}", response_model=List[str])
+@router.get("/cultivators/{product_type}", response_model=List[Any], include_in_schema=False)
 async def get_cultivators(
     product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
 ):
@@ -77,7 +77,9 @@ async def get_cultivators(
     return list(set(all_cultivators))
 
 
-@router.get("/strains/{product_type}/{cultivator}", response_model=List[str])
+@router.get(
+    "/strains/{product_type}/{cultivator}", response_model=List[str], include_in_schema=False
+)
 async def get_strains(
     product_type: str,
     cultivator: str,
@@ -97,10 +99,12 @@ async def get_strains(
     if not all_strains:
         raise HTTPException(status_code=500, detail="An error occurred")
 
-    return strains
+    return all_strains
 
 
-@router.get("/random/cultivator/{product_type}", response_model=Optional[str])
+@router.get(
+    "/random/cultivator/{product_type}", response_model=Optional[str], include_in_schema=False
+)
 async def get_random_cultivator_search(
     product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
 ):
@@ -115,20 +119,3 @@ async def get_random_cultivator_search(
         raise HTTPException(status_code=404, detail="No cultivators found")
 
     return random_cultivator
-
-
-@router.get("/random/strain/{product_type}", response_model=Optional[str])
-async def get_random_strain_search(
-    product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
-):
-    models = product_type_dict.get(product_type)
-    if not models:
-        raise HTTPException(status_code=404, detail="Product type not found")
-
-    random_number = random.randint(0, 3)
-
-    random_strain = get_random_strain(db, models[random_number])
-    if not random_strain:
-        raise HTTPException(status_code=404, detail="No strains found")
-
-    return random_strain

@@ -1,14 +1,11 @@
 <section draggable="false" class="container pt-5" data-v-271253ee="">
   <section class="mb-10">
     <h1 class="mb-5 fs-1 text-center map-locator">
-      <u><b>Cultivar Flower Rankings</b></u><br>
+      <u><b>Top Rated Flower</b></u><br>
     </h1>
     <div class="container-fluid">
       <div class="col-12">
         <div id="flowerContainer"></div>
-      </div>
-      <div class="col-12 pt-5">
-        {% include "components/flower_review_selector.html" %}
       </div>
     </div>
   </section>
@@ -18,7 +15,7 @@
 <script>
   async function fetchFlowerData() {
     try {
-      const response = await fetch('/flower_voting/get_top_rated_flower_strains');
+      const response = await fetch('/flower_voting/get_top_flower_strains');
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }

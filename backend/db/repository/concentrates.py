@@ -49,7 +49,7 @@ def get_vibe_concentrate_strains(db: Session) -> Optional[List[str]]:
     return None
 
 
-def get_concentrate_and_description(
+async def get_concentrate_and_description(
     db: Session,
     strain: str,
     cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
@@ -64,13 +64,11 @@ def get_concentrate_and_description(
             )
             .filter(Concentrate_Description.cultivar_email == cultivar_email)
         )
-
         if cultivator:
             query = query.filter(Concentrate.cultivator == cultivator)
 
         query = query.filter(Concentrate.strain == strain)
         concentrate_data = query.first()
-
         if concentrate_data:
             concentrate, description = concentrate_data
 

@@ -574,7 +574,7 @@ async def process_concentrate_request(
                 str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
             )
         else:
-            review_dict = route_concentrates.get_concentrate_and_description(
+            review_dict = await route_concentrates.get_concentrate_and_description(
                 db=db,
                 strain=strain_selected,
                 cultivar_email="aaron.childs@thesocialoutfitus.com",

@@ -78,8 +78,8 @@ def start_application():
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version=settings.PROJECT_VERSION,
-        docs_url=None,
-        redoc_url=None,
+#        docs_url=None,
+#        redoc_url=None,
     )
     include_router(app)
     configure_static(app)
