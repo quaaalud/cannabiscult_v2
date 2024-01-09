@@ -54,7 +54,7 @@ async def get_concentrate_and_description(
     strain: str,
     cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
     cultivator: str = "",
-) -> Optional[Dict[str, Any]]:
+) -> Optional[Dict[Any, Any]]:
     try:
         query = (
             db.query(Concentrate, Concentrate_Description)
@@ -71,7 +71,6 @@ async def get_concentrate_and_description(
         concentrate_data = query.first()
         if concentrate_data:
             concentrate, description = concentrate_data
-
             concentrate_info = {
                 "concentrate_id": concentrate.concentrate_id,
                 "cultivator": concentrate.cultivator,
