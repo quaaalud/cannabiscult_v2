@@ -801,6 +801,33 @@ async def sitemap(request: Request):
 
 
 @general_pages_router.get("/{file_name}")
+async def general_transition_page_request(request: Request, file_name: str):
+    file_path = Path(
+        Path(__file__).parents[2],
+        "templates",
+        "general_pages",
+        "pack_transition_pages",
+        f"{file_name}.html",
+    )
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="Page not found")
+
+    partner_data = await get_current_partner_data()
+    user_is_logged_in = await async_get_current_users_email() is not None
+    config = await get_config_obj()
+    return templates.TemplateResponse(
+        str(Path("general_pages", "pack_transition_pages", f"{file_name}.html")),
+        {
+            "request": request,
+            "dispensaries": partner_data,
+            "user_is_logged_in": user_is_logged_in,
+            "SUPA_URL": config.SUPA_STORAGE_URL,
+            "PUB_KEY": config.SUPA_PUBLIC_KEY,
+        },
+    )
+
+
+@general_pages_router.get("/{file_name}")
 async def general_pages_route(request: Request, file_name: str):
     file_path = Path(Path(__file__).parents[2], "templates", "general_pages", f"{file_name}.html")
     if not file_path.exists():

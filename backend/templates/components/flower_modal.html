@@ -193,9 +193,9 @@
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
             <div class="form-outline" data-mdb-input-init>
-              <textarea class="form-control" id="appearance_explanation" name="appearance_explanation" type="text" rows="4" placeholder="Start typing here..."></textarea>
+              <textarea class="form-control shadow-1-strong" id="appearance_explanation" name="appearance_explanation" type="text" rows="4" placeholder="Start typing here..."></textarea>
             </div>
-            <label class="form-label" for="appearance_explanation" name="appearance_explanation_label" id="appearance_explanation_label">Explain your aroma rating for {{ strain }} in the space above.</label>
+            <label class="form-label flex-shrink pt-1" for="appearance_explanation" name="appearance_explanation_label" id="appearance_explanation_label">Explain your aroma rating in the space above.</label>
           </div>
         </div>
       `,
@@ -258,7 +258,7 @@
             {% endfor %}
           </div>
         </div>
-        <<div class="row pt-1 mx-auto">
+        <div class="row pt-1 mx-auto">
             <div class="col-6 text-center mx-auto">
             <label class="modal-info-shadow" for="freshness_10_point">Dank with Good Moisture</label>
           </div>
@@ -286,20 +286,20 @@
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
         <div class="row pt-1 mx-auto">
-            <div class="col-6 text-center mx-auto">
-            <label class="modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_1_point">Bad or No Flavor</label>
           </div>
         </div>
         <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Flavor Rating">
           <div class="row btn-group-container">
             {% for i in range(1, 11) %}
-              <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="flavor_rating" id="flavor_rating{{ i }}" value="{{ i }}" autocomplete="off">
-              <label class="btn btn-light" for="flavor_rating{{ i }}" {% if i == 1 or i == 10 %}id="flavor_{{ i }}_point"{% endif %}>{{ i }}</label>
+              <input type="radio" class="btn-check {% if i == 1 %} btn-light {% endif %}" name="flavor_rating" id="flavor_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="flavor_rating{{ i }}" {% if i == 1 or i == 10 %} id="flavor_{{ i }}_point"{% endif %}>{{ i }}</label>
             {% endfor %}
           </div>
         </div>
         <div class="row pt-1 mx-auto">
-            <div class="col-6 text-center mx-auto">
+          <div class="col-6 text-center mx-auto">
             <label class="modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
           </div>
         </div>
@@ -556,7 +556,11 @@
         });
         if (response.ok) {
           const data = await response.json();
-          window.location.href = "/success";
+          if (formState.cultivator === "Connoisseur") {
+            window.location.href = "/connoisseur_citrus_one";
+          } else {
+            window.location.href = "/success";
+          }
         } else {
           console.log("Submission failed:", response.status, response.statusText);
         }
