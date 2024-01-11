@@ -29,7 +29,7 @@ class Settings:
     SUPA_PRIVATE_KEY: str = os.getenv('SUPA_PRIVATE_KEY')
     SUPA_PUBLIC_KEY: str = os.getenv('SUPABASE_KEY')
     SUPA_STORAGE_URL: str = os.getenv('SUPA_STORAGE_URL')
-    SUPA_URL: str = f'postgresql://postgres:{SUPA_PASSWORD}@db.{SUPA_ID}.supabase.co:{SUPA_PORT}/postgres'
+    SUPA_URL: str = f'postgresql://postgres.{SUPA_ID}:{SUPA_PASSWORD}@aws-0-us-east-1.pooler.supabase.com:{SUPA_PORT}/postgres'
     ALGO: str = os.getenv('ALGO')
 
 class Config(BaseModel):
