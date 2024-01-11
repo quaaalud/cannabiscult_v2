@@ -677,14 +677,14 @@
         packCodeInput.setAttribute('type', 'text');
         packCodeInput.setAttribute('id', 'packCodeInput');
         packCodeInput.setAttribute('name', 'pack_code');
-        packCodeInput.setAttribute('placeholder', 'Enter Pack Code');
+        packCodeInput.setAttribute('placeholder', 'Please Enter Pack Code Here');
         packCodeInput.className = 'form-control my-5'; // Add Bootstrap class for styling
         
         inputGroupDiv.appendChild(packCodeInput);
       
         // Clear existing content and add new content
         modalBody.innerHTML = '';
-        modalBody.appendChild(document.createTextNode('Your ratings for {{ strain }} are completed. Please enter your pack code:'));
+        modalBody.appendChild(document.createTextNode('Your ratings for {{ strain }} are completed.'));
         modalBody.appendChild(inputGroupDiv);
       }
       backBtn.onclick = function () {
