@@ -800,7 +800,7 @@ async def sitemap(request: Request):
     )
 
 
-@general_pages_router.get("/{file_name}")
+@general_pages_router.get("/success/{file_name}")
 async def general_transition_page_request(request: Request, file_name: str):
     file_path = Path(
         Path(__file__).parents[2],
