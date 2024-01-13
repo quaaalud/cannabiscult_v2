@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const citrus3 = document.getElementById('citrus3').value;
         const citrus4 = document.getElementById('citrus4').value;
         const email = document.getElementById('email').value;
-
+        const lowerEmail = email.toLowerCase();
         // Structuring the data
         const strainGuessData = {
             strain_guesses: {
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Citrus 3': citrus3,
                 'Citrus 4': citrus4,
             },
-            email: email
+            email: lowerEmail
         };
 
         // Sending the data to the API
