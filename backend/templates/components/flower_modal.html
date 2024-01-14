@@ -2,7 +2,7 @@
 <div class="modal fade w-100" id="FlowerRankingsModal" tabindex="-1" aria-labelledby="FlowerRankingsModalLabel" aria-="true" style="min-width:100%">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content overflow-auto">
-      <form method="POST" action="/submit-{{ strain }}-edible-ranking" id="vidid-edible-ranking-form" name="submit-vidid-edible-form">
+      <form>
         <div class="container text-center pt-1 pb-1">
           <div class="row align-content-center justify-content-center pt-4">
               <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
@@ -348,19 +348,20 @@
     step = questionIndex;
     await loadQuestion();
   }
-  const intKeys = [
-    "appearance_rating",
-    "flavor_rating",
-    "effects_rating",
-    "freshness_rating",
-    "smell_rating",
-    "harshness_rating",
-  ];
   document.addEventListener("DOMContentLoaded", async function() {
     let step = 0;
+    let isPackCodeDisplayed = false;
     let formState = loadFormState();
+    
+    document.addEventListener('keydown', function enterKeyHandler(event) {
+      if (event.keyCode === 13) {
+        event.preventDefault();
+        nextBtn.click();
+      }
+    });
 
     window.jumpToQuestion = async function jumpToQuestion(questionIndex) {
+      await saveCurrentAnswer();
       step = questionIndex;
       await loadQuestion();
     }
@@ -372,12 +373,9 @@
       "smell_rating",
       "harshness_rating",
     ];
-    function saveFormState() {
-        localStorage.setItem('formState-' + formState.strain, JSON.stringify(formState));
-    }
     
     function loadFormState() {
-        const savedState = localStorage.getItem('formState-' + "{{ strain }}");
+        const savedState = localStorage.getItem('formState');
         if (savedState) {
             return JSON.parse(savedState);
         } else {
@@ -387,28 +385,6 @@
                 "strain": "{{ strain }}"
             };
         }
-    }
-    function clearFormState() {
-        localStorage.removeItem('formState-' + formState.strain);
-    }
-    
-    async function saveCurrentResponse() {
-        const currentQuestion = questions[step];
-        if (int_keys.includes(currentQuestion.key)) {
-            // Handle radio buttons for integer values
-            formState[currentQuestion.key] = getSelectedRadioValue(currentQuestion.key);
-        } else if (currentQuestion.key === "effects_explanation") {
-            // Handle the multi-select for effects
-            formState[currentQuestion.key] = getSelectedMultiSelectValuesAsString(currentQuestion.key);
-        } else {
-            // Handle standard inputs
-            const inputElement = document.getElementById(currentQuestion.key);
-            if (inputElement) {
-                formState[currentQuestion.key] = inputElement.value;
-            }
-        }
-    
-        saveFormState(); // Save the state after updating
     }
 
     const modalTitle = document.getElementById('modalTitle');
@@ -439,16 +415,6 @@
       }
     });
     
-    function getSelectedRadioValue(name) {
-        const radio = document.querySelector(`input[name="${name}"]:checked`);
-        return radio ? radio.value : null;
-    }
-    
-    function getSelectedMultiSelectValuesAsString(id) {
-        const select = document.getElementById(id);
-        return Array.from(select.selectedOptions).map(option => option.value).join(' ');
-    }
-    
     async function checkVoterExists(email) {
       const lowerCaseEmail = email.toLowerCase();
       const root = window.location.origin;
@@ -476,7 +442,7 @@
       }
     }
   
-    function displayPackCodeInput() {
+    async function displayPackCodeInput() {
       nextBtn.textContent = 'Submit';
       modalTitle.textContent = 'All questions completed.';
       modalBody.innerHTML = '';
@@ -491,6 +457,7 @@
       packCodeInput.className = 'form-control my-3 text-center';
       inputGroupDiv.appendChild(packCodeInput);
       modalBody.appendChild(inputGroupDiv);
+      isPackCodeDisplayed = true;
     }
   
     async function createPagination() {
@@ -501,85 +468,98 @@
         pagination.innerHTML += `<li class="${pageItemClass}"><button class="page-link" onclick="jumpToQuestion(${i})">${i}</button></li>`;
       }
     }
-  
     nextBtn.onclick = async function() {
       if (step === 0) {
         const emailInput = document.getElementById('connoisseur');
+        
         if (emailInput) {
-          const voterExists = await checkVoterExists(emailInput.value);
+          const lowerCaseEmail = emailInput.value.toLowerCase()
+          const voterExists = await checkVoterExists(lowerCaseEmail);
           if (!voterExists) {
             return;
           } else {
+            formState['connoisseur'] = lowerCaseEmail
             document.getElementById('paginationContainer').style.display = 'block';
             await createPagination();
           }
         }
       }
-    
-      if (step < questions.length) {
-        await saveCurrentResponse();
-        step++;
-        await loadQuestion();
-      } else {
+      if (isPackCodeDisplayed) {
         formState['pack_code'] = document.getElementById('packCodeInput').value;
-        if (await validateResponses()) {
+        await saveCurrentAnswer();
+        const testVal = await validateResponses();
+        if (testVal == 'true') {
           await submitForm(formState);
         } else {
-          alert("Please answer all questions and enter the pack code before submitting.");
+          alert("You must complete all ratings before submitting your final review!")
         }
+      } else {
+        await saveCurrentAnswer();
+        step++;
+        await loadQuestion();
       }
     };
     
     backBtn.onclick = async function() {
       if (step > 0) {
+        await saveCurrentAnswer();
         step--;
         await loadQuestion();
       }
     };
-
-    async function saveCurrentResponse() {
-      const currentQuestion = questions[step];
-      const inputElement = document.getElementById(currentQuestion.key);
-      if (inputElement) {
-        formState[currentQuestion.key] = inputElement.value;
+    
+    async function saveCurrentAnswer() {
+      if (step < questions.length) {
+        const question = questions[step];
+        const input = document.getElementById(question.key);
+        if (input) {
+          var inputVal = input.value;
+          if (question.key === "effects_explanation") {
+            const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
+            const combinedString = selectedOptions.join(' ');
+            formState[question.key] = combinedString;
+          }
+          else {
+            formState[question.key] = input.value;
+          }
+        } else {
+          const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
+          const radioVal = radioCheck ? radioCheck.value : "0";
+          formState[question.key] = radioVal;
+        }
+      } else {
+        formState['pack_code'] = document.getElementById('packCodeInput').value;
       }
     }
-  
     async function validateResponses() {
-      for (const question of intKeys) {
-        console.log(question);
-        if (!formState[question.key]) {
-          if (!formState['pack_code']) {
-            return false;
-          };
+      console.log(formState);
+      for (const question of int_keys) {
+        if (formState[question] < 0) {
+          return false;
         }
       }
       return true;
     }
     async function loadQuestion() {
         if (step < questions.length) {
+            isPackCodeDisplayed = false;
+            nextBtn.textContent = 'Next';
             const question = questions[step];
             modalTitle.innerHTML = question.title;
             modalBody.innerHTML = question.content;
-    
-            // Update input values based on formState
             if (int_keys.includes(question.key)) {
-                // Set radio button as checked if its value matches the stored value
                 setSelectedRadioValue(question.key, formState[question.key]);
             } else if (question.key === "effects_explanation") {
-                // Set multi-select values if any
                 setSelectedMultiSelectValues(question.key, formState[question.key]);
             } else {
-                // Standard inputs
                 const inputElement = document.getElementById(question.key);
                 if (inputElement && formState[question.key]) {
                     inputElement.value = formState[question.key];
                 }
             }
         } else {
-            displayPackCodeInput();
+            await displayPackCodeInput();
         }
-    
         await createPagination();
         updatePageLabel();
     }
@@ -616,10 +596,8 @@
         if (response.ok) {
           const data = await response.json();
           if (formState.cultivator === "Connoisseur") {
-            clearFormState();
             window.location.href = "/success/connoisseur_citrus_one";
           } else {
-            clearFormState();
             window.location.href = "/success";
           }
         } else {
