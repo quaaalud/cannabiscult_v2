@@ -499,11 +499,10 @@
           const voterExists = await checkVoterExists(lowerCaseEmail);
           if (!voterExists) {
             return;
-          } else {
-            formState['connoisseur'] = lowerCaseEmail
-            document.getElementById('paginationContainer').style.display = 'block';
-            await createPagination();
           }
+          formState['connoisseur'] = lowerCaseEmail
+          document.getElementById('paginationContainer').style.display = 'block';
+          await createPagination();
         }
       }
       if (isPackCodeDisplayed) {
