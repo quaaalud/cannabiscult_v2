@@ -486,7 +486,9 @@
         pagination.innerHTML += `<li class="${pageItemClass}" title="${pageTitle}"><button class="page-link" onclick="jumpToQuestion(${i})">${i}</button></li>`;
       }
       adjustPaginationForScreenSize();
-      $('[data-toggle="tooltip"]').tooltip();
+      $('[data-toggle="tooltip"]').tooltip({
+        trigger: 'hover focus' // 'focus' for touch devices
+      });
     }
     nextBtn.onclick = async function() {
       if (step === 0) {
