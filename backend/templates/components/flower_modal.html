@@ -488,10 +488,12 @@
         formState['pack_code'] = document.getElementById('packCodeInput').value;
         await saveCurrentAnswer();
         const testVal = await validateResponses();
-        if (testVal == 'true') {
-          await submitForm(formState);
-        } else {
+        console.log(testVal);
+        if (!testVal) {
           alert("You must complete all ratings before submitting your final review!")
+          return
+        } else {
+          await submitForm(formState);
         }
       } else {
         await saveCurrentAnswer();
@@ -532,12 +534,14 @@
       }
     }
     async function validateResponses() {
-      console.log(formState);
       for (const question of int_keys) {
-        if (formState[question] < 0) {
+        if (!formState.hasOwnProperty(question) || formState[question] === "0") {
+          // Key does not exist or its value is "0"
           return false;
         }
       }
+      // All keys exist and none have a value of "0"
+      console.log(formState);
       return true;
     }
     async function loadQuestion() {
