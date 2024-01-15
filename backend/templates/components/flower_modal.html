@@ -458,7 +458,14 @@
       modalBody.appendChild(inputGroupDiv);
       isPackCodeDisplayed = true;
     }
-    
+    function adjustPaginationForScreenSize() {
+      const pagination = document.getElementById('pagination');
+      if (window.innerWidth < 768) {
+        pagination.classList.add('pagination-sm');
+      } else {
+        pagination.classList.remove('pagination-sm');
+      }
+    }
     function formatTitle(str) {
       return str.split('_')
         .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -466,17 +473,19 @@
     }
     function createPagination() {
       const pagination = document.getElementById('pagination');
+      pagination.className = 'pagination pagination-sm justify-content-center';
       pagination.innerHTML = '';
       for (let i = 1; i <= questions.length; i++) {
         let pageTitle;
         if (i === questions.length) {
-          pageTitle = "Submit";  // Assign "Submit Rating" for the last pagination item
+          pageTitle = "Submit Rating";  //
         } else {
-          pageTitle = formatTitle(questions[i].key);  // Use the current index
+          pageTitle = formatTitle(questions[i].key);
         }
         const pageItemClass = i === step ? 'page-item active' : 'page-item';
         pagination.innerHTML += `<li class="${pageItemClass}" title="${pageTitle}"><button class="page-link" onclick="jumpToQuestion(${i})">${i}</button></li>`;
       }
+      adjustPaginationForScreenSize();
       $('[data-toggle="tooltip"]').tooltip();
     }
     nextBtn.onclick = async function() {
@@ -618,6 +627,7 @@
         console.error("Error during submission:", error);
       }
     }
+  window.addEventListener('resize', adjustPaginationForScreenSize);
   await loadQuestion();
   });
 
