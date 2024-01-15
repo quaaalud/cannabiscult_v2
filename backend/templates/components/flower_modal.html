@@ -607,6 +607,7 @@
         }
     }
     async function submitForm(formState) {
+      formState.connoisseur = formState.connoisseur.toLowerCase();
       try {
         const response = await fetch('/flower_ranking/submit-flower-ranking', {
           method: 'POST',
