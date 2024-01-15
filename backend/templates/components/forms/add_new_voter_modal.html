@@ -1,0 +1,72 @@
+<!-- Voter Info Capture Modal -->
+<div class="modal fade" id="FlowerVoterInfoCaptureModal" tabindex="-1" aria-labelledby="FlowerVoterInfoCaptureModalLabel" aria-="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="container text-center">
+          <div class="row text-center">
+            <h5 class="modal-title" id="FlowerVoterInfoCaptureModalLabel">New Connoisseur Information</h5>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form id="newVoterForm" class="container">
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Name" id="connoisseur_name" name="connoisseur_name" autocomplete="name">
+          </div>
+          <div class="mb-3">
+            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="connoisseur" autocomplete="email" required>
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Phone Number" id="connoisseur_phone" name="connoisseur_phone" autocomplete="phone">
+          </div>
+          <div class="mb-3">
+            <input type="text" class="form-control" placeholder="Enter Your Zip Code" id="connoisseur_zip_code" name="connoisseur_zip_code" autocomplete="on">
+          </div>
+          <div class="form-check mb-3 pt-2">
+            <input class="form-check-input" type="checkbox" id="cannabisIndustryCheck">
+            <label class="form-check-label" for="cannabisIndustryCheck">
+              Employed in the Cannabis Industry
+            </label>
+          </div>
+          <div id="employmentQuestions" style="display: none;">
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Enter Your Place of Employment" id="connoisseur_employer" name="connoisseur_employer" autocomplete="off">
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Enter Your Job Title" id="connoisseur_job_title" name="connoisseur_job_title" autocomplete="off">
+            </div>
+          </div>
+          <div class="form-check mb-3">
+            <div class="row g-0 pt-2">
+              <div class="col-auto"> <!-- This will contain the checkbox -->
+                <input class="form-check-input" type="checkbox" id="register_check" name="register_check" aria-describedby="registerCheckHelpText" checked/>
+              </div>
+              <div class="col"> <!-- This will contain the label -->
+                <label class="form-check-label" for="register_check">
+                  I have read and agree to the <a href="/privacy-policy" style="color:#301934" target="_blank" rel="noopener noreferrer">privacy policy</a> & <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer">user agreement</a>
+                </label>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <div class="container text-center">
+          <div class="row g-2 p-1">
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-error w-100" style="border: 2px solid black;" name="newUserBackBtn" id="newUserBackBtn">Back</button>
+            </div>
+            <div class="col-6">
+              <button type="button" class="btn btn-lg btn-info w-100" style="border: 2px solid black;" name="submitNewVoterBtn" id="submitNewVoterBtn">Submit</button>
+            </div>
+          </div>
+          <div class="row pb-3 pt-4">
+            <h6 id="FlowerVoterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="{{ url_for('static', path='js/newVoters.js') }}"></script>

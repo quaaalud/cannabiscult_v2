@@ -25,6 +25,34 @@ def create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Session):
         return created_ranking
 
 
+def update_or_create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Session):
+    # Define the criteria for finding the existing record
+    existing_ranking = (
+        db.query(Flower_Ranking)
+        .filter(
+            Flower_Ranking.cultivator == ranking_dict.cultivator,
+            Flower_Ranking.strain == ranking_dict.strain,
+            Flower_Ranking.connoisseur == ranking_dict.connoisseur,
+        )
+        .first()
+    )
+
+    if existing_ranking:
+        # Update existing record
+        for key, value in ranking_dict.dict().items():
+            setattr(existing_ranking, key, value)
+        try:
+            db.commit()
+            db.refresh(existing_ranking)
+            return existing_ranking
+        except:
+            db.rollback()
+            raise
+    else:
+        # Create a new ranking record
+        return create_flower_ranking(ranking_dict, db)
+
+
 def create_hidden_flower_ranking(ranking_dict: CreateHiddenFlowerRanking, db: Session):
     ranking_data_dict = ranking_dict.dict()
     created_ranking = Hidden_Flower_Ranking(**ranking_data_dict)

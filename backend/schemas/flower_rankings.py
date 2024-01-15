@@ -8,7 +8,7 @@ Created on Sun Nov  5 16:57:17 2023
 
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
-
+from datetime import datetime
 
 class FlowerRankingBase(BaseModel):
     strain: str
