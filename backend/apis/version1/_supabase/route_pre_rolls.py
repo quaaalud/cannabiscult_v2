@@ -106,7 +106,7 @@ async def update_or_create_pre_roll_ranking_route(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/get_pre_roll_ranking/{id_selected}", response_model=Dict[str, Any])
+@router.get("/get_pre_roll_ranking", response_model=Dict[str, Any])
 async def get_pre_roll_ranking_data_and_path_from_id_route(
     id_selected: int = Query(..., alias="pre_roll_id"), db: Session = Depends(get_db)
 ) -> Dict[str, Any]:
@@ -155,7 +155,7 @@ async def get_top_pre_roll_strains_route(db: Session = Depends(get_db)) -> List[
     return top_strains
 
 
-@router.get("/get_pre_roll_ratings/{pre_roll_id}", response_model=Optional[Dict[str, float]])
+@router.get("/get_pre_roll_rating_by_id", response_model=Optional[Dict[str, float]])
 async def get_pre_roll_ratings_by_id_route(
     pre_roll_id: int = Query(
         None, alias="pre_roll_id", description="The ID of the pre-roll to retrieve ratings for"

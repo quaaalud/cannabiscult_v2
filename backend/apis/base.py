@@ -74,7 +74,7 @@ api_router.include_router(
     tags=["edibles"]
 )
 api_router.include_router(
-    route_edibles.router,
+    route_pre_rolls.router,
     prefix="/prerolls",
     tags=["prerolls"]
 )

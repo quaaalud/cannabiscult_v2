@@ -10,7 +10,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from typing import Optional, List, Dict, Any
-from models.pre_rolls import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking
+from db.models.pre_rolls import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking
 from schemas.pre_rolls import PreRollRankingSchema
 from sqlalchemy.orm import joinedload
 from db._supabase.connect_to_storage import (
@@ -22,22 +22,25 @@ from pathlib import Path
 
 
 def get_average_of_list(_list_of_floats: list[float]) -> float:
-    return round(sum(_list_of_floats) / len(_list_of_floats) * 2) / 2
+    if isinstance(_list_of_floats, list):
+        return round(((sum(_list_of_floats) / len(_list_of_floats) * 2) / 2), 2)
+    else:
+        return round((_list_of_floats * 2) / 2, 2)
 
 
 def calculate_overall_score(
     roll_val: float,
-    nose_val: float,
+    burn_val: float,
     flavor_val: float,
     effects_val: float,
 ):
-    values_list = [roll_val, nose_val, flavor_val, effects_val]
+    values_list = [roll_val, burn_val, flavor_val, effects_val]
     return get_average_of_list(values_list)
 
 
 async def get_pre_roll_data_and_path(db: Session, strain: str) -> Optional[Dict[str, Any]]:
     try:
-        result = await db.execute(select(Pre_Roll).where(Pre_Roll.strain == strain))
+        result = db.execute(select(Pre_Roll).where(Pre_Roll.strain == strain))
         pre_roll = result.scalars().first()
         if pre_roll:
             return {
@@ -58,7 +61,7 @@ async def get_pre_roll_by_strain_and_cultivator(
     db: Session, strain: str, cultivator: str
 ) -> Optional[Dict[str, Any]]:
     try:
-        result = await db.execute(
+        result = db.execute(
             select(Pre_Roll).where(Pre_Roll.strain == strain, Pre_Roll.cultivator == cultivator)
         )
         pre_roll = result.scalars().first()
@@ -79,7 +82,7 @@ async def get_pre_roll_by_strain_and_cultivator(
 
 async def get_pre_roll_strains_by_cultivator(db: Session, cultivator: str) -> Optional[List[str]]:
     try:
-        result = await db.execute(select(Pre_Roll.strain).where(Pre_Roll.cultivator == cultivator))
+        result = db.execute(select(Pre_Roll.strain).where(Pre_Roll.cultivator == cultivator))
         strains = result.scalars().all()
         return strains
     except Exception as e:
@@ -96,22 +99,19 @@ async def get_pre_roll_and_description(
 ) -> Optional[Dict[str, Any]]:
     try:
         query = (
-            select(Pre_Roll)
-            .options(joinedload(Pre_Roll.description))
+            db.query(Pre_Roll, Pre_Roll_Description)
             .join(Pre_Roll_Description, Pre_Roll.pre_roll_id == Pre_Roll_Description.pre_roll_id)
-            .where(Pre_Roll_Description.cultivar_email == cultivar_email)
+            .filter(Pre_Roll_Description.cultivar_email == cultivar_email)
         )
 
         if cultivator:
-            query = query.where(Pre_Roll.cultivator == cultivator)
+            query = query.filter(Pre_Roll.cultivator == cultivator)
 
-        query = query.where(Pre_Roll.strain == strain)
+        query = query.filter(Pre_Roll.strain == strain)
+        pre_roll_data = query.first()
 
-        result = await db.execute(query)
-        pre_roll_data = result.first()
         if pre_roll_data:
-            pre_roll = pre_roll_data
-            description = pre_roll.description  # Assuming a one-to-one relationship
+            pre_roll, description = pre_roll_data
             return {
                 "pre_roll_id": pre_roll.pre_roll_id,
                 "cultivator": pre_roll.cultivator,
@@ -176,22 +176,19 @@ async def get_pre_roll_ranking_data_and_path_from_id(
     db: Session, id_selected: int
 ) -> Pre_Roll_Ranking:
 
-    ranking = db.query(Pre_Roll_Ranking).filter(Pre_Roll_Ranking.id == id_selected).first()
-
+    ranking = db.query(Pre_Roll_Ranking).filter(Pre_Roll_Ranking.pre_roll_id == id_selected).first()
+    ranking_vals = [val for key, val in vars(ranking).items() if key.endswith('rating')]
+    overall_score = round(sum(filter(None, ranking_vals)) / (len(ranking_vals)), 2)
     if ranking:
-        results_bytes = get_image_from_results(str(Path(ranking.card_path)))
         return {
-            "id": ranking.id,
+            "id": ranking.pre_roll_id,
             "strain": ranking.strain,
             "cultivator": ranking.cultivator,
-            "overall": ranking.overall,  # Adjust as per your model
-            "roll": get_average_of_list(ranking.roll),  # Adjust as needed
-            "nose": get_average_of_list(ranking.nose),  # Adjust as needed
-            "flavor": get_average_of_list(ranking.flavor),  # Adjust as needed
-            "effects": get_average_of_list(ranking.effects),  # Adjust as needed
-            "vote_count": ranking.vote_count,  # Adjust as per your model
-            "card_path": results_bytes,
-            "url_path": return_image_url_from_supa_storage(str(Path(ranking.card_path))),
+            "overall": overall_score,  # Adjust as per your model
+            "roll": get_average_of_list(ranking.roll_rating),  # Adjust as needed
+            "burn": get_average_of_list(ranking.burn_rating),  # Adjust as needed
+            "flavor": get_average_of_list(ranking.flavor_rating),  # Adjust as needed
+            "effects": get_average_of_list(ranking.effects_rating),  # Adjust as needed
         }
     else:
         return {"ranking_id": id_selected, "message": "Ranking not found"}
@@ -256,7 +253,6 @@ async def get_top_pre_roll_strains(db: Session) -> List[Dict]:
             db,
             strain=strain_dict[0],
             cultivator=strain_dict[1],
-            # Add other parameters if needed
         )
         if pre_roll_data:
             pre_roll_data["overall_score"] = strain_dict[2]
@@ -278,7 +274,6 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
         .filter(Pre_Roll_Ranking.pre_roll_id == pre_roll_id)
         .first()
     )
-
     if not avg_rankings or any(rating is None for rating in avg_rankings):
         return {"error": "Pre-roll not found or incomplete data"}
 
@@ -292,7 +287,6 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
         "pre_roll_id": pre_roll_id,
         "overall_score": round(overall_score, 2),
         "roll_rating": avg_rankings.roll_rating,
-        "smell_rating": avg_rankings.smell_rating,
         "flavor_rating": avg_rankings.flavor_rating,
         "harshness_rating": avg_rankings.harshness_rating,
         "burn_rating": avg_rankings.burn_rating,
