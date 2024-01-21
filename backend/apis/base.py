@@ -45,6 +45,7 @@ from _supabase import route_mystery_flower_review
 from _supabase import route_mystery_voters
 from _supabase import route_edible_rankings
 from _supabase import route_searches
+from _supabase import route_pre_rolls
 
 api_router = APIRouter()
 api_router.include_router(
@@ -71,6 +72,11 @@ api_router.include_router(
     route_edibles.router,
     prefix="/edibles",
     tags=["edibles"]
+)
+api_router.include_router(
+    route_edibles.router,
+    prefix="/prerolls",
+    tags=["prerolls"]
 )
 api_router.include_router(
     route_concentrates.router,

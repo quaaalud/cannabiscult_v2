@@ -132,15 +132,17 @@ async def get_pre_roll_and_description(
     return None
 
 
-async def create_preroll_ranking(ranking: Pre_Roll_Ranking, db: Session):
+async def create_preroll_ranking(ranking: PreRollRankingSchema, db: Session):
     ranking_data_dict = ranking.dict()
-    created_ranking = Pre_Roll_Ranking(**ranking_data_dict)
-
-    db.add(created_ranking)
-
-    db.commit()
-    db.refresh(created_ranking)
-
+    try:
+        created_ranking = Pre_Roll_Ranking(**ranking_data_dict)
+        db.add(created_ranking)
+        db.commit()
+    except:
+        db.rollback()
+        raise
+    else:
+        db.refresh(created_ranking)
     return created_ranking
 
 
