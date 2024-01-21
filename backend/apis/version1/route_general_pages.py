@@ -766,6 +766,7 @@ async def get_config():
         SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
         SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
         ALGO=settings.ALGO,
+        PRIMARY_BUCKET=settings.PRIMARY_BUCKET,
     )
 
 
