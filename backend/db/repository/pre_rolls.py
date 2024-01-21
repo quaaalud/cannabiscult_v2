@@ -265,7 +265,6 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
     avg_rankings = (
         db.query(
             func.avg(Pre_Roll_Ranking.roll_rating),
-            func.avg(Pre_Roll_Ranking.smell_rating),
             func.avg(Pre_Roll_Ranking.flavor_rating),
             func.avg(Pre_Roll_Ranking.harshness_rating),
             func.avg(Pre_Roll_Ranking.burn_rating),
@@ -286,11 +285,11 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
     pre_roll_data = {
         "pre_roll_id": pre_roll_id,
         "overall_score": round(overall_score, 2),
-        "roll_rating": avg_rankings.roll_rating,
-        "flavor_rating": avg_rankings.flavor_rating,
-        "harshness_rating": avg_rankings.harshness_rating,
-        "burn_rating": avg_rankings.burn_rating,
-        "effects_rating": avg_rankings.effects_rating,
+        "roll_rating": avg_rankings[0],
+        "flavor_rating": avg_rankings[1],
+        "harshness_rating": avg_rankings[2],
+        "burn_rating": avg_rankings[3],
+        "effects_rating": avg_rankings[4],
     }
 
     return pre_roll_data
