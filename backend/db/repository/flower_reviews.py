@@ -171,4 +171,3 @@ def calculate_overall_score(
 
 def convert_img_bytes_for_html(img_bytes):
     return base64.b64encode(img_bytes).decode()
-        

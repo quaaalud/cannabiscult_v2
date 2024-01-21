@@ -46,23 +46,20 @@ class PreRollDescriptionSchema(BaseModel):
 
 
 class PreRollRankingSchema(BaseModel):
-    pre_roll_ranking_id: int  # Integer, autoincrement
     cultivator: str  # String
     strain: str  # String
     connoisseur: str  # String
-    color_rating: confloat(ge=0)  # Float, non-negative
-    consistency_rating: confloat(ge=0)  # Float, non-negative
+    roll_rating: confloat(ge=0)  # Float, non-negative
     smell_rating: confloat(ge=0)  # Float, non-negative
     flavor_rating: confloat(ge=0)  # Float, non-negative
     harshness_rating: confloat(ge=0)  # Float, non-negative
-    residuals_rating: confloat(ge=0)  # Float, non-negative
+    burn_rating: confloat(ge=0)  # Float, non-negative
     effects_rating: confloat(ge=0)  # Float, non-negative
-    color_explanation: Optional[constr(max_length=500)]  # String(500), nullable
-    consistency_explanation: Optional[constr(max_length=500)]  # String(500), nullable
+    roll_explanation: Optional[constr(max_length=500)]  # String(500), nullable
     flavor_explanation: Optional[constr(max_length=500)]  # String(500), nullable
     smell_explanation: Optional[constr(max_length=500)]  # String(500), nullable
     harshness_explanation: Optional[constr(max_length=500)]  # String(500), nullable
-    residuals_explanation: Optional[constr(max_length=500)]  # String(500), nullable
+    burn_explanation: Optional[constr(max_length=500)]  # String(500), nullable
     effects_explanation: Optional[constr(max_length=500)]  # String(500), nullable
     date_posted: date = None  # Date, default to current date
     pre_roll_id: int  # Integer
