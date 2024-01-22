@@ -23,7 +23,7 @@ email-validator==2.1.0.post1
 fastapi==0.109.0
 fonttools==4.47.0
 gitdb==4.0.10
-GitPython==3.1.32
+GitPython==3.1.41
 gotrue==2.1.0
 greenlet==2.0.2
 h11==0.14.0
