@@ -16,7 +16,7 @@ from db.repository.flower_reviews import get_review_data_and_path_from_id
 from db.repository.flowers import get_flower_data_and_path
 from db.models.flower_reviews import FlowerReview
 from db.repository.flower_voting import add_new_flower_vote
-from schemas.flower_voting import FlowerVoteCreate
+from schemas.flower_rankings import FlowerVoteCreate
 
 # New Flower Modules
 from db.repository.flowers import get_flower_and_description, get_flower_and_description_by_id

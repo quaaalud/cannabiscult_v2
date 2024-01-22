@@ -6,13 +6,13 @@ Created on Sun Nov  5 16:47:38 2023
 @author: dale
 """
 
-from pydantic import BaseModel, Json
+from pydantic import BaseModel, Json, Field
 from typing import Optional
 
 
 class ProductTypes(BaseModel):
-    product_type: str
-    extra_data: Optional[Json]
+    product_type: str = Field(..., description="Type of the product")
+    extra_data: Optional[Json] = Field(None, description="Additional data in JSON format, optional")
 
     class Config:
-        orm_mode = True
+        from_attributes = True

@@ -1,0 +1,293 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Cultivar Review {{ strain }} - Cannabis Cult</title>
+{% endblock %} 
+
+{% block head %}
+<meta 
+  content="Cannabis Cult {{ strain }} Cultivar Rating Page." 
+  name="description"
+/>
+<meta 
+  name="keywords"
+  content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
+/>
+<meta 
+  property="og:image" 
+  content="{% if url_path %}{{ url_path }}{% else %}https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur%20Pack/CP%20Rosin?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1ciBQYWNrL0NQIFJvc2luIiwiaWF0IjoxNzAxMzEzNjc0LCJleHAiOjE3MzI4NDk2NzR9.J7m_xfZWyMGi8v6XSoMVm68e3RPU5UdGPPPXaPNtQ2I&t=2023-11-30T03%3A07%3A54.251Z{% endif %}"
+  alt="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Card"
+/>
+<meta 
+  property="og:description" 
+  content="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Page." 
+/>
+<meta 
+  property="og:title" 
+  content="Cannabis Cult {% if strain %}{{ strain }} {% endif %}Cultivar Connoisseur Rating"
+/>
+<meta 
+  name="twitter:card" 
+  content="summary_large_image"
+/>
+<meta 
+  property="twitter:url" 
+  content="https://cannabiscult.co"
+/>
+<meta 
+  property="twitter:site" 
+  content="@cannabiscult"
+/>
+<meta 
+  property="twitter:title" 
+  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Rating." 
+/>
+<meta 
+  property="twitter:description" 
+  content="{{ strain }} Cultivar Review Page on CannabisCult.co" 
+/>
+<meta 
+  property="twitter:image" 
+  content="{{ url_path }}"
+/>
+<meta 
+  property="twitter:image:alt"
+  content="Cannabis Cult Cultivar Review Card for {{ strain }} Pre_Roll"
+/>
+<link 
+  rel="canonical" 
+  href="https://cannabiscult.co/connoisseur_pre_rolls{% if strain %}/get-flower?{{ strain }}{% endif %}"
+/>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<main class="container pt-5">
+    <section draggable="false" class="container pt-3" data-v-271253ee="">
+      <section class="mb-10">
+        <div class="row mx-auto">
+          <h1 class="fw-bold mb-5 text-center">Cultivar Pre_Roll Ratings</h1>
+        </div>
+        <div class="row gx-lg-5 align-items-start d-flex">
+          <div class="col-lg-6 col-12 mb-5 mb-lg-0">
+            <div class="container">
+              {% include "components/flower_card.html" %}
+            </div>
+          </div>
+          <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 my-auto{% endif %} pt-lg-1 mx-auto">
+            <div class="d-flex flex-column justify-content-between pt-lg-5">
+              <div class="d-flex align-items-start mb-5">
+                <div class="flex-shrink-0">
+                  <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
+                    <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-4">
+                  <p class="fw-bold mb-1">Description</p>
+                  <p id="description_text" class="text-muted mb-0">
+                    {% if is_mystery %}We cannot tell you about the mystery strains.{% elif description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start mb-5">
+                <div class="flex-shrink-0">
+                  <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
+                    <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-4">
+                  <p class="fw-bold mb-1">Effects<br></p>
+                  <p id="effects_text" class="text-muted mb-0">
+                    {% if is_mystery %}But be sure to submit your ratings.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start mb-5">
+                <div class="flex-shrink-0">
+                  <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
+                    <i class="fas fa-timeline fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-4">
+                  <p class="fw-bold mb-1">Lineage</p>
+                  <p id="lineage-text" class="text-muted mb-0">
+                    {% if is_mystery %}So our cultivators know what you think.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}
+                  </p>
+                </div>
+              </div>
+              <div class="d-flex align-items-start">
+                <div class="flex-shrink-0">
+                  <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
+                    <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1 ms-4">
+                  <p class="fw-bold mb-1">Terpenes</p>
+                  <script>
+                    var terpenesList = {{ terpenes_list | tojson }};
+                  </script>
+                  <div id="terpene_text" class="text-muted mb-0">
+                    {% if is_mystery %}<p>And you will see all the results soon!</p>
+                    {% else %}
+                      {% if terpenes_list %}
+                        <canvas id="terpeneChart"></canvas>
+                      {% else %}
+                        <p>Coming Soon</p>
+                      {% endif %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </section>
+    <section draggable="false" class="container" data-v-271253ee="">
+      <section class="mb-10 text-center">
+        <div class="row gx-lg-5">
+          <div class="col-md-4 mb-4">
+            <h2 id="flavor_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
+            <h5 class="text-muted mb-3">Flavor</h5>
+          </div>
+          <div class="col-md-4 mb-4">
+            <h2 id="overall_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
+            <h5 class="text-muted mb-3">Overall</h5>
+          </div>
+          <div class="col-md-4 mb-4">
+            <h2 id="effects_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
+            <h5 class="text-muted mb-3">Effects</h5>
+          </div>
+        </div>
+      </section>
+    </section>
+    <section draggable="false" class="container navy-color-parent" data-v-271253ee="">
+      <section class="mb-10 text-center">
+        <div class="row">
+          <div class="col-lg-3 col-md-6 mb-5 mb-md-5 mb-lg-0 position-relative">
+            <i class="fas fa-eye fa-3x  mb-4" aria-controls="#picker-editor"></i>
+            <h5 id="appearance_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Appearance<br></h6>
+            <hr class="divider-vertical d-none d-md-block">
+          </div>
+          <div class="col-lg-3 col-md-6 mb-5 mb-md-5 mb-lg-0 position-relative">
+            <i class="fas fa-cannabis fa-3x  mb-4" aria-controls="#picker-editor"></i>
+            <h5 id="smell_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Smell</h6>
+            <hr class="divider-vertical d-none d-lg-block">
+          </div>
+          <div class="col-lg-3 col-md-6 mb-5 mb-md-0 position-relative">
+            <i class="fas fa-fill-drip fa-3x  mb-4" aria-controls="#picker-editor"></i>
+            <h5 id="harshess_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Harshness</h6>
+            <hr class="divider-vertical d-none d-md-block">
+          </div>
+          <div class="col-lg-3 col-md-6 mb-5 mb-md-0 position-relative">
+            <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
+            <h5 id="freshness_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Freshness</h6>
+          </div>
+        </div>
+      </section>
+    </section>
+  </div>
+  <div class="container align-items-center justify-items-center pt-5">
+    {% include "components/homepage_elements/homepage_features.html" %}
+  </div>
+  <div class="container py-5">
+    <div class="row mx-auto">
+      <div class="col-12 col-lg-9 mx-auto">
+        {% include "components/flower_review_selector.html" %}
+      </div>
+    </div>
+  </div>
+  <div class="container py-5">
+    <div class="row mx-auto">
+      <div class="col-auto mx-auto">
+        <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvY2FyZF9hc3NldHMvQ3VsdCBDbGFzc2ljICBDdWx0aXZhciBFbWJsZW0ud2VicCIsImlhdCI6MTcwNDI0NzM4NywiZXhwIjoxNzM1NzgzMzg3fQ.xqhIiGk-3ZNcW45AtAdi7kFMzltAdusrdUf1U0o826E&t=2024-01-03T02%3A03%3A07.801Z"/>
+      </div>
+    </div>
+  </div>
+  {% include "components/flower_modal.html" %}
+</main>
+<style> 
+  hr.divider-vertical { 
+    position: absolute; 
+    right: 0; 
+    top: 0; 
+    width: 1px; 
+    background-image: linear-gradient( 180deg, transparent, hsl(0, 0%, 40%), transparent ); 
+    background-color: transparent; 
+    height: 100%; 
+  }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var isMystery = {{ is_mystery | tojson | safe }};
+    if (isMystery) { 
+      return
+    } else {
+      if (terpenesList && terpenesList.length > 0) {
+        const dataValues = terpenesList.map(() => 1);
+        initTerpeneChart(terpenesList, dataValues);
+      }
+      fetchAndUpdateStrainRatings();
+    }
+  });
+  
+  function fetchAndUpdateStrainRatings() {
+    var flowerId = {{ flower_id }};
+    var endpoint = "/flower_voting/get_strain_ratings_by_id/" + flowerId;
+
+    fetch(endpoint)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.error) {
+            document.getElementById('flavor_rating_value').innerText = data.flavor_rating.toFixed(2);
+            document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
+            document.getElementById('effects_rating_value').innerText = data.effects_rating.toFixed(2);
+            document.getElementById('appearance_rating_value').innerText = data.appearance_rating.toFixed(2);
+            document.getElementById('smell_rating_value').innerText = data.smell_rating.toFixed(2);
+            document.getElementById('harshess_rating_value').innerText = data.harshness_rating.toFixed(2);
+            document.getElementById('freshness_rating_value').innerText = data.freshness_rating.toFixed(2);
+        } else {
+            console.error('Error fetching data:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  function initTerpeneChart(labels, dataValues) {
+    const ctx = document.getElementById('terpeneChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Terpenes',
+          data: dataValues,
+          backgroundColor: generateColors(labels.length),
+        }]
+      }
+    });
+  }
+  function generateColors(count) {
+    const colors = [
+      'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+      'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+      'rgba(66, 133, 244, 0.2)'
+    ];
+    return colors.slice(0, count);
+  }
+</script>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}

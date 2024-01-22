@@ -6,38 +6,56 @@ Created on Sun Nov  5 16:57:17 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, Field, validator
+from pydantic import BaseModel, EmailStr, Field, constr, confloat
 from typing import Optional
 from datetime import date
-import hashlib
 
 
 class ConcentrateRankingBase(BaseModel):
-    cultivator: str
-    strain: str
-
-    color_rating: float = Field(..., gt=0, lt=10.1)
-    consistency_rating: float = Field(..., gt=0, lt=10.1)
-    smell_rating: float = Field(..., gt=0, lt=10.1)
-    flavor_rating: float = Field(..., gt=0, lt=10.1)
-    harshness_rating: float = Field(..., gt=0, lt=10.1)
-    residuals_rating: float = Field(..., gt=0, lt=10.1)
-    effects_rating: float = Field(..., gt=0, lt=10.1)
-    color_explanation: Optional[str] = Field(None, max_length=500)
-    consistency_explanation: Optional[str] = Field(None, max_length=500)
-    flavor_explanation: Optional[str] = Field(None, max_length=500)
-    smell_explanation: Optional[str] = Field(None, max_length=500)
-    harshness_explanation: Optional[str] = Field(None, max_length=500)
-    residuals_explanation: Optional[str] = Field(None, max_length=500)
-    effects_explanation: Optional[str] = Field(None, max_length=500)
+    cultivator: constr(strict=True) = Field(..., description="Name of the cultivator")
+    strain: constr(strict=True) = Field(..., description="Name of the strain")
+    color_rating: confloat(gt=0, lt=10.1) = Field(..., description="Color rating, range 0-10")
+    consistency_rating: confloat(gt=0, lt=10.1) = Field(
+        ..., description="Consistency rating, range 0-10"
+    )
+    smell_rating: confloat(gt=0, lt=10.1) = Field(..., description="Smell rating, range 0-10")
+    flavor_rating: confloat(gt=0, lt=10.1) = Field(..., description="Flavor rating, range 0-10")
+    harshness_rating: confloat(gt=0, lt=10.1) = Field(
+        ..., description="Harshness rating, range 0-10"
+    )
+    residuals_rating: confloat(gt=0, lt=10.1) = Field(
+        ..., description="Residuals rating, range 0-10"
+    )
+    effects_rating: confloat(gt=0, lt=10.1) = Field(..., description="Effects rating, range 0-10")
+    color_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the color rating"
+    )
+    consistency_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the consistency rating"
+    )
+    flavor_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the flavor rating"
+    )
+    smell_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the smell rating"
+    )
+    harshness_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the harshness rating"
+    )
+    residuals_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the residuals rating"
+    )
+    effects_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the effects rating"
+    )
 
     class Config:
         from_attributes = True
 
 
 class CreateConcentrateRanking(ConcentrateRankingBase):
-    connoisseur: EmailStr = Field(...)
-    concentrate_id: int = Field(...)
+    connoisseur: EmailStr = Field(..., description="Email of the connoisseur")
+    concentrate_id: int = Field(..., description="Unique identifier for the concentrate")
 
 
 class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
@@ -45,23 +63,27 @@ class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
 
 
 class HiddenConcentrateRanking(BaseModel):
-    id: int = Field(..., alias="hidden_concentrate_ranking_id")
-    cultivator: Optional[str] = None
-    strain: Optional[str] = None
-    connoisseur: Optional[str] = None
-    color_rating: float
-    consistency_rating: float
-    smell_rating: float
-    flavor_rating: float
-    harshness_rating: float
-    residuals_rating: float
-    effects_rating: float
-    date_posted: date
-
-    @validator("connoisseur", pre=True, always=True)
-    def obfuscate_email(cls, v):
-        return hashlib.sha256(v.encode()).hexdigest()[:6]
+    id: int = Field(
+        ...,
+        alias="hidden_concentrate_ranking_id",
+        description="Unique identifier for the hidden concentrate ranking",
+    )
+    cultivator: Optional[str] = Field(
+        None, description="Name of the cultivator (masked if concentrate is mystery)"
+    )
+    strain: Optional[str] = Field(
+        None, description="Name of the strain (masked if concentrate is mystery)"
+    )
+    connoisseur: Optional[EmailStr] = Field(None, description="Email of the connoisseur")
+    color_rating: float = Field(..., description="Color rating")
+    consistency_rating: float = Field(..., description="Consistency rating")
+    smell_rating: float = Field(..., description="Smell rating")
+    flavor_rating: float = Field(..., description="Flavor rating")
+    harshness_rating: float = Field(..., description="Harshness rating")
+    residuals_rating: float = Field(..., description="Residuals rating")
+    effects_rating: float = Field(..., description="Effects rating")
+    date_posted: date = Field(..., description="Date when the ranking was posted")
 
     class Config:
-        orm_mode = True
-        allow_population_by_field_name = True
+        from_attributes = True
+        populate_by_name = True
