@@ -73,7 +73,7 @@
         <div class="row gx-lg-5 align-items-start d-flex">
           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
             <div class="container">
-              {% include "components/flower_card.html" %}
+              {% include "components/voting_cards/preroll_card.html" %}
             </div>
           </div>
           <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 my-auto{% endif %} pt-lg-1 mx-auto">
@@ -210,7 +210,7 @@
       </div>
     </div>
   </div>
-  {% include "components/flower_modal.html" %}
+
 </main>
 <style> 
   hr.divider-vertical { 
@@ -245,7 +245,6 @@
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {
-        console.log(data);
         if (!data.error) {
             document.getElementById('flavor_rating_value').innerText = data.flavor_rating.toFixed(2);
             document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
