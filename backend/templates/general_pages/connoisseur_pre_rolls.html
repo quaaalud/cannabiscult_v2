@@ -6,7 +6,7 @@
 
 {% block head %}
 <meta 
-  content="Cannabis Cult {{ strain }} Cultivar Rating Page." 
+  content="Cannabis Cult {{ strain }} Cultivar Pre-Roll Rating Page." 
   name="description"
 />
 <meta 
@@ -16,15 +16,15 @@
 <meta 
   property="og:image" 
   content="{% if url_path %}{{ url_path }}{% else %}https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur%20Pack/CP%20Rosin?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1ciBQYWNrL0NQIFJvc2luIiwiaWF0IjoxNzAxMzEzNjc0LCJleHAiOjE3MzI4NDk2NzR9.J7m_xfZWyMGi8v6XSoMVm68e3RPU5UdGPPPXaPNtQ2I&t=2023-11-30T03%3A07%3A54.251Z{% endif %}"
-  alt="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Card"
+  alt="Cannabis Cult {{ strain }} Cultivar Connoisseur Pre-Roll Rating Card"
 />
 <meta 
   property="og:description" 
-  content="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Page." 
+  content="Cannabis Cult {{ strain }} Cultivar Connoisseur Pre-Roll Rating Page." 
 />
 <meta 
   property="og:title" 
-  content="Cannabis Cult {% if strain %}{{ strain }} {% endif %}Cultivar Connoisseur Rating"
+  content="Cannabis Cult {% if strain %}{{ strain }} {% endif %}Cultivar Connoisseur Pre-Roll Rating"
 />
 <meta 
   name="twitter:card" 
@@ -40,11 +40,11 @@
 />
 <meta 
   property="twitter:title" 
-  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Rating." 
+  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Pre-Roll Rating." 
 />
 <meta 
   property="twitter:description" 
-  content="{{ strain }} Cultivar Review Page on CannabisCult.co" 
+  content="{{ strain }} Cultivar Pre-Roll Review Page on CannabisCult.co" 
 />
 <meta 
   property="twitter:image" 
@@ -52,11 +52,11 @@
 />
 <meta 
   property="twitter:image:alt"
-  content="Cannabis Cult Cultivar Review Card for {{ strain }} Pre_Roll"
+  content="Cannabis Cult Cultivar Pre-Roll Review Card for {{ strain }} Pre_Roll"
 />
 <link 
   rel="canonical" 
-  href="https://cannabiscult.co/connoisseur_pre_rolls{% if strain %}/get-flower?{{ strain }}{% endif %}"
+  href="https://cannabiscult.co/pre-roll-get-review?strain={{ strain }}&cultivator={{ cultivator }}"
 />
 {% endblock %}
 
