@@ -29,12 +29,9 @@ def get_average_of_list(_list_of_floats: list[float]) -> float:
 
 
 def calculate_overall_score(
-    roll_val: float,
-    burn_val: float,
-    flavor_val: float,
-    effects_val: float,
+    *vals,
 ):
-    values_list = [roll_val, burn_val, flavor_val, effects_val]
+    values_list = [*vals]
     return get_average_of_list(values_list)
 
 
@@ -177,18 +174,21 @@ async def get_pre_roll_ranking_data_and_path_from_id(
 ) -> Pre_Roll_Ranking:
 
     ranking = db.query(Pre_Roll_Ranking).filter(Pre_Roll_Ranking.pre_roll_id == id_selected).first()
-    ranking_vals = [val for key, val in vars(ranking).items() if key.endswith('rating')]
+    ranking_vals = [val for key, val in vars(ranking).items() if key.endswith("rating")]
     overall_score = round(sum(filter(None, ranking_vals)) / (len(ranking_vals)), 2)
     if ranking:
         return {
             "id": ranking.pre_roll_id,
             "strain": ranking.strain,
             "cultivator": ranking.cultivator,
-            "overall": overall_score,  # Adjust as per your model
-            "roll": get_average_of_list(ranking.roll_rating),  # Adjust as needed
-            "burn": get_average_of_list(ranking.burn_rating),  # Adjust as needed
-            "flavor": get_average_of_list(ranking.flavor_rating),  # Adjust as needed
-            "effects": get_average_of_list(ranking.effects_rating),  # Adjust as needed
+            "overall": overall_score,
+            "roll": get_average_of_list(ranking.roll_rating),
+            "burn": get_average_of_list(ranking.burn_rating),
+            "flavor": get_average_of_list(ranking.flavor_rating),
+            "effects": get_average_of_list(ranking.effects_rating),
+            "airflow": get_average_of_list(ranking.airflow_rating),
+            "tightness": get_average_of_list(ranking.tightness_rating),
+            "ease_to_light": get_average_of_list(ranking.ease_to_light_rating),
         }
     else:
         return {"ranking_id": id_selected, "message": "Ranking not found"}
@@ -228,11 +228,12 @@ async def get_top_pre_roll_strains(db: Session) -> List[Dict]:
             Pre_Roll_Ranking.strain,
             Pre_Roll_Ranking.cultivator,
             func.avg(Pre_Roll_Ranking.roll_rating),
-            func.avg(Pre_Roll_Ranking.smell_rating),
             func.avg(Pre_Roll_Ranking.flavor_rating),
-            func.avg(Pre_Roll_Ranking.harshness_rating),
+            func.avg(Pre_Roll_Ranking.airflow_rating),
             func.avg(Pre_Roll_Ranking.burn_rating),
             func.avg(Pre_Roll_Ranking.effects_rating),
+            func.avg(Pre_Roll_Ranking.tightness_rating),
+            func.avg(Pre_Roll_Ranking.ease_to_light_rating),
         )
         .filter(Pre_Roll_Ranking.cultivator != "Connoisseur")
         .filter(Pre_Roll_Ranking.strain.ilike("%Test%") == False)
@@ -242,7 +243,8 @@ async def get_top_pre_roll_strains(db: Session) -> List[Dict]:
 
     scored_strains = []
     for strain in avg_rankings:
-        overall_score = sum(filter(None, strain[2:])) / 6
+        vals_list = strain[2:]
+        overall_score = sum(filter(None, vals_list)) / len(strain[2:])
         scored_strains.append((strain[0], strain[1], round(overall_score, 1)))
     scored_strains.sort(key=lambda x: x[2], reverse=True)
 
@@ -266,9 +268,11 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
         db.query(
             func.avg(Pre_Roll_Ranking.roll_rating),
             func.avg(Pre_Roll_Ranking.flavor_rating),
-            func.avg(Pre_Roll_Ranking.harshness_rating),
+            func.avg(Pre_Roll_Ranking.airflow_rating),
             func.avg(Pre_Roll_Ranking.burn_rating),
             func.avg(Pre_Roll_Ranking.effects_rating),
+            func.avg(Pre_Roll_Ranking.tightness_rating),
+            func.avg(Pre_Roll_Ranking.ease_to_light_rating),
         )
         .filter(Pre_Roll_Ranking.pre_roll_id == pre_roll_id)
         .first()
@@ -287,9 +291,11 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
         "overall_score": round(overall_score, 2),
         "roll_rating": avg_rankings[0],
         "flavor_rating": avg_rankings[1],
-        "harshness_rating": avg_rankings[2],
+        "airflow_rating": avg_rankings[2],
         "burn_rating": avg_rankings[3],
         "effects_rating": avg_rankings[4],
+        "tightness_rating": avg_rankings[5],
+        "ease_to_light_rating": avg_rankings[6],
     }
 
     return pre_roll_data

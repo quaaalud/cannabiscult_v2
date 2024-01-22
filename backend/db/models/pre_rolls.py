@@ -17,6 +17,7 @@ from sqlalchemy import (
     Float,
     String,
     Date,
+    event,
     func,
 )
 from sqlalchemy.dialects.postgresql import ARRAY
@@ -84,17 +85,22 @@ class Pre_Roll_Ranking(Base):
     strain = Column(String, index=True)
     connoisseur = Column(String, index=True)
     roll_rating = Column(Float, nullable=False)
-    smell_rating = Column(Float, nullable=False)
+    airflow_rating = Column(Float, nullable=False)
+    ease_to_light_rating = Column(Float, nullable=False)
     flavor_rating = Column(Float, nullable=False)
-    harshness_rating = Column(Float, nullable=False)
+    tightness_rating = Column(Float, nullable=False)
     burn_rating = Column(Float, nullable=False)
     effects_rating = Column(Float, nullable=False)
+    overall_score = Column(Float, nullable=False, default=0.0)
     roll_explanation = Column(String(500))
+    ease_to_light_explanation = Column(String(500))
     flavor_explanation = Column(String(500))
-    smell_explanation = Column(String(500))
-    harshness_explanation = Column(String(500))
+    airflow_explanation = Column(String(500))
+    tightness_explanation = Column(String(500))
     burn_explanation = Column(String(500))
     effects_explanation = Column(String(500))
+    purchase_bool = Column(Boolean, nullable=False)
+    batch_id = Column(String, nullable=True, server_default="Not Provided", default="Not Provided")
 
     date_posted = Column(
         Date,
@@ -102,3 +108,27 @@ class Pre_Roll_Ranking(Base):
         nullable=False,
     )
     pre_roll_id = Column(Integer, nullable=False)
+
+
+def calculate_overall_score(mapper, connection, target):
+    # List of all rating columns
+    rating_columns = [
+        "roll_rating",
+        "airflow_rating",
+        "ease_to_light_rating",
+        "flavor_rating",
+        "tightness_rating",
+        "burn_rating",
+        "effects_rating",
+    ]
+    # Calculate average rating
+    ratings = [getattr(target, col) for col in rating_columns if getattr(target, col) is not None]
+    if ratings:
+        target.overall_score = sum(ratings) / len(ratings)
+    else:
+        target.overall_score = None  # or a default value
+
+
+# Event listeners for before insert and update
+event.listen(Pre_Roll_Ranking, "before_insert", calculate_overall_score)
+event.listen(Pre_Roll_Ranking, "before_update", calculate_overall_score)
