@@ -31,11 +31,13 @@ class Settings:
     SUPA_STORAGE_URL: str = os.getenv('SUPA_STORAGE_URL')
     SUPA_URL: str = f'postgresql://postgres.{SUPA_ID}:{SUPA_PASSWORD}@aws-0-us-east-1.pooler.supabase.com:{SUPA_PORT}/postgres'
     ALGO: str = os.getenv('ALGO')
+    PRIMARY_BUCKET: str = os.getenv('POSTGRES_DB')
 
 class Config(BaseModel):
     SUPA_STORAGE_URL: str
     SUPA_PUBLIC_KEY: str
     ALGO: str
+    PRIMARY_BUCKET: str = os.getenv('POSTGRES_DB')
 
 
 settings = Settings()

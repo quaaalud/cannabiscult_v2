@@ -6,9 +6,9 @@ Created on Sun Nov  5 16:57:17 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, constr, confloat
 from typing import Optional
-from datetime import datetime
+
 
 class FlowerRankingBase(BaseModel):
     strain: str
@@ -33,10 +33,45 @@ class FlowerRankingBase(BaseModel):
         from_attributes = True
 
 
+class FlowerVoteCreate(BaseModel):
+    cultivator_selected: str = Field(..., description="Selected cultivator's name")
+    strain_selected: str = Field(..., description="Selected strain's name")
+    structure_vote: constr(max_length=50) = Field(
+        ..., description="Vote for the structure of the flower"
+    )
+    structure_explanation: constr(max_length=500) = Field(
+        ..., description="Explanation for the structure vote"
+    )
+    nose_vote: confloat(ge=0, le=10) = Field(
+        ..., description="Vote for the nose/fragrance of the flower, from 0 to 10"
+    )
+    nose_explanation: constr(max_length=500) = Field(
+        ..., description="Explanation for the nose vote"
+    )
+    flavor_vote: confloat(ge=0, le=10) = Field(
+        ..., description="Vote for the flavor of the flower, from 0 to 10"
+    )
+    flavor_explanation: constr(max_length=500) = Field(
+        ..., description="Explanation for the flavor vote"
+    )
+    effects_vote: confloat(ge=0, le=10) = Field(
+        ..., description="Vote for the effects of the flower, from 0 to 10"
+    )
+    effects_explanation: constr(max_length=500) = Field(
+        ..., description="Explanation for the effects vote"
+    )
+    user_email: EmailStr = Field(..., description="Email address of the connoisseur")
+
+    class Config:
+        from_attributes = True
+
+
 class CreateFlowerRanking(FlowerRankingBase):
     cultivator: str
-    method_of_consumption: str = Field(...)
-    connoisseur: EmailStr = Field(...)
+    method_of_consumption: str = Field(
+        ..., description="Method of Connsumption for the reviewed strain."
+    )
+    connoisseur: EmailStr = Field(..., description="Email address of the connoisseur")
 
 
 class CreateHiddenFlowerRanking(CreateFlowerRanking):

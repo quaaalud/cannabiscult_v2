@@ -7,7 +7,7 @@ Created on Sun Aug 20 21:57:10 2023
 """
 
 from sqlalchemy.orm import Session
-from schemas.flower_voting import FlowerVoteCreate
+from schemas.flower_rankings import FlowerVoteCreate
 from db.models.flower_voting import FlowerVoting
 import datetime
 

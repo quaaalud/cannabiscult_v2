@@ -84,9 +84,21 @@
     </div>
   </div>
   {% include "components/vote_template.html" %}
-
+  <div class="container align-items-center justify-items-center pt-5">
+    {% include "components/homepage_elements/homepage_features.html" %}
+  </div>
+  <div class="container py-5">
+    <div class="row mx-auto">
+      <div class="col-12 col-lg-9 mx-auto">
+        {% include "components/flower_review_selector.html" %}
+      </div>
+    </div>
+  </div>
   <section class="py-4 container" id="topRatedStrains">
     {% include "components/top_rated_flower.html" %}
+  </section>
+  <section class="py-4 container" id="topRatedStrains">
+    {% include "components/top_rated_concentrates.html" %}
   </section>
 {% endif %}
 </main>

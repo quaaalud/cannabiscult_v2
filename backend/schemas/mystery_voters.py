@@ -6,29 +6,36 @@ Created on Mon Sep 11 21:55:38 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, validator
-from typing import Optional
+from pydantic import BaseModel, EmailStr, validator, Field
+from typing import Optional, Dict
 
 
 class MysteryVoterCreate(BaseModel):
-    email: EmailStr
-    name: str
-    zip_code: str
-    phone: str
-    industry_employer: Optional[str] = None
-    industry_job_title: Optional[str] = None
+    email: EmailStr = Field(..., description="Connoisseur's email address")
+    name: str = Field(..., description="Connoisseur's full name")
+    zip_code: str = Field(..., description="Connoisseur's zip code")
+    phone: str = Field(..., description="Connoisseur's phone number")
+    industry_employer: Optional[str] = Field(
+        None, description="Connoisseur's employer in the industry, if any"
+    )
+    industry_job_title: Optional[str] = Field(
+        None, description="Connoisseur's job title in the industry, if any"
+    )
+
+    class Config:
+        from_attributes = True
 
 
 class ShowMysteryVoter(BaseModel):
-    email: EmailStr
+    email: EmailStr = Field(..., description="Connoisseur's email address")
 
     class Config:
         from_attributes = True
 
 
 class StrainGuessInput(BaseModel):
-    strain_guesses: dict
-    email: EmailStr
+    strain_guesses: Dict = Field(..., description="Dictionary of strain guesses")
+    email: EmailStr = Field(..., description="Connoisseur's email address")
 
     @validator("strain_guesses")
     def validate_strain_guesses(cls, v):
@@ -42,7 +49,7 @@ class StrainGuessInput(BaseModel):
 
     class Config:
         from_attributes = True
-        schema_extra = {
+        json_schema_extra = {
             "example": {
                 "strain_guesses": {"Citrus 1": "strain_guess", "Citrus 2": "strain_guess"},
                 "email": "example@example.com",

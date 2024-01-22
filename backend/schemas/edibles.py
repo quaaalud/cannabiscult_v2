@@ -6,13 +6,17 @@ Created on Mon Oct 30 22:04:15 2023
 @author: dale
 """
 
-from pydantic import BaseModel
+
+from pydantic import BaseModel, Field, constr
 
 
 class EdiblesBase(BaseModel):
-    cultivator: str
-    strain: str
-    card_path: str
+    cultivator: constr = Field(..., description="Name of the cultivator")
+    strain: constr = Field(..., description="Name of the strain")
+    card_path: constr = Field(..., description="Path to the edible's image card")
+
+    class Config:
+        from_attributes = True
 
 
 class Edible(EdiblesBase):
@@ -24,9 +28,9 @@ class MysteryEdibleBase(EdiblesBase):
 
 
 class Vivid_Edible_Base(BaseModel):
-    vivid_edible_id: int
-    strain: str
-    card_path: str
+    vivid_edible_id: int = Field(..., description="Unique identifier for the Vivid edible")
+    strain: constr = Field(..., description="Name of the strain")
+    card_path: constr = Field(..., description="Path to the Vivid edible's image card")
 
     class Config:
         from_attributes = True
@@ -37,9 +41,7 @@ class Get_Vivid_Edible(Vivid_Edible_Base):
 
 
 class Vibe_Edible_Base(EdiblesBase):
-
-    class Config:
-        from_attributes = True
+    pass
 
 
 class Get_Vibe_Edible(Vibe_Edible_Base):
