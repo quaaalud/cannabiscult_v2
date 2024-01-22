@@ -68,7 +68,7 @@
     <section draggable="false" class="container pt-3" data-v-271253ee="">
       <section class="mb-10">
         <div class="row mx-auto">
-          <h1 class="fw-bold mb-5 text-center">Cultivar Pre_Roll Ratings</h1>
+          <h1 class="fw-bold mb-5 text-center">Cultivar Pre-Roll Ratings</h1>
         </div>
         <div class="row gx-lg-5 align-items-start d-flex">
           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
@@ -168,26 +168,26 @@
         <div class="row">
           <div class="col-lg-3 col-md-6 mb-5 mb-md-5 mb-lg-0 position-relative">
             <i class="fas fa-eye fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="appearance_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Appearance<br></h6>
+            <h5 id="roll_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Roll<br></h6>
             <hr class="divider-vertical d-none d-md-block">
           </div>
           <div class="col-lg-3 col-md-6 mb-5 mb-md-5 mb-lg-0 position-relative">
             <i class="fas fa-cannabis fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="smell_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Smell</h6>
+            <h5 id="airflow_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Airflow</h6>
             <hr class="divider-vertical d-none d-lg-block">
           </div>
           <div class="col-lg-3 col-md-6 mb-5 mb-md-0 position-relative">
             <i class="fas fa-fill-drip fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="harshess_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Harshness</h6>
+            <h5 id="burn_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Burn</h6>
             <hr class="divider-vertical d-none d-md-block">
           </div>
           <div class="col-lg-3 col-md-6 mb-5 mb-md-0 position-relative">
             <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="freshness_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Freshness</h6>
+            <h5 id="ease_to_light_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Light</h6>
           </div>
         </div>
       </section>
@@ -239,8 +239,8 @@
   });
   
   function fetchAndUpdateStrainRatings() {
-    var flowerId = {{ flower_id }};
-    var endpoint = "/flower_voting/get_strain_ratings_by_id/" + flowerId;
+    var pre_rollId = {{ pre_roll_id }};
+    var endpoint = "/prerolls/get_pre_roll_rating_by_id/" + pre_rollId;
 
     fetch(endpoint)
     .then(response => response.json())
@@ -249,10 +249,10 @@
             document.getElementById('flavor_rating_value').innerText = data.flavor_rating.toFixed(2);
             document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
             document.getElementById('effects_rating_value').innerText = data.effects_rating.toFixed(2);
-            document.getElementById('appearance_rating_value').innerText = data.appearance_rating.toFixed(2);
-            document.getElementById('smell_rating_value').innerText = data.smell_rating.toFixed(2);
-            document.getElementById('harshess_rating_value').innerText = data.harshness_rating.toFixed(2);
-            document.getElementById('freshness_rating_value').innerText = data.freshness_rating.toFixed(2);
+            document.getElementById('roll_rating_value').innerText = data.roll_rating.toFixed(2);
+            document.getElementById('airflow_rating_value').innerText = data.airflow_rating.toFixed(2);
+            document.getElementById('brun_rating_value').innerText = data.burn_rating.toFixed(2);
+            document.getElementById('ease_to_light_rating_value').innerText = data.ease_to_light_rating.toFixed(2);
         } else {
             console.error('Error fetching data:', data.error);
         }
