@@ -12,7 +12,6 @@ from sqlalchemy.future import select
 from typing import Optional, List, Dict, Any
 from db.models.pre_rolls import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking
 from schemas.pre_rolls import PreRollRankingSchema
-from sqlalchemy.orm import joinedload
 from db._supabase.connect_to_storage import (
     return_image_url_from_supa_storage,
     get_image_from_results,
@@ -188,7 +187,7 @@ async def get_pre_roll_ranking_data_and_path_from_id(
             "effects": get_average_of_list(ranking.effects_rating),
             "airflow": get_average_of_list(ranking.airflow_rating),
             "tightness": get_average_of_list(ranking.tightness_rating),
-            "ease_to_light": get_average_of_list(ranking.ease_to_light_rating),
+            "light": get_average_of_list(ranking.ease_to_light_rating),
         }
     else:
         return {"ranking_id": id_selected, "message": "Ranking not found"}

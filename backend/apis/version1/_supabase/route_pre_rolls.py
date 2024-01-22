@@ -6,7 +6,7 @@ Created on Sun Jan 21 14:26:47 2024
 @author: dale
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Body
+from fastapi import APIRouter, Depends, HTTPException, Query, Body, Path
 from sqlalchemy.orm import Session
 from typing import Dict, Any, Optional, List
 from db.session import get_db
@@ -160,6 +160,21 @@ async def get_pre_roll_ratings_by_id_route(
     pre_roll_id: int = Query(
         None, alias="pre_roll_id", description="The ID of the pre-roll to retrieve ratings for"
     ),
+    db: Session = Depends(get_db),
+) -> Optional[Dict[str, float]]:
+    pre_roll_ratings = await pre_rolls_repo.get_pre_roll_ratings_by_id(pre_roll_id, db)
+    if pre_roll_ratings:
+        return pre_roll_ratings
+    else:
+        raise HTTPException(
+            status_code=404,
+            detail="Pre-roll ratings not found or incomplete data for the specified ID",
+        )
+
+
+@router.get("/get_pre_roll_rating_by_id/{pre_roll_id}", response_model=Optional[Dict[str, float]])
+async def get_pre_roll_ratings_by_id_path_route(
+    pre_roll_id: int = Path(..., description="The ID of the pre-roll to retrieve ratings for"),
     db: Session = Depends(get_db),
 ) -> Optional[Dict[str, float]]:
     pre_roll_ratings = await pre_rolls_repo.get_pre_roll_ratings_by_id(pre_roll_id, db)

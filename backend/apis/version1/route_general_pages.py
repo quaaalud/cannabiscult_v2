@@ -46,7 +46,7 @@ from version1._supabase.route_flower_voting import (
 )
 from db.repository.flowers import get_flower_and_description
 from version1._supabase import route_concentrates
-from db.repository import concentrate_reviews
+from db.repository import concentrate_reviews, pre_rolls
 from db.repository.concentrates import get_concentrate_data_and_path
 from version1._supabase.route_mystery_voters import get_voter_info_by_email, create_mystery_voter
 
@@ -306,6 +306,7 @@ async def submit_unsubscribe_form(
     )
 
 
+#  Flower Review and Voting Pages
 @general_pages_router.get("/get-all-strains", response_model=List[str])
 async def get_all_strains_route(db: Session = Depends(get_db)) -> List[str]:
     return get_all_strains(db)
@@ -379,6 +380,54 @@ async def handle_flower_review_post(
     return await process_flower_request(request, strain_selected, cultivator_selected, db)
 
 
+# Pre-Roll Review and Voting Pages
+async def process_pre_roll_request(
+    request: Request, strain: str, cultivator: str, db: Session
+):
+    user_is_logged_in = get_current_users_email() is not None
+    review_dict = await pre_rolls.get_pre_roll_and_description(
+        db=db, strain=strain, cultivator=cultivator
+    )
+    try:
+        request_dict = {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(Path("general_pages", "connoisseur_pre_rolls.html")), response_dict
+        )
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return templates.TemplateResponse(
+            str(Path("general_pages", "voting-home.html")),
+            {"request": request}
+        )
+
+
+@general_pages_router.post("/pre-roll-get-review", response_model=Dict[str, Any])
+async def handle_pre_roll_review_get(
+    request: Request,
+    *,
+    strain: str = Form(None),
+    cultivator: str = Form(None),
+    db: Session = Depends(get_db),
+):
+    return await process_pre_roll_request(request, strain, cultivator, db)
+
+
+@general_pages_router.get("/pre-roll-get-review")
+async def handle_pre_roll_review_post(
+    request: Request,
+    *,
+    strain: str = Query(None, alias="strain"),
+    cultivator: str = Query(None, alias="cultivator"),
+    db: Session = Depends(get_db),
+):
+    return await process_pre_roll_request(request, strain, cultivator, db)
+
+
+#  Concentrate Review and Voting Pages
 @general_pages_router.get("/get_hidden_concentrate")
 async def handle_hidden_concentrate_post(
     request: Request, strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
