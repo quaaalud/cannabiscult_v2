@@ -1,6 +1,8 @@
 import QuestionBuilder from './QuestionBuilder.js';
 
 document.addEventListener("DOMContentLoaded", function() {
+  const strain =  strainValue;
+  const cultivator =  cultivatorValue;
   const questionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
   
@@ -10,13 +12,27 @@ document.addEventListener("DOMContentLoaded", function() {
       nextBtn.click();
     }
   });
+  async function jumpToQuestion(questionIndex) {
+    step = questionIndex;
+    await loadQuestion();
+  }
+  
+    
+  function loadFormState() {
+      const savedState = localStorage.getItem('formState');
+      if (savedState) {
+          return JSON.parse(savedState);
+      } else {
+          return {
+              "id": "{{ pre_roll_id }}",
+              "cultivator": cultivator,
+              "strain": strain,
+          };
+      }
+  }
 
-  const strain =  strainValue;
-  const cultivator =  cultivatorValue;
-
-  // Generate questions
   const questions = [
-    QuestionBuilder.createEmailQuestion(strain, cultivator), // Email collection for connoisseur
+    QuestionBuilder.createEmailQuestion(strain, cultivator),
   
     QuestionBuilder.createTextInputQuestion(
       "Please enter Batch ID listed on the box COA label.",
@@ -35,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
       strain,
       "burn_rating",
       "Did the joint burn even?",
-      { startLabel: "Burned uneven", endLabel: "Burned even" }
+      { startLabel: "Burned Uneven", endLabel: "Burned Even" }
     ),
   ];
 
