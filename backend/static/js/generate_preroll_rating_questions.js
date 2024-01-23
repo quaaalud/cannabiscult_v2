@@ -39,19 +39,38 @@ document.addEventListener("DOMContentLoaded", function() {
       "batch_id",
       "For example, T2, A3 etc"
     ),
-  
     QuestionBuilder.createRatingQuestion(
       strain,
       "ease_to_light_rating",
       "Was the joint easy to light?",
       { startLabel: "Hard to light", endLabel: "Easy to Light" }
     ),
-  
     QuestionBuilder.createRatingQuestion(
       strain,
       "burn_rating",
       "Did the joint burn even?",
       { startLabel: "Burned Uneven", endLabel: "Burned Even" }
+    ),
+    QuestionBuilder.createRatingQuestion(
+      strain,
+      "tightness_rating",
+      "Was the joint packed too tight?",
+      { startLabel: "Too Tight", endLabel: "Just Right" }
+    ),
+    QuestionBuilder.createRatingQuestion(
+      strain,
+      "roll_rating",
+      "Was the joint packed too loose?",
+      { startLabel: "Too Loose", endLabel: "Just Right" }
+    ),
+    QuestionBuilder.createRatingQuestion(
+      strain,
+      "overall_score",
+      "Overall Experience",
+      { startLabel: "Not enjoyable, poor quality", endLabel: "Enjoyable, high quality" }
+    ),
+    QuestionBuilder.createYesNoQuestion(
+      "Would You Purchase this again?", "purchase_bool", "No at $50", "Yes at $50"
     ),
   ];
 
