@@ -63,7 +63,8 @@
           <strong>Close</strong>
         </button>
       </div>
-      <h3 class="display-4 text-center my-3">Coming Soon</h3>
+      <h3 class="display-4 text-center my-3"></h3>
+      {% include "components/forms/preroll_rating_form.html" %}
     </div>
   </div>
 </div>
@@ -90,5 +91,10 @@
     });
   });
 </script>
+<script>
+  const strainValue = "{{ strain }}";
+  const cultivatorValue = "{{ cultivator }}";
+</script>
 
+<script type="module" src="{{ url_for('static', path='js/generate_preroll_rating_questions.js') }}" async defer></script>
 {% endblock %}
