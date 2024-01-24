@@ -84,14 +84,14 @@ class Pre_Roll_Ranking(Base):
     cultivator = Column(String, index=True)
     strain = Column(String, index=True)
     connoisseur = Column(String, index=True)
-    roll_rating = Column(Float, nullable=False)
-    airflow_rating = Column(Float, nullable=False)
-    ease_to_light_rating = Column(Float, nullable=False)
-    flavor_rating = Column(Float, nullable=False)
-    tightness_rating = Column(Float, nullable=False)
-    burn_rating = Column(Float, nullable=False)
-    effects_rating = Column(Float, nullable=False)
-    overall_score = Column(Float, nullable=False, default=0.0)
+    roll_rating = Column(Float, nullable=True)
+    airflow_rating = Column(Float, nullable=True)
+    ease_to_light_rating = Column(Float, nullable=True)
+    flavor_rating = Column(Float, nullable=True)
+    tightness_rating = Column(Float, nullable=True)
+    burn_rating = Column(Float, nullable=True)
+    effects_rating = Column(Float, nullable=True)
+    overall_score = Column(Float, nullable=True, default=0.0)
     roll_explanation = Column(String(500))
     ease_to_light_explanation = Column(String(500))
     flavor_explanation = Column(String(500))
@@ -100,13 +100,7 @@ class Pre_Roll_Ranking(Base):
     burn_explanation = Column(String(500))
     effects_explanation = Column(String(500))
     purchase_bool = Column(Boolean, nullable=False)
-    batch_id = Column(String, nullable=True, server_default="Not Provided", default="Not Provided")
-
-    date_posted = Column(
-        Date,
-        default=func.now(),
-        nullable=False,
-    )
+    pack_code = Column(String, nullable=True, server_default="Not Provided", default="Not Provided")
     pre_roll_id = Column(Integer, nullable=False)
 
 
