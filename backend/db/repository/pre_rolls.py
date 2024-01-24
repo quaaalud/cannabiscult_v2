@@ -139,7 +139,7 @@ async def create_preroll_ranking(ranking: PreRollRankingSchema, db: Session):
         raise
     else:
         db.refresh(created_ranking)
-    return created_ranking
+    return {"pre_roll_ranking": True}
 
 
 async def update_or_create_pre_roll_ranking(ranking_dict: PreRollRankingSchema, db: Session):
@@ -160,12 +160,14 @@ async def update_or_create_pre_roll_ranking(ranking_dict: PreRollRankingSchema, 
         try:
             db.commit()
             db.refresh(existing_ranking)
-            return existing_ranking
+            return {"pre_roll_ranking": True}
         except:
             db.rollback()
             raise
     else:
-        return create_preroll_ranking(ranking_dict, db)
+        await create_preroll_ranking(ranking_dict, db)
+
+    return {"pre_roll_ranking": True}
 
 
 async def get_pre_roll_ranking_data_and_path_from_id(

@@ -97,13 +97,13 @@ async def query_pre_roll_and_description(
 async def update_or_create_pre_roll_ranking_route(
     ranking_data: pre_rolls_schemas.PreRollRankingSchema = Body(...), db: Session = Depends(get_db)
 ):
-    try:
-        updated_or_new_ranking = await pre_rolls_repo.update_or_create_pre_roll_ranking(
-            ranking_data, db
-        )
-        return updated_or_new_ranking
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+#    try:
+    updated_or_new_ranking = await pre_rolls_repo.update_or_create_pre_roll_ranking(
+        ranking_data, db
+    )
+    return updated_or_new_ranking
+#    except Exception as e:
+#        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get("/get_pre_roll_ranking", response_model=Dict[str, Any])

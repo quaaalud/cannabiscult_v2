@@ -6,7 +6,7 @@ Created on Sun Jan 21 12:53:04 2024
 @author: dale
 """
 
-from pydantic import BaseModel, Field, constr, confloat
+from pydantic import BaseModel, Field, constr, confloat, conint, EmailStr
 from datetime import date
 from typing import Optional, List
 
@@ -18,7 +18,7 @@ class PreRollSchema(BaseModel):
     voting_open: bool = Field(True, description="Flag to indicate if voting is open")
     pre_roll_id: int = Field(..., description="Unique identifier for the pre-roll")
     is_mystery: bool = Field(True, description="Flag to indicate if the pre-roll is a mystery roll")
-    product_type: str = Field('pre-roll', description="Product Type for Pre-Rolls")
+    product_type: str = Field("pre-roll", description="Product Type for Pre-Rolls")
 
     class Config:
         from_attributes = True
@@ -49,52 +49,49 @@ class PreRollDescriptionSchema(BaseModel):
 
 
 class PreRollRankingSchema(BaseModel):
-    pre_roll_ranking_id: int = Field(
-        ..., description="The unique identifier for the pre-roll ranking"
-    )
     cultivator: str = Field(..., description="Name of the cultivator")
     strain: str = Field(..., description="Name of the strain")
-    connoisseur: str = Field(..., description="Name of the connoisseur")
-    roll_rating: confloat(ge=0) = Field(..., description="Rating for the roll quality")
-    airflow_rating: confloat(ge=0) = Field(..., description="Rating for airflow quality")
-    ease_to_light_rating: confloat(ge=0) = Field(
-        ..., description="Rating for ease of lighting pre-roll"
+    connoisseur: EmailStr = Field(..., description="Email address of the connoisseur")
+    roll_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the roll quality")
+    airflow_rating: float = Field(None, gt=0, lt=10.1, description="Rating for airflow quality")
+    ease_to_light_rating: float = Field(
+        None, gt=0, lt=10.1, description="Rating for ease of lighting pre-roll"
     )
-    flavor_rating: confloat(ge=0) = Field(..., description="Rating for the flavor")
-    tightness_rating: confloat(ge=0) = Field(..., description="Rating for tightness of the roll")
-    burn_rating: confloat(ge=0) = Field(..., description="Rating for the burn quality")
-    effects_rating: confloat(ge=0) = Field(..., description="Rating for the effects")
-    overall_score: confloat(ge=0) = Field(
-        ..., description="Overall score calculated from the ratings"
+    flavor_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the flavor")
+    tightness_rating: float = Field(
+        None, gt=0, lt=10.1, description="Rating for tightness of the roll"
     )
-    roll_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for the roll rating"
+    burn_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the burn quality")
+    effects_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the effects")
+    overall_score: Optional[float] = Field(
+        None, gt=0, lt=10.1, description="Overall score calculated from the ratings"
     )
-    ease_to_light_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for ease of lighting pre-roll rating"
+
+    roll_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the roll rating"
     )
-    flavor_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for the flavor rating"
+    airflow_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the airflow rating"
     )
-    airflow_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for the airflow rating"
+    ease_to_light_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for ease of lighting pre-roll rating"
     )
-    tightness_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for the tightness of the roll rating"
+    flavor_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the flavor rating"
     )
-    burn_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for the burn rating"
+    tightness_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the tightness of the roll rating"
     )
-    effects_explanation: Optional[constr(max_length=500)] = Field(
-        None, description="Explanation for the effects rating"
+    burn_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the burn rating"
     )
-    purchase_bool: bool = Field(
-        ..., description="Indicates whether the pre-roll would be purchased again"
+    effects_explanation: Optional[str] = Field(
+        None, max_length=500, description="Explanation for the effects rating"
     )
-    batch_id: Optional[str] = Field(
-        "Not Provided", description="Batch ID of the pre-roll, if provided"
+    purchase_bool: Optional[bool] = Field(True, description="Would you buy product again?")
+    pack_code: Optional[str] = Field(
+        None, max_length=99, description="Pack code of the pre-roll, if provided"
     )
-    date_posted: Optional[date] = Field(None, description="Date when the ranking was posted")
     pre_roll_id: int = Field(..., description="ID of the associated pre-roll")
 
     class Config:

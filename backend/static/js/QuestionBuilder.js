@@ -22,9 +22,9 @@ class QuestionBuilder {
     return {
       title: `${strain}<br/>${description}`,
       content: `
-        <div class="container-fluid align-items-center text-center btn-group-container">
+        <div class="container-fluid align-items-center text-center btn-group-container py-3">
           <div class="row pt-1 mx-auto">
-            <div class="col-6 text-center mx-auto">
+            <div class="col-9 text-center mx-auto">
               <label class="modal-info-shadow long-voting-label" for="${key}_1_point">${scaleDescription.startLabel}</label>
             </div>
           </div>
@@ -34,7 +34,7 @@ class QuestionBuilder {
             </div>
           </div>
           <div class="row pt-1 mx-auto">
-            <div class="col-6 text-center mx-auto">
+            <div class="col-9 text-center mx-auto">
               <label class="modal-info-shadow long-voting-label" for="${key}_10_point">${scaleDescription.endLabel}</label>
             </div>
           </div>
@@ -57,13 +57,12 @@ class QuestionBuilder {
       console.error('Invalid parameters passed to createExplanationQuestion.');
       return { title: '', content: '', key: '' };
     }
-  
     // Build and return the question object
     return {
       title: `${strain}<br/>${description}`,
       content: `
         <div class="container px-4">
-          <div class="row px-4 py-2 py-lg-3">
+          <div class="row px-4 py-3">
             <div class="form-outline" data-mdb-input-init>
               <textarea class="form-control shadow-2-strong" id="${key}" name="${key}" rows="4" placeholder="Start typing here..."></textarea>
             </div>
@@ -74,40 +73,37 @@ class QuestionBuilder {
       key: key
     };
   }
-
+  
   /**
-   * Creates a Yes/No question with checkboxes.
+   * Creates a Yes/No question with Bootstrap-styled radio buttons.
    * @param {string} question - The question to be asked.
    * @param {string} key - The unique key for the question.
    * @param {string} noLabel - The label for the 'No' option.
    * @param {string} yesLabel - The label for the 'Yes' option.
-   * @returns {string} HTML content for the Yes/No question.
+   * @returns {object} An object containing the title and HTML content for the Yes/No question.
    */
   static createYesNoQuestion(question, key, noLabel, yesLabel) {
-    return `
-      <div class="yes-no-question-container">
-        <p>${question}</p>
-        <div>
-          <input type="checkbox" id="${key}_no" name="${key}" value="no">
-          <label for="${key}_no">${noLabel}</label>
-        </div>
-        <div>
-          <input type="checkbox" id="${key}_yes" name="${key}" value="yes">
-          <label for="${key}_yes">${yesLabel}</label>
+    const title = `${question}`;
+    const content = `
+      <div class="yes-no-question-container py-3">
+        <div class="row g-1 text-center justify-content-center mx-0 mx-lg-3">
+          <div class="col-5 mx-auto">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" id="${key}_no" name="${key}" value="false">
+              <label class="form-check-label" for="${key}_no"><strong>${noLabel}</strong></label>
+            </div>
+          </div>
+          <div class="col-5 mx-auto">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" id="${key}_yes" name="${key}" value="true">
+              <label class="form-check-label" for="${key}_yes"><strong>${yesLabel}</strong></label>
+            </div>
+          </div>
         </div>
       </div>
-      <script>
-        document.querySelectorAll('.yes-no-question-container input[type="checkbox"]').forEach(checkbox => {
-          checkbox.addEventListener('change', function() {
-            if(this.checked) {
-              document.querySelectorAll('.yes-no-question-container input[type="checkbox"]').forEach(other => {
-                if(other !== this) other.checked = false;
-              });
-            }
-          });
-        });
-      </script>
     `;
+  
+    return { title, content, key };
   }
 
   /**
@@ -120,7 +116,7 @@ class QuestionBuilder {
     return {
       title: `${strain} by ${cultivator}`,
       content: `
-        <div class="container ps-lg-3">
+        <div class="container ps-lg-3 py-3">
           <div class="row align-items-center justify-content-center text-start g-3 mx-2">
             <div class="col-md-6 px-3">
               <label class="consume-label" for="method_of_consumption" style="display: block; font-weight: bold; margin-bottom: 0.25rem;">How did you consume ${strain}:</label>
@@ -154,7 +150,7 @@ class QuestionBuilder {
     return {
       title: `${strain} by ${cultivator}`,
       content: `
-        <div class="container px-4">
+        <div class="container px-4 py-3">
           <div class="row px-4 py-2 py-lg-3">
             <input class="form-control text-center email-input-field" id="connoisseur" name="connoisseur" placeholder="Your email is required to rate strains" />
           </div>
@@ -173,7 +169,7 @@ class QuestionBuilder {
     return {
       title: `${strain}<br/>Effects Rating Explanation`,
       content: `
-        <div class="container align-content-center align-items-center justify-content-center text-center">
+        <div class="container align-content-center align-items-center justify-content-center text-center py-3">
           <div class="row align-items-center">
             <div class="col-7">
               <label class="pb-3 ps-2 fs-5 text-start" for="effects_explanation">Please pick a minimum of two (2) to explain how ${strain} made you feel:</label>
@@ -217,7 +213,7 @@ class QuestionBuilder {
     return {
       title: prompt,
       content: `
-        <div class="container px-4">
+        <div class="container px-4 py-3">
           <div class="row px-4 py-2 py-lg-3">
             <input type="text" class="form-control" id="${key}" name="${key}" placeholder="${example}">
           </div>

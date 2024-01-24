@@ -376,7 +376,16 @@
     function loadFormState() {
         const savedState = localStorage.getItem('formState');
         if (savedState) {
-            return JSON.parse(savedState);
+            const parsedState = JSON.parse(savedState);
+            if (parsedState.hasOwnProperty('flower_id')) {
+                return parsedState;
+            } else {
+            return {
+                "flower_id": "{{ flower_id }}",
+                "cultivator": "{{ cultivator }}",
+                "strain": "{{ strain }}"
+            };
+          }
         } else {
             return {
                 "flower_id": "{{ flower_id }}",
