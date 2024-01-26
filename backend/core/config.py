@@ -20,7 +20,7 @@ class Settings:
     POSTGRES_SERVER: str = os.getenv('POSTGRES_SERVER')
     POSTGRES_PORT: str = os.getenv('POSTGRES_PORT')
     POSTGRES_DB: str = os.getenv('POSTGRES_DB')
-    DATABASE_URL: str = f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}:{POSTGRES_PORT}/{POSTGRES_DB}'
+    DATABASE_URL: str = f'postgresql://postgres.{POSTGRES_USER}:{POSTGRES_PASSWORD}@aws-0-us-east-1.pooler.supabase.com:6543/postgres'
     
     SUPA_ID:str = os.getenv('SUPA_ID')
     SUPA_JWT:str = os.getenv('SUPA_JWT')

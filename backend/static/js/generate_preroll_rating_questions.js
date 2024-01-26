@@ -140,10 +140,6 @@ document.addEventListener("DOMContentLoaded", function() {
     if (step < questions.length) {
       const question = questions[step];
       const input = document.getElementById(question.key);
-      if (question.key === "pack_code") {
-        console.log(formState);
-        console.log(input);
-      }
       if (input) {
         var inputVal = input.value;
         if (question.key === "connoisseur") {
