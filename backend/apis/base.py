@@ -46,6 +46,7 @@ from _supabase import route_mystery_voters
 from _supabase import route_edible_rankings
 from _supabase import route_searches
 from _supabase import route_pre_rolls
+from middleware import mystery_pack_route_handler
 
 api_router = APIRouter()
 api_router.include_router(

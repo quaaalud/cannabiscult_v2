@@ -50,7 +50,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from core.config import settings
-from apis.base import api_router
+from apis.base import api_router, mystery_pack_route_handler
 from fastapi.staticfiles import StaticFiles
 from db.session import engine
 from db.base import Base
@@ -92,7 +92,7 @@ def start_application():
         allow_headers=["*"],
     )
     app.add_middleware(GZipMiddleware, minimum_size=1000)
-
+    app.add_middleware(mystery_pack_route_handler.LegacyURLMiddleware)
     return app
 
 
