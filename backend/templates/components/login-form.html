@@ -256,7 +256,6 @@ async function handlePasswordReset() {
     myModal.hide();
   }
 }
-
 $(document).ready(function() {
   const forgotPasswordForm = document.getElementById('forgot-password-form');
   
@@ -272,6 +271,13 @@ $(document).ready(function() {
       handlePasswordReset();
     }
   });
-
+  
+  document.addEventListener('DOMContentLoaded', function () {
+    var tabEl = document.querySelector('a[data-mdb-toggle="pill"]')
+    if (tabEl) {
+      var tab = new mdb.Tab(tabEl)
+      tab.show()
+    }
+  });
 });
 </script>
