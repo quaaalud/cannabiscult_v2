@@ -1,3 +1,11 @@
+export function initializeSupabaseClient() {
+    const client = new window.SupabaseClient();
+    client.initialize().then(() => {
+        window.supabaseClient = client;
+        window.dispatchEvent(new CustomEvent('supabaseClientReady'));
+    }).catch(e => console.error("Initialization failed:", e));
+}
+
 class SupabaseClient {
     constructor() {
         this.supabase = null;
@@ -53,43 +61,56 @@ class SupabaseClient {
                     break;
                 case 'SIGNED_IN':
                     this.onSignIn(session);
+                    this.addLogoutLink();
                     break;
                 case 'SIGNED_OUT':
-                    this.onSignOut();
-                    this.setAuthCookies(session, false);
+                    this.onSignOut(session);
                     break;
                 case 'TOKEN_REFRESHED':
                     this.onSignIn(session);
-                    this.setAuthCookies(session, true);
+                    this.addLogoutLink();
                     break;
                 case 'PASSWORD_RECOVERY':
                     this.onPasswordRecovery(session);
                     break;
                 case 'USER_UPDATED':
                     this.onUserUpdated(session);
+                    this.addLogoutLink();
                     break;
                 default:
                     console.warn(`Unhandled auth event: ${event}`);
             }
         });
     }
-
     onSignIn(session) {
-        console.log('User signed in');
+      if (!session || !session.user) {
+          console.error('Invalid session data received during sign-in.');
+          return;
+      }
+      try {
+        this.removeloginLink();
         this.setAuthCookies(session, true);
+      } catch (error) {
+        console.error('Error setting auth cookies:', error);
+      }
     }
-    onSignOut() {
+    onSignOut(session) {
         console.log('User signed out');
-        // Need to Implement
+        this.setAuthCookies(session, false);
+        this.clearStorage();
+        this.removeLogoutLink();
     }
     onPasswordRecovery(session) {
         console.log('Password recovery mode');
-        // Need to Implement
     }
-
     onUserUpdated(session) {
         console.log('User details updated');
-        // Need to Implement
+        this.setAuthCookies(session, true);
+    }
+    clearStorage() {
+        [window.localStorage, window.sessionStorage].forEach(storage => {
+            Object.keys(storage).forEach(key => storage.removeItem(key));
+        });
     }
     setAuthCookies(session, isSignIn) {
         if (isSignIn) {
@@ -98,23 +119,57 @@ class SupabaseClient {
             document.cookie = `my-access-token=${session.access_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
             document.cookie = `my-refresh-token=${session.refresh_token}; path=/; max-age=${maxAge}; SameSite=Lax; secure`;
         } else {
-            // Delete cookies on sign out
             const expires = new Date(0).toUTCString();
             document.cookie = `my-access-token=; path=/; expires=${expires}; SameSite=Lax; secure`;
             document.cookie = `my-refresh-token=; path=/; expires=${expires}; SameSite=Lax; secure`;
         }
     }
+    validateFormData(data) {
+        // Password validation
+        if (data.password !== data.confirmPassword || !this.validatePassword(data.password)) {
+          return false; // Either passwords do not match or password validation failed
+        }
+        // Email sanitization
+        data.email = this.validateAndSanitizeEmail(data.email);
+        data.name = this.sanitizeString(data.name);
+        data.username = this.sanitizeString(data.username);
+        data.street_address = this.sanitizeString(data.name);
+        data.apt_or_suite = this.sanitizeString(data.username);
+        data.state = this.sanitizeString(data.name);
+        data.zip_code = this.sanitizeString(data.username);
+        data.phone = this.sanitizeString(data.name);
+        data.type = "user";
+        return true;
+    }
+    
     validateAndSanitizeEmail(email) {
         if (!window.validator.isEmail(email)) {
             throw new Error('Invalid email format.');
         }
         return window.validator.normalizeEmail(email, { all_lowercase: true });
     }
+    validatePassword(password) {
+        const hasMinLength = window.validator.isLength(password, { min: 6 });
+        const hasUpper = /[A-Z]/.test(password); // At least one uppercase letter
+        const hasLower = /[a-z]/.test(password); // At least one lowercase letter
+        const hasNumberOrSpecial = /[0-9!@#$%^&*]/.test(password); // At least one number or standard special character
+
+        if (!hasMinLength || !hasUpper || !hasLower || !hasNumberOrSpecial) {
+            return false; // Password does not meet the criteria
+        }
+        return true; // Password is valid
+    }
+    sanitizeString(str) {
+        if (typeof str !== 'string') {
+            return '';
+        }
+        return str.trim().replace(/<[^>]*>?/gm, ''); // Basic HTML tag stripping
+    }
     
      async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
-            const { user, session, error } = await this.supabase.auth.signInWithPassword({ email, password });
+            const { user, session, error } = await this.supabase.auth.signInWithPassword({ email, password }, { redirectTo: '/profile_settings' });
             if (error) throw error;
             return { user, session };
         } catch (error) {
@@ -138,11 +193,12 @@ class SupabaseClient {
     }
 
     async registerUser(userDetails) {
-        const email = this.validateAndSanitizeEmail(userDetails.email);
-        console.log(email);
+        if (!this.validateFormData(userDetails)) {
+            throw new Error('Invalid user data.');
+        }
         try {
             const { user, error: authError } = await this.supabase.auth.signUp({
-                email: email,
+                email: userDetails.email,
                 password: userDetails.password,
                 options: {
                   data: userDetails,
@@ -170,8 +226,7 @@ class SupabaseClient {
     async sendResetPassword(email) {
         try {
             email = this.validateAndSanitizeEmail(email);
-            console.log(this.supabase);
-            const { error } = await this.supabase.auth.resetPasswordForEmail(email, { redirectTo: '/profile_settings' });
+            const { error } = await this.supabase.auth.resetPasswordForEmail(email, { redirectTo: '/forgot-password' });
             if (error) throw error;
         } catch (error) {
             console.error("Error in resetPassword:", error.message);
@@ -188,24 +243,46 @@ class SupabaseClient {
             throw error;
         }
     }
-    
-    async updateUserPasswordWithToken(token, type, newPassword) {
-        try {
-            if (type !== 'recovery') throw new Error('Invalid request type.');
-            const { data, error } = this.supabase.auth.verifyOtp({ token_hash: token, type: type});
-            console.log('Data ' + data);
-            console.log('Error ' + error);
-            this.updateUserPassword(newPassword);
-            if (error) throw error;
-        } catch (error) {
-            console.error("Error in updateUserPasswordWithToken:", error.message);
-            throw error;
+
+    async addLogoutLink() {
+      const footerLinks = document.getElementById('footerLinks');
+      // Check if the 'footerLinks' element exists
+      if (footerLinks == null) {
+        return;
+      }
+      if (!footerLinks.querySelector('#logoutLink')) {
+          const logoutListItem = document.createElement('li');
+          const logoutLink = document.createElement('a');
+          logoutLink.id = 'logoutLink';
+          logoutLink.href = '#';
+          logoutLink.textContent = 'Log Out';
+          logoutLink.addEventListener('click', async (e) => {
+              e.preventDefault();
+              await this.signOut();
+              window.location.reload();
+          });
+          logoutListItem.appendChild(logoutLink);
+          footerLinks.appendChild(logoutListItem);
+      }
+    }
+
+    async removeLogoutLink() {
+        const logoutLink = document.getElementById('logoutLink');
+        if (logoutLink) {
+            logoutLink.parentNode.remove(); // Remove the "Log Out" link element
+        }
+    }
+
+    async removeloginLink() {
+        const loginLink = document.getElementById('loginLink');
+        if (loginLink) {
+            loginLink.parentNode.remove();
         }
     }
 
     async getPublicUrlfromBucket(filePath) {
         try {
-            const { data, error } = await this.supabase.storage.from('cannabiscult').getPublicUrl(filePath);
+            const { data, error } = await this.supabase.storage.from('cc_public').getPublicUrl(filePath);
             if (error) throw error;
             return data.publicURL;
         } catch (error) {
@@ -213,6 +290,30 @@ class SupabaseClient {
             throw error;
         }
     }
-}
+    
+    async checkUserAuthentication() {
+        try {
+            const { data: { user }, error } = await this.supabase.auth.getUser();
 
+            if (!user) {
+                const urlParams = new URLSearchParams(window.location.search);
+                const resetTokenType = urlParams.get('type');
+                if (resetTokenType === 'recovery') {
+                  console.log('Recovery mode is active.');
+                  return
+                }
+                console.log('No user logged in. Redirecting to login page.');
+                window.location.href = '/login';
+                return; // Stop execution if there's no user
+            }
+            if (error) {
+                alert('Authentication error. Please try logging in again.', error);
+                window.location.href = '/login';
+            }
+        } catch (error) {
+            console.error('An error occurred while checking user authentication:', error);
+            alert('An unexpected error occurred. Please try again.');
+        }
+    }
+}
 window.SupabaseClient = SupabaseClient;
