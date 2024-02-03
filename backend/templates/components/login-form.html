@@ -1,9 +1,9 @@
 <!-- Forgot Password Modal -->
-<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordSendLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Forgot Password</h5>
+        <h5 class="modal-title" id="forgotPasswordSendLabel">Forgot Password</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -13,7 +13,7 @@
             <input type="email" class="form-control" id="user-email" aria-describedby="emailHelp">
             <div id="emailHelp" class="form-text">We'll send a password reset link to this email.</div>
           </div>
-          <button type="submit" class="btn btn-primary">Send Link</button>
+          <button type="submit" class="btn btn-primary" id="forgotPasswordSendButton">Send Link</button>
         </form>
       </div>
     </div>
@@ -156,24 +156,53 @@
   </div>
 </section>
 <script>
-  
-document.addEventListener('DOMContentLoaded', function() {
-  const forgotPasswordForm = document.getElementById('forgot-password-form');
-
-  forgotPasswordForm.addEventListener('submit', async function(event) {
-    event.preventDefault();
-    
-    const email = document.getElementById('user-email').value;
-
-    const { data, error } = await window.supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: 'https://cannabiscult.co/forgot-password',
+function ensureSupabaseClient() {
+    return new Promise((resolve, reject) => {
+        if (window.supabaseClient) {
+            resolve(window.supabaseClient); // Supabase Client is already available
+        } else {
+            try {
+                const supabaseClient = new window.SupabaseClient();
+                supabaseClient.initialize().then(() => {
+                    window.supabaseClient = supabaseClient;
+                    window.dispatchEvent(new CustomEvent('supabaseClientReady'));
+                    resolve(window.supabaseClient); // Resolve with the newly initialized client
+                }).catch(e => reject(new Error("Initialization failed: " + e.message)));
+            } catch (e) {
+                reject(new Error("SupabaseClient class is not available or failed to initialize."));
+            }
+        }
     });
+}
 
-    var myModal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+async function handlePasswordReset() {
+  var myModal = new bootstrap.Modal(document.getElementById('forgotPasswordModal'));
+  var email = document.getElementById('user-email').value;
+  try {
+    await window.supabaseClient.sendResetPassword(email);
+    alert('Password reset email sent successfully, be sure to log in and reset your password from the same device.');
+  } catch (error) {
+    console.error('Error:', error.message);
+  } finally {
     myModal.hide();
+  }
+}
 
-    window.location.href = 'https://cannabiscult.co/forgot-password';
-    });
+$(document).ready(function() {
+  alert('Document Ready');
+  const forgotPasswordForm = document.getElementById('forgot-password-form');
+  ensureSupabaseClient();
+  alert('Client ready Ready');
+  forgotPasswordForm.addEventListener('submit', async function(event) {
+    alert('We in the business');
+    event.preventDefault();
+    alert('We have the client business');
+    const email = document.getElementById('user-email').value;
+    if (email) {
+      alert('We have the password reset business');
+      handlePasswordReset();
+    }
   });
 
+});
 </script>
