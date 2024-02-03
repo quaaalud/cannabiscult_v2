@@ -245,7 +245,7 @@ class SupabaseClient {
     }
 
     async addLogoutLink() {
-      const footerLinks = document.getElementById('footerLinks');
+      const navlinks = document.getElementById('navbarLinks');
       // Check if the 'footerLinks' element exists
       if (footerLinks == null) {
         return;
