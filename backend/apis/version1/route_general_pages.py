@@ -811,14 +811,12 @@ async def submit_mystery_voter_create(
 
 @general_pages_router.get("/config")
 async def get_config():
-    config_obj = Config(
+    return Config(
         SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
         SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
         ALGO=settings.ALGO,
         PRIMARY_BUCKET=settings.PRIMARY_BUCKET,
     )
-    print(config_obj)
-    return config_obj
 
 
 async def get_config_obj():

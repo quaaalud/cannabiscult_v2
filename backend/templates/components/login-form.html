@@ -189,17 +189,12 @@ async function handlePasswordReset() {
 }
 
 $(document).ready(function() {
-  alert('Document Ready');
   const forgotPasswordForm = document.getElementById('forgot-password-form');
   ensureSupabaseClient();
-  alert('Client ready Ready');
   forgotPasswordForm.addEventListener('submit', async function(event) {
-    alert('We in the business');
     event.preventDefault();
-    alert('We have the client business');
     const email = document.getElementById('user-email').value;
     if (email) {
-      alert('We have the password reset business');
       handlePasswordReset();
     }
   });
