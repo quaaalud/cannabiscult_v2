@@ -159,11 +159,9 @@
 async function handleLoginFormSubmission() {
     const loginForm = document.getElementById('log-in');
     if (!loginForm) {
-        alert('Login form not found.');
         return;
     }
     loginForm.addEventListener('submit', async function(event) {
-        alert('We in the form now');
         event.preventDefault();
         const email = document.getElementById('login_email').value;
         const password = document.getElementById('login_password').value;
