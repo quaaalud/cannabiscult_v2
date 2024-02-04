@@ -43,15 +43,6 @@
     {% block footer %}
     {% endblock %}
     {% include "components/footer.html" %}
-    <script defer>
-      document.addEventListener('DOMContentLoaded', () => {
-        const client = new SupabaseClient();
-        client.initialize().then(() => {
-          window.supabaseClient = client;
-          window.dispatchEvent(new CustomEvent('supabaseClientReady'));
-        }).catch(e => console.error("Initialization failed:", e));
-      });
-    </script>
     <!-- MDB -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', path='js/mdb.min.js') }}"></script>

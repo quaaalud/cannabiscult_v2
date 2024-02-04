@@ -56,7 +56,7 @@
               <div class="col-sm-12 col-md-9 col-lg-6">
                 <div class="tab-content">
                   <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
-                    <form method="POST" action="/login-submit" id="log-in" name="log-in">
+                    <form id="log-in" name="log-in">
                       <div class="text-center mb-3">
                         <p>Sign in:</p>
                       </div>
@@ -89,7 +89,7 @@
                   </form>
                 </div>
                 <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
-                  <form method="POST" action="/register" class="pb-5" id="sign-up" name="sign-up">
+                  <form class="pb-5" id="sign-up" name="sign-up">
                     <div class="text-center mb-3">
                       <p>Sign up:</p>
                     <!-- Username input -->
@@ -156,42 +156,14 @@
   </div>
 </section>
 <script>
-function ensureSupabaseClient(retries = 3, delay = 500) {
-    function attemptInitialization() {
-        if (window.supabaseClient) {
-            return Promise.resolve(window.supabaseClient);
-        }
-        const supabaseClient = new window.SupabaseClient();
-        return supabaseClient.initialize().then(() => {
-            window.supabaseClient = supabaseClient;
-            window.dispatchEvent(new CustomEvent('supabaseClientReady'));
-            return window.supabaseClient;
-        });
-    }
-
-    function retryOnError(err) {
-        if (retries > 0) {
-            return new Promise((resolve, reject) => {
-                setTimeout(() => {
-                    ensureSupabaseClient(retries - 1, delay)
-                        .then(resolve)
-                        .catch(reject);
-                }, delay);
-            });
-        } else {
-            throw err;
-        }
-    }
-    return attemptInitialization().catch(retryOnError);
-}
-
 async function handleLoginFormSubmission() {
-    const loginForm = document.getElementById('loginForm');
+    const loginForm = document.getElementById('log-in');
     if (!loginForm) {
         alert('Login form not found.');
         return;
     }
     loginForm.addEventListener('submit', async function(event) {
+        alert('We in the form now');
         event.preventDefault();
         const email = document.getElementById('login_email').value;
         const password = document.getElementById('login_password').value;
@@ -256,13 +228,13 @@ async function handlePasswordReset() {
     myModal.hide();
   }
 }
+window.addEventListener('load', function() {
+  handleLoginFormSubmission();
+  submitRegistrationForm();
+}, false);
+
 $(document).ready(function() {
   const forgotPasswordForm = document.getElementById('forgot-password-form');
-  
-  ensureSupabaseClient();
-  
-  window.addEventListener('load', handleLoginFormSubmission, false);
-  window.addEventListener('load', submitRegistrationForm, false);
   
   forgotPasswordForm.addEventListener('submit', async function(event) {
     event.preventDefault();
