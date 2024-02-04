@@ -123,17 +123,14 @@
           <a href="https://thecannabiscult.myshopify.com/" class="nav-link">Merch</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if user_is_logged_in %} active{% endif %}" href="/voting-home">Ratings</a>
+          <a class="nav-link" href="/voting-home">Ratings</a>
         </li>
-        {% if user_is_logged_in %}
-        <li class="nav-item">
+        <li class="nav-item" id="logoutLink">
           <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
         </li>
-        {% else %}
-        <li class="nav-item">
+        <li class="nav-item" id="loginLink">
           <a href="/login" class="nav-link active">Login/Register</a>
         </li>
-        {% endif %}
       </ul>
       <!-- Icons -->
       <ul class="navbar-nav d-flex flex-row me-1">
@@ -181,3 +178,6 @@
     </div>
   </div>
 </div>
+
+{% block scripts %}
+{% endblock %}

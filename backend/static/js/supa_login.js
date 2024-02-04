@@ -62,12 +62,14 @@ class SupabaseClient {
                 case 'SIGNED_IN':
                     this.onSignIn(session);
                     this.addLogoutLink();
+                    this.removeloginLink();
                     break;
                 case 'SIGNED_OUT':
                     this.onSignOut(session);
                     break;
                 case 'TOKEN_REFRESHED':
                     this.onSignIn(session);
+                    this.removeloginLink();
                     this.addLogoutLink();
                     break;
                 case 'PASSWORD_RECOVERY':
@@ -75,6 +77,7 @@ class SupabaseClient {
                     break;
                 case 'USER_UPDATED':
                     this.onUserUpdated(session);
+                    this.removeloginLink();
                     this.addLogoutLink();
                     break;
                 default:
@@ -133,9 +136,7 @@ class SupabaseClient {
         data.email = this.validateAndSanitizeEmail(data.email);
         data.name = this.sanitizeString(data.name);
         data.username = this.sanitizeString(data.username);
-        data.street_address = this.sanitizeString(data.name);
-        data.apt_or_suite = this.sanitizeString(data.username);
-        data.state = this.sanitizeString(data.name);
+        data.address = this.sanitizeString(data.name);
         data.zip_code = this.sanitizeString(data.username);
         data.phone = this.sanitizeString(data.name);
         data.type = "user";
@@ -245,31 +246,34 @@ class SupabaseClient {
     }
 
     async addLogoutLink() {
-      const navlinks = document.getElementById('navbarLinks');
+      const navlinks = document.getElementById('navbarSupportedContent');
       // Check if the 'footerLinks' element exists
-      if (footerLinks == null) {
+      if (navlinks == null) {
         return;
       }
-      if (!footerLinks.querySelector('#logoutLink')) {
+      if (!navlinks.querySelector('#logoutLink')) {
           const logoutListItem = document.createElement('li');
           const logoutLink = document.createElement('a');
           logoutLink.id = 'logoutLink';
           logoutLink.href = '#';
           logoutLink.textContent = 'Log Out';
+          logoutLink.classList.add('nav-link');
+          logoutLink.setAttribute('data-bs-toggle', 'modal');
+          logoutLink.setAttribute('data-bs-target', '#logoutModal');
           logoutLink.addEventListener('click', async (e) => {
               e.preventDefault();
               await this.signOut();
               window.location.reload();
           });
           logoutListItem.appendChild(logoutLink);
-          footerLinks.appendChild(logoutListItem);
+          navlinks.appendChild(logoutListItem);
       }
     }
 
     async removeLogoutLink() {
         const logoutLink = document.getElementById('logoutLink');
         if (logoutLink) {
-            logoutLink.parentNode.remove(); // Remove the "Log Out" link element
+            logoutLink.parentNode.remove();
         }
     }
 
