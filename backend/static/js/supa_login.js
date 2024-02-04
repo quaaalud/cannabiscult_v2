@@ -58,19 +58,17 @@ class SupabaseClient {
         this.supabase.auth.onAuthStateChange((event, session) => {
             switch (event) {
                 case 'INITIAL_SESSION':
+                    this.setupLogoutConfirmation();
                     break;
                 case 'SIGNED_IN':
                     this.onSignIn(session);
                     this.addLogoutLink();
-                    this.removeloginLink();
                     break;
                 case 'SIGNED_OUT':
                     this.onSignOut(session);
                     break;
                 case 'TOKEN_REFRESHED':
                     this.onSignIn(session);
-                    this.removeloginLink();
-                    this.addLogoutLink();
                     break;
                 case 'PASSWORD_RECOVERY':
                     this.onPasswordRecovery(session);
@@ -246,7 +244,7 @@ class SupabaseClient {
     }
 
     async addLogoutLink() {
-      const navlinks = document.getElementById('navbarSupportedContent');
+      const navlinks = document.getElementById('navLinksList');
       // Check if the 'footerLinks' element exists
       if (navlinks == null) {
         return;
@@ -260,14 +258,24 @@ class SupabaseClient {
           logoutLink.classList.add('nav-link');
           logoutLink.setAttribute('data-bs-toggle', 'modal');
           logoutLink.setAttribute('data-bs-target', '#logoutModal');
-          logoutLink.addEventListener('click', async (e) => {
-              e.preventDefault();
-              await this.signOut();
-              window.location.reload();
-          });
           logoutListItem.appendChild(logoutLink);
           navlinks.appendChild(logoutListItem);
       }
+    }
+    
+    async addLoginLink() {
+        const navBar = document.querySelector('.navbar-nav');
+        if (!document.getElementById('loginLink')) {
+            const loginListItem = document.createElement('li');
+            loginListItem.className = 'nav-item';
+            const loginLink = document.createElement('a');
+            loginLink.id = 'loginLink';
+            loginLink.href = '/login'; // Set to your login route
+            loginLink.textContent = 'Login/Register';
+            loginLink.className = 'nav-link active';
+            loginListItem.appendChild(loginLink);
+            navBar.appendChild(loginListItem);
+        }
     }
 
     async removeLogoutLink() {

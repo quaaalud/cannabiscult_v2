@@ -114,7 +114,7 @@
     </button>
     <!-- Collapsible wrapper -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navLinksList">
         <!-- Link -->
         <li class="nav-item">
           <a class="nav-link" href="/">Home</a>
@@ -125,11 +125,8 @@
         <li class="nav-item">
           <a class="nav-link" href="/voting-home">Ratings</a>
         </li>
-        <li class="nav-item" id="logoutLink">
-          <a href="#" class="nav-link" data-bs-toggle="modal" data-bs-target="#logoutModal">Logout</a>
-        </li>
-        <li class="nav-item" id="loginLink">
-          <a href="/login" class="nav-link active">Login/Register</a>
+        <li class="nav-item">
+          <a href="/login" class="nav-link active" id="loginLink">Login/Register</a>
         </li>
       </ul>
       <!-- Icons -->
@@ -171,8 +168,8 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-        <form action="/logout-submit" method="post">
-          <button type="submit" class="btn btn-primary">Logout</button>
+        <form>
+          <button type="submit" class="btn btn-primary" id="confirmLogoutButton">Logout</button>
         </form>
       </div>
     </div>
@@ -180,4 +177,52 @@
 </div>
 
 {% block scripts %}
+<script>
+function ensureSupabaseClient(retries = 3, delay = 500) {
+    function attemptInitialization() {
+        if (window.supabaseClient) {
+            return Promise.resolve(window.supabaseClient);
+        }
+        const supabaseClient = new window.SupabaseClient();
+        return supabaseClient.initialize().then(() => {
+            window.supabaseClient = supabaseClient;
+            window.dispatchEvent(new CustomEvent('supabaseClientReady'));
+            return window.supabaseClient;
+        });
+    }
+
+    function retryOnError(err) {
+        if (retries > 0) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    ensureSupabaseClient(retries - 1, delay)
+                        .then(resolve)
+                        .catch(reject);
+                }, delay);
+            });
+        } else {
+            throw err;
+        }
+    }
+    return attemptInitialization().catch(retryOnError);
+}
+window.addEventListener('load', function() {
+  ensureSupabaseClient().then(() => {
+      // This ensures the Supabase client is ready before attaching the event listener
+      const logoutButton = document.getElementById('confirmLogoutButton');
+      if (logoutButton) {
+          logoutButton.addEventListener('click', function(event) {
+              event.preventDefault(); // Prevent form submission
+              window.supabaseClient.signOut().then(() => {
+                  // Redirect to the voting-home page or show a message after successful logout
+                  window.location.href = '/voting-home';
+              }).catch(error => {
+                  console.error('Logout failed:', error);
+                  // Handle logout error (optional)
+              });
+          });
+      }
+  });
+}, false);
+</script>
 {% endblock %}
