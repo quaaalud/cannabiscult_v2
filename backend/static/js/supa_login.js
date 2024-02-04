@@ -58,7 +58,6 @@ class SupabaseClient {
         this.supabase.auth.onAuthStateChange((event, session) => {
             switch (event) {
                 case 'INITIAL_SESSION':
-                    this.setupLogoutConfirmation();
                     break;
                 case 'SIGNED_IN':
                     this.onSignIn(session);

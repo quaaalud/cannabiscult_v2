@@ -7,7 +7,7 @@ Created on Mon Oct 30 21:57:01 2023
 """
 
 
-from sqlalchemy import Column, String, BigInteger
+from sqlalchemy import Column, String, BigInteger, Boolean
 from db.base_class import Base
 
 
@@ -20,6 +20,15 @@ class Edible(Base):
     cultivator = Column(String, nullable=False)
     strain = Column(String, nullable=False)
     card_path = Column(String, nullable=True)
+    voting_open = Column(
+        Boolean,
+        default=True,
+        nullable=False,
+    )
+    is_mystery = Column(
+        Boolean,
+        default=False,
+    )
 
 
 class MysteryEdible(Base):

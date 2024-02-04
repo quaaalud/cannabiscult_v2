@@ -46,6 +46,7 @@ from _supabase import route_mystery_voters
 from _supabase import route_edible_rankings
 from _supabase import route_searches
 from _supabase import route_pre_rolls
+from _supabase import route_strain_submissions
 from middleware import mystery_pack_route_handler
 
 api_router = APIRouter()
@@ -123,4 +124,9 @@ api_router.include_router(
     route_searches.router,
     prefix="/search",
     tags=["search"]
+)
+api_router.include_router(
+    route_strain_submissions.router,
+    prefix="/submit",
+    tags=["submit"]
 )

@@ -34,11 +34,12 @@
                       class="form-check-input"
                       type="radio"
                       name="inlineRadioOptions"
-                      id="prerollSubmission"
-                      value="prerollSubmission"
+                      id="pre_rollSubmission"
+                      value="pre_rollSubmission"
                     />
                     <label class="form-check-label" for="otherGender">Pre-Roll</label>
                   </div>
+                  <!--
                   <div data-mdb-input-init class="form-check form-check-inline">
                     <input 
                       class="form-check-input"
@@ -49,6 +50,7 @@
                     />
                     <label class="form-check-label" for="otherGender">Edible</label>
                   </div>
+                  -->
                 </div>
               </div>
               <div class="row">
@@ -74,8 +76,8 @@
                 </div>
                 <div class="col-12 mb-3">
                   <div class="form-outline" data-mdb-input-init>
-                    <textarea class="form-control" id="textAreaExample" rows="4"></textarea>
-                    <label class="form-label" for="textAreaExample">Message</label>
+                    <textarea class="form-control" id="effectsSubmission" rows="4"></textarea>
+                    <label class="form-label" for="effectsSubmission">Effects</label>
                   </div>
                 </div>
               </div>
@@ -90,7 +92,7 @@
               <div class="row">
                 <div class="col-6 mx-auto">
                   <div class="mt-4">
-                    <input data-mdb-ripple-init class="btn btn-warning btn-lg w-100" type="submit" value="Coming Soon" disabled/>
+                    <input data-mdb-ripple-init class="btn btn-warning btn-lg w-100" type="submit" value="Submit Strain"/>
                   </div>
                 </div>
               </div>
@@ -101,3 +103,94 @@
     </div>
   </div>
 </section>
+{% include "components/forms/add_new_voter_modal.html" %}
+
+{% block scripts %}
+<script>
+document.getElementById("strainSubmissionForm").addEventListener("submit", async function(event) {
+    event.preventDefault();
+    const emailAddressInput = document.getElementById("emailAddress");
+    const cultivar_email = emailAddressInput.value;
+
+    const voterExists = await checkVoterExists(cultivar_email);
+
+    if (!voterExists) {
+        $('#FlowerVoterInfoCaptureModal').modal('show');
+        $('.modal-backdrop').remove();
+    } else {
+        await submitStrainForm();
+    }
+});
+
+async function checkVoterExists(email) {
+    const lowerCaseEmail = email.toLowerCase();
+    const root = window.location.origin;
+    const url = new URL('/check-mystery-voter', root);
+    url.searchParams.append('voter_email', lowerCaseEmail);
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        return data.exists;
+    } else {
+        console.error("Request failed:", response.status, response.statusText);
+        return false;
+    }
+}
+
+async function submitStrainForm() {
+    // Capture form field values
+    const form = document.getElementById("strainSubmissionForm");
+    const strainValue = document.getElementById("strainSubmission").value;
+    const cultivatorValue = document.getElementById("cultivatorSubmission").value;
+    const emailAddressValue = document.getElementById("emailAddress").value.toLowerCase();
+    const descriptionValue = document.getElementById("strainDescription").value;
+    const effectsValue = document.getElementById("effectsSubmission").value; // Make sure this ID matches your form
+
+    // Determine the selected product type
+    const productTypeElements = document.getElementsByName("inlineRadioOptions");
+    let productTypeValue = '';
+    for (const ptElement of productTypeElements) {
+        if (ptElement.checked) {
+            productTypeValue = ptElement.value;
+            break;
+        }
+    }
+
+    // Prepare the FormData object
+    const formData = new FormData();
+    formData.append('strain', strainValue);
+    formData.append('cultivator', cultivatorValue);
+    formData.append('cultivar_email', emailAddressValue);
+    formData.append('description', descriptionValue);
+    formData.append('effects', effectsValue);
+    formData.append('product_type', productTypeValue); // Make sure your backend is expecting this key
+
+    // Submit the form data
+    const root = window.location.origin;
+    const url = new URL('/submit/submit_strain/', root); // Adjust the endpoint as necessary
+
+    const response = await fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json',
+            // Don't set 'Content-Type': 'multipart/form-data' here; it'll be set automatically with the correct boundary
+        }
+    });
+
+    if (response.ok) {
+        form.reset();
+    } else {
+        console.error("Form submission failed:", response.status, response.statusText);
+        alert('The submission failed, check your inputs and try again.');
+    }
+}
+</script>
+{% endblock %}
