@@ -192,6 +192,7 @@ async function submitRegistrationForm() {
     try {
         const user = await window.supabaseClient.registerUser(userDetails);
         alert('Registration successful. Check your email to confirm your registration details.');
+        registerForm.reset(); 
     } catch (error) {
         alert('Registration failed. Please try again.');
     }
