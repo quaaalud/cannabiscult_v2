@@ -194,17 +194,23 @@ class SupabaseClient {
         if (!this.validateFormData(userDetails)) {
             throw new Error('Invalid user data.');
         }
+        
         try {
-            const { user, error: authError } = await this.supabase.auth.signUp({
+            const { data, error } = await this.supabase.auth.signUp({
                 email: userDetails.email,
                 password: userDetails.password,
                 options: {
-                  data: userDetails,
+                  data: {
+                    name: userDetails.name,
+                    username: userDetails.username,
+                    zip_code: userDetails.zip_code,
+                    phone: userDetails.phone,
+                  }
                 },
             });
-            if (authError) throw authError;
+            if (error) throw error;
 
-            return user;
+            return data;
         } catch (error) {
             console.error('Error in registerUser:', error.message);
             throw new Error('Registration failed.');

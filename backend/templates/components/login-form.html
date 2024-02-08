@@ -144,7 +144,7 @@
                       </label>
                     </div>
                     <!-- Submit button -->
-                    <button name="register-submit" type="submit" class="btn btn-primary btn-block mb-3">Sign Up</button>
+                    <button id="register-submit" name="register-submit" type="submit" class="btn btn-primary btn-block mb-3">Sign Up</button>
                   </form>
                 </div>
               </div>
@@ -176,41 +176,24 @@ async function handleLoginFormSubmission() {
     }, false);
 }
 
-async function displayErrorMessage(message) {
-    const messageContainer = document.getElementById('messageContainer');
-    const messageContent = document.getElementById('messageContent');
-    messageContainer.style.display = 'block';
-    messageContent.textContent = message;
-}
-async function displaySuccessMessage(message) {
-    const registerForm = document.getElementById('sign-up');
-    const messageContainer = document.getElementById('messageContainer');
-    const messageContent = document.getElementById('messageContent');
-    registerForm.style.display = 'none';
-    messageContainer.style.display = 'block';
-    messageContent.textContent = message;
-}
 async function submitRegistrationForm() {
   const registerForm = document.getElementById('sign-up');
   registerForm.addEventListener('submit', async function(event) {
     event.preventDefault();
     const formData = new FormData(registerForm);
+    alert(formData.get('register_email'));
     const userDetails = {
         email: formData.get('register_email'),
         password: formData.get('register_password'),
-        register_repeat_password: formData.get('register_repeat_password'),
+        confirmPassword: formData.get('register_repeat_password'),
         username: formData.get('register_username'),
-        street_address: formData.get('register_street_address'),
         zip_code: formData.get('register_zip_code'),
         phone: formData.get('register_phone'),
     };
-    try {
-        const user = await window.supabaseClient.registerUser(userDetails);
-        displaySuccessMessage('Registration successful. Check your email to confirm your registration details.');
-    } catch (error) {
-        alert('Registration error:', error);
-        displayErrorMessage('Registration failed. Please try again.');
-    }
+
+    const user = await window.supabaseClient.registerUser(userDetails);
+    alert('Registration successful. Check your email to confirm your registration details.');
+
   });
 }
 
