@@ -427,6 +427,16 @@ async def handle_pre_roll_review_post(
     return await process_pre_roll_request(request, strain, cultivator, db)
 
 
+@general_pages_router.get("/vibe-hash-hole")
+async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
+    cultivator = "Vibe"
+    strain = "Hash Hole"
+    try:
+        return await process_pre_roll_request(request, strain, cultivator, db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 #  Concentrate Review and Voting Pages
 @general_pages_router.get("/get_hidden_concentrate")
 async def handle_hidden_concentrate_post(
