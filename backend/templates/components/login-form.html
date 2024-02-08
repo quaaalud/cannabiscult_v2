@@ -189,10 +189,12 @@ async function submitRegistrationForm() {
         zip_code: formData.get('register_zip_code'),
         phone: formData.get('register_phone'),
     };
-
-    const user = await window.supabaseClient.registerUser(userDetails);
-    alert('Registration successful. Check your email to confirm your registration details.');
-
+    try {
+        const user = await window.supabaseClient.registerUser(userDetails);
+        alert('Registration successful. Check your email to confirm your registration details.');
+    } catch (error) {
+        alert('Registration failed. Please try again.');
+    }
   });
 }
 
