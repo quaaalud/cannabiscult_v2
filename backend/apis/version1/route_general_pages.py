@@ -8,9 +8,8 @@ Created on Sun Mar  5 21:10:59 2023
 
 from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
-
 # from fastapi import BackgroundTasks
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
@@ -381,9 +380,7 @@ async def handle_flower_review_post(
 
 
 # Pre-Roll Review and Voting Pages
-async def process_pre_roll_request(
-    request: Request, strain: str, cultivator: str, db: Session
-):
+async def process_pre_roll_request(request: Request, strain: str, cultivator: str, db: Session):
     user_is_logged_in = get_current_users_email() is not None
     review_dict = await pre_rolls.get_pre_roll_and_description(
         db=db, strain=strain, cultivator=cultivator
@@ -400,8 +397,7 @@ async def process_pre_roll_request(
     except Exception as e:
         print(f"Error: {e}")  # Log the error for debugging
         return templates.TemplateResponse(
-            str(Path("general_pages", "voting-home.html")),
-            {"request": request}
+            str(Path("general_pages", "voting-home.html")), {"request": request}
         )
 
 
@@ -848,6 +844,23 @@ async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
 
     return get_gsheet._get_deal_workbook_and_return_dict()
+
+
+@general_pages_router.get("/modal/flower", response_class=HTMLResponse)
+async def get_flower_modal(request: Request):
+    return templates.TemplateResponse("components/flower_modal.html", {"request": request})
+
+
+@general_pages_router.get("/modal/concentrate", response_class=HTMLResponse)
+async def get_concentrate_modal(request: Request):
+    return templates.TemplateResponse("components/concentrate_modal.html", {"request": request})
+
+
+@general_pages_router.get("/modal/pre_roll", response_class=HTMLResponse)
+async def get_pre_roll_modal(request: Request):
+    return templates.TemplateResponse(
+        "components/forms/preroll_rating_modal.html", {"request": request}
+    )
 
 
 @general_pages_router.get("/sitemap.xml")

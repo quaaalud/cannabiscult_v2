@@ -11,7 +11,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.session import get_db
 from typing import List, Optional, Any
-from schemas.search_class import SearchResultItem
+from schemas.search_class import SearchResultItem, StrainCultivator
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
@@ -34,6 +34,28 @@ product_type_to_model = {
     "Edible": [Edible, VibeEdible],
     # Add other product types here
 }
+
+
+@router.post("/check-existence/{product_type}")
+async def check_existence(
+    product_type: str, entry: StrainCultivator, db: Session = Depends(get_db)
+):
+    models = product_type_to_model.get(product_type)
+    if not models:
+        raise HTTPException(status_code=404, detail="Product type not found")
+
+    for model in models:
+        exists = (
+            db.query(model)
+            .filter(model.strain.ilike(entry.strain), model.cultivator.ilike(entry.cultivator))
+            .first()
+            is not None
+        )
+
+        if exists:
+            return {"exists": True}
+
+    return {"exists": False}
 
 
 @router.get("/all/{search_term}", response_model=List[SearchResultItem])

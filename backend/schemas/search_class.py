@@ -22,3 +22,8 @@ class SearchResultItem(BaseModel):
 
 class SearchResults(BaseModel):
     results: List[SearchResultItem] = Field(..., description="List of search result items")
+
+
+class StrainCultivator(BaseModel):
+    strain: str
+    cultivator: str

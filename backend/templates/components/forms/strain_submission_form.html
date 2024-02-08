@@ -102,7 +102,9 @@
       </div>
     </div>
   </div>
+  <div id="dynamicModalContainer"></div>
 </section>
+
 {% include "components/forms/add_new_voter_modal.html" %}
 
 {% block scripts %}
@@ -143,7 +145,48 @@ async function checkVoterExists(email) {
         return false;
     }
 }
+async function loadAndShowModal(modalUrl, modalId) {
+    try {
+        const response = await fetch(modalUrl);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const modalContent = await response.text();
+        const modalContainer = document.getElementById('dynamicModalContainer');
+        modalContainer.innerHTML = modalContent;
+        $(modalId).modal('show');
+    } catch (error) {
+        console.error('Error loading modal:', error);
+    }
+}
 
+function showRelevantModal() {
+    const productTypeElements = document.getElementsByName("inlineRadioOptions");
+    for (const ptElement of productTypeElements) {
+        if (ptElement.checked) {
+            let modalUrl;
+            switch(ptElement.value) {
+                case "flowerSubmission":
+                    modalUrl = '/modal/flower';
+                    modalId = 'FlowerRankingsModal';
+                    break;
+                case "concentrateSubmission":
+                    modalUrl = '/modal/concentrate';
+                    modalId = 'ConcentrateRankingsModal';
+                    break;
+                case "pre_rollSubmission":
+                    modalId = 'PreRollRankingsModal';
+                    modalUrl = '/modal/pre_roll';
+                    break;
+                default:
+                    console.error("Unknown product type:", ptElement.value);
+                    return;
+            }
+            loadAndShowModal(modalUrl, modalId);
+            break;
+        }
+    }
+}
 async function submitStrainForm() {
     // Capture form field values
     const form = document.getElementById("strainSubmissionForm");
@@ -151,12 +194,13 @@ async function submitStrainForm() {
     const cultivatorValue = document.getElementById("cultivatorSubmission").value;
     const emailAddressValue = document.getElementById("emailAddress").value.toLowerCase();
     const descriptionValue = document.getElementById("strainDescription").value;
-    const effectsValue = document.getElementById("effectsSubmission").value; // Make sure this ID matches your form
+    const effectsValue = document.getElementById("effectsSubmission").value;
 
     // Determine the selected product type
     const productTypeElements = document.getElementsByName("inlineRadioOptions");
     let productTypeValue = '';
     for (const ptElement of productTypeElements) {
+        alert(ptElement.checked);
         if (ptElement.checked) {
             productTypeValue = ptElement.value;
             break;
@@ -170,18 +214,17 @@ async function submitStrainForm() {
     formData.append('cultivar_email', emailAddressValue);
     formData.append('description', descriptionValue);
     formData.append('effects', effectsValue);
-    formData.append('product_type', productTypeValue); // Make sure your backend is expecting this key
+    formData.append('product_type', productTypeValue);
 
     // Submit the form data
     const root = window.location.origin;
-    const url = new URL('/submit/submit_strain/', root); // Adjust the endpoint as necessary
+    const url = new URL('/submit/submit_strain/', root);
 
     const response = await fetch(url, {
         method: 'POST',
         body: formData,
         headers: {
             'Accept': 'application/json',
-            // Don't set 'Content-Type': 'multipart/form-data' here; it'll be set automatically with the correct boundary
         }
     });
 
