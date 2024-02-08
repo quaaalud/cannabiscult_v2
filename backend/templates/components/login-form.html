@@ -181,7 +181,6 @@ async function submitRegistrationForm() {
   registerForm.addEventListener('submit', async function(event) {
     event.preventDefault();
     const formData = new FormData(registerForm);
-    alert(formData.get('register_email'));
     const userDetails = {
         email: formData.get('register_email'),
         password: formData.get('register_password'),
