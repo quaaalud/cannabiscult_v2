@@ -51,8 +51,8 @@ def get_description_by_flower_id(
 async def get_flower_and_description(
     db: Session,
     strain: str,
-    cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
     cultivator: str = "",
+    cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
 ) -> Optional[Dict[str, Any]]:
     try:
         query = (
@@ -86,7 +86,6 @@ async def get_flower_and_description(
                 "cultivar": description.cultivar_email,
                 "product_type": flower.product_type,
             }
-
             return flower_info
 
         return None

@@ -8,6 +8,7 @@ Created on Sun Mar  5 21:10:59 2023
 
 from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
+
 # from fastapi import BackgroundTasks
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -331,11 +332,18 @@ async def get_all_cultivators_for_strain_route(
 
 
 async def process_flower_request(
-    request: Request, strain_selected: str, cultivator_selected: str, db: Session
+    request: Request,
+    strain_selected: str,
+    cultivator_selected: str,
+    cultivar_email: str,
+    db: Session,
 ):
     user_is_logged_in = get_current_users_email() is not None
     review_dict = await get_flower_and_description(
-        db=db, strain=strain_selected, cultivator=cultivator_selected
+        db=db,
+        strain=strain_selected,
+        cultivator=cultivator_selected,
+        cultivar_email=cultivar_email,
     )
     try:
         request_dict = {
@@ -361,10 +369,13 @@ async def handle_flower_review_get(
     *,
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
+    cultivar_email: str = Form("aaron.childs@thesocialoutfitus.com"),
     product_type_selected_selected: str = Form("flower"),
     db: Session = Depends(get_db),
 ):
-    return await process_flower_request(request, strain_selected, cultivator_selected, db)
+    return await process_flower_request(
+        request, strain_selected, cultivator_selected, cultivar_email, db
+    )
 
 
 @general_pages_router.get("/get-review")
@@ -373,32 +384,39 @@ async def handle_flower_review_post(
     *,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar_email"),
     product_type_selected: str = Query("flower", alias="product_type_selected"),
     db: Session = Depends(get_db),
 ):
-    return await process_flower_request(request, strain_selected, cultivator_selected, db)
+    return await process_flower_request(
+        request, strain_selected, cultivator_selected, cultivar_email, db
+    )
 
 
 # Pre-Roll Review and Voting Pages
-async def process_pre_roll_request(request: Request, strain: str, cultivator: str, db: Session):
+async def process_pre_roll_request(
+    request: Request, strain: str, cultivator: str, cultivar_email: str, db: Session
+):
     user_is_logged_in = get_current_users_email() is not None
     review_dict = await pre_rolls.get_pre_roll_and_description(
-        db=db, strain=strain, cultivator=cultivator
+        db=db, strain=strain, cultivar_email=cultivar_email, cultivator=cultivator
     )
-    try:
-        request_dict = {
-            "request": request,
-            "user_is_logged_in": user_is_logged_in,
-        }
-        response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(
-            str(Path("general_pages", "connoisseur_pre_rolls.html")), response_dict
-        )
-    except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
-        return templates.TemplateResponse(
-            str(Path("general_pages", "voting-home.html")), {"request": request}
-        )
+    #    try:
+    request_dict = {
+        "request": request,
+        "user_is_logged_in": user_is_logged_in,
+    }
+    response_dict = {**request_dict, **review_dict}
+    return templates.TemplateResponse(
+        str(Path("general_pages", "connoisseur_pre_rolls.html")), response_dict
+    )
+
+
+#    except Exception as e:
+#        print(f"Error: {e}")  # Log the error for debugging
+#        return templates.TemplateResponse(
+#            str(Path("general_pages", "voting-home.html")), {"request": request}
+#        )
 
 
 @general_pages_router.post("/pre-roll-get-review", response_model=Dict[str, Any])
@@ -407,6 +425,7 @@ async def handle_pre_roll_review_get(
     *,
     strain: str = Form(None),
     cultivator: str = Form(None),
+    cultivar_email: str = Form("aaron.childs@thesocialoutfitus.com"),
     db: Session = Depends(get_db),
 ):
     return await process_pre_roll_request(request, strain, cultivator, db)
@@ -418,9 +437,10 @@ async def handle_pre_roll_review_post(
     *,
     strain: str = Query(None, alias="strain"),
     cultivator: str = Query(None, alias="cultivator"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com"),
     db: Session = Depends(get_db),
 ):
-    return await process_pre_roll_request(request, strain, cultivator, db)
+    return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
 
 
 @general_pages_router.get("/vibe-hash-hole")
@@ -614,7 +634,11 @@ async def get_concentrate_cultivators_for_strain_route(
 
 
 async def process_concentrate_request(
-    request: Request, strain_selected: str, cultivator_selected: str, db: Session
+    request: Request,
+    strain_selected: str,
+    cultivator_selected: str,
+    cultivar_email: str,
+    db: Session,
 ):
     review_dict = await route_concentrates.get_concentrate_by_strain_and_cultivator(
         strain=strain_selected, cultivator=cultivator_selected, db=db
@@ -632,8 +656,8 @@ async def process_concentrate_request(
             review_dict = await route_concentrates.get_concentrate_and_description(
                 db=db,
                 strain=strain_selected,
-                cultivar_email="aaron.childs@thesocialoutfitus.com",
                 cultivator=cultivator_selected,
+                cultivar_email=cultivar_email,
             )
             request_dict = {
                 "request": request,
@@ -670,9 +694,12 @@ async def handle_concentrate_review_get(
     strain_selected: str = Form(None),
     cultivator_selected: str = Form(None),
     product_type_selected: str = Form("concentrate"),
+    cultivar_email: str = Form("aaron.childs@thesocialoutfitus.com"),
     db: Session = Depends(get_db),
 ):
-    return await process_concentrate_request(request, strain_selected, cultivator_selected, db)
+    return await process_concentrate_request(
+        request, strain_selected, cultivator_selected, cultivar_email, db
+    )
 
 
 @general_pages_router.get("/concentrate-get-review")
@@ -682,9 +709,12 @@ async def handle_concentrate_review_post(
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
     product_type_selected: str = Query("concentrate", alias="product_type_selected"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar_email"),
     db: Session = Depends(get_db),
 ):
-    return await process_concentrate_request(request, strain_selected, cultivator_selected, db)
+    return await process_concentrate_request(
+        request, strain_selected, cultivator_selected, cultivar_email, db
+    )
 
 
 @general_pages_router.post("/concentrate-submit-vote", response_model=List[str])
@@ -844,23 +874,6 @@ async def get_current_partner_data():
     import get_partner_gsheet.get_gsheet_pandas as get_gsheet
 
     return get_gsheet._get_deal_workbook_and_return_dict()
-
-
-@general_pages_router.get("/modal/flower", response_class=HTMLResponse)
-async def get_flower_modal(request: Request):
-    return templates.TemplateResponse("components/flower_modal.html", {"request": request})
-
-
-@general_pages_router.get("/modal/concentrate", response_class=HTMLResponse)
-async def get_concentrate_modal(request: Request):
-    return templates.TemplateResponse("components/concentrate_modal.html", {"request": request})
-
-
-@general_pages_router.get("/modal/pre_roll", response_class=HTMLResponse)
-async def get_pre_roll_modal(request: Request):
-    return templates.TemplateResponse(
-        "components/forms/preroll_rating_modal.html", {"request": request}
-    )
 
 
 @general_pages_router.get("/sitemap.xml")

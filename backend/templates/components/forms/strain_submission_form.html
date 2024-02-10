@@ -145,44 +145,27 @@ async function checkVoterExists(email) {
         return false;
     }
 }
-async function loadAndShowModal(modalUrl, modalId) {
-    try {
-        const response = await fetch(modalUrl);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const modalContent = await response.text();
-        const modalContainer = document.getElementById('dynamicModalContainer');
-        modalContainer.innerHTML = modalContent;
-        $(modalId).modal('show');
-    } catch (error) {
-        console.error('Error loading modal:', error);
-    }
-}
 
-function showRelevantModal() {
+function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
     const productTypeElements = document.getElementsByName("inlineRadioOptions");
     for (const ptElement of productTypeElements) {
         if (ptElement.checked) {
-            let modalUrl;
+            let reviewUrl;
             switch(ptElement.value) {
                 case "flowerSubmission":
-                    modalUrl = '/modal/flower';
-                    modalId = 'FlowerRankingsModal';
+                    reviewUrl = `/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 case "concentrateSubmission":
-                    modalUrl = '/modal/concentrate';
-                    modalId = 'ConcentrateRankingsModal';
+                    reviewUrl = `/modal/concentrate-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 case "pre_rollSubmission":
-                    modalId = 'PreRollRankingsModal';
-                    modalUrl = '/modal/pre_roll';
+                    reviewUrl = `/pre-roll-get-review?strain=${strain}&cultivator=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 default:
                     console.error("Unknown product type:", ptElement.value);
                     return;
             }
-            loadAndShowModal(modalUrl, modalId);
+            window.location.href = reviewUrl;
             break;
         }
     }
@@ -190,6 +173,9 @@ function showRelevantModal() {
 async function submitStrainForm() {
     // Capture form field values
     const form = document.getElementById("strainSubmissionForm");
+    const submitButton = form.querySelector('input[type="submit"]');
+    submitButton.disabled = true; 
+
     const strainValue = document.getElementById("strainSubmission").value;
     const cultivatorValue = document.getElementById("cultivatorSubmission").value;
     const emailAddressValue = document.getElementById("emailAddress").value.toLowerCase();
@@ -200,7 +186,6 @@ async function submitStrainForm() {
     const productTypeElements = document.getElementsByName("inlineRadioOptions");
     let productTypeValue = '';
     for (const ptElement of productTypeElements) {
-        alert(ptElement.checked);
         if (ptElement.checked) {
             productTypeValue = ptElement.value;
             break;
@@ -229,10 +214,15 @@ async function submitStrainForm() {
     });
 
     if (response.ok) {
+        const responseData = await response.json();
         form.reset();
+        getNewlyCreatedStrain(responseData.submission_strain, responseData.submission_cultivator, responseData.cultivar_email);
+        break;
     } else {
         console.error("Form submission failed:", response.status, response.statusText);
         alert('The submission failed, check your inputs and try again.');
+        submitButton.disabled = false;
+        return;
     }
 }
 </script>

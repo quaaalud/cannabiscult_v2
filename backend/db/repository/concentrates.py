@@ -52,8 +52,8 @@ def get_vibe_concentrate_strains(db: Session) -> Optional[List[str]]:
 async def get_concentrate_and_description(
     db: Session,
     strain: str,
-    cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
     cultivator: str = "",
+    cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
 ) -> Optional[Dict[Any, Any]]:
     try:
         query = (

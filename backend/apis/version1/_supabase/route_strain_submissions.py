@@ -75,6 +75,7 @@ async def submit_strain(
         "product_type_id": product_type_id,
         "submission_strain": new_submission.strain,
         "submission_cultivator": new_submission.cultivator,
+        "cultivar_email": cultivar_email,
     }
 
 
