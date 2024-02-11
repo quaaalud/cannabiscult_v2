@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", function() {
       await createPagination();
   }
   function convertYesNoToBoolean(yesNoString) {
-    return yesNoString.toLowerCase() === 'yes';
+    return yesNoString.toLowerCase().includes('true');
   }
   function convertToIntegers(formState, integerKeys) {
       integerKeys.forEach(key => {
