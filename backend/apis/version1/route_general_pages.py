@@ -426,6 +426,7 @@ async def handle_pre_roll_review_get(
     strain: str = Form(None),
     cultivator: str = Form(None),
     cultivar_email: str = Form("aaron.childs@thesocialoutfitus.com"),
+    product_type_selected_selected: str = Form("pre-roll"),
     db: Session = Depends(get_db),
 ):
     return await process_pre_roll_request(request, strain, cultivator, db)
@@ -435,9 +436,10 @@ async def handle_pre_roll_review_get(
 async def handle_pre_roll_review_post(
     request: Request,
     *,
-    strain: str = Query(None, alias="strain"),
-    cultivator: str = Query(None, alias="cultivator"),
+    strain: str = Query(None),
+    cultivator: str = Query(None),
     cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com"),
+    product_type_selected: str = Query('pre-roll'),  # No alias needed
     db: Session = Depends(get_db),
 ):
     return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
@@ -448,7 +450,7 @@ async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
     cultivator = "Vibe"
     strain = "Hash Hole"
     try:
-        return await process_pre_roll_request(request, strain, cultivator, db)
+        return await process_pre_roll_request(request, strain, cultivator, "aaron.childs@thesocialoutfitus.com", db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

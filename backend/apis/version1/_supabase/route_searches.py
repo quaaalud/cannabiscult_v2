@@ -15,6 +15,7 @@ from schemas.search_class import SearchResultItem, StrainCultivator
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
+from db.models.pre_rolls import Pre_Roll
 from db.repository.search_class import (
     search_strain,
     get_all_product_types,
@@ -32,6 +33,7 @@ product_type_to_model = {
     "Flower": [Flower],
     "Concentrate": [Concentrate],
     "Edible": [Edible, VibeEdible],
+    "Pre-Roll": [Pre_Roll]
     # Add other product types here
 }
 
@@ -83,6 +85,8 @@ async def get_product_types(db: Session = Depends(get_db)):
 async def get_cultivators(
     product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
 ):
+    if product_type == "Pre-roll":
+        product_type = "Pre-Roll"
     models = product_type_dict.get(product_type)
     if not models:
         raise HTTPException(status_code=404, detail="Product type not found")
@@ -108,6 +112,8 @@ async def get_strains(
     product_type_dict=product_type_to_model,
     db: Session = Depends(get_db),
 ):
+    if product_type == "Pre-roll":
+        product_type = "Pre-Roll"
     models = product_type_dict.get(product_type)
     if not models:
         raise HTTPException(status_code=404, detail="Product type not found")

@@ -48,6 +48,9 @@ window.addEventListener('DOMContentLoaded', function() {
   
   function getFormAction() {
     switch (productTypeSelect.value.toLowerCase()) {
+      case 'pre-roll':
+        return '/pre-roll-get-review';
+      case 'edible':
       case 'concentrate':
         return '/concentrate-get-review';
       case 'edible':
