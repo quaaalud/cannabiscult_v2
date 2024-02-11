@@ -106,6 +106,17 @@ async def get_pre_roll_and_description(
         query = query.filter(Pre_Roll.strain == strain)
         pre_roll_data = query.first()
 
+        if not pre_roll_data:
+            query = db.query(Pre_Roll, Pre_Roll_Description).join(
+                Pre_Roll_Description, Pre_Roll.pre_roll_id == Pre_Roll_Description.pre_roll_id
+            )
+
+            if cultivator:
+                query = query.filter(Pre_Roll.cultivator == cultivator)
+
+            query = query.filter(Pre_Roll.strain == strain)
+            pre_roll_data = query.first()
+
         if pre_roll_data:
             pre_roll, description = pre_roll_data
             return {
