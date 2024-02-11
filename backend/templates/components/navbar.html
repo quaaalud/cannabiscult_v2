@@ -59,7 +59,6 @@
                               };
           
                               data.forEach(item => {
-                                  alert(item.type);
                                   if (item.type in categorizedResults) {
                                       categorizedResults[item.type].push(item);
                                   }
@@ -78,8 +77,6 @@
                                           const listItem = document.createElement('li');
                                           listItem.classList.add('dropdown-item');
                                           let link;
-                                          alert(item.type);
-                                          alert(item.strain);
                                           if (item.type === 'Flower') {
                                               link = `/get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
                                           } else if (item.type === 'Concentrate') {
