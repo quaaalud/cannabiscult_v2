@@ -217,7 +217,7 @@ async function submitStrainForm() {
         const responseData = await response.json();
         form.reset();
         getNewlyCreatedStrain(responseData.submission_strain, responseData.submission_cultivator, responseData.cultivar_email);
-        break;
+        return;
     } else {
         console.error("Form submission failed:", response.status, response.statusText);
         alert('The submission failed, check your inputs and try again.');

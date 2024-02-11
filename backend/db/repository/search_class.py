@@ -16,6 +16,7 @@ from db.base import Base
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
+from db.models.pre_rolls import Pre_Roll
 from db.models.product_types import Product_Types
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
@@ -56,7 +57,8 @@ async def search_strain(db: Session, strain: str) -> List[Dict[str, Any]]:
     for item in vibe_edibles:
         item['type'] = 'Edible'
     edible_results = [*general_edibles, *vibe_edibles]
-    return flower_results + concentrate_results + edible_results
+    pre_roll_results = await get_data_by_strain(db, Pre_Roll, strain)
+    return flower_results + concentrate_results + edible_results + pre_roll_results
 
 
 async def get_all_product_types(db: Session) -> List[str]:

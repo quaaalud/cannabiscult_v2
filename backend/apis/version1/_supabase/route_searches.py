@@ -136,6 +136,8 @@ async def get_strains(
 async def get_random_cultivator_search(
     product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
 ):
+    if product_type == "Pre-roll":
+        product_type = "Pre-Roll"
     models = product_type_dict.get(product_type)
     if not models:
         raise HTTPException(status_code=404, detail="Product type not found")
