@@ -69,6 +69,19 @@ async def get_concentrate_and_description(
 
         query = query.filter(Concentrate.strain == strain)
         concentrate_data = query.first()
+
+        if not concentrate_data:
+            query = db.query(Concentrate, Concentrate_Description).join(
+                Concentrate_Description,
+                Concentrate.concentrate_id == Concentrate_Description.concentrate_id,
+            )
+
+            if cultivator:
+                query = query.filter(Concentrate.cultivator == cultivator)
+
+            query = query.filter(Concentrate.strain == strain)
+            concentrate_data = query.first()
+
         if concentrate_data:
             concentrate, description = concentrate_data
             concentrate_info = {

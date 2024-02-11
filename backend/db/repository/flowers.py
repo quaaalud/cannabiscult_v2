@@ -40,7 +40,7 @@ def get_description_by_flower_id(
         )
         img_path = str(Path(flower_description.card_path))
         results_bytes = return_image_url_from_supa_storage(img_path)
-        flower_description['card_path'] = results_bytes
+        flower_description["card_path"] = results_bytes
         return flower_description
     except Exception as e:
         traceback.print_exc()
@@ -66,6 +66,17 @@ async def get_flower_and_description(
 
         query = query.filter(Flower.strain == strain)
         flower_data = query.first()
+
+        if not flower_data:
+            query = db.query(Flower, Flower_Description).join(
+                Flower_Description, Flower.flower_id == Flower_Description.flower_id
+            )
+
+            if cultivator:
+                query = query.filter(Flower.cultivator == cultivator)
+
+            query = query.filter(Flower.strain == strain)
+            flower_data = query.first()
 
         if flower_data:
             flower, description = flower_data
@@ -122,7 +133,7 @@ def get_flower_and_description_by_id(
                 terpenes_list = description.terpenes_list
                 strain = flower.strain
             else:
-                strain = f'CP {flower.flower_id}'
+                strain = f"CP {flower.flower_id}"
                 cultivator = "Hidden"
                 description_text = "Hidden"
                 effects = "Hidden"
