@@ -6,7 +6,7 @@ Created on Fri Mar 10 21:12:40 2023
 @author: dale
 """
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 from typing import Dict, Optional, Any
 from sqlalchemy.orm import Session
 from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
@@ -18,6 +18,18 @@ from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
 router = APIRouter()
+
+
+def background_create_user(user_details: UserCreate, db: Session):
+    create_new_user(user=user_details, db=db)
+
+
+@router.post("/create_user", response_model=Dict[str, ShowUser])
+def submit_create_new_user_route(
+    user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_supa_db)
+):
+    background_tasks.add_task(background_create_user, user, db)
+    return {"created_user": user}
 
 
 @router.post("/", response_model=Dict[str, ShowUser])
