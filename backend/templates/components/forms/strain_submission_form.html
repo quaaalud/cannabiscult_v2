@@ -113,6 +113,13 @@ document.getElementById("strainSubmissionForm").addEventListener("submit", async
     event.preventDefault();
     const emailAddressInput = document.getElementById("emailAddress");
     const cultivar_email = emailAddressInput.value;
+    
+    const userVal = await window.supabaseClient.checkSuperuserStatus();
+    
+    if (userVal === false) {
+      alert("You must be a Cult Leader to Submit Strains.");
+      return;
+    }
 
     const voterExists = await checkVoterExists(cultivar_email);
 
@@ -156,7 +163,7 @@ function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
                     reviewUrl = `/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 case "concentrateSubmission":
-                    reviewUrl = `/modal/concentrate-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
+                    reviewUrl = `/concentrate-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 case "pre_rollSubmission":
                     reviewUrl = `/pre-roll-get-review?strain=${strain}&cultivator=${cultivator}&cultivar_email=${cultivar_email}`;
@@ -191,16 +198,17 @@ async function submitStrainForm() {
             break;
         }
     }
-
+    const cleanCultivatorString = window.supabaseClient.sanitizeInputString(cultivatorValue);
+    const cleanStrainString = window.supabaseClient.sanitizeInputString(strainValue);
     // Prepare the FormData object
     const formData = new FormData();
-    formData.append('strain', strainValue);
-    formData.append('cultivator', cultivatorValue);
+    formData.append('strain', cleanStrainString);
+    formData.append('cultivator', cleanCultivatorString);
     formData.append('cultivar_email', emailAddressValue);
     formData.append('description', descriptionValue);
     formData.append('effects', effectsValue);
     formData.append('product_type', productTypeValue);
-
+    
     // Submit the form data
     const root = window.location.origin;
     const url = new URL('/submit/submit_strain/', root);

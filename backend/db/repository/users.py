@@ -11,21 +11,21 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from schemas.users import UserCreate
 from db.models.users import User
-#from core.hashing import Hasher
+
+# from core.hashing import Hasher
 
 
-def add_user_to_supabase(user:UserCreate, _auth:Client):
+def add_user_to_supabase(user: UserCreate, _auth: Client):
     user = User(
-        username= user.username,
-        email= user.email,
-        name = user.name,
-        phone = user.phone,
-        zip_code = user.zip_code,
-        password = user.password,
-        agree_tos = True,
-        can_vote = False,
-        is_superuser = False
-
+        username=user.username,
+        email=user.email,
+        name=user.name,
+        phone=user.phone,
+        zip_code=user.zip_code,
+        password=user.password,
+        agree_tos=True,
+        can_vote=False,
+        is_superuser=False,
     )
     try:
         res = _auth.auth.sign_up(
@@ -42,26 +42,25 @@ def add_user_to_supabase(user:UserCreate, _auth:Client):
                         "can_vote": user.can_vote,
                         "is_superuser": user.is_superuser,
                     }
-                }
+                },
             }
         )
         return res
     except:
-      pass
+        pass
 
 
-def create_new_user(user:UserCreate, db:Session):
+def create_new_user(user: UserCreate, db: Session):
     user = User(
-        username= user.username,
-        email= user.email,
-        name = user.name,
-        phone = user.phone,
-        zip_code = user.zip_code,
-        password = user.password,
-        agree_tos = True,
-        can_vote = False,
-        is_superuser = False
-
+        username=user.username,
+        email=user.email,
+        name=user.name,
+        phone=user.phone,
+        zip_code=user.zip_code,
+        password=user.password,
+        agree_tos=True,
+        can_vote=False,
+        is_superuser=False,
     )
     try:
         db.add(user)
@@ -72,29 +71,22 @@ def create_new_user(user:UserCreate, db:Session):
         db.refresh(user)
     finally:
         return user
-      
-      
-def get_user_by_email(
-        user_email: str,
-        db: Session) -> User:
-    user = db.query(
-        User
-    ).filter(User.email == user_email).first()
+
+
+def get_user_by_email(user_email: str, db: Session) -> User:
+    user = db.query(User).filter(User.email == user_email).first()
     if user:
         return user
     return None
-      
-      
+
+
 def get_user_and_update_password(
-    user_email: str,
-    username: str,
-    new_password: str,
-    repeated_password: str,
-    db: Session) -> User:
+    user_email: str, username: str, new_password: str, repeated_password: str, db: Session
+) -> User:
     if new_password == repeated_password:
         try:
             user = get_user_by_email(user_email, db)
-            if user.username  == username:
+            if user.username == username:
                 user.password = new_password
             else:
                 raise SQLAlchemyError
@@ -107,4 +99,3 @@ def get_user_and_update_password(
             return user
     else:
         return None
-      

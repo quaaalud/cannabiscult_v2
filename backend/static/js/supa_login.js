@@ -164,6 +164,10 @@ class SupabaseClient {
         return str.trim().replace(/<[^>]*>?/gm, ''); // Basic HTML tag stripping
     }
     
+    sanitizeInputString(input) {
+      return input.replace(/[^a-zA-Z0-9 ]/g, '');
+    }
+    
      async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
@@ -225,6 +229,47 @@ class SupabaseClient {
             console.error("Error in signOut:", error.message);
             throw error;
         }
+    }
+
+    async checkSuperuserStatus() {
+      try {
+          // Retrieve the user object
+          
+          const { data: { user } } = await this.supabase.auth.getUser();
+          
+          if (user === null) {
+              return false;
+          }
+          if (user && user.email) {
+              // Construct the URL for the FastAPI endpoint
+              const url = `/users/super_user_status?user_email=${encodeURIComponent(user.email)}`;
+  
+              // Make a GET request to the FastAPI route
+              const response = await fetch(url, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  }
+              });
+  
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
+              }
+  
+              const data = await response.json();
+  
+              if (data.supuser_status === true) {
+                  return true;
+              }
+              return false;
+          } else {
+              return false;
+          }
+      } catch (error) {
+          alert("False");
+          console.error("Error checking superuser status:", error.message);
+          return false;
+      }
     }
 
     async sendResetPassword(email) {

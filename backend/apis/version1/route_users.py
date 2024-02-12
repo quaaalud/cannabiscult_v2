@@ -85,3 +85,10 @@ def return_current_user_vote_status(user_email: str, db: Session = Depends(get_s
     user = get_user_by_email(user_email=user_email, db=db)
     if user:
         return {"user_vote_status": user.can_vote}
+
+
+@router.get("/super_user_status", response_model=Dict[str, Any])
+def return_is_superuser_status(user_email: str, db: Session = Depends(get_supa_db)):
+    user = get_user_by_email(user_email=user_email, db=db)
+    if user:
+        return {"supuser_status": user.is_superuser}
