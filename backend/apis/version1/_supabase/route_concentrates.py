@@ -177,7 +177,7 @@ async def query_concentrate_description_by_strain(
     cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar"),
     db: Session = Depends(get_db),
 ) -> Dict[str, Any]:
-    concentrate_data = await get_concentrate_and_description(db, strain, cultivar_email, cultivator)
+    concentrate_data = await get_concentrate_and_description(db, strain, cultivator, cultivar_email)
     if concentrate_data:
         return concentrate_data
     else:

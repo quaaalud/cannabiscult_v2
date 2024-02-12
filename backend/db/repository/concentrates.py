@@ -81,7 +81,6 @@ async def get_concentrate_and_description(
 
             query = query.filter(Concentrate.strain == strain)
             concentrate_data = query.first()
-
         if concentrate_data:
             concentrate, description = concentrate_data
             concentrate_info = {
@@ -98,7 +97,6 @@ async def get_concentrate_and_description(
                 "terpenes_list": description.terpenes_list,
                 "cultivar": description.cultivar_email,
             }
-
             return concentrate_info
 
         return None

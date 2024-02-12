@@ -270,7 +270,7 @@
     var cultivator = "{{ cultivator }}";
     var strain = "{{ strain }}";
     var endpoint = "/concentrate_reviews/get_concentrate_description?&strain=" + encodeURIComponent(strain) + "&cultivator=" + encodeURIComponent(cultivator);
-    
+
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {
