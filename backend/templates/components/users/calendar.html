@@ -1,4 +1,40 @@
+{% block head%}
+<script src="{{ url_for('static', path='plugins/js/calendar.min.js') }}"></script>
+{% endblock %}
 <div id="calendar" class="calendar" data-mdb-add-event-button="false"></div>
 {% block scripts %}
+<script type="module" src="{{ url_for('static', path='js/mdb.es.min.js') }}"></script>
+<script>
+  // Your calendar script
+  document.addEventListener('DOMContentLoaded', () => {
+    const events = [
+      {
+        summary: 'Cannabis Cult Connoisseur Pack',
+        description: 'Connoisseur Packs are Back!',
+        start: { date: new Date('2024-02-20') },
+        end: { date: new Date('2024-02-20') },
+        color: { background: '#cfe0fc', foreground: '#0a47a9' },
+        id: 1
+      },
+      // Add more events as needed
+    ];
 
+    const calendarElement = document.getElementById('calendar');
+    let newEventId = events.length;
+
+    const calendarInstance = new mdb.Calendar(calendarElement, {
+      newEventAttributes: (event) => {
+        newEventId++;
+        return { ...event, id: newEventId };
+      }
+    });
+
+    calendarInstance.addEvents(events);
+
+    calendarElement.addEventListener('addEvent.mdb.calendar', (e) => {
+      console.log(e.event);
+      console.log(calendarInstance.events);
+    });
+  });
+</script>
 {% endblock %}
