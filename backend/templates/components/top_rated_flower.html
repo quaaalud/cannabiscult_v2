@@ -12,7 +12,9 @@
 </section>
 
 
-<script>
+{% block scripts %}
+<script defer async>
+$(document).ready(function() {
   async function fetchFlowerData() {
     try {
       const response = await fetch('/flower_voting/get_top_rated_flower_strains');
@@ -27,11 +29,24 @@
     }
   }
 
-  function updateFlowerData(data) {
+  async function updateFlowerData(data) {
     const container = document.getElementById('flowerContainer');
     let htmlContent = '';
-
-    data.forEach((flower, index) => {
+    
+    let username
+    for (const flower of data) {
+      try {
+        const response = await fetch('/users/get_username?user_email=' + encodeURIComponent(flower["cultivar"]));
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const usernameJson = await response.json();
+        username = usernameJson["username"];
+      } catch (error) {
+        console.error('Fetch error:', error);
+        username = "Ace Louie";
+        alert("Not Okay!");
+      }
       const strain = flower["strain"];
       const cultivator = flower["cultivator"];
       const score = flower["overall_score"];
@@ -70,7 +85,7 @@
                   <p class="fs-4 text-muted text-uppercase">Lineage:</p>
                   <p class="text-dark text-uppercase fw-bold">${lineage}</p>
                   <hr class="hr d-lg-none" />
-                  <p class="fs-4 text-muted text-uppercase d-lg-none">Notes:</p>
+                  <p class="fs-4 text-muted text-uppercase d-lg-none">Notes by ${username}:</p>
                   <p class="text-dark text-uppercase fw-bold d-lg-none pb-5">${description_text}</p>
                   <hr class="hr d-lg-none" />
                 </div>
@@ -81,16 +96,18 @@
         <div class="row my-auto">
           <div class="d-none d-lg-block pb-lg-5">
             <div class="row mx-auto text-start mb-lg-5">
-              <p class="fs-4 text-muted text-uppercase ps-0">Notes:</p>
+              <p class="fs-4 text-muted text-uppercase ps-0">Notes by ${username}:</p>
               <p class="text-dark text-uppercase fw-bold pb-5 ps-0">${description_text}</p>
               <hr class="hr" />
             </div>
           </div>
         </div>
       </div>`;
-    });
+    }
     container.innerHTML = htmlContent;
   }
 
   fetchFlowerData();
+});
 </script>
+{% endblock %}

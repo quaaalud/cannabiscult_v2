@@ -10,7 +10,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends
 from typing import Dict, Optional, Any
 from sqlalchemy.orm import Session
 from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
-from db.session import get_supa_db
+from db.session import get_db
 from db.repository.users import create_new_user
 from db.repository.users import get_user_by_email
 from db.repository.users import get_user_and_update_password
@@ -26,14 +26,14 @@ def background_create_user(user_details: UserCreate, db: Session):
 
 @router.post("/create_user", response_model=Dict[str, ShowUser])
 def submit_create_new_user_route(
-    user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_supa_db)
+    user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)
 ):
     background_tasks.add_task(background_create_user, user, db)
     return {"created_user": user}
 
 
 @router.post("/", response_model=Dict[str, ShowUser])
-def create_user(user: UserCreate, db: Session = Depends(get_supa_db)):
+def create_user(user: UserCreate, db: Session = Depends(get_db)):
     user = create_new_user(user=user, db=db)
     return {"created_user": user}
 
@@ -62,7 +62,7 @@ def update_user_password(
     username: str,
     new_password: str,
     repeated_password: str,
-    db: Session = Depends(get_supa_db),
+    db: Session = Depends(get_db),
 ):
     user = get_user_and_update_password(
         user_email=user_email,
@@ -93,14 +93,22 @@ async def async_get_current_users_email() -> SupaAuth:
 
 
 @router.get("/voting_status", response_model=Dict[str, Any])
-def return_current_user_vote_status(user_email: str, db: Session = Depends(get_supa_db)):
+def return_current_user_vote_status(user_email: str, db: Session = Depends(get_db)):
     user = get_user_by_email(user_email=user_email, db=db)
     if user:
         return {"user_vote_status": user.can_vote}
 
 
+@router.get("/get_username", response_model=Dict[str, Any])
+def return_username_by_email(user_email: str, db: Session = Depends(get_db)):
+    user = get_user_by_email(user_email=user_email, db=db)
+    if user:
+        print(user.username)
+        return {"username": user.username}
+
+
 @router.get("/super_user_status", response_model=Dict[str, Any])
-def return_is_superuser_status(user_email: str, db: Session = Depends(get_supa_db)):
+def return_is_superuser_status(user_email: str, db: Session = Depends(get_db)):
     user = get_user_by_email(user_email=user_email, db=db)
     if user:
         return {"supuser_status": user.is_superuser}
