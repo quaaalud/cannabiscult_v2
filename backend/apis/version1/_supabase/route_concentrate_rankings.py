@@ -73,7 +73,7 @@ async def get_top_concentrate_strains(db: Session = Depends(get_db)):
             func.avg(Concentrate_Ranking.residuals_rating),
         )
         .filter(Concentrate_Ranking.cultivator != "Cultivar")
-        .filter(Concentrate_Ranking.strain.ilike('%Test%') == False)
+        .filter(Concentrate_Ranking.strain.ilike("%Test%") == False)
         .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
         .all()
     )
@@ -112,15 +112,15 @@ async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n
             func.avg(Concentrate_Ranking.residuals_rating),
         )
         .filter(Concentrate_Ranking.cultivator != "Cultivar")
-        .filter(Concentrate_Ranking.strain.ilike('%Test%') == False)
+        .filter(Concentrate_Ranking.strain.ilike("%Test%") == False)
         .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
         .all()
     )
 
-    scored_strains = [
-        (strain, cultivator, round(sum(filter(None, ratings[2:])) / 7, 2))
-        for strain, cultivator, *ratings in avg_ratings
-    ]
+    scored_strains = []
+    for strain in avg_ratings:
+        overall_score = sum(filter(None, strain[2:])) / 7  # Adjust for the number of ratings
+        scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
 
     top_strains = sorted(scored_strains, key=lambda x: x[2], reverse=True)[:top_n]
 
