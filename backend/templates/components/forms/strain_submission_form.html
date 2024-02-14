@@ -102,56 +102,10 @@
       </div>
     </div>
   </div>
-  <div id="dynamicModalContainer"></div>
 </section>
-
-{% include "components/forms/add_new_voter_modal.html" %}
 
 {% block scripts %}
 <script>
-document.getElementById("strainSubmissionForm").addEventListener("submit", async function(event) {
-    event.preventDefault();
-    const emailAddressInput = document.getElementById("emailAddress");
-    const cultivar_email = emailAddressInput.value;
-    
-    const userVal = await window.supabaseClient.checkSuperuserStatus();
-    
-    if (userVal === false) {
-      alert("You must be a Cult Leader to Submit Strains.");
-      return;
-    }
-
-    const voterExists = await checkVoterExists(cultivar_email);
-
-    if (!voterExists) {
-        $('#FlowerVoterInfoCaptureModal').modal('show');
-        $('.modal-backdrop').remove();
-    } else {
-        await submitStrainForm();
-    }
-});
-
-async function checkVoterExists(email) {
-    const lowerCaseEmail = email.toLowerCase();
-    const root = window.location.origin;
-    const url = new URL('/check-mystery-voter', root);
-    url.searchParams.append('voter_email', lowerCaseEmail);
-
-    const response = await fetch(url, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-
-    if (response.ok) {
-        const data = await response.json();
-        return data.exists;
-    } else {
-        console.error("Request failed:", response.status, response.statusText);
-        return false;
-    }
-}
 
 function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
     const productTypeElements = document.getElementsByName("inlineRadioOptions");
@@ -177,8 +131,8 @@ function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
         }
     }
 }
-async function submitStrainForm() {
-    // Capture form field values
+async function submitStrainForm(event) {
+    event.preventDefault();
     const form = document.getElementById("strainSubmissionForm");
     const submitButton = form.querySelector('input[type="submit"]');
     submitButton.disabled = true; 
@@ -223,7 +177,6 @@ async function submitStrainForm() {
 
     if (response.ok) {
         const responseData = await response.json();
-        form.reset();
         getNewlyCreatedStrain(responseData.submission_strain, responseData.submission_cultivator, responseData.cultivar_email);
         return;
     } else {
@@ -233,5 +186,9 @@ async function submitStrainForm() {
         return;
     }
 }
+document.addEventListener('DOMContentLoaded', (event) => {
+    const form = document.getElementById("strainSubmissionForm");
+    form.addEventListener('submit', submitStrainForm);
+});
 </script>
 {% endblock %}

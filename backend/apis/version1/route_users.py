@@ -103,7 +103,6 @@ def return_current_user_vote_status(user_email: str, db: Session = Depends(get_d
 def return_username_by_email(user_email: str, db: Session = Depends(get_db)):
     user = get_user_by_email(user_email=user_email, db=db)
     if user:
-        print(user.username)
         return {"username": user.username}
 
 

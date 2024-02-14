@@ -1,0 +1,121 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Cannabis Cult Strain Submission</title>
+{% endblock %} 
+
+{% block head %}
+<meta 
+  content="Submit a strain to with your rating and reviews to the Cannabis Cult Strain Submission form. This is for our current Cult Leaders, if you are interested please send us an email at members@cannabiscult.co" 
+  name="description"
+/>
+<meta 
+  name="keywords"
+  content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Strain Submission, Submit a Strain, Submit a Cannabis Review, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
+/>
+<meta 
+  property="og:image" 
+  content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur%20Pack/CP%20Rosin?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1ciBQYWNrL0NQIFJvc2luIiwiaWF0IjoxNzAxMzEzNjc0LCJleHAiOjE3MzI4NDk2NzR9.J7m_xfZWyMGi8v6XSoMVm68e3RPU5UdGPPPXaPNtQ2I&t=2023-11-30T03%3A07%3A54.251Z"
+  alt="Cannabis Cult Strain Submission"
+/>
+<meta 
+  property="og:description" 
+  content="" 
+/>
+<meta 
+  property="og:title" 
+  content="Cannabis Cult Strain Submission"
+/>
+<meta 
+  name="twitter:card" 
+  content="summary_large_image"
+/>
+<meta 
+  property="twitter:url" 
+  content="https://cannabiscult.co"
+/>
+<meta 
+  property="twitter:site" 
+  content="@cannabiscult"
+/>
+<meta 
+  property="twitter:title" 
+  content="Cannabis Cult Strain Submission" 
+/>
+<meta 
+  property="twitter:description" 
+  content="Cannabis Cult Strain Submission form on CannabisCult.co" 
+/>
+<meta 
+  property="twitter:image" 
+  content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur%20Pack/CP%20Rosin?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1ciBQYWNrL0NQIFJvc2luIiwiaWF0IjoxNzAxMzEzNjc0LCJleHAiOjE3MzI4NDk2NzR9.J7m_xfZWyMGi8v6XSoMVm68e3RPU5UdGPPPXaPNtQ2I&t=2023-11-30T03%3A07%3A54.251Z"
+/>
+<meta 
+  property="twitter:image:alt"
+  content="Cannabis Cult Cultivar Logo"
+/>
+<link 
+  rel="canonical" 
+  href="https://cannabiscult.co/strain_submissions"
+/>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<main class="container pt-5">
+  <div class="container container-sm py-5" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
+    {% include "components/forms/strain_submission_form.html" %}
+  </div>
+</main>
+<div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="container text-center pt-1 pb-1">
+          <h5 class="modal-title">Only Cult Leaders can submit strains for now.</h5>
+        </div>
+      </div>
+      <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="notAuthorizedModalBody">
+        <div class="container text-center py-2">
+          <p class="fs-6"><strong>Email <a href="mailto:members@cannabiscult.co" class="text-decoration-none text-dark">members@cannabiscult.co</a> for more information on how to become a Cult Leader today.</strong></p>
+        </div>
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-lg btn-info w-100" data-bs-dismiss="modal">Continue</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+<script async>
+$(document).ready(function() {
+  window.addEventListener('supabaseClientReady', async function() {
+
+    const superuserStatus = await window.supabaseClient.checkSuperuserStatus();
+    if (!superuserStatus) {
+      var failModal = new bootstrap.Modal(document.getElementById('notAuthorizedModal'));
+      $('#notAuthorizedModal').on('hidden.bs.modal', function () {
+        window.location.href = "/";
+      });
+      failModal.show();
+      return;
+    } else {
+      const userEmail = await window.supabaseClient.getCurrentUserEmail();
+      if (userEmail) {
+        const emailInput = document.getElementById('emailAddress');
+        emailInput.value = userEmail;
+        emailInput.classList.add('active');
+      }
+    }
+    return;
+  });
+});
+</script>
+{% endblock %}

@@ -353,6 +353,14 @@ class SupabaseClient {
         }
     }
     
+    async getCurrentUserEmail() {
+      const { data: { user } } = await this.supabase.auth.getUser();
+      if (!user) {
+        return null
+      }
+      return user.email;
+    }
+    
     async checkUserAuthentication() {
         try {
             const { data: { user }, error } = await this.supabase.auth.getUser();
@@ -371,10 +379,13 @@ class SupabaseClient {
             if (error) {
                 alert('Authentication error. Please try logging in again.', error);
                 window.location.href = '/login';
+                return;
             }
         } catch (error) {
             console.error('An error occurred while checking user authentication:', error);
             alert('An unexpected error occurred. Please try again.');
+            window.location.href = '/login';
+            return;
         }
     }
 }
