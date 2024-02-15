@@ -666,7 +666,7 @@ async def process_concentrate_request(
             }
             response_dict = {**request_dict, **review_dict}
             return templates.TemplateResponse(
-                str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
+                str(Path("general_pages", "concentrate_ratings.html")), response_dict
             )
     try:
         review_dict = concentrate_reviews.get_review_data_and_path(
@@ -678,7 +678,7 @@ async def process_concentrate_request(
         response_dict = {**request_dict, **review_dict}
 
         return templates.TemplateResponse(
-            str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
+            str(Path("general_pages", "concentrate_ratings.html")), response_dict
         )
     except:
         return templates.TemplateResponse(

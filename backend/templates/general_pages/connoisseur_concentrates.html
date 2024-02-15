@@ -209,7 +209,87 @@
     height: 100%; 
   }
 </style>
-   
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async function() {
+    await fetchAndUpdatConcentrateDescription();
+    await fetchAndUpdateConcentrateRatings();
+  });
+
+  async function fetchAndUpdatConcentrateDescription() {
+    var cultivator = "{{ cultivator }}";
+    var strain = "{{ strain }}";
+    var endpoint = "/concentrate_reviews/get_concentrate_description?&strain=" + encodeURIComponent(strain) + "&cultivator=" + encodeURIComponent(cultivator);
+
+    fetch(endpoint)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.error) {
+            let terpenesList = data.terpenes_list
+            if (terpenesList && terpenesList.length > 0) {
+              const dataValues = terpenesList.map(() => 1);
+              initTerpeneChart(terpenesList, dataValues);
+            }
+        } else {
+            console.error('Error fetching data:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+
+  async function fetchAndUpdateConcentrateRatings() {
+    const concentrateId = {{ concentrate_id }};
+    const endpoint = "/concentrate_ranking/get_concentrate_ratings_by_id/" + concentrateId;
+  
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const ratingsData = await response.json();
+      
+      if (!ratingsData.error) {
+          const formatRating = (rating) => {
+            return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+          };
+          document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
+          document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
+          document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
+          document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
+          document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
+          document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
+          document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
+        } else {
+          console.error('Error fetching data:', ratingsData.error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+  }
+
+  function initTerpeneChart(labels, dataValues) {
+    const ctx = document.getElementById('terpeneChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Terpenes',
+          data: dataValues,
+          backgroundColor: generateColors(labels.length),
+        }]
+      }
+    });
+  }
+  function generateColors(count) {
+    const colors = [
+      'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+      'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+      'rgba(66, 133, 244, 0.2)'
+    ];
+    return colors.slice(0, count);
+  }
+</script>
 {% endblock %}
 
 {% block footer %}
