@@ -155,7 +155,7 @@ async def get_top_pre_roll_strains_route(db: Session = Depends(get_db)) -> List[
     return top_strains
 
 
-@router.get("/get_pre_roll_rating_by_id", response_model=Optional[Dict[str, float]])
+@router.get("/get_pre_roll_rating_by_id", response_model=Optional[Dict[str, Any]])
 async def get_pre_roll_ratings_by_id_route(
     pre_roll_id: int = Query(
         None, alias="pre_roll_id", description="The ID of the pre-roll to retrieve ratings for"
@@ -172,7 +172,7 @@ async def get_pre_roll_ratings_by_id_route(
         )
 
 
-@router.get("/get_pre_roll_rating_by_id/{pre_roll_id}", response_model=Optional[Dict[str, float]])
+@router.get("/get_pre_roll_rating_by_id/{pre_roll_id}", response_model=Optional[Dict[str, Any]])
 async def get_pre_roll_ratings_by_id_path_route(
     pre_roll_id: int = Path(..., description="The ID of the pre-roll to retrieve ratings for"),
     db: Session = Depends(get_db),

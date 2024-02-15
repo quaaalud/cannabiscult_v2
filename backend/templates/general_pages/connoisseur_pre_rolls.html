@@ -245,7 +245,7 @@
   
   function fetchAndUpdateStrainRatings() {
     var pre_rollId = {{ pre_roll_id }};
-    var endpoint = "/prerolls/get_pre_roll_rating_by_id/" + pre_rollId;
+    var endpoint = "/prerolls/get_pre_roll_rating_by_id/" + parseInt(pre_rollId);
 
     fetch(endpoint)
     .then(response => response.json())
