@@ -27,13 +27,14 @@ class Concentrate_Ranking(Base):
     harshness_rating = Column(Float, nullable=False)
     residuals_rating = Column(Float, nullable=False)
     effects_rating = Column(Float, nullable=False)
-    color_explanation = Column(String(500))
-    consistency_explanation = Column(String(500))
-    flavor_explanation = Column(String(500))
-    smell_explanation = Column(String(500))
-    harshness_explanation = Column(String(500))
-    residuals_explanation = Column(String(500))
-    effects_explanation = Column(String(500))
+    color_explanation = Column(String(500), nullable=True)
+    consistency_explanation = Column(String(500), nullable=True)
+    flavor_explanation = Column(String(500), nullable=True)
+    smell_explanation = Column(String(500), nullable=True)
+    harshness_explanation = Column(String(500), nullable=True)
+    residuals_explanation = Column(String(500), nullable=True)
+    effects_explanation = Column(String(500), nullable=True)
+    # pack_code = Column(String(500), nullable=True)
 
     date_posted = Column(
         Date,
@@ -67,6 +68,8 @@ class Hidden_Concentrate_Ranking(Base):
     harshness_explanation = Column(String(500))
     residuals_explanation = Column(String(500))
     effects_explanation = Column(String(500))
+
+    # pack_code = Column(String(500), nullable=True)
 
     date_posted = Column(
         Date,

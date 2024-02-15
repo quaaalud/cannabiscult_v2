@@ -23,6 +23,7 @@ from schemas.concentrate_rankings import (
 )
 from db.repository.concentrate_rankings import (
     create_hidden_concentrate_ranking,
+    update_or_create_concentrate,
     create_vibe_concentrate_ranking,
     create_concentrate_ranking,
     return_all_hidden_concentrate_rankings,
@@ -37,15 +38,17 @@ router = APIRouter()
 async def submit_concentrate_ranking(
     concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Concentrate_Ranking:
-    submitted_ranking = create_concentrate_ranking(ranking=concentrate_ranking, db=db)
+    submitted_ranking = await update_or_create_concentrate(ranking=concentrate_ranking, db=db)
     return submitted_ranking
 
 
 @router.post("/submit-hidden-concentrate-ranking", response_model=None)
-def submit_mystery_concentrate_ranking(
+async def submit_mystery_concentrate_ranking(
     concentrate_ranking: CreateHiddenConcentrateRanking, db: Session = Depends(get_db)
 ) -> Hidden_Concentrate_Ranking:
-    submitted_ranking = create_hidden_concentrate_ranking(hidden_ranking=concentrate_ranking, db=db)
+    submitted_ranking = await update_or_create_concentrate(
+        ranking=concentrate_ranking, db=db
+    )
     return submitted_ranking
 
 
@@ -54,7 +57,7 @@ async def submit_vibe_concentrate_ranking(
     ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Vibe_Concentrate_Ranking:
     create_vibe_concentrate_ranking(ranking=ranking, db=db)
-    submitted_ranking = create_concentrate_ranking(ranking=ranking, db=db)
+    submitted_ranking = await create_concentrate_ranking(ranking=ranking, db=db)
     return submitted_ranking
 
 

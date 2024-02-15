@@ -51,6 +51,7 @@ class ConcentrateRankingBase(BaseModel):
 
     class Config:
         from_attributes = True
+        populate_by_name = True
 
 
 class CreateConcentrateRanking(ConcentrateRankingBase):
@@ -62,28 +63,5 @@ class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
     pass
 
 
-class HiddenConcentrateRanking(BaseModel):
-    id: int = Field(
-        ...,
-        alias="hidden_concentrate_ranking_id",
-        description="Unique identifier for the hidden concentrate ranking",
-    )
-    cultivator: Optional[str] = Field(
-        None, description="Name of the cultivator (masked if concentrate is mystery)"
-    )
-    strain: Optional[str] = Field(
-        None, description="Name of the strain (masked if concentrate is mystery)"
-    )
-    connoisseur: Optional[EmailStr] = Field(None, description="Email of the connoisseur")
-    color_rating: float = Field(..., description="Color rating")
-    consistency_rating: float = Field(..., description="Consistency rating")
-    smell_rating: float = Field(..., description="Smell rating")
-    flavor_rating: float = Field(..., description="Flavor rating")
-    harshness_rating: float = Field(..., description="Harshness rating")
-    residuals_rating: float = Field(..., description="Residuals rating")
-    effects_rating: float = Field(..., description="Effects rating")
-    date_posted: date = Field(..., description="Date when the ranking was posted")
-
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+class HiddenConcentrateRanking(CreateHiddenConcentrateRanking):
+    pass

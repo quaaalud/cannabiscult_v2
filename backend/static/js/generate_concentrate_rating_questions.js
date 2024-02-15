@@ -3,14 +3,13 @@ import QuestionBuilder from './QuestionBuilder.js';
 document.addEventListener("DOMContentLoaded", function() {
   const strain =  strainValue;
   const cultivator =  cultivatorValue;
-  const concentrateId = preRollIdValue;
+  const concentrateId = concentrateIdValue;
   const questionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
   let step = 0;
   let formState = loadFormState();
   
   const questions = [
-    const questions = [
     QuestionBuilder.createEmailQuestion(strain, cultivator),
     QuestionBuilder.createRatingQuestion(
       strain,
@@ -110,18 +109,18 @@ document.addEventListener("DOMContentLoaded", function() {
       const savedState = localStorage.getItem('formState');
       if (savedState) {
           const parsedState = JSON.parse(savedState);
-          if (parsedState.hasOwnProperty('pre_roll_id')) {
+          if (parsedState.hasOwnProperty('concentrate_id') && parsedState.hasOwnProperty('concentrate_id') == concentrateId) {
               return parsedState;
           } else {
           return {
-              "pre_roll_id": preRollId,
-              "cultivator": "{{ cultivator }}",
-              "strain": "{{ strain }}"
+              "concentrate_id": concentrateId,
+              "cultivator": cultivator,
+              "strain": strain,
           };
         }
       } else {
           return {
-              "pre_roll_id": preRollId,
+              "concentrate_id": concentrateId,
               "cultivator": cultivator,
               "strain": strain,
           };
@@ -180,6 +179,10 @@ document.addEventListener("DOMContentLoaded", function() {
         if (question.key === "connoisseur") {
           const lowerCaseVal = inputVal.toLowerCase()
           formState[question.key] = lowerCaseVal
+        } else if (question.key == "effects_explanation") {
+          const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
+          const combinedString = selectedOptions.join(' ');
+          formState.effects_explanation = combinedString;
         } else {
           formState[question.key] = inputVal;
         }
@@ -248,9 +251,6 @@ document.addEventListener("DOMContentLoaded", function() {
       }
       await createPagination();
   }
-  function convertYesNoToBoolean(yesNoString) {
-    return yesNoString.toLowerCase().includes('true');
-  }
   function convertToIntegers(formState, integerKeys) {
       integerKeys.forEach(key => {
           if (formState.hasOwnProperty(key) && formState[key] !== null && formState[key] !== '') {
@@ -261,11 +261,12 @@ document.addEventListener("DOMContentLoaded", function() {
   async function submitForm(formState) {
     formState.connoisseur = formState.connoisseur.toLowerCase();
     delete formState.lastSavedIndex;
-    formState.purchase_bool = convertYesNoToBoolean(formState.purchase_bool);
-    const integerKeys = ['ease_to_light_rating', 'burn_rating', 'tightness_rating', 'roll_rating', 'overall_score', 'pre_roll_id'];
+    const integerKeys = ['color_rating', 'smell_rating', 'consistency_rating', 'flavor_rating', 'harshness_score', 'residuals_rating', 'effects_rating'];
     convertToIntegers(formState, integerKeys);
+    formState.concentrate_id = parseInt(concentrateId);
+
     try {
-      const response = await fetch('/prerolls/update_or_create_pre_roll_ranking', {
+      const response = await fetch('/concentrate_ranking/submit-concentrate-ranking', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -274,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function() {
       });
       if (response.ok) {
         const data = await response.json();
-        if (formState.cultivator === "Connoisseur") {
+        if (formState.cultivator === "Connoisseur" || formState.cultivator === "Cultivar") {
           const connoisseurEmail = formState.connoisseur; // Save the email value
           formState = {};
           formState.connoisseur = connoisseurEmail;
@@ -325,4 +326,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
   });
   loadQuestion();
+});
+$(document).ready(function() {
+  window.addEventListener('supabaseClientReady', async function() {
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (userEmail) {
+      const emailInput = document.getElementById('connoisseur');
+      emailInput.value = userEmail;
+    }
+  });
 });

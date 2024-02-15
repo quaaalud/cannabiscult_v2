@@ -26,21 +26,50 @@ from pathlib import Path
 import plotly.express as px
 
 
-def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
+async def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = ranking.dict()
     created_ranking = Concentrate_Ranking(**ranking_data_dict)
-
-    db.add(created_ranking)
-
-    db.commit()
-    db.refresh(created_ranking)
-
+    try:
+        db.add(created_ranking)
+    except:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(created_ranking)
     return created_ranking
 
 
-def create_hidden_concentrate_ranking(hidden_ranking: CreateHiddenConcentrateRanking, db: Session):
+async def update_or_create_concentrate(ranking: CreateConcentrateRanking, db: Session):
+    existing_ranking = (
+        db.query(Concentrate_Ranking)
+        .filter(
+            Concentrate_Ranking.cultivator == ranking.cultivator,
+            Concentrate_Ranking.strain == ranking.strain,
+            Concentrate_Ranking.connoisseur == ranking.connoisseur,
+        )
+        .first()
+    )
+
+    if existing_ranking:
+        for key, value in ranking.dict().items():
+            if value is not None:
+                setattr(existing_ranking, key, value)
+        try:
+            db.commit()
+            db.refresh(existing_ranking)
+            return {"ranking_submitted": True}
+        except:
+            db.rollback()
+            raise
+    else:
+        await create_concentrate_ranking(ranking, db)
+
+    return {"pre_roll_ranking": True}
+
+
+def create_hidden_concentrate_ranking(hidden_ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = hidden_ranking.dict()
-    created_ranking = Hidden_Concentrate_Ranking(**ranking_data_dict)
+    created_ranking = Concentrate_Ranking(**ranking_data_dict)
     try:
         db.add(created_ranking)
     except:

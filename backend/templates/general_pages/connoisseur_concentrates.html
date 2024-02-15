@@ -65,26 +65,26 @@
 
 {% block content %}
 <main class="container pt-5">
-  <section draggable="false" class="container pt-3" data-v-271253ee="">
-    <section class="mb-10">
-      <div class="container pb-5">
-        <div class="row mx-auto pb-xl-5">
-          <h1 class="fw-bold text-center">Cultivar Concentrate Reviews</h1>
+    <section draggable="false" class="container pt-3" data-v-271253ee="">
+      <section class="mb-10">
+        <div class="row mx-auto">
+          <h1 class="fw-bold mb-5 text-center">Cultivar Pre-Roll Ratings</h1>
         </div>
-      </div>
-      <div class="row gx-lg-5 align-items-start d-flex justify-content-between mx-auto">
-        <div class="col-12 col-lg-6 mb-5 mb-lg-0 mx-auto">
-          {% include "components/hidden-concentrate-card.html" %}
-        </div>
-        <div class="col-12 col-lg-6 mb-4 mb-lg-0 h-100">
-          <div class="d-flex flex-column justify-content-between">
-            <div class="d-flex align-items-start mb-5 pt-lg-3 pt-xl-5">
-              <div class="flex-shrink-0">
-                <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
-                  <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+        <div class="row gx-lg-5 align-items-start d-flex">
+          <div class="col-lg-6 col-12 mb-5 mb-lg-0">
+            <div class="container">
+              {% include "components/voting_cards/concentrate_card.html" %}
+            </div>
+          </div>
+          <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 my-auto{% endif %} pt-lg-1 mx-auto">
+            <div class="d-flex flex-column justify-content-between pt-lg-5">
+              <div class="d-flex align-items-start mb-5">
+                <div class="flex-shrink-0">
+                  <div class="p-3 rounded-4 shadow-2-strong" style="background-color: hsl(231, 52.6%, 20%)">
+                    <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+                  </div>
                 </div>
-              </div>
-              <div class="flex-grow-1 ms-4">
+                <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Description</p>
                 <p id="description_text" class="text-muted mb-0">We cannot tell you the description on the mystery reviews.</p>
               </div>
@@ -197,7 +197,6 @@
       </div>
     </div>
   </section>
-  {% include "components/hidden-concentrate-modal.html" %}
 </main>
 <style> 
   hr.divider-vertical { 
