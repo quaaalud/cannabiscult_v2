@@ -120,14 +120,14 @@ document.addEventListener("DOMContentLoaded", async function() {
           return {
               "concentrate_id": concentrateId,
               "cultivator": cultivator,
-              "strain": strain,
+              "strain": strain
           };
         }
       } else {
           return {
               "concentrate_id": concentrateId,
               "cultivator": cultivator,
-              "strain": strain,
+              "strain": strain
           };
       }
   }

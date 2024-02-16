@@ -77,12 +77,18 @@ document.addEventListener("DOMContentLoaded", async function() {
         const parsedState = JSON.parse(savedState);
         if (parsedState.hasOwnProperty('pre_roll_id') && parsedState.hasOwnProperty('pre_roll_id') == preRollId) {
             return parsedState;
+        } else {
+          return {
+              "pre_roll_id": preRollId,
+              "cultivator": cultivator,
+              "strain": strain
+          };
         }
     }
     return {
         "pre_roll_id": preRollId,
         "cultivator": cultivator,
-        "strain": strain,
+        "strain": strain
     };
   }
   
