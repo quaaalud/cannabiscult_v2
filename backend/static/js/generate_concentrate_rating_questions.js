@@ -4,12 +4,12 @@ document.addEventListener("DOMContentLoaded", async function() {
   const strain =  strainValue;
   const cultivator =  cultivatorValue;
   const concentrateId = concentrateIdValue;
-  const questionsContainer = document.getElementById('cardBody');
+  const concentrateQuestionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
   let step = 0;
-  let formState = await loadFormState();
+  let formState = await loadFormStateforConcentrates();
   
-  const questions = [
+  const concentrateQuestions = [
     QuestionBuilder.createEmailQuestion(strain, cultivator),
     QuestionBuilder.createRatingQuestion(
       strain,
@@ -90,7 +90,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       "For example, T2, A3 etc"
     ),
   ];
-  const int_keys = questions
+  const int_keys = concentrateQuestions
   .filter(question => question.key.endsWith('rating') || question.key.endsWith('score'))
   .map(question => question.key);
   
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     await loadQuestion();
   }
 
-  async function loadFormState() {
+  async function loadFormStateforConcentrates() {
     // Check for localStorage availability
     if (typeof localStorage === 'undefined') {
       console.warn('localStorage is not available, defaulting to initial state.');
@@ -173,12 +173,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     const pagination = document.getElementById('pagination');
     pagination.className = 'pagination pagination-sm justify-content-center';
     pagination.innerHTML = '';
-    for (let i = 1; i <= questions.length; i++) {
+    for (let i = 1; i <= concentrateQuestions.length; i++) {
       let pageTitle;
-      if (i === questions.length) {
+      if (i === concentrateQuestions.length) {
         pageTitle = "Submit Rating";
       } else {
-        pageTitle = formatTitle(questions[i].key);
+        pageTitle = formatTitle(concentrateQuestions[i].key);
       }
       const pageItemClass = i === step ? 'page-item active' : 'page-item';
       pagination.innerHTML += `<li class="${pageItemClass}" title="${pageTitle}"><button class="page-link" onclick="window.jumpToQuestion(${i})">${i}</button></li>`;
@@ -190,8 +190,8 @@ document.addEventListener("DOMContentLoaded", async function() {
   }
   
   async function saveCurrentAnswer() {
-    if (step < questions.length) {
-      const question = questions[step];
+    if (step < concentrateQuestions.length) {
+      const question = concentrateQuestions[step];
       const input = document.getElementById(question.key);
       if (input) {
         var inputVal = input.value;
@@ -250,11 +250,11 @@ document.addEventListener("DOMContentLoaded", async function() {
   }
 
   async function loadQuestion() {
-      if (step < questions.length) {
+      if (step < concentrateQuestions.length) {
           nextBtn.textContent = 'Next';
-          const question = questions[step];
+          const question = concentrateQuestions[step];
           cardTitle.innerHTML = question.title;
-          questionsContainer.innerHTML = question.content;
+          concentrateQuestionsContainer.innerHTML = question.content;
           if (int_keys.includes(question.key)) {
               QuestionBuilder.setSelectedRadioValue(question.key, formState[question.key]);
           } else {
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", async function() {
           }
       } else {
         cardTitle.innerHTML = "All Questions Completed";
-        questionsContainer.innerHTML = "";
+        concentrateQuestionsContainer.innerHTML = "";
         nextBtn.textContent = 'Submit';
       }
       await createPagination();
@@ -327,7 +327,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         document.getElementById('paginationContainer').style.display = 'block';
       }
     }
-    if (step < questions.length) {
+    if (step < concentrateQuestions.length) {
       saveCurrentAnswer();
       step++;
       loadQuestion();

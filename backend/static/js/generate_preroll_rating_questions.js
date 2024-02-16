@@ -4,10 +4,10 @@ document.addEventListener("DOMContentLoaded", async function() {
   const strain =  strainValue;
   const cultivator =  cultivatorValue;
   const preRollId = preRollIdValue;
-  const questionsContainer = document.getElementById('cardBody');
+  const prerollQuestionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
 
-  const questions = [
+  const prerollQuestions = [
     QuestionBuilder.createEmailQuestion(strain, cultivator),
   
     QuestionBuilder.createTextInputQuestion(
@@ -50,8 +50,8 @@ document.addEventListener("DOMContentLoaded", async function() {
     ),
   ];
   let step = 0;
-  let formState = await loadFormState();
-  const int_keys = questions
+  let formState = await loadFormStateforPreRolls();
+  const int_keys = prerollQuestions
   .filter(question => question.key.endsWith('rating') || question.key.endsWith('score'))
   .map(question => question.key);
   
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     step = questionIndex;
     await loadQuestion();
   }
-  async function loadFormState() {
+  async function loadFormStateforPreRolls() {
     // Early check for localStorage availability
     if (typeof localStorage === 'undefined') {
       console.warn('localStorage is not available, defaulting to initial state.');
@@ -130,12 +130,12 @@ document.addEventListener("DOMContentLoaded", async function() {
     const pagination = document.getElementById('pagination');
     pagination.className = 'pagination pagination-sm justify-content-center';
     pagination.innerHTML = '';
-    for (let i = 1; i <= questions.length; i++) {
+    for (let i = 1; i <= prerollQuestions.length; i++) {
       let pageTitle;
-      if (i === questions.length) {
+      if (i === prerollQuestions.length) {
         pageTitle = "Submit Rating";
       } else {
-        pageTitle = formatTitle(questions[i].key);
+        pageTitle = formatTitle(prerollQuestions[i].key);
       }
       const pageItemClass = i === step ? 'page-item active' : 'page-item';
       pagination.innerHTML += `<li class="${pageItemClass}" title="${pageTitle}"><button class="page-link" onclick="window.jumpToQuestion(${i})">${i}</button></li>`;
@@ -147,8 +147,8 @@ document.addEventListener("DOMContentLoaded", async function() {
   }
   
   async function saveCurrentAnswer() {
-    if (step < questions.length) {
-      const question = questions[step];
+    if (step < prerollQuestions.length) {
+      const question = prerollQuestions[step];
       const input = document.getElementById(question.key);
       if (input) {
         var inputVal = input.value;
@@ -203,11 +203,11 @@ document.addEventListener("DOMContentLoaded", async function() {
   }
 
   async function loadQuestion() {
-      if (step < questions.length) {
+      if (step < prerollQuestions.length) {
           nextBtn.textContent = 'Next';
-          const question = questions[step];
+          const question = prerollQuestions[step];
           cardTitle.innerHTML = question.title;
-          questionsContainer.innerHTML = question.content;
+          prerollQuestionsContainer.innerHTML = question.content;
           if (int_keys.includes(question.key)) {
               QuestionBuilder.setSelectedRadioValue(question.key, formState[question.key]);
           } else {
@@ -218,7 +218,7 @@ document.addEventListener("DOMContentLoaded", async function() {
           }
       } else {
         cardTitle.innerHTML = "All Questions Completed";
-        questionsContainer.innerHTML = "";
+        prerollQuestionsContainer.innerHTML = "";
         nextBtn.textContent = 'Submit';
       }
       await createPagination();
@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         document.getElementById('paginationContainer').style.display = 'block';
       }
     }
-    if (step < questions.length) {
+    if (step < prerollQuestions.length) {
       saveCurrentAnswer();
       step++;
       loadQuestion();
