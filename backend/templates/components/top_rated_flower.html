@@ -13,7 +13,7 @@
 
 
 {% block scripts %}
-<script defer async>
+<script>
 $(document).ready(function() {
   async function fetchFlowerData() {
     try {
@@ -45,7 +45,6 @@ $(document).ready(function() {
       } catch (error) {
         console.error('Fetch error:', error);
         username = "Ace Louie";
-        alert("Not Okay!");
       }
       const strain = flower["strain"];
       const cultivator = flower["cultivator"];

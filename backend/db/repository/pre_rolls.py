@@ -289,12 +289,13 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
         .filter(Pre_Roll_Ranking.pre_roll_id == pre_roll_id)
         .first()
     )
-    if not avg_rankings or any(rating is None for rating in avg_rankings):
-        return {"error": "Pre-roll not found or incomplete data"}
+    print(avg_rankings)
+    #if not avg_rankings or any(rating is None for rating in avg_rankings):
+     #   return {"error": "Pre-roll not found or incomplete data"}
 
     ratings = [rating for rating in avg_rankings if rating is not None]
-    if not ratings:
-        return {"error": "Incomplete data for the given pre_roll_id"}
+    #if not ratings:
+    #    return {"error": "Incomplete data for the given pre_roll_id"}
 
     overall_score = sum(ratings) / len(ratings)
 
