@@ -94,10 +94,7 @@
 <script>
   const strainValue = "{{ strain }}";
   const cultivatorValue = "{{ cultivator }}";
-  let concentrateIdValue = "{{ concentrate_id }}";
-  if (!concentrateIdValue) {
-    concentrateIdValue = "{{ id }}";
-  }
+  const concentrateIdValue = "{{ concentrate_id }}";
 </script>
 
 <script type="module" src="{{ url_for('static', path='js/generate_concentrate_rating_questions.js') }}" async></script>

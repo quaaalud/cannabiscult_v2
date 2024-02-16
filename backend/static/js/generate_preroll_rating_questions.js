@@ -1,13 +1,13 @@
 import QuestionBuilder from './QuestionBuilder.js';
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   const strain =  strainValue;
   const cultivator =  cultivatorValue;
   const preRollId = preRollIdValue;
   const questionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
   let step = 0;
-  let formState = loadFormState();
+  let formState = await loadFormState();
   
   const questions = [
     QuestionBuilder.createEmailQuestion(strain, cultivator),
@@ -72,25 +72,18 @@ document.addEventListener("DOMContentLoaded", function() {
     await loadQuestion();
   }
   function loadFormState() {
-      const savedState = localStorage.getItem('formState');
-      if (savedState) {
-          const parsedState = JSON.parse(savedState);
-          if (parsedState.hasOwnProperty('pre_roll_id') && parsedState.hasOwnProperty('pre_roll_id') == preRollId) {
-              return parsedState;
-          } else {
-          return {
-              "pre_roll_id": preRollId,
-              "cultivator": cultivator,
-              "strain": strain,
-          };
+    const savedState = localStorage.getItem('formState');
+    if (savedState) {
+        const parsedState = JSON.parse(savedState);
+        if (parsedState.hasOwnProperty('pre_roll_id') && parsedState.hasOwnProperty('pre_roll_id') == preRollId) {
+            return parsedState;
         }
-      } else {
-          return {
-              "pre_roll_id": preRollId,
-              "cultivator": cultivator,
-              "strain": strain,
-          };
-      }
+    }
+    return {
+        "pre_roll_id": preRollId,
+        "cultivator": cultivator,
+        "strain": strain,
+    };
   }
   
   document.getElementById('pagination').addEventListener('click', function(event) {

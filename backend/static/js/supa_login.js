@@ -354,11 +354,12 @@ class SupabaseClient {
     }
     
     async getCurrentUserEmail() {
-      const { data: { user } } = await this.supabase.auth.getUser();
-      if (!user) {
-        return null
+      const { data: { user }, error } = await this.supabase.auth.getUser();
+      if (error || !user) {
+        return;
+      } else {
+        return user.email;
       }
-      return user.email;
     }
     
     async checkUserAuthentication() {

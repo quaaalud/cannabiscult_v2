@@ -1,13 +1,13 @@
 import QuestionBuilder from './QuestionBuilder.js';
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   const strain =  strainValue;
   const cultivator =  cultivatorValue;
   const concentrateId = concentrateIdValue;
   const questionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
   let step = 0;
-  let formState = loadFormState();
+  let formState = await loadFormState();
   
   const questions = [
     QuestionBuilder.createEmailQuestion(strain, cultivator),
@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function() {
     step = questionIndex;
     await loadQuestion();
   }
-  function loadFormState() {
+  async function loadFormState() {
       const savedState = localStorage.getItem('formState');
       if (savedState) {
           const parsedState = JSON.parse(savedState);
@@ -332,12 +332,17 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   loadQuestion();
 });
-$(document).ready(function() {
-  window.addEventListener('supabaseClientReady', async function() {
+window.addEventListener('supabaseClientReady', async function() {
+  try {
     const userEmail = await window.supabaseClient.getCurrentUserEmail();
-    if (userEmail) {
-      const emailInput = document.getElementById('connoisseur');
-      emailInput.value = userEmail;
+    if (!userEmail) {
+      return;
     }
-  });
+  } catch {
+    return;
+  }
+  const emailInput = document.getElementById('connoisseur');
+  emailInput.value = userEmail;
+  return;
 });
+

@@ -70,7 +70,7 @@
 </div>
 {% block scripts %}
 <script defer async>
-  document.addEventListener('DOMContentLoaded', (event) => {
+  document.addEventListener('DOMContentLoaded', async (event) => {
     const startReviewBtn = document.getElementById('startReviewBtn');
     const backToCardBtn = document.getElementById('backToCardBtn');
     const voteInterface = document.getElementById('vote-interface');
