@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function() {
           } else {
           return {
               "pre_roll_id": preRollId,
-              "cultivator": "{{ cultivator }}",
-              "strain": "{{ strain }}"
+              "cultivator": cultivator,
+              "strain": strain,
           };
         }
       } else {
