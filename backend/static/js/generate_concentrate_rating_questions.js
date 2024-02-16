@@ -312,6 +312,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     } catch (error) {
       console.error("Error during submission:", error);
     }
+    step = 0
   }
   document.getElementById('nextBtn').addEventListener('click', async function() {
     if (step === 0) {
