@@ -110,28 +110,42 @@ document.addEventListener("DOMContentLoaded", async function() {
     step = questionIndex;
     await loadQuestion();
   }
+
   async function loadFormState() {
-      const savedState = localStorage.getItem('formState');
-      if (savedState) {
-          const parsedState = JSON.parse(savedState);
-          if (parsedState.hasOwnProperty('concentrate_id') && parsedState.concentrate_id === concentrateId) {
-              return parsedState;
-          } else {
-          return {
-              "concentrate_id": concentrateId,
-              "cultivator": cultivator,
-              "strain": strain
-          };
-        }
-      } else {
-          return {
-              "concentrate_id": concentrateId,
-              "cultivator": cultivator,
-              "strain": strain
-          };
-      }
-  }
+    // Check for localStorage availability
+    if (typeof localStorage === 'undefined') {
+      console.warn('localStorage is not available, defaulting to initial state.');
+      return getDefaultFormStateForConcentrates();
+    }
   
+    try {
+      const savedState = localStorage.getItem('formState');
+      if (!savedState) {
+        return getDefaultFormStateForConcentrates();
+      }
+  
+      const parsedState = JSON.parse(savedState);
+      // Ensure the parsedState is for the current concentrate item
+      if (parsedState.concentrate_id !== concentrateId) {
+        console.warn('Saved form state is for a different concentrate item, defaulting to initial state.');
+        return getDefaultFormStateForConcentrates();
+      }
+  
+      return parsedState; // Return the saved state if it matches the current concentrate ID
+    } catch (e) {
+      console.error('Error reading or parsing saved form state:', e);
+      return getDefaultFormStateForConcentrates(); // Fallback to default state in case of any error
+    }
+  }
+
+  function getDefaultFormStateForConcentrates() {
+    return {
+      "concentrate_id": concentrateId,
+      "cultivator": cultivator,
+      "strain": strain
+    };
+  }
+
   document.getElementById('pagination').addEventListener('click', function(event) {
     if (event.target.tagName === 'BUTTON') {
       const questionIndex = parseInt(event.target.textContent);
