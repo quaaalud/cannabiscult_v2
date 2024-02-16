@@ -68,7 +68,7 @@
     <section draggable="false" class="container pt-3" data-v-271253ee="">
       <section class="mb-10">
         <div class="row mx-auto">
-          <h1 class="fw-bold mb-5 text-center">Cultivar Pre-Roll Ratings</h1>
+          <h1 class="fw-bold mb-5 text-center">Cultivar Concentrate Ratings</h1>
         </div>
         <div class="row gx-lg-5 align-items-start d-flex">
           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
@@ -86,7 +86,9 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Description</p>
-                <p id="description_text" class="text-muted mb-0">We cannot tell you the description on the mystery reviews.</p>
+                <p id="description_text" class="text-muted mb-0">
+                  {% if is_mystery %}We cannot tell you about the mystery strains.{% elif description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}
+                </p>
               </div>
             </div>
             <div class="d-flex align-items-start mb-5">
@@ -97,7 +99,7 @@
               </div>
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Lineage</p>
-                <p id="lineage-text" class="text-muted mb-0">And we will be releasing all of the strain information as soon as we can!</p>
+                <p id="lineage-text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
               </div>
             </div>
             <div class="d-flex align-items-start mb-5">
@@ -108,7 +110,7 @@
               </div>
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Effects<br></p>
-                <p id="effects_text" class="text-muted mb-0">Don't worry, you will not have to wait long.</p>
+                <p id="effects_text" class="text-muted mb-0">{% if is_mystery %}So our cultivators know what you think.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
               </div>
             </div>
             <div class="d-flex align-items-start">
@@ -119,7 +121,20 @@
               </div>
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Terpenes</p>
-                <p id="terpene_text" class="text-muted mb-0">But you can rate the strain yourself first.</p>
+                {% if is_mystery %}
+                  <p>And you will see all the results soon!</p>
+                {% else %}
+                  <script>
+                    var terpenesList = {{ terpenes_list | tojson }};
+                  </script>
+                  <div id="terpene_text" class="text-muted mb-0">
+                    {% if terpenes_list %}
+                      <canvas id="terpeneChart"></canvas>
+                    {% else %}
+                      <p>Coming Soon</p>
+                    {% endif %}
+                  {% endif %}
+                </div>
               </div>
             </div>
           </div>
@@ -212,8 +227,13 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', async function() {
-    await fetchAndUpdatConcentrateDescription();
-    await fetchAndUpdateConcentrateRatings();
+    var isMystery = "{{ is_mystery }}";
+    if (isMystery === "True") {
+      return;
+    } else {
+      await fetchAndUpdatConcentrateDescription();
+      await fetchAndUpdateConcentrateRatings();
+    }
   });
 
   async function fetchAndUpdatConcentrateDescription() {
@@ -238,7 +258,7 @@
   }
 
   async function fetchAndUpdateConcentrateRatings() {
-    const concentrateId = {{ concentrate_id }};
+    const concentrateId = "{{ concentrate_id }}";
     const endpoint = "/concentrate_ranking/get_concentrate_ratings_by_id/" + concentrateId;
   
     try {
