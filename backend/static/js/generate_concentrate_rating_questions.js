@@ -338,11 +338,11 @@ window.addEventListener('supabaseClientReady', async function() {
     if (!userEmail) {
       return;
     }
+    const emailInput = document.getElementById('connoisseur');
+    emailInput.value = userEmail;
   } catch {
     return;
   }
-  const emailInput = document.getElementById('connoisseur');
-  emailInput.value = userEmail;
   return;
 });
 
