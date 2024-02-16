@@ -90,6 +90,10 @@ class SupabaseClient {
       try {
         this.removeloginLink();
         this.setAuthCookies(session, true);
+        const isSuperuser = this.checkSuperuserStatus();
+        if (isSuperuser) {
+            this.addStrainSubmissionsLink();
+        }
       } catch (error) {
         console.error('Error setting auth cookies:', error);
       }
@@ -266,7 +270,6 @@ class SupabaseClient {
               return false;
           }
       } catch (error) {
-          alert("False");
           console.error("Error checking superuser status:", error.message);
           return false;
       }
@@ -327,11 +330,34 @@ class SupabaseClient {
             navBar.appendChild(loginListItem);
         }
     }
+    
+    async addStrainSubmissionsLink() {
+        const navLinksList = document.getElementById('navLinksList');
+    
+        if (!navLinksList.querySelector('#strainSubmissionsLink')) {
+            const linkItem = document.createElement('li');
+            const link = document.createElement('a');
+            link.id = 'strainSubmissionsLink';
+            link.href = '/strain_submissions';
+            link.textContent = 'Strain Submissions';
+            link.className = 'nav-link'; // Add any additional classes as per your CSS framework
+            navLinksList.appendChild(linkItem);
+            linkItem.appendChild(link);
+        }
+    }
 
     async removeLogoutLink() {
         const logoutLink = document.getElementById('logoutLink');
         if (logoutLink) {
             logoutLink.parentNode.remove();
+        }
+        removeStrainSubmissionLink();
+    }
+    
+    async removeStrainSubmissionLink() {
+        const submissionLink = document.getElementById('strainSubmissionsLink');
+        if (submissionLink) {
+            submissionLink.parentNode.remove();
         }
     }
 
@@ -352,7 +378,7 @@ class SupabaseClient {
             throw error;
         }
     }
-    
+
     async getCurrentUserEmail() {
       const { data: { user }, error } = await this.supabase.auth.getUser();
       if (error || !user) {
@@ -361,7 +387,7 @@ class SupabaseClient {
         return user.email;
       }
     }
-    
+
     async checkUserAuthentication() {
         try {
             const { data: { user }, error } = await this.supabase.auth.getUser();
