@@ -6,9 +6,7 @@ document.addEventListener("DOMContentLoaded", async function() {
   const preRollId = preRollIdValue;
   const questionsContainer = document.getElementById('cardBody');
   const cardTitle = document.getElementById('cardTitle');
-  let step = 0;
-  let formState = await loadFormState();
-  
+
   const questions = [
     QuestionBuilder.createEmailQuestion(strain, cultivator),
   
@@ -51,6 +49,8 @@ document.addEventListener("DOMContentLoaded", async function() {
       "Would You Purchase this again?", "purchase_bool", "No at $50", "Yes at $50"
     ),
   ];
+  let step = 0;
+  let formState = await loadFormState();
   const int_keys = questions
   .filter(question => question.key.endsWith('rating') || question.key.endsWith('score'))
   .map(question => question.key);
@@ -72,23 +72,34 @@ document.addEventListener("DOMContentLoaded", async function() {
     await loadQuestion();
   }
   async function loadFormState() {
-    const savedState = localStorage.getItem('formState');
-    if (savedState) {
-        const parsedState = JSON.parse(savedState);
-        if (parsedState.hasOwnProperty('pre_roll_id') && parsedState.pre_roll_id == preRollId) {
-            return parsedState;
-        } else {
-          return {
-              "pre_roll_id": preRollId,
-              "cultivator": cultivator,
-              "strain": strain
-          };
-        }
+    // Early check for localStorage availability
+    if (typeof localStorage === 'undefined') {
+      console.warn('localStorage is not available, defaulting to initial state.');
+      return getDefaultFormState();
     }
+    try {
+      const savedState = localStorage.getItem('formState');
+      if (!savedState) {
+        return getDefaultFormState();
+      }
+      const parsedState = JSON.parse(savedState);
+      // Ensure the parsedState is for the current pre-roll item
+      if (parsedState.pre_roll_id !== preRollId) {
+        console.warn('Saved form state is for a different pre-roll item, defaulting to initial state.');
+        return getDefaultFormState();
+      }
+      return parsedState; // Return the saved state if it matches the current pre-roll ID
+    } catch (e) {
+      console.error('Error reading or parsing saved form state:', e);
+      return getDefaultFormState(); // Fallback to default state in case of any error
+    }
+  }
+
+  function getDefaultFormState() {
     return {
-        "pre_roll_id": preRollId,
-        "cultivator": cultivator,
-        "strain": strain
+      "pre_roll_id": preRollId,
+      "cultivator": cultivator,
+      "strain": strain
     };
   }
   
