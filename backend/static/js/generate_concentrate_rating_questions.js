@@ -114,7 +114,7 @@ document.addEventListener("DOMContentLoaded", async function() {
       const savedState = localStorage.getItem('formState');
       if (savedState) {
           const parsedState = JSON.parse(savedState);
-          if (parsedState.hasOwnProperty('concentrate_id') && parsedState.hasOwnProperty('concentrate_id') == concentrateId) {
+          if (parsedState.hasOwnProperty('concentrate_id') && parsedState.concentrate_id === concentrateId) {
               return parsedState;
           } else {
           return {
