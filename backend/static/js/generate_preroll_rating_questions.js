@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     step = questionIndex;
     await loadQuestion();
   }
-  function loadFormState() {
+  async function loadFormState() {
     const savedState = localStorage.getItem('formState');
     if (savedState) {
         const parsedState = JSON.parse(savedState);
