@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function() {
       const savedState = localStorage.getItem('formState');
       if (savedState) {
           const parsedState = JSON.parse(savedState);
-          if (parsedState.hasOwnProperty('pre_roll_id')) {
+          if (parsedState.hasOwnProperty('pre_roll_id') && parsedState.hasOwnProperty('pre_roll_id') == preRollId) {
               return parsedState;
           } else {
           return {

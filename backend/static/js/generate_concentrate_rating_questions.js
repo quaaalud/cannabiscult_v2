@@ -84,6 +84,11 @@ document.addEventListener("DOMContentLoaded", function() {
       { startLabel: "Short-Lived, No Effects", endLabel: "Strong, Lasting Effects" }
     ),
     QuestionBuilder.createEffectsExplanationQuestion(strain),
+    QuestionBuilder.createTextInputQuestion(
+      "Please enter Batch ID listed on the box COA label.",
+      "pack_code",
+      "For example, T2, A3 etc"
+    ),
   ];
   const int_keys = questions
   .filter(question => question.key.endsWith('rating') || question.key.endsWith('score'))
