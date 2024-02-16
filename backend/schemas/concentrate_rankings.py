@@ -48,6 +48,9 @@ class ConcentrateRankingBase(BaseModel):
     effects_explanation: Optional[str] = Field(
         None, max_length=500, description="Explanation for the effects rating"
     )
+    pack_code: Optional[str] = Field(
+        None, max_length=99, description="Pack code of the concentrate, if provided"
+    )
 
     class Config:
         from_attributes = True

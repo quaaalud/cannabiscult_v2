@@ -34,7 +34,7 @@ class Concentrate_Ranking(Base):
     harshness_explanation = Column(String(500), nullable=True)
     residuals_explanation = Column(String(500), nullable=True)
     effects_explanation = Column(String(500), nullable=True)
-    # pack_code = Column(String(500), nullable=True)
+    pack_code = Column(String, nullable=True, server_default="Not Provided", default="Not Provided")
 
     date_posted = Column(
         Date,
