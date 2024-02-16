@@ -38,6 +38,7 @@ router = APIRouter()
 async def submit_concentrate_ranking(
     concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Concentrate_Ranking:
+    
     submitted_ranking = await update_or_create_concentrate(ranking=concentrate_ranking, db=db)
     return submitted_ranking
 

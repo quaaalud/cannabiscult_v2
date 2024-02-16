@@ -7,7 +7,7 @@ Created on Sun Nov  5 16:57:17 2023
 """
 
 from pydantic import BaseModel, EmailStr, Field, constr, confloat
-from typing import Optional
+from typing import Optional, Union
 from datetime import date
 
 
@@ -59,7 +59,9 @@ class ConcentrateRankingBase(BaseModel):
 
 class CreateConcentrateRanking(ConcentrateRankingBase):
     connoisseur: EmailStr = Field(..., description="Email of the connoisseur")
-    concentrate_id: int = Field(..., description="Unique identifier for the concentrate")
+    concentrate_id: Union[int, str] = Field(
+        ..., description="Unique identifier for the concentrate"
+    )
 
 
 class CreateHiddenConcentrateRanking(CreateConcentrateRanking):

@@ -284,3 +284,17 @@ document.addEventListener("DOMContentLoaded", async function() {
   });
   loadQuestion();
 });
+
+window.addEventListener('supabaseClientReady', async function() {
+  try {
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!userEmail) {
+      return;
+    }
+    const emailInput = document.getElementById('connoisseur');
+    emailInput.value = userEmail;
+  } catch {
+    return;
+  }
+  return;
+});
