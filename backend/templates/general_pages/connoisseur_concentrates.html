@@ -99,7 +99,7 @@
               </div>
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Lineage</p>
-                <p id="lineage-text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
+                <p id="lineage-text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
               </div>
             </div>
             <div class="d-flex align-items-start mb-5">
@@ -110,7 +110,7 @@
               </div>
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Effects<br></p>
-                <p id="effects_text" class="text-muted mb-0">{% if is_mystery %}So our cultivators know what you think.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
+                <p id="effects_text" class="text-muted mb-0">{% if is_mystery %}So our cultivators know what you think.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
               </div>
             </div>
             <div class="d-flex align-items-start">

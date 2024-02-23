@@ -76,3 +76,9 @@ class CreateFlowerRanking(FlowerRankingBase):
 
 class CreateHiddenFlowerRanking(CreateFlowerRanking):
     pass
+
+
+class GetFlowerRanking(CreateFlowerRanking):
+    class Config:
+        from_attributes = True
+        populate_by_name = True

@@ -10,12 +10,19 @@ import random
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from db.session import get_db
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
+from schemas.flower_rankings import GetFlowerRanking
+from schemas.concentrate_rankings import GetConcentrateRanking
+from schemas.pre_rolls import PreRollRankingSchema
+from schemas.edible_rankings import GetVibeEdibleRanking
 from schemas.search_class import SearchResultItem, StrainCultivator
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
-from db.models.pre_rolls import Pre_Roll
+from db.models.pre_rolls import Pre_Roll, Pre_Roll_Ranking
+from db.models.flower_rankings import Flower_Ranking
+from db.models.concentrate_rankings import Concentrate_Ranking
+from db.models.edible_rankings import MysteryEdibleRanking, Vibe_Edible_Ranking
 from db.repository.search_class import (
     search_strain,
     get_all_product_types,
@@ -36,6 +43,72 @@ product_type_to_model = {
     "Pre-Roll": [Pre_Roll]
     # Add other product types here
 }
+
+
+product_type_to_ranking_model = {
+    "Flower": [Flower_Ranking],
+    "Concentrate": [Concentrate_Ranking],
+    "Edible": [Vibe_Edible_Ranking],
+    "Pre-Roll": [Pre_Roll_Ranking]
+    # Add other product types here
+}
+
+
+# Function to convert the raw data into Pydantic models
+def convert_to_schema(product_type: str, data: List[dict]):
+    schema_map = {
+        "Flower": GetFlowerRanking,
+        "Concentrate": GetConcentrateRanking,
+        "Edible": GetVibeEdibleRanking,
+        "Pre-Roll": PreRollRankingSchema,
+    }
+
+    schema_class = schema_map.get(product_type)
+    if not schema_class:
+        raise ValueError(f"Unsupported product type: {product_type}")
+
+    return [schema_class(**item) for item in data]
+
+
+def model_to_dict(model_instance):
+    """Converts an SQLAlchemy model instance to a dictionary."""
+    return {
+        column.name: getattr(model_instance, column.name)
+        for column in model_instance.__table__.columns
+    }
+
+
+async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> Dict[str, List[Any]]:
+    user_ratings = {}
+
+    for product_type, models in product_type_to_ranking_model.items():
+        user_ratings[product_type] = []
+
+        for model in models:
+            # Query the database for ratings by the user for the current product type
+            ratings = db.query(model).filter(model.connoisseur.ilike(user_email)).all()
+
+            # Convert the result into a list of dictionaries
+            ratings_list = [model_to_dict(rating) for rating in ratings]
+
+            # Append the ratings to the product type key in the user_ratings dictionary
+            user_ratings[product_type].extend(ratings_list)
+    for product_type, data in user_ratings.items():
+        user_ratings[product_type] = convert_to_schema(product_type, data)
+
+    return user_ratings
+
+
+@router.get("/get_my_ratings", response_model=Dict[str, List[Any]])
+async def get_my_ratings(user_email: str, db: Session = Depends(get_db)):
+    if not user_email:
+        raise HTTPException(status_code=400, detail="User email is required")
+
+    try:
+        ratings = await gather_user_ratings_by_product_type(user_email, db)
+        return ratings
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/check-existence/{product_type}")

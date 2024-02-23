@@ -64,6 +64,12 @@ class CreateConcentrateRanking(ConcentrateRankingBase):
     )
 
 
+class GetConcentrateRanking(CreateConcentrateRanking):
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+
+
 class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
     pass
 

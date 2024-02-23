@@ -402,6 +402,8 @@ class SupabaseClient {
                 console.log('No user logged in. Redirecting to login page.');
                 window.location.href = '/login';
                 return; // Stop execution if there's no user
+            } else {
+              return user.email;
             }
             if (error) {
                 alert('Authentication error. Please try logging in again.', error);
