@@ -351,6 +351,7 @@ async def process_flower_request(
             "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
+
         return templates.TemplateResponse(
             str(Path("general_pages", "connoisseur_flowers.html")), response_dict
         )
