@@ -71,26 +71,26 @@
   <div class="container py-3">
     {% include "components/users/my_ratings.html" %}
   </div>
-</main>
-<div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <div class="container text-center pt-1 pb-1">
-          <h5 class="modal-title">Only Cult Leaders can submit strains for now.</h5>
+  <div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div class="container text-center pt-1 pb-1">
+            <h5 class="modal-title">Only Cult Leaders can submit strains for now.</h5>
+          </div>
         </div>
-      </div>
-      <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="notAuthorizedModalBody">
-        <div class="container text-center py-2">
-          <p class="fs-6"><strong>Email <a href="mailto:members@cannabiscult.co" class="text-decoration-none text-dark">members@cannabiscult.co</a> for more information on how to become a Cult Leader today.</strong></p>
+        <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="notAuthorizedModalBody">
+          <div class="container text-center py-2">
+            <p class="fs-6"><strong>Email <a href="mailto:members@cannabiscult.co" class="text-decoration-none text-dark">members@cannabiscult.co</a> for more information on how to become a Cult Leader today.</strong></p>
+          </div>
         </div>
-      </div>
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-lg btn-info w-100" data-bs-dismiss="modal">Continue</button>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-lg btn-info w-100" data-bs-dismiss="modal">Continue</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
+</main>
 {% endblock %}
 
 {% block footer %}

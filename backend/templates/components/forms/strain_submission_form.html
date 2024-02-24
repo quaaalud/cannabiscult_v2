@@ -1,3 +1,21 @@
+<div class="modal fade pt-5 mt-5" id="missingInfoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="false">
+  <div class="modal-dialog modal-dialog-center">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Missing Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- The missing fields information will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <div class="col-12 mx-auto">
+          <button type="button" class="btn btn-lg btn-dark w-100" data-bs-dismiss="modal" aria-label="Close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <section class="container">
   <div class="row justify-content-center">
     <div class="col-12 col-lg-9 col-xl-7">
@@ -17,7 +35,7 @@
                       id="flowerSubmission"
                       value="flowerSubmission"
                     />
-                    <label class="form-check-label" for="femaleGender">Flower</label>
+                    <label class="form-check-label" for="Flower">Flower</label>
                   </div>
                   <div data-mdb-input-init class="form-check form-check-inline">
                     <input 
@@ -27,7 +45,7 @@
                       id="concentrateSubmission"
                       value="concentrateSubmission"
                     />
-                    <label class="form-check-label" for="maleGender">Concentrate</label>
+                    <label class="form-check-label" for="Concentrate">Concentrate</label>
                   </div>
                   <div data-mdb-input-init class="form-check form-check-inline">
                     <input 
@@ -37,7 +55,7 @@
                       id="pre_rollSubmission"
                       value="pre_rollSubmission"
                     />
-                    <label class="form-check-label" for="otherGender">Pre-Roll</label>
+                    <label class="form-check-label" for="Pre-Roll">Pre-Roll</label>
                   </div>
                   <!--
                   <div data-mdb-input-init class="form-check form-check-inline">
@@ -89,11 +107,9 @@
                   </div>
                 </div>
               </div>
-              <div class="row">
-                <div class="col-6 mx-auto">
-                  <div class="mt-4">
-                    <input data-mdb-ripple-init class="btn btn-warning btn-lg w-100" type="submit" value="Submit Strain"/>
-                  </div>
+              <div class="col-9 mx-auto">
+                <div class="mt-4 pe-0">
+                  <button data-mdb-ripple-init class="btn btn-info btn-lg w-100 text-dark" type="submit"/>Submit Strain</button>
                 </div>
               </div>
             </form>
@@ -103,7 +119,6 @@
     </div>
   </div>
 </section>
-
 {% block scripts %}
 <script>
 
@@ -134,8 +149,8 @@ function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
 async function submitStrainForm(event) {
     event.preventDefault();
     const form = document.getElementById("strainSubmissionForm");
-    const submitButton = form.querySelector('input[type="submit"]');
-    submitButton.disabled = true; 
+    const modalBody = document.querySelector('#missingInfoModal .modal-body');
+    const submitButton = form.querySelector('button[type="submit"]');
 
     const strainValue = document.getElementById("strainSubmission").value;
     const cultivatorValue = document.getElementById("cultivatorSubmission").value;
@@ -152,43 +167,65 @@ async function submitStrainForm(event) {
             break;
         }
     }
-    const cleanCultivatorString = window.supabaseClient.sanitizeInputString(cultivatorValue);
-    const cleanStrainString = window.supabaseClient.sanitizeInputString(strainValue);
-    // Prepare the FormData object
-    const formData = new FormData();
-    formData.append('strain', cleanStrainString);
-    formData.append('cultivator', cleanCultivatorString);
-    formData.append('cultivar_email', emailAddressValue);
-    formData.append('description', descriptionValue);
-    formData.append('effects', effectsValue);
-    formData.append('product_type', productTypeValue);
-    
-    // Submit the form data
-    const root = window.location.origin;
-    const url = new URL('/submit/submit_strain/', root);
+    let missingFields = [];
 
-    const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'Accept': 'application/json',
-        }
-    });
+    // Check each field in the form
+    if (!productTypeValue) missingFields.push('Product Type');
+    if (!strainValue) missingFields.push('Strain Name');
+    if (!cultivatorValue) missingFields.push('Cultivator');
+    if (!descriptionValue) missingFields.push('Description');
+    if (!effectsValue) missingFields.push('Effects');
+    if (!emailAddressValue) missingFields.push('Email Address');
 
-    if (response.ok) {
-        const responseData = await response.json();
-        getNewlyCreatedStrain(responseData.submission_strain, responseData.submission_cultivator, responseData.cultivar_email);
-        return;
+    if (missingFields.length > 0) {
+        // Update modal body with missing fields
+        modalBody.innerHTML = `<p>Please complete the following fields:</p><ul>${missingFields.map(field => `<li>${field}</li>`).join('')}</ul>`;
+        
+        // Trigger the modal
+        const missingInfoModal = new bootstrap.Modal(document.getElementById('missingInfoModal'));
+        missingInfoModal.show();
     } else {
-        console.error("Form submission failed:", response.status, response.statusText);
-        alert('The submission failed, check your inputs and try again.');
-        submitButton.disabled = false;
-        return;
+      const cleanCultivatorString = window.supabaseClient.sanitizeInputString(cultivatorValue);
+      const cleanStrainString = window.supabaseClient.sanitizeInputString(strainValue);
+      // Prepare the FormData object
+      const formData = new FormData();
+      
+      formData.append('strain', cleanStrainString);
+      formData.append('cultivator', cleanCultivatorString);
+      formData.append('cultivar_email', emailAddressValue);
+      formData.append('description', descriptionValue || 'Coming Soon');
+      formData.append('effects', effectsValue || 'Coming Soon');
+      formData.append('product_type', productTypeValue);
+      
+      // Submit the form data
+      const root = window.location.origin;
+      const url = new URL('/submit/submit_strain/', root);
+  
+      const response = await fetch(url, {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'Accept': 'application/json',
+          }
+      });
+  
+      if (response.ok) {
+          const responseData = await response.json();
+          getNewlyCreatedStrain(responseData.submission_strain, responseData.submission_cultivator, responseData.cultivar_email);
+          return;
+      } else {
+          console.error("Form submission failed:", response.status, response.statusText);
+          alert('The submission failed, check your inputs and try again.');
+          return;
+      }
     }
 }
 document.addEventListener('DOMContentLoaded', (event) => {
     const form = document.getElementById("strainSubmissionForm");
-    form.addEventListener('submit', submitStrainForm);
+    const modalBody = document.querySelector('#missingInfoModal .modal-body');
+    form.addEventListener('submit', async function(event) {
+      submitStrainForm(event);
+    });
 });
 </script>
 {% endblock %}

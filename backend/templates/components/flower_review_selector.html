@@ -62,22 +62,26 @@ window.addEventListener('DOMContentLoaded', function() {
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-  
-  function fetchAndPopulateSelect(url, selectElement, callback) {
-    fetch(url)
-      .then(response => response.json())
-      .then(data => {
-        selectElement.innerHTML = '';
-        data.forEach(item => {
-          var option = document.createElement('option');
-          option.value = item;
-          option.text = capitalizeFirstLetter(item);
-          selectElement.add(option);
-        });
 
-        if (callback) callback();
-      })
-      .catch(error => console.error('Error:', error));
+  function fetchAndPopulateSelect(url, selectElement, callback) {
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              selectElement.innerHTML = '';
+  
+              // Sort the data array alphabetically
+              data.sort((a, b) => a.localeCompare(b));
+  
+              data.forEach(item => {
+                  var option = document.createElement('option');
+                  option.value = item;
+                  option.text = capitalizeFirstLetter(item);
+                  selectElement.add(option);
+              });
+  
+              if (callback) callback();
+          })
+          .catch(error => console.error('Error:', error));
   }
 
   function updateCultivatorOptions() {
