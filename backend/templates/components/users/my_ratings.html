@@ -1,3 +1,10 @@
+<style>
+.table-container {
+    max-height: 100vh; /* Set the maximum height to viewport height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    padding: 0 15px; /* Optional: Add some padding for better appearance */
+}
+</style>
 <div id="ratings-container"></div>
 
 {% block scripts %}
@@ -15,10 +22,13 @@ function formatRating(value) {
     return value ? parseFloat(value).toFixed(2) : 'N/A';
 }
 function createTableForProductType(productType, ratings) {
+
     if (ratings.length === 0) return;
+
+    ratings.sort((a, b) => a.strain.localeCompare(b.strain));
     // Create a container for the table and title
     const tableContainer = document.createElement('div');
-    tableContainer.className = 'py-2';
+    tableContainer.className = 'table-container py-2';
     
     // Create the title element
     const title = document.createElement('h3');

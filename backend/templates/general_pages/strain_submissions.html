@@ -64,32 +64,39 @@
 {% endblock %}
 
 {% block content %}
-<main class="container pt-5">
-  <div class="container container-sm py-5" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
-    {% include "components/forms/strain_submission_form.html" %}
-  </div>
-  <div class="container py-3">
-    {% include "components/users/my_ratings.html" %}
-  </div>
-  <div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <div class="container text-center pt-1 pb-1">
-            <h5 class="modal-title">Only Cult Leaders can submit strains for now.</h5>
+<main>
+  <section class="container pt-5">
+    <div class="text-center">
+      <h2 class="py-2 text-dark">Cult Leader Strain Submissions</h2>
+    </div>
+    <div class="container container-sm py-5" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
+      {% include "components/forms/strain_submission_form.html" %}
+    </div>
+    <div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <div class="container text-center pt-1 pb-1">
+              <h5 class="modal-title">Only Cult Leaders can submit strains for now.</h5>
+            </div>
           </div>
-        </div>
-        <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="notAuthorizedModalBody">
-          <div class="container text-center py-2">
-            <p class="fs-6"><strong>Email <a href="mailto:members@cannabiscult.co" class="text-decoration-none text-dark">members@cannabiscult.co</a> for more information on how to become a Cult Leader today.</strong></p>
+          <div class="modal-body text-center align-content-center justify-content-center pb-2 px-0 mx-0" id="notAuthorizedModalBody">
+            <div class="container text-center py-2">
+              <p class="fs-6"><strong>Email <a href="mailto:members@cannabiscult.co" class="text-decoration-none text-dark">members@cannabiscult.co</a> for more information on how to become a Cult Leader today.</strong></p>
+            </div>
           </div>
-        </div>
-        <div class="modal-footer justify-content-center">
-          <button type="button" class="btn btn-lg btn-info w-100" data-bs-dismiss="modal">Continue</button>
+          <div class="modal-footer justify-content-center">
+            <button type="button" class="btn btn-lg btn-info w-100" data-bs-dismiss="modal">Continue</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+  <section class="container-fluid mx-auto pb-5">
+    <div class="container-fluid py-3">
+      {% include "components/users/my_ratings.html" %}
+    </div>
+  </section>
 </main>
 {% endblock %}
 
