@@ -218,7 +218,7 @@ function convertToIntegers(formState, integerKeys) {
 async function submitForm(formState) {
   formState.connoisseur = formState.connoisseur.toLowerCase();
   delete formState.lastSavedIndex;
-  const integerKeys = ['color_rating', 'smell_rating', 'consistency_rating', 'flavor_rating', 'harshness_score', 'residuals_rating', 'effects_rating'];
+  const integerKeys = ['appearance_rating', 'smell_rating', 'flavor_rating', 'freshness_score', 'harshness_rating', 'effects_rating'];
   convertToIntegers(formState, integerKeys);
   formState.flower_id = parseInt(flowerId);
 
@@ -236,7 +236,7 @@ async function submitForm(formState) {
         const connoisseurEmail = formState.connoisseur; // Save the email value
         formState = {};
         formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success/connoisseur_citrus_one";
+        window.location.href = "/success/connoisseur_live_resin1";
         
       } else {
         const connoisseurEmail = formState.connoisseur; // Save the email value
