@@ -45,17 +45,22 @@ async def submit_strain(
 
     # Create a new instance of the model with the form data
     new_submission = model(
-        strain=strain,
-        cultivator=cultivator,
+        strain=strain.title(),
+        cultivator=cultivator.title(),
         card_path=card_path,
         voting_open=voting_open,
         is_mystery=is_mystery,
     )
 
     # Add the new submission to the database
-    db.add(new_submission)
-    db.commit()
-    db.refresh(new_submission)
+    try:
+        db.add(new_submission)
+    except Exception as e:
+        print(f'Error: {e}\n\n')
+        return None
+    else:
+        db.commit()
+        db.refresh(new_submission)
 
     id_column_name = f"{product_type[:-10]}_id"  # Removes 'Submission' from the end and adds '_id'
     product_type_id = getattr(new_submission, id_column_name)
@@ -107,6 +112,12 @@ def add_description_to_db(
         effects=effects,
         cultivar_email=cultivar_email,
     )
-
-    db.add(new_description)
-    db.commit()
+    try:
+        db.add(new_description)
+    except Exception as e:
+        print(f'Error: {e}\n\n')
+        return None
+    else:
+        db.commit()
+        db.refresh(new_description)
+    return new_description
