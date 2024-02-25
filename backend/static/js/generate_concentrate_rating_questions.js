@@ -300,7 +300,7 @@ async function submitForm(formState) {
         const connoisseurEmail = formState.connoisseur; // Save the email value
         formState = {};
         formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success/connoisseur_citrus_one";
+        window.location.href = "/success/connoisseur_live_resin1.html";
         
       } else {
         const connoisseurEmail = formState.connoisseur; // Save the email value
