@@ -10,7 +10,7 @@ from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
 
 # from fastapi import BackgroundTasks
-from fastapi.responses import RedirectResponse, HTMLResponse
+from fastapi.responses import RedirectResponse, HTMLResponse, ORJSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
@@ -936,7 +936,7 @@ async def general_transition_page_request(request: Request, file_name: str):
     )
 
 
-@general_pages_router.get("/{file_name}")
+@general_pages_router.get("/{file_name}", response_class=ORJSONResponse)
 async def general_pages_route(request: Request, file_name: str):
     file_path = Path(Path(__file__).parents[2], "templates", "general_pages", f"{file_name}.html")
     if not file_path.exists():

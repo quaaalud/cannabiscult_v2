@@ -59,7 +59,7 @@ def create_new_user(user: UserCreate, db: Session):
         zip_code=user.zip_code,
         password=user.password,
         agree_tos=True,
-        can_vote=False,
+        can_vote=True,
         is_superuser=False,
     )
     try:

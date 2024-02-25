@@ -98,6 +98,7 @@
     </div>
   </section>
 </main>
+{% include "components/forms/add_new_voter_modal.html" %}
 {% endblock %}
 
 {% block footer %}
@@ -106,6 +107,32 @@
 {% block scripts %}
 <script async>
 $(document).ready(function() {
+  async function checkVoterExists(email) {
+    const lowerCaseEmail = email.toLowerCase();
+    const root = window.location.origin;
+    const url = new URL('/check-mystery-voter', root);
+    url.searchParams.append('voter_email', lowerCaseEmail);
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (!data.exists) {
+        $('#FlowerRankingsModal').modal('hide');
+        $('#FlowerVoterInfoCaptureModal').modal('show');
+        return false;
+      }
+      return true;
+    } else {
+      console.log("Request failed:", response.status, response.statusText);
+      return false;
+    }
+  }
   window.addEventListener('supabaseClientReady', async function() {
 
     const superuserStatus = await window.supabaseClient.checkSuperuserStatus();

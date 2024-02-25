@@ -1,0 +1,104 @@
+<section class="container text-center" id="mystery-voting">
+  <div class="col-12 col-sm-12 col-md-10 col-lg-12 mx-auto">
+    <div class="row g-0 justify-content-center my-auto" id="vote-interface">
+      <div class="container text-center d-flex vote-template g-0 align-items-center" id="vote-template">
+        <div class="row mx-auto my-auto">
+          <div class="container mb-5 text-center mx-auto col-md-10 col-lg-12 col-xl-11">
+            <div class="card rounded-10">
+              <div class="row justify-content-center text-center">
+                <div class="col-12 text-center mx-auto py-3">
+                  <h1 class="card-title">
+                    <strong>{{ strain }}</strong>
+                  </h1>
+                  <h3 class="card-subtitle mb-2">
+                    <u>{{ cultivator }}</u>
+                  </h3>
+                </div>
+                <div class="container col-11 col-xl-10 pt-2">
+                  <div class="row mx-auto justify-content-center">
+                    <div class="mx-auto">
+                      <a data-bs-target="#FlowerRankingsDisplay">
+                        <img 
+                          src="{{ url_path }}"
+                          class="img-fluid rounded-5" 
+                          alt="Conniosseur {{ strain }} Cultivar Review Card"
+                          id="reviewImage"
+                        />
+                      </a>
+                    </div>
+                  </div>
+                </div>  
+                <div class="container card-body pt-2">
+                  <div class="row my-auto mx-auto justify-content-center">
+                    <div class="col-xs-11 col-10 mx-auto">
+                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#FlowerRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
+                        <i class="fas fa-arrow-right pe-2"></i> <strong>Start Review</strong>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="row mx-auto justify-content-center">
+                    <div class="col-7 mx-auto">
+                      <img 
+                        src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvY2FyZF9hc3NldHMvQ3VsdCBDbGFzc2ljICBDdWx0aXZhciBFbWJsZW0uc3ZnIiwiaWF0IjoxNjk0MTQyMjAyLCJleHAiOjE3MjU2NzgyMDJ9.FH3G7aI8gSni20WSrYnYSy5OuaM6sv_McyyXunRGVig&t=2023-09-08T03%3A03%3A22.770Z"
+                        class="img-fluid rounded-5" 
+                        alt="Cannabis Cult Circle Logo"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="review-interface" id="review-interface" style="display: none;">
+  <div class="container">
+    <div class="row justify-content-center my-3">
+      <div class="col-12 col-sm-12 col-md-10 mx-auto">
+        <button type="button" class="btn btn-lg btn-info w-100" id="backToCardBtn">
+          <strong>Close</strong>
+        </button>
+      </div>
+      <h3 class="display-4 text-center my-3"></h3>
+      {% include "components/forms/flower_rating_form.html" %}
+    </div>
+  </div>
+</div>
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', (event) => {
+    const startReviewBtn = document.getElementById('startReviewBtn');
+    const backToCardBtn = document.getElementById('backToCardBtn');
+    const voteInterface = document.getElementById('vote-interface');
+    const reviewInterface = document.getElementById('review-interface');
+    const reviewImage = document.getElementById('reviewImage');
+
+    const toggleReviewInterface = () => {
+      voteInterface.style.display = 'none';
+      reviewInterface.style.display = 'block';
+    };
+
+    startReviewBtn.addEventListener('click', toggleReviewInterface);
+    reviewImage.addEventListener('click', toggleReviewInterface);
+
+    backToCardBtn.addEventListener('click', function() {
+      reviewInterface.style.display = 'none';
+      voteInterface.style.display = 'block';
+    });
+  });
+</script>
+<script>
+  const strainValue = "{{ strain }}";
+  const cultivatorValue = "{{ cultivator }}";
+  let flowerIdValue = "{{ flower_id }}";
+  if (!flowerIdValue) {
+    flowerIdValue = "{{ id }}";
+  }
+</script>
+
+<script type="module" src="{{ url_for('static', path='js/generate_flower_rating_questions.js') }}" async></script>
+{% endblock %}

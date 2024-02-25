@@ -21,6 +21,7 @@ async function fetchRatings(userEmail) {
 function formatRating(value) {
     return value ? parseFloat(value).toFixed(2) : 'N/A';
 }
+
 function createTableForProductType(productType, ratings) {
 
     if (ratings.length === 0) return;
@@ -28,6 +29,7 @@ function createTableForProductType(productType, ratings) {
     ratings.sort((a, b) => a.strain.localeCompare(b.strain));
     // Create a container for the table and title
     const tableContainer = document.createElement('div');
+    tableContainer.setAttribute('data-mdb-datatable-init', 'true');
     tableContainer.className = 'table-container py-2';
     
     // Create the title element
