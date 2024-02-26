@@ -1,6 +1,6 @@
-import { element } from '../../mdb/util/index';
-import Manipulator from '../../mdb/dom/manipulator';
-import allOptionsSelected from './util';
+import { element } from '../../mdb/util/index.js';
+import Manipulator from '../../mdb/dom/manipulator.js';
+import allOptionsSelected from './util.js';
 
 const preventKeydown = (event) => {
   if (event.code === 'Tab' || event.code === 'Esc') {

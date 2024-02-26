@@ -1,4 +1,4 @@
-import Swipe from './swipe';
+import Swipe from './swipe.js';
 
 class Touch {
   constructor(element, event = 'swipe', options = {}) {

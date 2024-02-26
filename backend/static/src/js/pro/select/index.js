@@ -1,13 +1,13 @@
 import { createPopper } from '@popperjs/core';
 import Data from '../../mdb/dom/data';
-import EventHandler from '../../mdb/dom/event-handler';
-import Manipulator from '../../mdb/dom/manipulator';
-import SelectorEngine from '../../mdb/dom/selector-engine';
+import EventHandler from '../../mdb/dom/event-handler.js';
+import Manipulator from '../../mdb/dom/manipulator.js';
+import SelectorEngine from '../../mdb/dom/selector-engine.js';
 import { typeCheckConfig, getUID } from '../../mdb/util/index';
 import Input from '../../free/input';
-import SelectOption from './select-option';
-import SelectionModel from './selection-model';
-import { ESCAPE, ENTER, DOWN_ARROW, UP_ARROW, HOME, END, TAB } from '../../mdb/util/keycodes';
+import SelectOption from './select-option.js';
+import SelectionModel from './selection-model.js';
+import { ESCAPE, ENTER, DOWN_ARROW, UP_ARROW, HOME, END, TAB } from '../../mdb/util/keycodes.js';
 import allOptionsSelected from './util';
 import {
   getWrapperTemplate,

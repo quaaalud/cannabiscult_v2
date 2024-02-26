@@ -1,18 +1,18 @@
 /* eslint-disable */
 
-import * as CSS from './lib/css';
-import * as DOM from './lib/dom';
-import cls from './lib/class-names';
-import EventManager from './lib/event-manager';
-import processScrollDiff from './process-scroll-diff';
-import updateGeometry from './update-geometry';
+import * as CSS from './lib/css.js';
+import * as DOM from './lib/dom.js';
+import cls from './lib/class-names.js';
+import EventManager from './lib/event-manager.js';
+import processScrollDiff from './process-scroll-diff.js';
+import updateGeometry from './update-geometry.js';
 import { toInt, outerWidth } from './lib/util';
 
-import clickRail from './handlers/click-rail';
-import dragThumb from './handlers/drag-thumb';
-import keyboard from './handlers/keyboard';
-import wheel from './handlers/mouse-wheel';
-import touch from './handlers/touch';
+import clickRail from './handlers/click-rail.js';
+import dragThumb from './handlers/drag-thumb.js';
+import keyboard from './handlers/keyboard.js';
+import wheel from './handlers/mouse-wheel.js';
+import touch from './handlers/touch.js';
 
 const defaultSettings = () => ({
   handlers: ['click-rail', 'drag-thumb', 'keyboard', 'wheel', 'touch'],

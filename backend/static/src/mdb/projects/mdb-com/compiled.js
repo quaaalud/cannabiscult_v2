@@ -1,7 +1,7 @@
 // CUSTOM JS
-import './js/clipboard';
-import './js/new-prism';
-import './js/for-thieves';
+import './js/clipboard.js';
+import './js/new-prism.js';
+import './js/for-thieves.js';
 
 // MDB JS
 import * as mdbPro from '../../js/mdb.pro.umd.js';

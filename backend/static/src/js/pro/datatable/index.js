@@ -1,14 +1,14 @@
-import PerfectScrollbar from '../../mdb/perfect-scrollbar';
-import { typeCheckConfig } from '../../mdb/util/index';
-import Data from '../../mdb/dom/data';
-import EventHandler from '../../mdb/dom/event-handler';
-import Manipulator from '../../mdb/dom/manipulator';
-import SelectorEngine from '../../mdb/dom/selector-engine';
-import tableTemplate from './html/table'; //eslint-disable-line
-import { search, sort, paginate } from './util';
+import PerfectScrollbar from '../perfect-scrollbar.js';
+import { typeCheckConfig } from '../../mdb/util/index.js';
+import Data from '../../mdb/dom/data.js';
+import EventHandler from '../../mdb/dom/event-handler.js';
+import Manipulator from '../../mdb/dom/manipulator.js';
+import SelectorEngine from '../../mdb/dom/selector-engine.js';
+import tableTemplate from './html/table.js'; //eslint-disable-line
+import { search, sort, paginate } from './util.js';
 import Select from '../select';
-import BaseComponent from '../../free/base-component';
-import { bindCallbackEventsIfNeeded } from '../../autoinit/init';
+import BaseComponent from '../../free/base-component.js';
+import { bindCallbackEventsIfNeeded } from '../../autoinit/init.js';
 
 /**
  * ------------------------------------------------------------------------

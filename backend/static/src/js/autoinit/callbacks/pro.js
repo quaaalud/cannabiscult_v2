@@ -1,5 +1,5 @@
-import EventHandler from '../../mdb/dom/event-handler';
-import SelectorEngine from '../../mdb/dom/selector-engine';
+import EventHandler from '../../mdb/dom/event-handler.js';
+import SelectorEngine from '../../mdb/dom/selector-engine.js';
 import { getElementFromSelector, isVisible, getSelectorFromElement } from '../../mdb/util';
 import { enableDismissTrigger } from '../../bootstrap/mdb-prefix/util/component-functions';
 import {

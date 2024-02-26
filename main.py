@@ -46,7 +46,10 @@ if str(MODELS_DIR) not in sys.path:
     sys.path.append(str(MODELS_DIR))
 
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, Response
+from fastapi.staticfiles import StaticFiles
+from starlette.responses import FileResponse
+import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from core.config import settings
@@ -78,8 +81,8 @@ def start_application():
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version=settings.PROJECT_VERSION,
-#        docs_url=None,
-#        redoc_url=None,
+        #        docs_url=None,
+        #        redoc_url=None,
     )
     include_router(app)
     configure_static(app)

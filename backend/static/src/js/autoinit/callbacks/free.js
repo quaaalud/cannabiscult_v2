@@ -1,13 +1,13 @@
-import EventHandler from '../../mdb/dom/event-handler';
-import SelectorEngine from '../../mdb/dom/selector-engine';
-import Manipulator from '../../mdb/dom/manipulator';
+import EventHandler from '../../mdb/dom/event-handler.js';
+import SelectorEngine from '../../mdb/dom/selector-engine.js';
+import Manipulator from '../../mdb/dom/manipulator.js';
 import {
   isDisabled,
   getElementFromSelector,
   isVisible,
   getSelectorFromElement,
 } from '../../mdb/util';
-import { enableDismissTrigger } from '../../bootstrap/mdb-prefix/util/component-functions';
+import { enableDismissTrigger } from '../../bootstrap/mdb-prefix/util/component-functions.js';
 
 const alertCallback = (component, initSelector) => {
   const Alert = component;

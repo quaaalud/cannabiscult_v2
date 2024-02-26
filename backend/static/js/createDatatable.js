@@ -1,93 +1,93 @@
-import * from '../src/mdb.pro.umd.js';
-
-async function fetchRatings(userEmail) {
-    const response = await fetch(`/search/get_my_ratings?user_email=${encodeURIComponent(userEmail)}`);
-    if (!response.ok) {
-        throw new Error('Failed to fetch ratings');
+class RatingsDatatable {
+    constructor(userEmail) {
+        this.userEmail = userEmail;
+        this.init();
     }
-    return await response.json();
-}
 
-function formatRating(value) {
-    return value ? parseFloat(value).toFixed(2) : 'N/A';
-}
-
-function createTableForProductType(productType, ratings) {
-
-    if (ratings.length === 0) return;
-
-    ratings.sort((a, b) => a.strain.localeCompare(b.strain));
-    // Create a container for the table and title
-    const tableContainer = document.createElement('div');
-    tableContainer.setAttribute('data-mdb-datatable-init', 'true');
-    tableContainer.className = 'table-container py-2';
-    
-    // Create the title element
-    const title = document.createElement('h3');
-    title.className = 'text-dark pt-5 pb-2 text-center';
-    title.textContent = productType;
-    tableContainer.appendChild(title);
-
-    // Create the table and its headers
-    const table = document.createElement('table');
-    table.className = 'table table-responsive align-middle mb-0 bg-white';
-
-    // Determine columns from the first rating entry
-    const firstRating = ratings[0];
-    const columns = ['strain', 'cultivator'].concat(Object.keys(firstRating).filter(key => key.endsWith('_rating')));
-
-    // Create table headers
-    const thead = document.createElement('thead');
-    thead.className = 'bg-light';
-    const headerRow = document.createElement('tr');
-    columns.forEach(col => {
-        const th = document.createElement('th');
-        th.textContent = col.replace(/_/g, ' ')
-                             .replace('rating', '') // Remove the word "rating"
-                             .trim() // Remove any leading/trailing whitespace
-                             .toUpperCase(); // Convert to uppercase
-        headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    // Create table body
-    const tbody = document.createElement('tbody');
-    ratings.forEach(rating => {
-        const row = document.createElement('tr');
-        columns.forEach(col => {
-            const td = document.createElement('td');
-            td.textContent = col.endsWith('_rating') ? formatRating(rating[col]) : rating[col];
-            row.appendChild(td);
-        });
-        tbody.appendChild(row);
-    });
-    table.appendChild(tbody);
-
-    // Append the table to the container and the container to the ratings container
-    tableContainer.appendChild(table);
-    document.getElementById('ratings-container').appendChild(tableContainer);
-}
-
-async function populateRatingsTables(userEmail) {
-    try {
-        const ratingsByProductType = await fetchRatings(userEmail);
-        
-        for (const [productType, ratings] of Object.entries(ratingsByProductType)) {
-            createTableForProductType(productType, ratings);
+    async init() {
+        try {
+            const ratingsByProductType = await this.fetchRatings(this.userEmail);
+            for (const [productType, ratings] of Object.entries(ratingsByProductType)) {
+                this.createTableForProductType(productType, ratings);
+            }
+        } catch (error) {
+            console.error('Error initializing ratings tables:', error);
         }
-    } catch (error) {
-        console.error('Error populating ratings tables:', error);
+    }
+
+    async fetchRatings(userEmail) {
+        const response = await fetch(`/search/get_my_ratings?user_email=${encodeURIComponent(userEmail)}`);
+        if (!response.ok) {
+            throw new Error('Failed to fetch ratings');
+        }
+        return await response.json();
+    }
+
+    formatRating(value) {
+        return value ? parseFloat(value).toFixed(2) : 'N/A';
+    }
+
+    createTableForProductType(productType, ratings) {
+        if (ratings.length === 0) return;
+
+        const tableContainer = document.createElement('div');
+        tableContainer.className = 'table-container py-2';
+
+        const title = document.createElement('h3');
+        title.className = 'text-dark pt-5 pb-2 text-center';
+        title.textContent = productType;
+        tableContainer.appendChild(title);
+
+        const table = document.createElement('table');
+        table.className = 'display';
+        table.style.width = '100%';
+
+        const columns = ['strain', 'cultivator'].concat(Object.keys(ratings[0]).filter(key => key.endsWith('_rating')));
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        columns.forEach(col => {
+            const th = document.createElement('th');
+            th.textContent = col.replace(/_/g, ' ').replace('rating', '').trim().toUpperCase();
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+        ratings.forEach(rating => {
+            const row = document.createElement('tr');
+            columns.forEach(col => {
+                const td = document.createElement('td');
+                td.textContent = col.endsWith('_rating') ? this.formatRating(rating[col]) : rating[col];
+                row.appendChild(td);
+            });
+            tbody.appendChild(row);
+        });
+        table.appendChild(tbody);
+
+        tableContainer.appendChild(table);
+        document.getElementById('ratings-container').appendChild(tableContainer);
+
+        // Initialize DataTables on the created table
+        var createdTable = $(table).DataTable({
+            searching: true // Enable the search functionality
+        });
+        $('.dataTables_filter').closest('.row').addClass('row');
+        $('.dataTables_length').closest('.row').addClass('row');
+        var searchInput = $('div.dataTables_filter');
+        var lengthSelect = $('div.dataTables_length');
+        searchInput.className = "w-100 form-control";
+        $('.dataTables_length').closest('.row').addClass('justify-content-start');
+        $('.dataTables_filter').closest('.row').addClass('justify-content-start');
     }
 }
 
-$(document).ready(async function() {
-  window.addEventListener('supabaseClientReady', async function() {
-    const userEmail = await window.supabaseClient.getCurrentUserEmail();
-    if (!userEmail) {
-      return;
-    } else {
-      await populateRatingsTables(userEmail);
-    }
-  });
+// Wait for the DOM to be fully loaded and for the Supabase client to be ready
+$(document).ready(function() {
+    window.addEventListener('supabaseClientReady', async function() {
+        const userEmail = await window.supabaseClient.getCurrentUserEmail();
+        if (userEmail) {
+            new RatingsDatatable(userEmail); // Create a new instance of the RatingsDatatable class
+        }
+    });
 });

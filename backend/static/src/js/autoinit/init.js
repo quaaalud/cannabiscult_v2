@@ -1,5 +1,5 @@
-import SelectorEngine from '../mdb/dom/selector-engine';
-import { defineJQueryPlugin } from '../mdb/util/index';
+import SelectorEngine from '../mdb/dom/selector-engine.js';
+import { defineJQueryPlugin } from '../mdb/util/index.js';
 
 const mapComponentsData = (() => {
   const componentsData = [];
