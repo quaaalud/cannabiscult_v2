@@ -1,21 +1,20 @@
 {%block head %}
-<!-- DataTables CSS -->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
-
-<!-- DataTables JS -->
-<script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
 <style>
-.table-container {
-    max-height: 100vh; /* Set the maximum height to viewport height */
-    overflow-y: auto; /* Enable vertical scrolling */
-    padding: 0 15px; /* Optional: Add some padding for better appearance */
+.datatable-pagination {
+    width: 100%; /* Full width */
+    justify-content: center; /* Center the pagination controls if they are flex items */
+}
+
+/* You might need to adjust the padding or margins as well */
+.datatable-pagination > * {
+    padding: 0;
+    margin: 0 auto; /* Center elements with auto margins */
 }
 </style>
 {% endblock %}
-<div id="ratings-container"></div>
+
+  <div id="ratings-container"></div>
 
 {% block scripts %}
 <script type="module" src="{{ url_for('static', path='js/createDatatable.js') }}"></script>
-
-</script>
 {% endblock %}

@@ -31,17 +31,38 @@ class RatingsDatatable {
         if (ratings.length === 0) return;
 
         const tableContainer = document.createElement('div');
-        tableContainer.className = 'table-container py-2';
+        tableContainer.className = 'table-responsive py-2 w-100';
+
+        const searchContainer = document.createElement('div');
+        searchContainer.setAttribute('data-mdb-input-init', 'true');
+        searchContainer.className = 'form-outline mb-4';
+        // Create the search input element
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'form-control';
+        searchInput.id = `datatable-search-input-${productType}`; // Unique ID for each product type
+
+        // Create the search input label
+        const searchLabel = document.createElement('label');
+        searchLabel.className = 'form-label';
+        searchLabel.setAttribute('for', searchInput.id);
+        searchLabel.textContent = 'Search';
+
+        // Append input and label to the search container
+        searchContainer.appendChild(searchInput);
+        searchContainer.appendChild(searchLabel);
 
         const title = document.createElement('h3');
         title.className = 'text-dark pt-5 pb-2 text-center';
         title.textContent = productType;
-        tableContainer.appendChild(title);
+        document.getElementById('ratings-container').appendChild(title);
+        
+        document.getElementById('ratings-container').appendChild(searchContainer);
+        document.getElementById('ratings-container').appendChild(tableContainer);
 
         const table = document.createElement('table');
-        table.className = 'display';
-        table.style.width = '100%';
-
+        table.className = 'table table-striped'; // Add Bootstrap table classes
+        table.setAttribute('data-mdb-datatable', 'true');
         const columns = ['strain', 'cultivator'].concat(Object.keys(ratings[0]).filter(key => key.endsWith('_rating')));
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
@@ -66,19 +87,12 @@ class RatingsDatatable {
         table.appendChild(tbody);
 
         tableContainer.appendChild(table);
-        document.getElementById('ratings-container').appendChild(tableContainer);
-
-        // Initialize DataTables on the created table
-        var createdTable = $(table).DataTable({
-            searching: true // Enable the search functionality
+        const mdbTable = new mdb.Datatable(table, {
+            responsive: true // Enable responsive feature
         });
-        $('.dataTables_filter').closest('.row').addClass('row');
-        $('.dataTables_length').closest('.row').addClass('row');
-        var searchInput = $('div.dataTables_filter');
-        var lengthSelect = $('div.dataTables_length');
-        searchInput.className = "w-100 form-control";
-        $('.dataTables_length').closest('.row').addClass('justify-content-start');
-        $('.dataTables_filter').closest('.row').addClass('justify-content-start');
+        searchInput.addEventListener('input', (e) => {
+          mdbTable.search(e.target.value);
+        });
     }
 }
 
