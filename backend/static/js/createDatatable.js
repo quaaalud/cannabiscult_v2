@@ -30,9 +30,6 @@ class RatingsDatatable {
     createTableForProductType(productType, ratings) {
         if (ratings.length === 0) return;
 
-        const tableContainer = document.createElement('div');
-        tableContainer.className = 'table-responsive py-2 w-100';
-
         const searchContainer = document.createElement('div');
         searchContainer.setAttribute('data-mdb-input-init', 'true');
         searchContainer.className = 'form-outline mb-4';
@@ -53,16 +50,15 @@ class RatingsDatatable {
         searchContainer.appendChild(searchLabel);
 
         const title = document.createElement('h3');
-        title.className = 'text-dark pt-5 pb-2 text-center';
+        title.className = 'text-dark pt-3 pb-2 text-center';
         title.textContent = productType;
-        document.getElementById('ratings-container').appendChild(title);
         
-        document.getElementById('ratings-container').appendChild(searchContainer);
-        document.getElementById('ratings-container').appendChild(tableContainer);
 
         const table = document.createElement('table');
-        table.className = 'table table-striped'; // Add Bootstrap table classes
+        table.className = 'table table-striped py-3'; // Add Bootstrap table classes
         table.setAttribute('data-mdb-datatable', 'true');
+        table.setAttribute('data-mdb-width', '100')
+        table.setAttribute('data-mdb-pagination', 'false')
         const columns = ['strain', 'cultivator'].concat(Object.keys(ratings[0]).filter(key => key.endsWith('_rating')));
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
@@ -86,9 +82,15 @@ class RatingsDatatable {
         });
         table.appendChild(tbody);
 
-        tableContainer.appendChild(table);
+        document.getElementById('ratings-container').appendChild(title);
+        document.getElementById('ratings-container').appendChild(searchContainer);
+        document.getElementById('ratings-container').appendChild(table);
+        
         const mdbTable = new mdb.Datatable(table, {
-            responsive: true // Enable responsive feature
+            responsive: true,
+            layout: {
+              topStart: null
+          }
         });
         searchInput.addEventListener('input', (e) => {
           mdbTable.search(e.target.value);

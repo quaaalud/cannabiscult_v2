@@ -5,16 +5,11 @@
     justify-content: center; /* Center the pagination controls if they are flex items */
 }
 
-/* You might need to adjust the padding or margins as well */
-.datatable-pagination > * {
-    padding: 0;
-    margin: 0 auto; /* Center elements with auto margins */
-}
 </style>
 {% endblock %}
-
+<div class="container d-block">
   <div id="ratings-container"></div>
-
+</div>
 {% block scripts %}
 <script type="module" src="{{ url_for('static', path='js/createDatatable.js') }}"></script>
 {% endblock %}
