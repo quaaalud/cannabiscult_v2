@@ -29,81 +29,79 @@ class RatingsDatatable {
 
     createTableForProductType(productType, ratings) {
         if (ratings.length === 0) return;
-
-        const searchContainer = document.createElement('div');
-        searchContainer.setAttribute('data-mdb-input-init', 'true');
-        searchContainer.className = 'form-outline mb-4';
-        // Create the search input element
-        const searchInput = document.createElement('input');
-        searchInput.type = 'text';
-        searchInput.className = 'form-control';
-        searchInput.id = `datatable-search-input-${productType}`; // Unique ID for each product type
-
-        // Create the search input label
-        const searchLabel = document.createElement('label');
-        searchLabel.className = 'form-label';
-        searchLabel.setAttribute('for', searchInput.id);
-        searchLabel.textContent = 'Search';
-
-        // Append input and label to the search container
-        searchContainer.appendChild(searchInput);
-        searchContainer.appendChild(searchLabel);
-
-        const title = document.createElement('h3');
-        title.className = 'text-dark pt-3 pb-2 text-center';
-        title.textContent = productType;
-        
-
-        const table = document.createElement('table');
-        table.className = 'table table-striped py-3'; // Add Bootstrap table classes
-        table.setAttribute('data-mdb-datatable', 'true');
-        table.setAttribute('data-mdb-width', '100')
-        table.setAttribute('data-mdb-pagination', 'false')
-        const columns = ['strain', 'cultivator'].concat(Object.keys(ratings[0]).filter(key => key.endsWith('_rating')));
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        columns.forEach(col => {
-            const th = document.createElement('th');
-            th.textContent = col.replace(/_/g, ' ').replace('rating', '').trim().toUpperCase();
-            headerRow.appendChild(th);
+    
+        const container = document.createElement('div');
+        container.id = `container${productType}`;
+        container.className = 'container-fluid py-3';
+    
+        const titleHTML = `<h3 class="text-dark pt-3 pb-2 text-center">${productType}</h3>`;
+        container.innerHTML = titleHTML;
+    
+        const searchContainerHTML = `
+            <div class="row">
+                <div class="col-12 col-md-9 mx-auto">
+                    <div class="form-outline mb-4" data-mdb-input-init="true">
+                        <input type="text" class="form-control" id="datatable-search-input-${productType}">
+                        <label class="form-label" for="datatable-search-input-${productType}">Search</label>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.innerHTML += searchContainerHTML;
+    
+        // Define columns based on ratings keys
+        let columns = [
+          { label: 'Strain', width: 150},
+          { label: 'Cultivator', width: 150 }
+        ];
+    
+        // Add rating columns dynamically
+        Object.keys(ratings[0]).filter(key => key.endsWith('_rating')).forEach(key => {
+            columns.push({ label: key.replace(/_/g, ' ').replace('rating', '').trim().toUpperCase(), sort: true });
         });
-        thead.appendChild(headerRow);
-        table.appendChild(thead);
-
-        const tbody = document.createElement('tbody');
-        ratings.forEach(rating => {
-            const row = document.createElement('tr');
-            columns.forEach(col => {
-                const td = document.createElement('td');
-                td.textContent = col.endsWith('_rating') ? this.formatRating(rating[col]) : rating[col];
-                row.appendChild(td);
+    
+        // Prepare rows data
+        let rows = ratings.map(rating => {
+            return columns.map(col => {
+                let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
+                return rating[key] || rating[col.label.toLowerCase()];
             });
-            tbody.appendChild(row);
         });
-        table.appendChild(tbody);
-
-        document.getElementById('ratings-container').appendChild(title);
-        document.getElementById('ratings-container').appendChild(searchContainer);
-        document.getElementById('ratings-container').appendChild(table);
-        
-        const mdbTable = new mdb.Datatable(table, {
-            responsive: true,
+    
+        // Create a table container
+        const tableContainer = document.createElement('div');
+        tableContainer.id = `datatable${productType}`;
+        container.appendChild(tableContainer);
+    
+        document.getElementById('ratings-container').appendChild(container);
+    
+        // Initialize MDB DataTable with dynamic columns and rows
+        var datatableInstance = new mdb.Datatable(document.getElementById(`datatable${productType}`), {
+            columns: columns,
+            rows: rows,
+            bordered: true,
             layout: {
-              topStart: null
-          }
+              striped: true,
+              responsive: true,
+              pagination: true,
+            }
         });
-        searchInput.addEventListener('input', (e) => {
-          mdbTable.search(e.target.value);
+    
+        // Attach search functionality
+        document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
+            datatableInstance.search(e.target.value);
         });
     }
+
+
 }
 
 // Wait for the DOM to be fully loaded and for the Supabase client to be ready
 $(document).ready(function() {
-    window.addEventListener('supabaseClientReady', async function() {
-        const userEmail = await window.supabaseClient.getCurrentUserEmail();
-        if (userEmail) {
-            new RatingsDatatable(userEmail); // Create a new instance of the RatingsDatatable class
-        }
-    });
+  window.addEventListener('supabaseClientReady', async function() {
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (userEmail) {
+      new RatingsDatatable(userEmail); // Create a new instance of the RatingsDatatable class
+    }
+  });
 });

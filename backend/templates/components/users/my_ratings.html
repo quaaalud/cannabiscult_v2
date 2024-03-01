@@ -1,15 +1,8 @@
 {%block head %}
-<style>
-.datatable-pagination {
-    width: 100%; /* Full width */
-    justify-content: center; /* Center the pagination controls if they are flex items */
-}
 
-</style>
 {% endblock %}
-<div class="container d-block">
+
   <div id="ratings-container"></div>
-</div>
 {% block scripts %}
 <script type="module" src="{{ url_for('static', path='js/createDatatable.js') }}"></script>
 {% endblock %}
