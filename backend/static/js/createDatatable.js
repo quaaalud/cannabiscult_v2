@@ -54,10 +54,14 @@ class RatingsDatatable {
           { label: 'Strain', width: 150},
           { label: 'Cultivator', width: 150 }
         ];
-    
+
         // Add rating columns dynamically
         Object.keys(ratings[0]).filter(key => key.endsWith('_rating')).forEach(key => {
-            columns.push({ label: key.replace(/_/g, ' ').replace('rating', '').trim().toUpperCase(), sort: true });
+          const columnValues = ratings.map(rating => parseFloat(rating[key]));
+          columns.push({
+            label: key.replace(/_/g, ' ').replace('rating', '').trim().toUpperCase(),
+            sort: true,
+          });
         });
     
         // Prepare rows data
@@ -86,7 +90,6 @@ class RatingsDatatable {
               pagination: true,
             }
         });
-    
         // Attach search functionality
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
