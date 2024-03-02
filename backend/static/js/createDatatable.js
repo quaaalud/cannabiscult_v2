@@ -26,9 +26,31 @@ class RatingsDatatable {
     formatRating(value) {
         return value ? parseFloat(value).toFixed(2) : 'N/A';
     }
-
-    createTableForProductType(productType, ratings) {
-        if (ratings.length === 0) return;
+    
+    addProductTableTab(productType, tabList, tabContent, ratings) {
+        // Create the ProductTable tab
+        const productTableTab = document.createElement('li');
+        productTableTab.className = 'nav-item';
+        const productTableLink = document.createElement('a');
+        productTableLink.className = 'nav-link active text-dark'; // Active by default
+        productTableLink.id = `productTable-tab-${productType}`;
+        productTableLink.dataset.bsToggle = 'tab';
+        productTableLink.href = `#productTable-${productType}`;
+        productTableLink.role = 'tab';
+        productTableLink.ariaControls = `productTable-${productType}`;
+        productTableLink.ariaSelected = 'true';
+        productTableLink.innerText = `${productType} Table`;
+        productTableTab.appendChild(productTableLink);
+      
+        // Append the ProductTable tab to the tab list
+        tabList.appendChild(productTableTab);
+    
+        // Create the content for the ProductTable tab
+        const productTableContent = document.createElement('div');
+        productTableContent.className = 'tab-pane fade show active'; // Active by default
+        productTableContent.id = `productTable-${productType}`;
+        productTableContent.role = 'tabpanel';
+        productTableContent.ariaLabelledby = `productTable-tab-${productType}`;
     
         const container = document.createElement('div');
         container.id = `container${productType}`;
@@ -76,8 +98,12 @@ class RatingsDatatable {
         const tableContainer = document.createElement('div');
         tableContainer.id = `datatable${productType}`;
         container.appendChild(tableContainer);
-    
-        document.getElementById('ratings-container').appendChild(container);
+        
+        productTableContent.appendChild(container);
+        // Append the ProductTable content to the tab content container
+        tabContent.appendChild(productTableContent);
+        
+        document.getElementById('ratings-container').appendChild(tabContent);
     
         // Initialize MDB DataTable with dynamic columns and rows
         var datatableInstance = new mdb.Datatable(document.getElementById(`datatable${productType}`), {
@@ -94,6 +120,168 @@ class RatingsDatatable {
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
         });
+    }
+
+    createTableForProductType(productType, ratings) {
+        if (ratings.length === 0) return;
+    
+        // Main container for the product type
+        const productTypeContainer = document.createElement('div');
+        productTypeContainer.className = 'product-type-container py-3';
+    
+        // Tab list for the product type
+        const tabList = document.createElement('ul');
+        tabList.className = 'nav nav-tabs';
+        tabList.id = `tabList-${productType}`;
+        tabList.role = 'tablist';
+    
+        // Tab content container for the product type
+        const tabContent = document.createElement('div');
+        tabContent.className = 'tab-content';
+        tabContent.id = `tabContent-${productType}`;
+    
+        // Append the tab list and tab content container to the main container
+        productTypeContainer.appendChild(tabList);
+        productTypeContainer.appendChild(tabContent);
+    
+        // Append the main container to the ratings-container
+        document.getElementById('ratings-container').appendChild(productTypeContainer);
+    
+        // Add the ProductTable tab and content
+        this.addProductTableTab(productType, tabList, tabContent, ratings);
+        this.createChartTab(productType, tabList, tabContent, ratings);
+        // Optionally, add more tabs for charts related to the DataTable here
+        // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
+    }
+
+    createChartTab(productType, tabList, tabContent, ratings) {
+        const chartTab = document.createElement('li');
+        chartTab.className = 'nav-item';
+        const chartLink = document.createElement('a');
+        chartLink.className = 'nav-link text-dark';
+        chartLink.id = `chart-tab-${productType}`;
+        chartLink.dataset.bsToggle = 'tab';
+        chartLink.href = `#chart-${productType}`;
+        chartLink.role = 'tab';
+        chartLink.ariaControls = `chart-${productType}`;
+        chartLink.ariaSelected = 'false';
+        chartLink.innerText = `${productType} Charts`;
+        chartTab.appendChild(chartLink);
+    
+        tabList.appendChild(chartTab);
+    
+        const chartContent = document.createElement('div');
+        chartContent.className = 'tab-pane fade';
+        chartContent.id = `chart-${productType}`;
+        chartContent.role = 'tabpanel';
+        chartContent.ariaLabelledby = `chart-tab-${productType}`;
+    
+        // Create the canvas element for the chart
+        const chartCanvas = document.createElement('canvas');
+        chartCanvas.id = `chart-canvas-${productType}`;
+        chartContent.appendChild(chartCanvas);
+    
+        tabContent.appendChild(chartContent);
+    
+        // Initialize the dropdown for strain-cultivator combinations
+        const dropdown = this.createDropdown(productType, ratings, chartCanvas);
+        chartContent.insertBefore(dropdown, chartCanvas);
+    }
+
+    createDropdown(productType, ratings, chartCanvas) {
+        const selectContainer = document.createElement('div');
+        selectContainer.className = 'chart-dropdown-container';
+    
+        const selectElement = document.createElement('select');
+        selectElement.className = 'form-select';
+        selectElement.id = `chart-dropdown-${productType}`;
+    
+        // Default dropdown option
+        const defaultOption = document.createElement('option');
+        defaultOption.selected = true;
+        defaultOption.disabled = true;
+        defaultOption.hidden = true;
+        defaultOption.textContent = 'Select a strain-cultivator combination';
+        selectElement.appendChild(defaultOption);
+    
+        // Populate dropdown options
+        ratings.forEach(rating => {
+            const option = document.createElement('option');
+            option.value = `${rating.cultivator}-${rating.strain}`;
+            option.textContent = `${rating.cultivator} - ${rating.strain}`;
+            selectElement.appendChild(option);
+        });
+    
+        selectContainer.appendChild(selectElement);
+    
+        // Event listener for dropdown selection
+        selectElement.addEventListener('change', (event) => {
+            const selectedCombination = event.target.value;
+            this.updateChartForCombination(productType, selectedCombination, ratings, chartCanvas);
+        });
+    
+        return selectContainer;
+    }
+
+    updateChartForCombination(productType, combination, ratings, chartCanvas) {
+        const [selectedCultivator, selectedStrain] = combination.split('-');
+        const ratingData = ratings.find(rating => rating.cultivator === selectedCultivator && rating.strain === selectedStrain);
+    
+        if (!ratingData) {
+            console.error('No data found for selected combination');
+            return;
+        }
+    
+        // Prepare chart labels and data
+        const labels = [];
+        const data = [];
+        const backgroundColors = [
+            'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+            'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+            'rgba(66, 133, 244, 0.2)'
+        ];
+    
+        Object.keys(ratingData).forEach((key, index) => {
+            if (key.endsWith('_rating')) {
+                const label = key.replace(/_/g, ' ').replace('rating', '').toUpperCase();
+                labels.push(label);
+                data.push(parseFloat(ratingData[key]));
+            }
+        });
+    
+        // Clear previous chart if it exists
+        if (window.myPolarChart instanceof mdb.Chart) {
+            window.myPolarChart.destroy();
+        }
+    
+        // Chart.js polar area chart configuration
+        const polarAreaChartData = {
+            type: 'polarArea',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `${selectedCultivator} - ${selectedStrain}`,
+                    data: data,
+                    backgroundColor: backgroundColors.slice(0, labels.length), // Match color count to label count
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0 // No decimal places
+                        }
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        };
+    
+        // Instantiate the polar area chart
+        window.myPolarChart = new mdb.Chart(chartCanvas, polarAreaChartData);
     }
 
 
