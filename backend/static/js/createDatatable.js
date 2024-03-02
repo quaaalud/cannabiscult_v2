@@ -369,11 +369,17 @@ class RatingsDatatable {
                         }
                     }
                 },
+                indexAxis: 'y', // This makes the bar chart horizontal
                 scales: {
+                    x: {
+                        stacked: true, // Optional: for stacked bar chart
+                        // Configure your x-axis options here
+                    },
                     y: {
-                        beginAtZero: true
+                        // Configure your y-axis options here
+                        stacked: true, // Optional: for stacked bar chart
                     }
-                }
+                },
             }
         };
     
