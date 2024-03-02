@@ -85,6 +85,19 @@ async def voting_home(request: Request):
     )
 
 
+@general_pages_router.get("/home")
+async def user_home(request: Request):
+    user_is_logged_in = await async_get_current_users_email() is not None
+    return templates.TemplateResponse(
+        str(Path("general_pages", "strain_submissions.html")),
+        {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        },
+    )
+
+
+
 @general_pages_router.post("/login-submit", response_model=LoggedInUser)
 async def submit_login_form(
     request: Request,

@@ -169,7 +169,7 @@ async function handleLoginFormSubmission() {
         try {
             const { user, session, error } = await window.supabaseClient.signInWithEmail(email, password);
             if (error) throw error;
-            window.location.href = "/voting-home";
+            window.location.href = "/home";
         } catch (error) {
             console.error('Login error:', error.message);
             alert('Login failed: ' + error.message);

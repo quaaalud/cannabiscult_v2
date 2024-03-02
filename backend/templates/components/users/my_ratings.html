@@ -1,22 +1,23 @@
 {%block head %}
 <style>
 /* Container holding the tabs */
-.nav-tabs {
+#ratings-container .nav-tabs {
     display: flex; /* Enables flexbox */
     flex-wrap: nowrap; /* Prevents tabs from wrapping onto multiple lines */
     overflow-x: auto; /* Allows horizontal scrolling if tabs overflow */
     white-space: nowrap; /* Keeps tab text on a single line */
+    overflow-y: hidden;
 }
 
 /* Individual tab items */
-.nav-item {
+#ratings-container .nav-item {
     flex-shrink: 1; /* Allows tabs to shrink if necessary */
     min-width: 100px; /* Minimum width for each tab, adjust as needed */
     max-width: 100%; /* Ensures tabs don't grow beyond container width */
 }
 
 /* Tab links */
-.nav-link {
+#ratings-container .nav-link {
     text-overflow: ellipsis; /* Adds an ellipsis if text overflows */
     overflow: hidden; /* Hides overflow text */
     display: block; /* Allows text-overflow to work */

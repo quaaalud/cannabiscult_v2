@@ -56,22 +56,19 @@ class RatingsDatatable {
     
         const container = document.createElement('div');
         container.id = `container${productType}`;
-        container.className = 'container-fluid py-3';
-    
-        const titleHTML = `<h3 class="text-dark pt-3 pb-2 text-center">${productType}</h3>`;
-        container.innerHTML = titleHTML;
-    
+        container.className = 'container-fluid pt-3';
+
         const searchContainerHTML = `
             <div class="row">
                 <div class="col-12 col-md-9 col-lg-6 mx-auto">
                     <div class="form-outline mb-4" data-mdb-input-init="true">
                         <input type="text" class="form-control" id="datatable-search-input-${productType}">
-                        <label class="form-label" for="datatable-search-input-${productType}">Search</label>
+                        <label class="form-label" for="datatable-search-input-${productType}">Search ${productType}</label>
                     </div>
                 </div>
             </div>
         `;
-        container.innerHTML += searchContainerHTML;
+        container.innerHTML = searchContainerHTML;
     
         // Define columns based on ratings keys
         let columns = [
@@ -133,7 +130,7 @@ class RatingsDatatable {
     
         // Tab list for the product type
         const tabList = document.createElement('ul');
-        tabList.className = 'nav nav-tabs nav-fill';
+        tabList.className = 'nav nav-tabs nav-fill px-3';
         tabList.id = `tabList-${productType}`;
         tabList.role = 'tablist';
     
