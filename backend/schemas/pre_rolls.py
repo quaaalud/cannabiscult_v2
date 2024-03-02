@@ -53,16 +53,22 @@ class PreRollRankingSchema(BaseModel):
     strain: str = Field(..., description="Name of the strain")
     connoisseur: EmailStr = Field(..., description="Email address of the connoisseur")
     roll_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the roll quality")
-    airflow_rating: float = Field(None, gt=0, lt=10.1, description="Rating for airflow quality")
-    ease_to_light_rating: float = Field(
+    airflow_rating: Optional[float] = Field(
+        None, gt=0, lt=10.1, description="Rating for airflow quality"
+    )
+    ease_to_light_rating: Optional[float] = Field(
         None, gt=0, lt=10.1, description="Rating for ease of lighting pre-roll"
     )
-    flavor_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the flavor")
-    tightness_rating: float = Field(
+    flavor_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the flavor")
+    tightness_rating: Optional[float] = Field(
         None, gt=0, lt=10.1, description="Rating for tightness of the roll"
     )
-    burn_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the burn quality")
-    effects_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the effects")
+    burn_rating: Optional[float] = Field(
+        None, gt=0, lt=10.1, description="Rating for the burn quality"
+    )
+    effects_rating: Optional[float] = Field(
+        None, gt=0, lt=10.1, description="Rating for the effects"
+    )
     overall_score: Optional[float] = Field(
         None, gt=0, lt=10.1, description="Overall score calculated from the ratings"
     )
