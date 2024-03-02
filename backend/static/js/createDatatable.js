@@ -251,7 +251,7 @@ class RatingsDatatable {
     
         // Clear previous chart if it exists
         if (window.myPolarChart instanceof mdb.Chart) {
-            window.myPolarChart.destroy();
+            window.myPolarChart.dispose();
         }
     
         // Chart.js polar area chart configuration
