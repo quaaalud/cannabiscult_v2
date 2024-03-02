@@ -9,6 +9,7 @@ class RatingsDatatable {
             const ratingsByProductType = await this.fetchRatings(this.userEmail);
             this.chartInstances = this.chartInstances || {};
             for (const [productType, ratings] of Object.entries(ratingsByProductType)) {
+                ratings.sort((a, b) => a.strain.localeCompare(b.strain));
                 this.createTableForProductType(productType, ratings);
             }
         } catch (error) {
@@ -62,7 +63,7 @@ class RatingsDatatable {
     
         const searchContainerHTML = `
             <div class="row">
-                <div class="col-12 col-md-9 mx-auto">
+                <div class="col-12 col-md-9 col-lg-6 mx-auto">
                     <div class="form-outline mb-4" data-mdb-input-init="true">
                         <input type="text" class="form-control" id="datatable-search-input-${productType}">
                         <label class="form-label" for="datatable-search-input-${productType}">Search</label>
@@ -128,11 +129,11 @@ class RatingsDatatable {
     
         // Main container for the product type
         const productTypeContainer = document.createElement('div');
-        productTypeContainer.className = 'product-type-container py-3';
+        productTypeContainer.className = 'product-type-container col-12 col-md-9 col-lg-6 mx-auto py-3';
     
         // Tab list for the product type
         const tabList = document.createElement('ul');
-        tabList.className = 'nav nav-tabs';
+        tabList.className = 'nav nav-tabs nav-fill';
         tabList.id = `tabList-${productType}`;
         tabList.role = 'tablist';
     
@@ -151,6 +152,7 @@ class RatingsDatatable {
         // Add the ProductTable tab and content
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
+        this.createOverallScoreTab(productType, tabList, tabContent, ratings);
         // Optionally, add more tabs for charts related to the DataTable here
         // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
@@ -172,7 +174,7 @@ class RatingsDatatable {
         tabList.appendChild(chartTab);
     
         const chartContent = document.createElement('div');
-        chartContent.className = 'tab-pane fade col-12 col-md-6 mx-auto';
+        chartContent.className = 'tab-pane fade col-12 col-md-9 col-lg-6 mx-auto py-3';
         chartContent.id = `chart-${productType}`;
         chartContent.role = 'tabpanel';
         chartContent.ariaLabelledby = `chart-tab-${productType}`;
@@ -285,6 +287,99 @@ class RatingsDatatable {
         chartCanvas.chartInstance = new mdb.Chart(chartCanvas, polarAreaChartData);
     }
 
+    createOverallScoreTab(productType, tabList, tabContent, ratings) {
+        const overallScoreTab = document.createElement('li');
+        overallScoreTab.className = 'nav-item';
+        const overallScoreLink = document.createElement('a');
+        overallScoreLink.className = 'nav-link text-dark';
+        overallScoreLink.id = `overall-score-tab-${productType}`;
+        overallScoreLink.dataset.bsToggle = 'tab';
+        overallScoreLink.href = `#overall-score-${productType}`;
+        overallScoreLink.role = 'tab';
+        overallScoreLink.ariaControls = `overall-score-${productType}`;
+        overallScoreLink.ariaSelected = 'false';
+        overallScoreLink.innerText = `${productType} Rankings`;
+        overallScoreTab.appendChild(overallScoreLink);
+    
+        tabList.appendChild(overallScoreTab);
+    
+        const overallScoreContent = document.createElement('div');
+        overallScoreContent.className = 'tab-pane fade col-12 col-md-9 col-lg-6 mx-auto py-3';
+        overallScoreContent.id = `overall-score-${productType}`;
+        overallScoreContent.role = 'tabpanel';
+        overallScoreContent.ariaLabelledby = `overall-score-tab-${productType}`;
+    
+        // Create the canvas element for the overall score chart
+        const overallScoreCanvas = document.createElement('canvas');
+        overallScoreCanvas.id = `overall-score-canvas-${productType}`;
+        overallScoreContent.appendChild(overallScoreCanvas);
+    
+        tabContent.appendChild(overallScoreContent);
+    
+        // After creating the tab and canvas, calculate scores and create the chart
+        this.createOverallScoreChart(productType, ratings, overallScoreCanvas);
+    }
+
+    createOverallScoreChart(productType, ratings, chartCanvas) {
+        const labels = [];
+        const data = [];
+        const tooltips = [];
+        const backgroundColors = [
+            'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+            'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+            'rgba(66, 133, 244, 0.2)'
+        ];
+        // Calculate overall scores for each strain
+        ratings.forEach(rating => {
+            const scoreValues = Object.keys(rating)
+                .filter(key => key.endsWith('_rating'))
+                .map(key => parseFloat(rating[key]) || 0);
+            
+            const overallScore = scoreValues.reduce((acc, curr) => acc + curr, 0) / scoreValues.length;
+            
+            labels.push(`${rating.strain}`);
+            data.push(overallScore.toFixed(2));
+            tooltips.push(`${rating.cultivator} - ${rating.strain}: ${overallScore.toFixed(2)}`);
+        });
+    
+        // Bar chart configuration
+        const dataBarCustomTooltip = {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: `${productType} Rankings`,
+                    data: data,
+                    backgroundColor: data.map((_, i) => backgroundColors[i % backgroundColors.length]), // Cycle through the color array
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+        };
+    
+        // Options with custom tooltip
+        const optionsBarCustomTooltip = {
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return tooltips[context.dataIndex];
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+    
+        // Create the bar chart with custom tooltips
+        new mdb.Chart(chartCanvas, dataBarCustomTooltip, optionsBarCustomTooltip);
+    }
 
 }
 
