@@ -7,6 +7,7 @@ class RatingsDatatable {
     async init() {
         try {
             const ratingsByProductType = await this.fetchRatings(this.userEmail);
+            this.chartInstances = this.chartInstances || {};
             for (const [productType, ratings] of Object.entries(ratingsByProductType)) {
                 this.createTableForProductType(productType, ratings);
             }
@@ -171,7 +172,7 @@ class RatingsDatatable {
         tabList.appendChild(chartTab);
     
         const chartContent = document.createElement('div');
-        chartContent.className = 'tab-pane fade';
+        chartContent.className = 'tab-pane fade col-12 col-md-6 mx-auto';
         chartContent.id = `chart-${productType}`;
         chartContent.role = 'tabpanel';
         chartContent.ariaLabelledby = `chart-tab-${productType}`;
@@ -201,7 +202,7 @@ class RatingsDatatable {
         defaultOption.selected = true;
         defaultOption.disabled = true;
         defaultOption.hidden = true;
-        defaultOption.textContent = 'Select a strain-cultivator combination';
+        defaultOption.textContent = 'Select a Strain';
         selectElement.appendChild(defaultOption);
     
         // Populate dropdown options
@@ -250,8 +251,8 @@ class RatingsDatatable {
         });
     
         // Clear previous chart if it exists
-        if (window.myPolarChart instanceof mdb.Chart) {
-            window.myPolarChart.dispose();
+        if (chartCanvas.chartInstance) {
+            chartCanvas.chartInstance.dispose();
         }
     
         // Chart.js polar area chart configuration
@@ -281,7 +282,7 @@ class RatingsDatatable {
         };
     
         // Instantiate the polar area chart
-        window.myPolarChart = new mdb.Chart(chartCanvas, polarAreaChartData);
+        chartCanvas.chartInstance = new mdb.Chart(chartCanvas, polarAreaChartData);
     }
 
 
