@@ -47,6 +47,7 @@ from _supabase import route_edible_rankings
 from _supabase import route_searches
 from _supabase import route_pre_rolls
 from _supabase import route_strain_submissions
+from _supabase import route_images
 from middleware import mystery_pack_route_handler
 
 api_router = APIRouter()
@@ -129,4 +130,9 @@ api_router.include_router(
     route_strain_submissions.router,
     prefix="/submit",
     tags=["submit"]
+)
+api_router.include_router(
+    route_images.router,
+    prefix="/images",
+    tags=["images"]
 )
