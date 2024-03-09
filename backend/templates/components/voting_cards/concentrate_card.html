@@ -13,21 +13,27 @@
                   <h3 class="card-subtitle mb-2">
                     <u>{{ cultivator }}</u>
                   </h3>
-                </div>
-                <div class="container col-11 col-xl-10 pt-2">
-                  <div class="row mx-auto justify-content-center">
-                    <div class="mx-auto">
-                      <a data-bs-target="#ConcentrateRankingsDisplay">
-                        <img 
-                          src="{{ url_path }}"
-                          class="img-fluid rounded-5" 
-                          alt="Conniosseur {{ strain }} Cultivar Review Card"
-                          id="reviewImage"
-                        />
-                      </a>
+                  <div class="container col-11 col-xl-10 pt-2" id="imageContainer">
+                    <div id="carouselImages" class="carousel slide carousel-fade" data-mdb-ride="carousel" data-mdb-carousel-init>
+                      <!-- Indicators -->
+                      <div class="carousel-indicators">
+                        <button type="button" data-mdb-target="#carouselImages" data-mdb-slide-to="0" class="active" aria-current="true" aria-label="{{ strain }} 1"></button>
+                      </div>
+                      <div class="carousel-inner rounded-5 shadow-4-strong">
+                        <!-- Single item -->
+                        <div class="carousel-item active">
+                          <img 
+                            src="{{ url_path }}"
+                            class="img-fluid rounded-5" 
+                            alt="Conniosseur {{ strain }} Cultivar Review Card"
+                            id="reviewImage"
+                          />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>  
+                </div>
+                <a data-bs-target="#ConcentrateRankingsDisplay"></a>
                 <div class="container card-body pt-2">
                   <div class="row my-auto mx-auto justify-content-center">
                     <div class="col-xs-11 col-10 mx-auto">
@@ -98,6 +104,12 @@
   if (!concentrateIdValue) {
     concentrateIdValue = "{{ id }}";
   }
+  window.addEventListener('supabaseClientReady', async function() {
+  const imageUrls = await window.supabaseClient.fetchImageUrls("concentrate", concentrateIdValue);
+    if (imageUrls && imageUrls.length > 0) {
+      await window.supabaseClient.updateCarouselWithImages(imageUrls);
+    }
+  });
 </script>
 
 <script type="module" src="{{ url_for('static', path='js/generate_concentrate_rating_questions.js') }}" async></script>
