@@ -417,5 +417,48 @@ class SupabaseClient {
             return;
         }
     }
+    async fetchImageUrls(productType, productId) {
+      const fullUrl = `/images/${productType}/${productId}`;
+    
+      try {
+        const response = await fetch(fullUrl);
+        if (!response.ok) {
+          throw new Error(`Server error! Status: ${response.status}`);
+        }
+        const imageUrls = await response.json();
+
+        return imageUrls;
+      } catch (error) {
+        console.error('Fetch error:', error);
+        return [];
+      }
+    }
+    async updateCarouselWithImages(imageUrls) {
+      const carouselIndicators = document.querySelector('.carousel-indicators');
+      const carouselInner = document.querySelector('.carousel-inner');
+    
+      // Start adding new items from index 0 for image URLs, but account for existing carousel item
+      imageUrls.forEach((url, index) => {
+        const slideIndex = index + 1; // Adjust index for carousel items (starting from 1)
+    
+        // Add new indicator only for additional images
+        const newIndicator = document.createElement('button');
+        newIndicator.setAttribute('type', 'button');
+        newIndicator.setAttribute('data-mdb-target', '#carouselImages');
+        newIndicator.setAttribute('data-mdb-slide-to', slideIndex.toString());
+        newIndicator.setAttribute('aria-label', `Slide ${slideIndex + 1}`);
+        if (index === 0) { // Make the first additional image indicator active if it's the only image
+          newIndicator.classList.add('active');
+        }
+        carouselIndicators.appendChild(newIndicator);
+    
+        // Add new carousel item
+        const newItem = document.createElement('div');
+        newItem.className = 'carousel-item'
+        newItem.setAttribute('data-mdb-interval', '10000');
+        newItem.innerHTML = `<img src="${url}" class="d-block w-100 img-fluid rounded-5" alt="Image ${slideIndex + 1}">`;
+        carouselInner.appendChild(newItem);
+      });
+    }
 }
 window.SupabaseClient = SupabaseClient;

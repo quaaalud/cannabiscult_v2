@@ -125,9 +125,16 @@ async def list_product_images(
     product_type: str, product_id: str, supabase: Client = Depends(_return_supabase_private_client)
 ):
     try:
-        image_urls = supabase.storage.from_(
-            "additional_product_images"
-        ).list(f"{product_type}/{product_id}")
+        images = supabase.storage.from_("additional_product_images").list(
+            f"{product_type}/{product_id}"
+        )
+        if not images:
+            return []
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    return [img["name"] for img in image_urls]
+    return [
+        supabase.storage.from_("additional_product_images").get_public_url(
+            f"{product_type}/{product_id}/{img['name']}"
+        )
+        for img in images
+    ]
