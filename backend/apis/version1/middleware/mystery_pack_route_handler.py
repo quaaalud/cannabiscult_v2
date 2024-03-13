@@ -19,6 +19,9 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "Citrus 2": ("Nuthera", "Lemon Bar"),
             "Citrus 3": ("Greenlight", "Goombas"),
             "Citrus 4": ("Local Cannabis", "Purple 43"),
+            "LIVE RESIN CP 1": ("Nuthera", "Red Runtz Live Badder"),
+            "LIVE RESIN CP 2": ("Vibe", "Liquid Sunshine Live Badder"),
+            "LIVE RESIN CP 3": ("Sinse", "Blueberry Muffin Live Badder"),
         }
 
         # Extract query parameters
