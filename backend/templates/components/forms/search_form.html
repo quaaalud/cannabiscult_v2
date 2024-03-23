@@ -1,0 +1,102 @@
+<div class="col-10 mx-auto" style="min-height: 50vh">
+  <div class="container my-4">
+    <input id="custom-search-input" type="search" class="form-control" placeholder="Search here..." aria-label="Search">
+  </div>
+  <div id="custom-search-results" class="ecommerce-gallery" data-mdb-ecommerce-gallery-init data-mdb-zoom-effect="true">
+    <div class="row" data-mdb-lightbox-init>
+        <!-- Search results will be populated here -->
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script async defer>
+document.addEventListener('DOMContentLoaded', () => {
+    function updateCustomSearchResults(searchTerm) {
+        const resultsContainer = document.getElementById('custom-search-results');
+        const resultsRow = resultsContainer.querySelector('.row');
+        resultsRow.innerHTML = ''; // Clear previous results
+
+        if (searchTerm.trim().length < 3) {
+            return;
+        }
+
+        fetch(`/search/all/${encodeURIComponent(searchTerm)}`)
+            .then(response => response.json())
+            .then(data => {
+                const categorizedResults = {
+                    Flower: new Map(),
+                    Concentrate: new Map(),
+                    Edible: new Map(),
+                    Pre_Roll: new Map()
+                };
+
+                data.forEach(item => {
+                    if (item.type in categorizedResults) {
+                        const uniqueKey = `${item.cultivator}-${item.strain}`;
+                        categorizedResults[item.type].set(uniqueKey, item);
+                    }
+                });
+
+                Object.keys(categorizedResults).forEach(type => {
+                    if (categorizedResults[type].size > 0) {
+                        const typeRow = document.createElement('div');
+                        typeRow.className = 'row mb-4';
+
+                        const typeHeading = document.createElement('h3');
+                        typeHeading.textContent = type;
+                        typeHeading.className = 'col-12 mx-auto text-start text-md-center';
+                        typeRow.appendChild(typeHeading);
+
+                        categorizedResults[type].forEach(item => {
+                            const col = document.createElement('div');
+                            col.className = 'col-6 col-sm-4 my-1 mx-auto text-center';
+
+                            const lightboxDiv = document.createElement('div');
+                            lightboxDiv.className = 'lightbox';
+                            lightboxDiv.setAttribute('data-mdb-lightbox-init', 'true');
+
+                            const img = document.createElement('img');
+                            img.src = item.url_path;
+                            img.alt = `${item.strain} by ${item.cultivator}`;
+                            img.className = 'w-100';
+                            img.setAttribute('data-mdb-img', item.url_path);
+                            
+                            lightboxDiv.appendChild(img);
+                            
+                            const button = document.createElement('a');
+                            button.className = 'btn btn-info mt-1';
+                            button.textContent = `${item.strain}`;
+                            // Construct the link based on the item type
+                            if (item.type === 'Flower') {
+                                button.href = `/get-review?strain_selected=${encodeURIComponent(item.strain)}&cultivator_selected=${encodeURIComponent(item.cultivator)}`;
+                            } else if (item.type === 'Concentrate') {
+                                button.href = `/concentrate-get-review?strain_selected=${encodeURIComponent(item.strain)}&cultivator_selected=${encodeURIComponent(item.cultivator)}`;
+                            } else if (item.type === 'Edible') {
+                                button.href = `/edible-get-review?strain_selected=${encodeURIComponent(item.strain)}&cultivator_selected=${encodeURIComponent(item.cultivator)}`;
+                            } else if (item.type === 'Pre_Roll') {
+                                button.href = `/pre-roll-get-review?strain=${encodeURIComponent(item.strain)}&cultivator=${encodeURIComponent(item.cultivator)}`;
+                            }
+                            col.appendChild(lightboxDiv);
+                            col.appendChild(button);
+                            typeRow.appendChild(col);
+                        });
+
+                        resultsRow.appendChild(typeRow);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching search results:', error);
+            });
+    }
+
+    const customSearchInput = document.getElementById('custom-search-input');
+    customSearchInput.addEventListener('input', (event) => {
+        updateCustomSearchResults(event.target.value);
+    });
+});
+
+</script>
+
+{% endblock %}
