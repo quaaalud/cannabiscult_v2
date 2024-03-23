@@ -334,12 +334,12 @@ class SupabaseClient {
     async addStrainSubmissionsLink() {
         const navLinksList = document.getElementById('navLinksList');
     
-        if (!navLinksList.querySelector('#strainSubmissionsLink')) {
+        if (!navLinksList.querySelector('#myRankingsLink')) {
             const linkItem = document.createElement('li');
             const link = document.createElement('a');
-            link.id = 'strainSubmissionsLink';
-            link.href = '/strain_submissions';
-            link.textContent = 'Strain Submissions';
+            link.id = 'myRankingsLink';
+            link.href = '/home';
+            link.textContent = 'My Rankings';
             link.className = 'nav-link'; // Add any additional classes as per your CSS framework
             navLinksList.appendChild(linkItem);
             linkItem.appendChild(link);
@@ -355,7 +355,7 @@ class SupabaseClient {
     }
     
     async removeStrainSubmissionLink() {
-        const submissionLink = document.getElementById('strainSubmissionsLink');
+        const submissionLink = document.getElementById('myRankingsLink');
         if (submissionLink) {
             submissionLink.parentNode.remove();
         }
