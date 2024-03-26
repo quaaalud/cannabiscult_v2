@@ -38,7 +38,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
     return {"created_user": user}
 
 
-@router.post("/", response_model=Dict[str, ShowUser])
+@router.post("/new_supa_user", response_model=Dict[str, ShowUser])
 def create_supa_user(
     user: UserCreate,
 ) -> SupaAuth:

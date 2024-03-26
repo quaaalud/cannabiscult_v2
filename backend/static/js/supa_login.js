@@ -137,9 +137,8 @@ class SupabaseClient {
         data.email = this.validateAndSanitizeEmail(data.email);
         data.name = this.sanitizeString(data.name);
         data.username = this.sanitizeString(data.username);
-        data.address = this.sanitizeString(data.name);
-        data.zip_code = this.sanitizeString(data.username);
-        data.phone = this.sanitizeString(data.name);
+        data.zip_code = this.sanitizeString(data.zip_code);
+        data.phone = this.sanitizeString(data.phone);
         data.type = "user";
         return true;
     }
@@ -271,6 +270,34 @@ class SupabaseClient {
           }
       } catch (error) {
           console.error("Error checking superuser status:", error.message);
+          return false;
+      }
+    }
+
+    async checkUserStatus() {
+      try {
+          // Construct the URL for the FastAPI endpoint
+          const url = `/users/get_username?user_email=${encodeURIComponent(user.email)}`;
+
+          // Make a GET request to the FastAPI route
+          const response = await fetch(url, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+              }
+          });
+
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.username) {
+              return true;
+          }
+          return false;
+      } catch (error) {
           return false;
       }
     }
