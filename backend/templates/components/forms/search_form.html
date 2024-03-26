@@ -12,6 +12,7 @@
 {% block scripts %}
 <script async defer>
 document.addEventListener('DOMContentLoaded', () => {
+    const existingCategories = {};
     function updateCustomSearchResults(searchTerm) {
         const resultsContainer = document.getElementById('custom-search-results');
         const resultsRow = resultsContainer.querySelector('.row');
