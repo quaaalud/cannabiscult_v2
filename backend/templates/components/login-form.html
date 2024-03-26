@@ -220,13 +220,11 @@ async function handlePasswordReset() {
     myModal.hide();
   }
 }
-window.addEventListener('load', function() {
-  handleLoginFormSubmission();
-  submitRegistrationForm();
-}, false);
 
 $(document).ready(function() {
   const forgotPasswordForm = document.getElementById('forgot-password-form');
+  handleLoginFormSubmission();
+  submitRegistrationForm();
   
   forgotPasswordForm.addEventListener('submit', async function(event) {
     event.preventDefault();
