@@ -12,10 +12,10 @@ class CalendarManager {
         if (!this.element) throw new Error('Element not found');
         this.events = [
           {
-              summary: 'Cannabis Cult Connoisseur Pack',
-              description: 'Connoisseur Packs are Back!',
-              start: '01/03/2024',
-              end: '15/03/2024',
+              summary: 'Cannabis Cult Flower Pack Round 3 on April 1st',
+              description: 'Connoisseur Flower Packs are Back! with Round 3 available at Greenligh Dispensaries around the state.',
+              start: '26/3/2024',
+              end: '31/3/2024',
               color: { background: '#cfe0fc', foreground: '#0a47a9' },
               id: 1
           }
