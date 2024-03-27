@@ -140,7 +140,7 @@ class SupabaseClient {
         data.zip_code = this.sanitizeString(data.zip_code);
         data.phone = this.sanitizeString(data.phone);
         data.type = "user";
-        return true;
+        return data;
     }
     
     validateAndSanitizeEmail(email) {
@@ -174,7 +174,7 @@ class SupabaseClient {
      async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
-            const { user, session, error } = await this.supabase.auth.signInWithPassword({ email, password }, { redirectTo: '/profile_settings' });
+            const { user, session, error } = await this.supabase.auth.signInWithPassword({ email, password }, { redirectTo: 'https://cannabiscult.co/home' });
             if (error) throw error;
             return { user, session };
         } catch (error) {
@@ -198,30 +198,32 @@ class SupabaseClient {
     }
 
     async registerUser(userDetails) {
-        if (!this.validateFormData(userDetails)) {
-            throw new Error('Invalid user data.');
-        }
-        
-        try {
-            const { data, error } = await this.supabase.auth.signUp({
-                email: userDetails.email,
-                password: userDetails.password,
-                options: {
-                  data: {
-                    name: userDetails.name,
-                    username: userDetails.username,
-                    zip_code: userDetails.zip_code,
-                    phone: userDetails.phone,
-                  }
-                },
-            });
-            if (error) throw error;
+      if (!this.validateFormData(userDetails)) {
+        throw new Error('Invalid user data.');
+      }
+      if (this.checkUserStatus()) {
+        return userDetails;
+      }
+      try {
+          const { data, error } = await this.supabase.auth.signUp({
+            email: userDetails.email,
+            password: userDetails.password,
+            options: {
+              data: {
+                name: userDetails.name,
+                username: userDetails.username,
+                zip_code: userDetails.zip_code,
+                phone: userDetails.phone,
+              }
+            },
+          })
+          if (error) throw error;
 
-            return data;
-        } catch (error) {
-            console.error('Error in registerUser:', error.message);
-            throw new Error('Registration failed.');
-        }
+          return data;
+      } catch (error) {
+        console.error('Error in registerUser:', error.message);
+        throw new Error('Registration failed.');
+      }
     }
 
     async signOut() {
@@ -245,7 +247,7 @@ class SupabaseClient {
           }
           if (user && user.email) {
               // Construct the URL for the FastAPI endpoint
-              const url = `/users/super_user_status?user_email=${encodeURIComponent(user.email)}`;
+              const url = `https://cannabiscult.co/users/super_user_status?user_email=${encodeURIComponent(user.email)}`;
   
               // Make a GET request to the FastAPI route
               const response = await fetch(url, {
@@ -277,7 +279,7 @@ class SupabaseClient {
     async checkUserStatus() {
       try {
           // Construct the URL for the FastAPI endpoint
-          const url = `/users/get_username?user_email=${encodeURIComponent(user.email)}`;
+          const url = `https://cannabiscult.co/users/get_username?user_email=${encodeURIComponent(user.email)}`;
 
           // Make a GET request to the FastAPI route
           const response = await fetch(url, {
@@ -305,7 +307,7 @@ class SupabaseClient {
     async sendResetPassword(email) {
         try {
             email = this.validateAndSanitizeEmail(email);
-            const { error } = await this.supabase.auth.resetPasswordForEmail(email, { redirectTo: '/forgot-password' });
+            const { error } = await this.supabase.auth.resetPasswordForEmail(email, { redirectTo: 'https://cannabiscult.co/forgot-password' });
             if (error) throw error;
         } catch (error) {
             console.error("Error in resetPassword:", error.message);
