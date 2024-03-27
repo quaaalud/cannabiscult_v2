@@ -219,7 +219,7 @@ class SupabaseClient {
           })
           if (error) throw error;
 
-          return data;
+          return true;
       } catch (error) {
         console.error('Error in registerUser:', error.message);
         throw new Error('Registration failed.');
