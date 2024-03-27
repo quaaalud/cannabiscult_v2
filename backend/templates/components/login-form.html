@@ -177,7 +177,7 @@ async function handleLoginFormSubmission() {
     }, false);
 }
 
-async registerUserFunc(userDetails) {
+async function registerUserFunc(userDetails) {
   if (!window.supabaseClient.validateFormData(userDetails)) {
     throw new Error('Invalid user data.');
   }
