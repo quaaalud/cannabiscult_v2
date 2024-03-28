@@ -55,8 +55,6 @@ class MysteryVoter(Base):
     date_posted = Column(Date)
 
 
-<<<<<<< HEAD
-=======
 class Vibe_Edible_Voter(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement="auto")
     mystery_voter_id = Column(Integer, ForeignKey("mysteryvoter.id"), nullable=False)
@@ -67,7 +65,6 @@ MysteryVoter.vibe_edible_voters = relationship(
     "Vibe_Edible_Voter", order_by=Vibe_Edible_Voter.id, back_populates="mystery_voter"
 )
 
->>>>>>> 3fb63d6d5dfb502cd2f42613ff9b1973a0fc9e86
 class StrainGuess(Base):
     __tablename__ = "strain_guess"
 
