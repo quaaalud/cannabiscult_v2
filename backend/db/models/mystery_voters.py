@@ -62,7 +62,7 @@ class Vibe_Edible_Voter(Base):
     mystery_voter = relationship("MysteryVoter", back_populates="vibe_edible_voters")
 
 MysteryVoter.vibe_edible_voters = relationship(
-    "Vibe_Edible_Voter", order_by=Vibe_Edible_Voter.mystery_voter_email, back_populates="mystery_voter"
+    "Vibe_Edible_Voter", order_by=Vibe_Edible_Voter.id, back_populates="mystery_voter"
 )
 
 class StrainGuess(Base):
@@ -71,7 +71,7 @@ class StrainGuess(Base):
     guess_id = Column(BigInteger, primary_key=True, autoincrement=True)
     strain_guesses = Column(JSON, nullable=False)
     date_posted = Column(TIMESTAMP(timezone=True), nullable=False, server_default=func.now())
-    email = Column(Text, ForeignKey("mysteryvoter.mystery_voter_email", onupdate="CASCADE"), nullable=True)
+    email = Column(Text, ForeignKey("mysteryvoter.email", onupdate="CASCADE"), nullable=True)
 
     # Relationship to link back to the MysteryVoter
     mystery_voter = relationship("MysteryVoter", back_populates="strain_guesses")
