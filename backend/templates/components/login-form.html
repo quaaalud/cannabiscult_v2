@@ -177,42 +177,6 @@ async function handleLoginFormSubmission() {
     }, false);
 }
 
-async function registerUserFunc(userDetails) {
-  if (!window.supabaseClient.validateFormData(userDetails)) {
-    throw new Error('Invalid user data.');
-     return false;
-  }
-  if (window.supabaseClient.checkUserStatus()) {
-    return false;
-  }
-  try {
-      const email = window.supabaseClient.validateAndSanitizeEmail(userDetails.email);
-      const password = window.supabaseClient.validatePassword(userDetails.password);
-      const name = window.supabaseClient.sanitizeInputString(userDetails.name);
-      const username = window.supabaseClient.sanitizeInputString(userDetails.username);
-      const zip_code = window.supabaseClient.sanitizeInputString(userDetails.zip_code);
-      const phone = window.supabaseClient.sanitizeInputString(userDetails.phone);
-      const { data, error } = await window.supabaseClient.supabase.auth.signUp({
-        email: email,
-        password: password,
-        options: {
-          data: {
-            name: name,
-            username: username,
-            zip_code: zip_code,
-            phone: phone,
-          }
-        },
-      })
-      if (error) throw error;
-      return true;
-  } catch (error) {
-    console.error('Error in registerUser:', error.message);
-    throw new Error('Registration failed.');
-    return false;
-  }
-}
-
 async function submitRegistrationForm() {
   const registerForm = document.getElementById('sign-up');
   registerForm.addEventListener('submit', async function(event) {
@@ -229,19 +193,22 @@ async function submitRegistrationForm() {
         can_vote: "true",
     };
     try {
-        const user = await window.supabaseClient.registerUser(userDetails);
-        await fetch('/users/create_user', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userDetails),
-        });
+        const user = window.supabaseClient.registerUser(userDetails);
+        if (user) {
+          await fetch('/users/create_user', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(userDetails),
+          });
+        }
         alert('Registration successful. Check your email to confirm your registration details.');
         registerForm.reset(); 
     } catch (error) {
         alert('Registration failed. Please try again.');
     }
+    
   });
 }
 
