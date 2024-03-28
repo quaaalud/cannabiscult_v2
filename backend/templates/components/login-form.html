@@ -216,37 +216,32 @@ async function registerUserFunc(userDetails) {
 async function submitRegistrationForm() {
   const registerForm = document.getElementById('sign-up');
   registerForm.addEventListener('submit', async function(event) {
-      event.preventDefault();
-      const formData = new FormData(registerForm);
-      const userDetails = {
-          email: formData.get('register_email'),
-          password: formData.get('register_password'),
-          confirmPassword: formData.get('register_repeat_password'),
-          username: formData.get('register_username'),
-          name: formData.get('register_name'),
-          zip_code: formData.get('register_zip_code'),
-          phone: formData.get('register_phone'),
-      };
-      try {
-          const userCreatedBool = await registerUserFunc(userDetails);
-          if (!userCreatedBool) {
-            alert('Registration failed. Please try again.');
-            return;
-          } else {
-            await fetch('/users/create_user', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userDetails),
-            });
-            alert('Registration successful. Check your email to confirm your registration details.');
-            registerForm.reset();
-          }
-      } catch (error) {
-          alert('Registration failed. Please try again.');
-          return;
-      }
+    event.preventDefault();
+    const formData = new FormData(registerForm);
+    const userDetails = {
+        email: formData.get('register_email'),
+        password: formData.get('register_password'),
+        confirmPassword: formData.get('register_repeat_password'),
+        username: formData.get('register_username'),
+        name: formData.get('register_name'),
+        zip_code: formData.get('register_zip_code'),
+        phone: formData.get('register_phone'),
+        can_vote: "true",
+    };
+    try {
+        const user = await window.supabaseClient.registerUser(userDetails);
+        await fetch('/users/create_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userDetails),
+        });
+        alert('Registration successful. Check your email to confirm your registration details.');
+        registerForm.reset(); 
+    } catch (error) {
+        alert('Registration failed. Please try again.');
+    }
   });
 }
 
