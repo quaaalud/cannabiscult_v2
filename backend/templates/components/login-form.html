@@ -190,25 +190,21 @@ async function submitRegistrationForm() {
         name: formData.get('register_name'),
         zip_code: formData.get('register_zip_code'),
         phone: formData.get('register_phone'),
-        can_vote: "true",
     };
     try {
-        const user = window.supabaseClient.registerUser(userDetails);
-        if (user) {
-          await fetch('/users/create_user', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(userDetails),
-          });
-        }
+        const user = await window.supabaseClient.registerUser(userDetails);
+        await fetch('/users/create_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userDetails),
+        });
         alert('Registration successful. Check your email to confirm your registration details.');
         registerForm.reset(); 
     } catch (error) {
         alert('Registration failed. Please try again.');
     }
-    
   });
 }
 
@@ -224,11 +220,13 @@ async function handlePasswordReset() {
     myModal.hide();
   }
 }
+window.addEventListener('load', function() {
+  handleLoginFormSubmission();
+  submitRegistrationForm();
+}, false);
 
 $(document).ready(function() {
   const forgotPasswordForm = document.getElementById('forgot-password-form');
-  handleLoginFormSubmission();
-  submitRegistrationForm();
   
   forgotPasswordForm.addEventListener('submit', async function(event) {
     event.preventDefault();
