@@ -4,11 +4,6 @@ from db.base_class import Base
 
 
 class User(Base):
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True
-    )
     username = Column(
         String,
         unique=True,
@@ -18,7 +13,8 @@ class User(Base):
         String,
         nullable=False,
         unique=True,
-        index=True
+        index=True,
+        primary_key=True,
     )
     name = Column(
         String,
@@ -42,7 +38,7 @@ class User(Base):
     )
     can_vote = Column(
         Boolean(),
-        default=False
+        default=True
     )
     is_superuser = Column(
         Boolean(),

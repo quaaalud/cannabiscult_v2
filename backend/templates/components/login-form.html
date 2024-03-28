@@ -180,9 +180,10 @@ async function handleLoginFormSubmission() {
 async function registerUserFunc(userDetails) {
   if (!window.supabaseClient.validateFormData(userDetails)) {
     throw new Error('Invalid user data.');
+     return false;
   }
   if (window.supabaseClient.checkUserStatus()) {
-    return userDetails;
+    return false;
   }
   try {
       const email = window.supabaseClient.validateAndSanitizeEmail(userDetails.email);
@@ -208,6 +209,7 @@ async function registerUserFunc(userDetails) {
   } catch (error) {
     console.error('Error in registerUser:', error.message);
     throw new Error('Registration failed.');
+    return false;
   }
 }
 

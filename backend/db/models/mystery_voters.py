@@ -25,13 +25,7 @@ from db.base_class import Base
 
 
 class MysteryVoter(Base):
-    id = Column(
-        Integer,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-    )
-    email = Column(String, nullable=False, unique=True, index=True)
+    email = Column(String, nullable=False, unique=True, index=True, primary_key=True)
     name = Column(
         String,
         nullable=True,
@@ -59,36 +53,6 @@ class MysteryVoter(Base):
     )
     agree_tos = Column(Boolean(), default=True)
     date_posted = Column(Date)
-
-
-class Vivid_Edible_Voter(Base):
-    id = Column(Integer, primary_key=True, index=True, autoincrement="auto")
-    mystery_voter_id = Column(Integer, ForeignKey("mysteryvoter.id"), nullable=False)
-
-    mystery_voter = relationship("MysteryVoter", back_populates="vivid_edible_voters")
-
-
-MysteryVoter.vivid_edible_voters = relationship(
-    "Vivid_Edible_Voter", order_by=Vivid_Edible_Voter.id, back_populates="mystery_voter"
-)
-
-Vivid_Edible_Voter.mystery_voter = relationship(
-    "MysteryVoter", back_populates="vivid_edible_voters"
-)
-
-
-class Vibe_Edible_Voter(Base):
-    id = Column(Integer, primary_key=True, index=True, autoincrement="auto")
-    mystery_voter_id = Column(Integer, ForeignKey("mysteryvoter.id"), nullable=False)
-
-    mystery_voter = relationship("MysteryVoter", back_populates="vivid_edible_voters")
-
-
-MysteryVoter.vibe_edible_voters = relationship(
-    "Vibe_Edible_Voter", order_by=Vibe_Edible_Voter.id, back_populates="mystery_voter"
-)
-
-Vibe_Edible_Voter.mystery_voter = relationship("MysteryVoter", back_populates="vibe_edible_voters")
 
 
 class StrainGuess(Base):
