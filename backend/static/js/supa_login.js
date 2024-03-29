@@ -201,9 +201,6 @@ class SupabaseClient {
       if (!this.validateFormData(userDetails)) {
         throw new Error('Invalid user data.');
       }
-      if (this.checkUserStatus() === true) {
-        return userDetails;
-      }
       try {
           const { data, error } = await this.supabase.auth.signUp({
             email: userDetails.email,

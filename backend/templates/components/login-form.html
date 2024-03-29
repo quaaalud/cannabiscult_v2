@@ -194,6 +194,10 @@ async function submitRegistrationForm() {
     };
     try {
         const user = await window.supabaseClient.registerUser(userDetails);
+        if (this.checkUserStatus() === true) {
+          alert('You are already registered. Login or use the Password Reset if needed.');
+          return;
+        }
         await fetch('/users/create_user', {
             method: 'POST',
             headers: {
@@ -204,7 +208,7 @@ async function submitRegistrationForm() {
         alert('Registration successful. Check your email to confirm your registration details.');
         registerForm.reset(); 
     } catch (error) {
-        alert('Registration failed. Please try again.');
+        alert('Registration failed. Please try again');
     }
   });
 }
