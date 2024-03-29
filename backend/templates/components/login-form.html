@@ -193,11 +193,11 @@ async function submitRegistrationForm() {
         type: "user"
     };
     try {
-        const user = await window.supabaseClient.registerUser(userDetails);
-        if (this.checkUserStatus() === true) {
+        if (window.supabaseClient.checkUserStatus() === true) {
           alert('You are already registered. Login or use the Password Reset if needed.');
           return;
         }
+        const user = await window.supabaseClient.registerUser(userDetails);
         await fetch('/users/create_user', {
             method: 'POST',
             headers: {
