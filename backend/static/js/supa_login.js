@@ -201,7 +201,7 @@ class SupabaseClient {
       if (!this.validateFormData(userDetails)) {
         throw new Error('Invalid user data.');
       }
-      if (this.checkUserStatus()) {
+      if (this.checkUserStatus() === true) {
         return userDetails;
       }
       try {

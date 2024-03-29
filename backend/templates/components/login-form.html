@@ -190,6 +190,7 @@ async function submitRegistrationForm() {
         name: formData.get('register_name'),
         zip_code: formData.get('register_zip_code'),
         phone: formData.get('register_phone'),
+        type: "user"
     };
     try {
         const user = await window.supabaseClient.registerUser(userDetails);
