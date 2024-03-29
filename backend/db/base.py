@@ -21,3 +21,4 @@ from db.models.edible_rankings import Vibe_Edible_Ranking
 from db.models.concentrates import Concentrate
 from db.models.concentrate_rankings import Hidden_Concentrate_Ranking
 from db.models.flowers import Flower, Flower_Description
+from db.models.product_types import Terp_Table, Product_Types
