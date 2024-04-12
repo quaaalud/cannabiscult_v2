@@ -50,25 +50,52 @@
 {% endblock %}
 {% block content %}
 <style> 
+  #buttonSection {
+    background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/webp/neo-future-cannabis.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL3dlYnAvbmVvLWZ1dHVyZS1jYW5uYWJpcy53ZWJwIiwiaWF0IjoxNzEyODgyODQwLCJleHAiOjE3NDQ0MTg4NDB9.WJkKsd71nvV48_xVaPgLgvcQUfJSYqQUmGxlRJ2tWDM&t=2024-04-12T00%3A47%3A20.261Z');
+    background-size: cover;
+    background-position: center;
+    position: relative; /* Keep this */
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  
+  #buttonSection::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    pointer-events: none; /* Allows interaction with content */
+    z-index: 1; /* Ensure this is below the content's z-index */
+  }
+
+  /* Ensure content inside #buttonSection has a higher z-index */
+ #content {
+    position: relative;
+    z-index: 2; /* Higher than the overlay's z-index */
+  }
   .cascading-right { margin-right: -50px; } 
   
   @media ( max-width: 991.98px ){ 
     .cascading-right { margin-right: 0; } 
   }
 </style>
-<div id="preview" class="preview">
+<div id="preview" class="preview" style="min-height: 100vh">
   <div style="display: none;"></div>
   <div>
-    <div style="position: relative;" data-draggable="true" draggable="false" class="">
+    <div style="position: relative;" data-draggable="true" draggable="false" class="" id="buttonSection">
       <section draggable="false" class="container pt-0" data-v-271253ee="">
         <section class="mb-5 text-center text-lg-start"> 
-          <div class="container py-4">
+          <div class="container py-4" id="content">
             <div class="row g-0 align-items-center my-auto">
               <div class="col-lg-6 mb-5 mb-lg-0 mx-auto-md">
                 <div class="card cascading-right" style=" background: hsla(0, 0%, 100%, 0.55); backdrop-filter: blur(30px); ">
                   <div class="card-body px-4 pb-5 pt-md-0 px-md-5 shadow-5">
                     <h1 class="my-5 display-4 fw-bold ls-tight">
-                      <span>Thank You for Your Rating Connoisseur</span>
+                      <span>Who will be crowned Flower Champ?</span>
                     </h1>
                     <div class="row g-2">
                       <div class="col-6 col-lg-5 g-2">
@@ -116,11 +143,20 @@
                         </a>
                       </div>
                     </div>
-                  </div> 
+                  </div>
                 </div>
               </div>
               <div class="col-lg-6 mb-5 mb-lg-0">
-                <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/Connoisseur_Transitions/connoisseur_flower_pack_4.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL0Nvbm5vaXNzZXVyX1RyYW5zaXRpb25zL2Nvbm5vaXNzZXVyX2Zsb3dlcl9wYWNrXzQud2VicCIsImlhdCI6MTcxMjc5NjIxNSwiZXhwIjoxNzQ0MzMyMjE1fQ.g9y66wLgbX-8wdlD6eEtywynTV6MF7Y9y3FLXCoByME&t=2024-04-11T00%3A43%3A35.134Z" class="w-100 rounded-4 shadow-4" alt="" aria-controls="#picker-editor" draggable="false">
+                <div id="carouselSuccessImages" class="carousel slide carousel-fade pb-5" data-mdb-ride="carousel" data-mdb-carousel-init>
+                  <div class="carousel-inner rounded-5 shadow-4-strong">
+                    <div class="carousel-item active">
+                      <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/Connoisseur_Transitions/connoisseur_flower_pack_4.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL0Nvbm5vaXNzZXVyX1RyYW5zaXRpb25zL2Nvbm5vaXNzZXVyX2Zsb3dlcl9wYWNrXzQud2VicCIsImlhdCI6MTcxMjc5NjIxNSwiZXhwIjoxNzQ0MzMyMjE1fQ.g9y66wLgbX-8wdlD6eEtywynTV6MF7Y9y3FLXCoByME&t=2024-04-11T00%3A43%3A35.134Z" class="d-block w-100 rounded-4 shadow-4" alt="" aria-controls="#picker-editor" draggable="false" data-mdb-interval="5000">
+                    </div>
+                    <div class="carousel-item">
+                      <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/Connoisseur_Transitions/connoisseur_flower_pack_4_bside.webp?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL0Nvbm5vaXNzZXVyX1RyYW5zaXRpb25zL2Nvbm5vaXNzZXVyX2Zsb3dlcl9wYWNrXzRfYnNpZGUud2VicCIsImlhdCI6MTcxMjg3OTY1MiwiZXhwIjoxNzQ0NDE1NjUyfQ.NDQsgjpIzbqVP6nRi_MS5B5Su3tTiOML-LZbG49Q5R8&t=2024-04-11T23%3A54%3A12.902Z" class="d-block w-100 rounded-4 shadow-4" alt="" aria-controls="#picker-editor" draggable="false" data-mdb-interval="5000">
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
