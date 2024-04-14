@@ -7,8 +7,9 @@ Created on Fri Dec 22 20:27:46 2023
 """
 
 import random
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
+from uuid import uuid4
 from db.session import get_db
 from typing import List, Optional, Any, Dict
 from schemas.flower_rankings import GetFlowerRanking
@@ -33,6 +34,7 @@ from db.repository.search_class import (
     aggregate_ratings_by_strain,
 )
 
+tasks = {}  # Dictionary to store task status and results
 
 router = APIRouter()
 
@@ -224,10 +226,23 @@ async def get_random_cultivator_search(
 
     return random_cultivator
 
-@router.get("/get_aggregated_strain_ratings", response_model=List[Dict[str, Any]])
-async def get_aggregated_strain_ratings(db: Session = Depends(get_db)):
+async def run_aggregation_task(task_id, db, model_dict):
     try:
-        aggregated_ratings = await aggregate_ratings_by_strain(db, product_type_to_ranking_model)
-        return aggregated_ratings
+        result = await aggregate_ratings_by_strain(db, model_dict)
+        tasks[task_id] = {"status": "completed", "data": result}
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        tasks[task_id] = {"status": "failed", "error": str(e)}
+
+@router.get("/get_aggregated_strain_ratings")
+async def get_aggregated_strain_ratings(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+    task_id = str(uuid4())
+    tasks[task_id] = {"status": "running"}
+    background_tasks.add_task(run_aggregation_task, task_id, db, product_type_to_ranking_model)
+    return {"message": "Task started", "task_id": task_id}
+
+@router.get("/get_task_result/{task_id}")
+async def get_task_result(task_id: str):
+    task = tasks.get(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Task not found")
+    return task

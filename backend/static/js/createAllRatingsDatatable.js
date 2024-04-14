@@ -17,11 +17,46 @@ class AllRatingsDatatable {
         }
     }
     async fetchAllRatings() {
-        const response = await fetch(`/search/get_aggregated_strain_ratings`);
-        if (!response.ok) {
-            throw new Error('Failed to fetch aggregated ratings');
+        try {
+            // Start the aggregation task
+            const startResponse = await fetch(`/search/get_aggregated_strain_ratings`);
+            if (!startResponse.ok) {
+                throw new Error('Failed to start ratings aggregation');
+            }
+            const startData = await startResponse.json();
+
+            if (startData && startData.task_id) {
+                return await this.waitForTaskCompletion(startData.task_id);
+            } else {
+                throw new Error('No task ID received to track aggregation');
+            }
+        } catch (error) {
+            console.error('Failed to fetch aggregated ratings:', error);
+            throw error;
         }
-        return await response.json();
+    }
+    async waitForTaskCompletion(taskId) {
+        return new Promise((resolve, reject) => {
+            const intervalId = setInterval(async () => {
+                try {
+                    const resultResponse = await fetch(`/search/get_task_result/${taskId}`);
+                    if (!resultResponse.ok) {
+                        throw new Error('Failed to get task result');
+                    }
+                    const resultData = await resultResponse.json();
+                    if (resultData.status === 'completed') {
+                        clearInterval(intervalId);
+                        resolve(resultData.data);
+                    } else if (resultData.status === 'failed') {
+                        clearInterval(intervalId);
+                        reject(new Error(resultData.error || 'Task failed without error message'));
+                    }
+                } catch (error) {
+                    clearInterval(intervalId);
+                    reject(error);
+                }
+            }, 5000); // Poll every 5 seconds
+        });
     }
     groupRatingsByProductType(ratings) {
         return ratings.reduce((acc, rating) => {
