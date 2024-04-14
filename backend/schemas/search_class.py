@@ -7,7 +7,7 @@ Created on Fri Dec 22 20:12:30 2023
 """
 
 from pydantic import BaseModel, Field, HttpUrl
-from typing import List
+from typing import List, Optional
 
 
 class SearchResultItem(BaseModel):
@@ -27,3 +27,33 @@ class SearchResults(BaseModel):
 class StrainCultivator(BaseModel):
     strain: str
     cultivator: str
+
+
+class RatingModel(BaseModel):
+    product_type: str
+    strain: str
+    cultivator: str
+    appearance_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    smell_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    freshness_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    flavor_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    harshness_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    effects_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    cult_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "product_type": "Flower",
+                "strain": "Missouri Belle",
+                "cultivator": "Mo Dank",
+                "appearance_rating": 7.67,
+                "smell_rating": 8.67,
+                "freshness_rating": 8.33,
+                "flavor_rating": 8.67,
+                "harshness_rating": 8.33,
+                "effects_rating": 8,
+                "cult_rating": 8.28
+            }
+        }

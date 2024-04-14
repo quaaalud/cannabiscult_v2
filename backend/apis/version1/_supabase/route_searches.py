@@ -15,7 +15,7 @@ from schemas.flower_rankings import GetFlowerRanking
 from schemas.concentrate_rankings import GetConcentrateRanking
 from schemas.pre_rolls import PreRollRankingSchema
 from schemas.edible_rankings import GetVibeEdibleRanking
-from schemas.search_class import SearchResultItem, StrainCultivator
+from schemas.search_class import SearchResultItem, StrainCultivator, RatingModel
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
@@ -30,6 +30,7 @@ from db.repository.search_class import (
     get_strains_by_cultivator,
     get_random_cultivator,
     get_random_strain,
+    aggregate_ratings_by_strain,
 )
 
 
@@ -222,3 +223,11 @@ async def get_random_cultivator_search(
         raise HTTPException(status_code=404, detail="No cultivators found")
 
     return random_cultivator
+
+@router.get("/get_aggregated_strain_ratings", response_model=List[Dict[str, Any]])
+async def get_aggregated_strain_ratings(db: Session = Depends(get_db)):
+    try:
+        aggregated_ratings = await aggregate_ratings_by_strain(db, product_type_to_ranking_model)
+        return aggregated_ratings
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

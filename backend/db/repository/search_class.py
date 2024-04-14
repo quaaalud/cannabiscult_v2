@@ -8,11 +8,13 @@ Created on Fri Dec 22 20:12:12 2023
 
 from typing import Type, List, Dict, Any, Optional
 import traceback
+from sqlalchemy import inspect, func, or_, not_
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.sql import func
 from sqlalchemy.future import select
 from db.base import Base
+from schemas.search_class import RatingModel
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
@@ -127,3 +129,53 @@ def get_random_strain(db: Session, model: Type[Base]) -> str:
         traceback.print_exc()
         print(f"Error fetching random strain for {model.__name__}: {e}")
         return ""
+
+
+async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[RatingModel]:
+    all_ratings = []
+    for product_type, models in model_dict.items():
+        for model in models:
+            # Get all column names from the model, focusing on those ending with "_rating"
+            columns = [c.name for c in inspect(model).c]
+            rating_columns = [col for col in columns if col.endswith("_rating")]
+            # Build dynamic selection of columns for aggregation, excluding None values
+            selection = [
+                model.strain,
+                model.cultivator
+            ] + [
+                func.avg(func.nullif(getattr(model, col), None)).label(col) for col in rating_columns
+            ]
+            # Execute query to aggregate ratings, applying the specified filters
+            query = db.query(
+                *selection
+            ).filter(
+                model.cultivator != "Cultivar",
+                model.cultivator != "Connoisseur",
+                not_(model.strain.ilike("%Test%")),  # Excluding strains that contain 'Test'
+                or_(*[getattr(model, col) != None for col in rating_columns])
+            ).group_by(model.strain, model.cultivator)
+            ratings = query.all()
+            # Convert and accumulate results
+            for rating in ratings:
+                rating_data = {
+                    "product_type": product_type,
+                    "strain": rating.strain,
+                    "cultivator": rating.cultivator
+                }
+                # Compute the overall average rating
+                sum_ratings = 0
+                count_ratings = 0
+                for col in rating_columns:
+                    rating_value = getattr(rating, col)
+                    if rating_value is not None:
+                        rounded_rating = round(float(rating_value), 2)
+                        rating_data[col] = rounded_rating
+                        sum_ratings += rounded_rating
+                        count_ratings += 1
+                # Calculate the 'cult_rating'
+                if count_ratings > 0:
+                    rating_data['cult_rating'] = round(sum_ratings / count_ratings, 2)
+                else:
+                    rating_data['cult_rating'] = None
+                all_ratings.append(rating_data)
+    return all_ratings
