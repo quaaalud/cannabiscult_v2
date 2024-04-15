@@ -8,6 +8,7 @@ Created on Mon Sep 11 21:51:54 2023
 
 from sqlalchemy.orm import Session
 from typing import Union
+from core.config import settings
 from schemas.mystery_voters import MysteryVoterCreate
 from db.models.mystery_voters import MysteryVoter, StrainGuess
 import datetime
@@ -21,6 +22,7 @@ def date_handler(obj):
         raise TypeError("Type %s not serializable" % type(obj))
 
 
+@settings.retry_db
 def create_new_voter(voter: MysteryVoterCreate, db: Session) -> Union[MysteryVoter, None]:
     new_voter_data = {
         "email": str(voter.email),
@@ -49,6 +51,7 @@ def create_new_voter(voter: MysteryVoterCreate, db: Session) -> Union[MysteryVot
         return None
 
 
+@settings.retry_db
 def add_strain_guess(db: Session, guess_data: dict, user_email: str):
     """
     Adds a new strain guess to the database.

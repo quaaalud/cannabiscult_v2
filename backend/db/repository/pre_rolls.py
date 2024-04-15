@@ -18,6 +18,7 @@ from db._supabase.connect_to_storage import (
 )
 import traceback
 from pathlib import Path
+from core.config import settings
 
 
 def get_average_of_list(_list_of_floats: list[float]) -> float:
@@ -32,6 +33,7 @@ def calculate_overall_score(
 ):
     values_list = [*vals]
     return get_average_of_list(values_list)
+
 
 
 async def get_pre_roll_data_and_path(db: Session, strain: str) -> Optional[Dict[str, Any]]:
@@ -139,6 +141,7 @@ async def get_pre_roll_and_description(
     return None
 
 
+@settings.retry_db
 async def create_preroll_ranking(ranking: PreRollRankingSchema, db: Session):
     ranking_data_dict = ranking.dict()
     try:
@@ -153,6 +156,7 @@ async def create_preroll_ranking(ranking: PreRollRankingSchema, db: Session):
     return {"pre_roll_ranking": True}
 
 
+@settings.retry_db
 async def update_or_create_pre_roll_ranking(ranking_dict: PreRollRankingSchema, db: Session):
     existing_ranking = (
         db.query(Pre_Roll_Ranking)

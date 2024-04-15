@@ -11,10 +11,10 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from schemas.users import UserCreate
 from db.models.users import User
+from core.config import settings
 
-# from core.hashing import Hasher
 
-
+@settings.retry_db
 def add_user_to_supabase(user: UserCreate, _auth: Client):
     user = User(
         username=user.username,
@@ -50,6 +50,7 @@ def add_user_to_supabase(user: UserCreate, _auth: Client):
         pass
 
 
+@settings.retry_db
 def create_new_user(user: UserCreate, db: Session):
     user = User(
         username=user.username,
@@ -73,6 +74,7 @@ def create_new_user(user: UserCreate, db: Session):
         return user
 
 
+@settings.retry_db
 def get_user_by_email(user_email: str, db: Session) -> User:
     user = db.query(User).filter(User.email == user_email).first()
     if user:
@@ -80,6 +82,7 @@ def get_user_by_email(user_email: str, db: Session) -> User:
     return None
 
 
+@settings.retry_db
 def get_user_and_update_password(
     user_email: str, username: str, new_password: str, repeated_password: str, db: Session
 ) -> User:

@@ -11,10 +11,10 @@ import traceback
 from sqlalchemy import inspect, func, or_, not_
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError
-from sqlalchemy.sql import func
 from sqlalchemy.future import select
 from db.base import Base
 from schemas.search_class import RatingModel
+from core.config import settings
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
@@ -131,6 +131,7 @@ def get_random_strain(db: Session, model: Type[Base]) -> str:
         return ""
 
 
+@settings.retry_db
 async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[RatingModel]:
     all_ratings = []
     for product_type, models in model_dict.items():

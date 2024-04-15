@@ -24,8 +24,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
 import plotly.express as px
+from core.config import settings
 
 
+@settings.retry_db
 async def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = ranking.dict()
     created_ranking = Concentrate_Ranking(**ranking_data_dict)
@@ -39,6 +41,7 @@ async def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sess
     return created_ranking
 
 
+@settings.retry_db
 async def update_or_create_concentrate(ranking: CreateConcentrateRanking, db: Session):
     existing_ranking = (
         db.query(Concentrate_Ranking)
@@ -67,6 +70,7 @@ async def update_or_create_concentrate(ranking: CreateConcentrateRanking, db: Se
     return {"pre_roll_ranking": True}
 
 
+@settings.retry_db
 def create_hidden_concentrate_ranking(hidden_ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = hidden_ranking.dict()
     created_ranking = Concentrate_Ranking(**ranking_data_dict)
@@ -81,6 +85,7 @@ def create_hidden_concentrate_ranking(hidden_ranking: CreateConcentrateRanking, 
         return created_ranking
 
 
+@settings.retry_db
 def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = ranking.dict()
     created_ranking = Vibe_Concentrate_Ranking(**ranking_data_dict)
@@ -95,6 +100,7 @@ def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sessi
         return created_ranking
 
 
+@settings.retry_db
 def return_all_hidden_concentrate_rankings(db: Session):
     try:
         rankings = db.query(Hidden_Concentrate_Ranking).all()
