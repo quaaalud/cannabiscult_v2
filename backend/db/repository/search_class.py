@@ -8,7 +8,7 @@ Created on Fri Dec 22 20:12:12 2023
 
 from typing import Type, List, Dict, Any, Optional
 import traceback
-from sqlalchemy import inspect, func, or_, not_
+from sqlalchemy import inspect, func, or_, not_, union_all
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.future import select
@@ -23,7 +23,9 @@ from db.models.product_types import Product_Types
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
-async def get_data_by_strain(db: Session, model: Type[Base], strain: str) -> List[Dict[str, Any]]:
+async def get_data_by_strain(
+    db: Session, model: Type[Base], strain: str
+) -> List[Dict[str, Any]]:
     try:
         result = db.execute(
             select(model)
@@ -57,7 +59,7 @@ async def search_strain(db: Session, strain: str) -> List[Dict[str, Any]]:
         general_edibles = []
     vibe_edibles = await get_data_by_strain(db, VibeEdible, strain)
     for item in vibe_edibles:
-        item['type'] = 'Edible'
+        item["type"] = "Edible"
     edible_results = [*general_edibles, *vibe_edibles]
     pre_roll_results = await get_data_by_strain(db, Pre_Roll, strain)
     return flower_results + concentrate_results + edible_results + pre_roll_results
@@ -105,13 +107,17 @@ def get_strains_by_cultivator(
         return [strain for strain in strains if "test" not in strain.lower()]
     except Exception as e:
         traceback.print_exc()
-        print(f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}")
+        print(
+            f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}"
+        )
         return None
 
 
 def get_random_cultivator(db: Session, model: Type[Base]) -> str:
     try:
-        result = db.execute(select(model.cultivator).distinct().order_by(func.random()).limit(1))
+        result = db.execute(
+            select(model.cultivator).distinct().order_by(func.random()).limit(1)
+        )
         random_cultivator = result.scalar_one()
         return random_cultivator
     except Exception as e:
@@ -122,7 +128,9 @@ def get_random_cultivator(db: Session, model: Type[Base]) -> str:
 
 def get_random_strain(db: Session, model: Type[Base]) -> str:
     try:
-        result = db.execute(select(model.strain).distinct().order_by(func.random()).limit(1))
+        result = db.execute(
+            select(model.strain).distinct().order_by(func.random()).limit(1)
+        )
         random_strain = result.scalar_one()
         return random_strain
     except Exception as e:
@@ -140,28 +148,30 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
             columns = [c.name for c in inspect(model).c]
             rating_columns = [col for col in columns if col.endswith("_rating")]
             # Build dynamic selection of columns for aggregation, excluding None values
-            selection = [
-                model.strain,
-                model.cultivator
-            ] + [
-                func.avg(func.nullif(getattr(model, col), None)).label(col) for col in rating_columns
+            selection = [model.strain, model.cultivator] + [
+                func.avg(func.nullif(getattr(model, col), None)).label(col)
+                for col in rating_columns
             ]
             # Execute query to aggregate ratings, applying the specified filters
-            query = db.query(
-                *selection
-            ).filter(
-                model.cultivator != "Cultivar",
-                model.cultivator != "Connoisseur",
-                not_(model.strain.ilike("%Test%")),  # Excluding strains that contain 'Test'
-                or_(*[getattr(model, col) != None for col in rating_columns])
-            ).group_by(model.strain, model.cultivator)
+            query = (
+                db.query(*selection)
+                .filter(
+                    model.cultivator != "Cultivar",
+                    model.cultivator != "Connoisseur",
+                    not_(
+                        model.strain.ilike("%Test%")
+                    ),  # Excluding strains that contain 'Test'
+                    or_(*[getattr(model, col) != None for col in rating_columns]),
+                )
+                .group_by(model.strain, model.cultivator)
+            )
             ratings = query.all()
             # Convert and accumulate results
             for rating in ratings:
                 rating_data = {
                     "product_type": product_type,
                     "strain": rating.strain,
-                    "cultivator": rating.cultivator
+                    "cultivator": rating.cultivator,
                 }
                 # Compute the overall average rating
                 sum_ratings = 0
@@ -175,8 +185,55 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
                         count_ratings += 1
                 # Calculate the 'cult_rating'
                 if count_ratings > 0:
-                    rating_data['cult_rating'] = round(sum_ratings / count_ratings, 2)
+                    rating_data["cult_rating"] = round(sum_ratings / count_ratings, 2)
                 else:
-                    rating_data['cult_rating'] = None
+                    rating_data["cult_rating"] = None
                 all_ratings.append(rating_data)
     return all_ratings
+
+
+from pydantic import BaseModel
+
+class SimpleProductSchema(BaseModel):
+    cultivator: str
+    strain: str
+    signed_url: str
+
+
+def get_all_card_paths(db: Session, offset=0, limit=10) -> List[dict]:
+    # Prepare select statements for each product type
+    select_flower = select(Flower.cultivator, Flower.strain, Flower.card_path)
+    select_concentrate = select(Concentrate.cultivator, Concentrate.strain, Concentrate.card_path)
+    select_pre_roll = select(Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path)
+    select_edible = select(Edible.cultivator, Edible.strain, Edible.card_path)
+
+    # Combine queries using UNION ALL with limit and offset
+    combined_query = union_all(
+        select_flower, select_concentrate, select_pre_roll, select_edible
+    ).offset(offset).limit(limit)
+
+    # Execute the query
+    result = db.execute(combined_query)
+    return [{'cultivator': row.cultivator, 'strain': row.strain, 'card_path': row.card_path} for row in result.all()]
+
+
+async def generate_signed_urls(product_data: List[dict]):
+    yield '['.encode('utf-8')  # Start of JSON array
+    first = True
+    for product in product_data:
+        try:
+            signed_url = return_image_url_from_supa_storage(str(product['card_path']))
+            product_info = SimpleProductSchema(
+                cultivator=product['cultivator'],
+                strain=product['strain'],
+                signed_url=signed_url
+            ).json()  # Serialize to JSON string
+            if not first:
+                yield ', '.encode('utf-8')  # Properly format JSON array
+            yield product_info.encode('utf-8')
+            first = False
+        except Exception as e:
+            print(f"Failed to generate URL for {product['card_path']}: {e}")
+    yield ']'.encode('utf-8')  # End of JSON array
+
+

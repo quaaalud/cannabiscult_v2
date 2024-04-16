@@ -8,6 +8,7 @@ Created on Fri Dec 22 20:27:46 2023
 
 import random
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from db.session import get_db
@@ -32,6 +33,8 @@ from db.repository.search_class import (
     get_random_cultivator,
     get_random_strain,
     aggregate_ratings_by_strain,
+    get_all_card_paths,
+    generate_signed_urls,
 )
 
 tasks = {}  # Dictionary to store task status and results
@@ -43,7 +46,7 @@ product_type_to_model = {
     "Flower": [Flower],
     "Concentrate": [Concentrate],
     "Edible": [Edible, VibeEdible],
-    "Pre-Roll": [Pre_Roll]
+    "Pre-Roll": [Pre_Roll],
     # Add other product types here
 }
 
@@ -52,7 +55,7 @@ product_type_to_ranking_model = {
     "Flower": [Flower_Ranking],
     "Concentrate": [Concentrate_Ranking],
     "Edible": [Vibe_Edible_Ranking],
-    "Pre-Roll": [Pre_Roll_Ranking]
+    "Pre-Roll": [Pre_Roll_Ranking],
     # Add other product types here
 }
 
@@ -81,7 +84,9 @@ def model_to_dict(model_instance):
     }
 
 
-async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> Dict[str, List[Any]]:
+async def gather_user_ratings_by_product_type(
+    user_email: str, db: Session
+) -> Dict[str, List[Any]]:
     user_ratings = {}
 
     for product_type, models in product_type_to_ranking_model.items():
@@ -125,7 +130,9 @@ async def check_existence(
     for model in models:
         exists = (
             db.query(model)
-            .filter(model.strain.ilike(entry.strain), model.cultivator.ilike(entry.cultivator))
+            .filter(
+                model.strain.ilike(entry.strain), model.cultivator.ilike(entry.cultivator)
+            )
             .first()
             is not None
         )
@@ -157,9 +164,13 @@ async def get_product_types(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/cultivators/{product_type}", response_model=List[Any], include_in_schema=False)
+@router.get(
+    "/cultivators/{product_type}", response_model=List[Any], include_in_schema=False
+)
 async def get_cultivators(
-    product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
+    product_type: str,
+    product_type_dict=product_type_to_model,
+    db: Session = Depends(get_db),
 ):
     if product_type == "Pre-roll":
         product_type = "Pre-Roll"
@@ -180,7 +191,9 @@ async def get_cultivators(
 
 
 @router.get(
-    "/strains/{product_type}/{cultivator}", response_model=List[str], include_in_schema=False
+    "/strains/{product_type}/{cultivator}",
+    response_model=List[str],
+    include_in_schema=False,
 )
 async def get_strains(
     product_type: str,
@@ -207,10 +220,14 @@ async def get_strains(
 
 
 @router.get(
-    "/random/cultivator/{product_type}", response_model=Optional[str], include_in_schema=False
+    "/random/cultivator/{product_type}",
+    response_model=Optional[str],
+    include_in_schema=False,
 )
 async def get_random_cultivator_search(
-    product_type: str, product_type_dict=product_type_to_model, db: Session = Depends(get_db)
+    product_type: str,
+    product_type_dict=product_type_to_model,
+    db: Session = Depends(get_db),
 ):
     if product_type == "Pre-roll":
         product_type = "Pre-Roll"
@@ -226,6 +243,7 @@ async def get_random_cultivator_search(
 
     return random_cultivator
 
+
 async def run_aggregation_task(task_id, db, model_dict):
     try:
         result = await aggregate_ratings_by_strain(db, model_dict)
@@ -233,12 +251,18 @@ async def run_aggregation_task(task_id, db, model_dict):
     except Exception as e:
         tasks[task_id] = {"status": "failed", "error": str(e)}
 
+
 @router.get("/get_aggregated_strain_ratings")
-async def get_aggregated_strain_ratings(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
+async def get_aggregated_strain_ratings(
+    background_tasks: BackgroundTasks, db: Session = Depends(get_db)
+):
     task_id = str(uuid4())
     tasks[task_id] = {"status": "running"}
-    background_tasks.add_task(run_aggregation_task, task_id, db, product_type_to_ranking_model)
+    background_tasks.add_task(
+        run_aggregation_task, task_id, db, product_type_to_ranking_model
+    )
     return {"message": "Task started", "task_id": task_id}
+
 
 @router.get("/get_task_result/{task_id}")
 async def get_task_result(task_id: str):
@@ -246,3 +270,14 @@ async def get_task_result(task_id: str):
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
+
+
+@router.get("/get-all-image-urls/", response_model=List[Any])
+async def get_all_image_urls_route(offset=0, limit=10, db: Session = Depends(get_db)):
+    try:
+        # Fetch data using the synchronous function
+        product_data = get_all_card_paths(db, offset, limit)
+        # Asynchronously generate and stream URLs
+        return StreamingResponse(generate_signed_urls(product_data), media_type="application/json")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
