@@ -194,46 +194,68 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
 
 from pydantic import BaseModel
 
+
 class SimpleProductSchema(BaseModel):
     cultivator: str
     strain: str
     signed_url: str
+    product_type: str
 
 
 def get_all_card_paths(db: Session, offset=0, limit=10) -> List[dict]:
     # Prepare select statements for each product type
-    select_flower = select(Flower.cultivator, Flower.strain, Flower.card_path)
-    select_concentrate = select(Concentrate.cultivator, Concentrate.strain, Concentrate.card_path)
-    select_pre_roll = select(Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path)
-    select_edible = select(Edible.cultivator, Edible.strain, Edible.card_path)
+    select_flower = select(
+        Flower.cultivator, Flower.strain, Flower.card_path, Flower.product_type
+    )
+    select_concentrate = select(
+        Concentrate.cultivator,
+        Concentrate.strain,
+        Concentrate.card_path,
+        Concentrate.product_type,
+    )
+    select_pre_roll = select(
+        Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path, Pre_Roll.product_type
+    )
+    select_edible = select(
+        Edible.cultivator, Edible.strain, Edible.card_path, Edible.product_type
+    )
 
     # Combine queries using UNION ALL with limit and offset
-    combined_query = union_all(
-        select_flower, select_concentrate, select_pre_roll, select_edible
-    ).offset(offset).limit(limit)
+    combined_query = (
+        union_all(select_flower, select_concentrate, select_pre_roll, select_edible)
+        .offset(offset)
+        .limit(limit)
+    )
 
     # Execute the query
     result = db.execute(combined_query)
-    return [{'cultivator': row.cultivator, 'strain': row.strain, 'card_path': row.card_path} for row in result.all()]
+    return [
+        {
+            "cultivator": row.cultivator,
+            "strain": row.strain,
+            "card_path": row.card_path,
+            "product_type": row.product_type,
+        }
+        for row in result.all()
+    ]
 
 
 async def generate_signed_urls(product_data: List[dict]):
-    yield '['.encode('utf-8')  # Start of JSON array
+    yield "[".encode("utf-8")  # Start of JSON array
     first = True
     for product in product_data:
         try:
-            signed_url = return_image_url_from_supa_storage(str(product['card_path']))
+            signed_url = return_image_url_from_supa_storage(str(product["card_path"]))
             product_info = SimpleProductSchema(
-                cultivator=product['cultivator'],
-                strain=product['strain'],
-                signed_url=signed_url
+                cultivator=product["cultivator"],
+                strain=product["strain"],
+                signed_url=signed_url,
+                product_type=product["product_type"],
             ).json()  # Serialize to JSON string
             if not first:
-                yield ', '.encode('utf-8')  # Properly format JSON array
-            yield product_info.encode('utf-8')
+                yield ", ".encode("utf-8")  # Properly format JSON array
+            yield product_info.encode("utf-8")
             first = False
         except Exception as e:
             print(f"Failed to generate URL for {product['card_path']}: {e}")
-    yield ']'.encode('utf-8')  # End of JSON array
-
-
+    yield "]".encode("utf-8")  # End of JSON array
