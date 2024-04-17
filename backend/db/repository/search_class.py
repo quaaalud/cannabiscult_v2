@@ -8,9 +8,9 @@ Created on Fri Dec 22 20:12:12 2023
 
 from typing import Type, List, Dict, Any, Optional
 import traceback
-from sqlalchemy import inspect, func, or_, not_, union_all
+from sqlalchemy import inspect, func, or_, not_, union_all, update
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
 from db.base import Base
 from schemas.search_class import RatingModel
@@ -20,6 +20,11 @@ from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
 from db.models.pre_rolls import Pre_Roll
 from db.models.product_types import Product_Types
+from db.models.calendar_events import (
+    CalendarEvent,
+    CalendarEventQuery,
+    SimpleProductSchema,
+)
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
@@ -192,16 +197,6 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
     return all_ratings
 
 
-from pydantic import BaseModel
-
-
-class SimpleProductSchema(BaseModel):
-    cultivator: str
-    strain: str
-    signed_url: str
-    product_type: str
-
-
 def get_all_card_paths(db: Session, offset=0, limit=10) -> List[dict]:
     # Prepare select statements for each product type
     select_flower = select(
@@ -259,3 +254,71 @@ async def generate_signed_urls(product_data: List[dict]):
         except Exception as e:
             print(f"Failed to generate URL for {product['card_path']}: {e}")
     yield "]".encode("utf-8")  # End of JSON array
+
+
+async def get_all_events(db: Session) -> List[CalendarEventQuery]:
+    try:
+        result = db.execute(select(CalendarEvent))
+        events = result.scalars().all()
+        return [CalendarEventQuery.from_orm(event) for event in events]
+    except SQLAlchemyError as e:
+        traceback.print_exc()
+        print(f"Error fetching all events: {e}")
+        return []
+
+
+async def add_new_calendar_event(db: Session, event_data: dict) -> bool:
+    try:
+        # Check if an event with the same summary and start date exists
+        existing_event = (
+            db.execute(
+                select(CalendarEvent).filter_by(
+                    summary=event_data["summary"], start_date=event_data["start_date"]
+                )
+            )
+            .scalars()
+            .first()
+        )
+        # If the event exists, use update_calendar_event to update it
+        if existing_event:
+            return await update_calendar_event(
+                db, event_data["summary"], event_data["start_date"], event_data
+            )
+        # If no existing event, create a new one
+        new_event = CalendarEvent(**event_data)
+        db.add(new_event)
+    except SQLAlchemyError as e:
+        db.rollback()
+        traceback.print_exc()
+        print(f"Error adding new event: {e}")
+        return False
+    else:
+        db.commit()
+    return True
+
+
+async def update_calendar_event(
+    db: Session, summary: str, start_date: str, new_data: dict
+) -> bool:
+    try:
+        event = (
+            db.execute(
+                select(CalendarEvent).filter_by(summary=summary, start_date=start_date)
+            )
+            .scalars()
+            .first()
+        )
+        if not event:
+            print("No matching event found for update.")
+            return False
+        # Update fields that are not None in new_data
+        for key, value in new_data.items():
+            if value is not None:
+                setattr(event, key, value)
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        traceback.print_exc()
+        print(f"Error updating event: {e}")
+        return False

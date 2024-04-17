@@ -25,6 +25,7 @@ from db.models.pre_rolls import Pre_Roll, Pre_Roll_Ranking
 from db.models.flower_rankings import Flower_Ranking
 from db.models.concentrate_rankings import Concentrate_Ranking
 from db.models.edible_rankings import MysteryEdibleRanking, Vibe_Edible_Ranking
+from db.models.calendar_events import CalendarEvent, CalendarEventQuery
 from db.repository.search_class import (
     search_strain,
     get_all_product_types,
@@ -35,6 +36,8 @@ from db.repository.search_class import (
     aggregate_ratings_by_strain,
     get_all_card_paths,
     generate_signed_urls,
+    get_all_events,
+    add_new_calendar_event,
 )
 
 tasks = {}  # Dictionary to store task status and results
@@ -278,6 +281,35 @@ async def get_all_image_urls_route(offset=0, limit=10, db: Session = Depends(get
         # Fetch data using the synchronous function
         product_data = get_all_card_paths(db, offset, limit)
         # Asynchronously generate and stream URLs
-        return StreamingResponse(generate_signed_urls(product_data), media_type="application/json")
+        return StreamingResponse(
+            generate_signed_urls(product_data), media_type="application/json"
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/get-all-events/", response_model=List[CalendarEventQuery])
+async def get_all_events_route(db: Session = Depends(get_db)):
+    try:
+        events = await get_all_events(db)
+        return events
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/add-calendar-event/", status_code=201)
+async def add_calendar_event(
+    event_data: CalendarEventQuery, db: Session = Depends(get_db)
+):
+    try:
+        success = await add_new_calendar_event(db, event_data.dict())
+        if not success:
+            raise HTTPException(
+                status_code=409,
+                detail="An error occurred during calendar event update or creation.",
+            )
+        return {"message": "Event added successfully"}
+    except HTTPException as he:
+        raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

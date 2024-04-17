@@ -13,16 +13,18 @@ export class CalendarManager {
         if (!this.element) throw new Error('Element not found');
         this.colorPalette = [
             { background: '#BBDEFB', foreground: '#0D47A1' }, // Light Blue and Dark Blue
+            { background: '#90A4AE', foreground: '#000000' }, // Medium Blue Gray and Black
             { background: '#B3E5FC', foreground: '#01579B' }, // Lighter Blue and Darker Blue
-            { background: '#B2EBF2', foreground: '#006064' }, // Cyan and Deep Teal
+            { background: '#B2EBF2', foreground: '#006064' }, // Cyan and Deep Teal 
             { background: '#B2DFDB', foreground: '#004D40' }, // Light Teal and Dark Teal
             { background: '#E0F7FA', foreground: '#00695C' }, // Lightest Cyan and Teal
-            { background: '#E0F2F1', foreground: '#004D40' }, // Very Light Teal and Dark Teal
             { background: '#ECEFF1', foreground: '#263238' }, // Lightest Gray and Deep Blue Gray
+            { background: '#E0F2F1', foreground: '#004D40' }, // Very Light Teal and Dark Teal
             { background: '#CFD8DC', foreground: '#37474F' }, // Light Blue Gray and Dark Blue Gray
-            { background: '#B0BEC5', foreground: '#263238' }, // Blue Gray and Deep Blue Gray
-            { background: '#90A4AE', foreground: '#000000' }  // Medium Blue Gray and Black
+            { background: '#B0BEC5', foreground: '#263238' }  // Blue Gray and Deep Blue Gray
+            
         ];
+        this.colorIndex = Math.floor(Math.random() * this.colorPalette.length);
         this.eventsList = eventsList; // Store the events list passed to the constructor
         this.events = []; // Initialize the events array
         this.processEvents(); // Use the stored events list
@@ -48,9 +50,9 @@ export class CalendarManager {
      * @param {Object} event The event object to add. The object should include summary, description, start, end, color, and id.
      */
     createEvent(summary, description, startDate, endDate) {
-        const colorIndex = Math.floor(Math.random() * this.colorPalette.length);
-        const color = this.colorPalette[colorIndex];
-
+        const color = this.colorPalette[this.colorIndex];
+        // Move to the next color, wrapping around if necessary
+        this.colorIndex = (this.colorIndex + 1) % this.colorPalette.length;
         const formattedEvent = {
             summary: summary,
             description: description,
@@ -64,7 +66,7 @@ export class CalendarManager {
     }
     processEvents() {
         this.eventsList.forEach(event => {
-            this.createEvent(event.summary, event.description, event.start.date, event.end.date);
+            this.createEvent(event.summary, event.description, event.start_date, event.end_date);
         });
     }
 }

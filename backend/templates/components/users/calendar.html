@@ -20,33 +20,19 @@
 <script type="module">
 import { CalendarManager } from "{{ url_for('static', path='js/cultCalendar.js') }}"; 
 $(document).ready(function() {
-  window.addEventListener('supabaseClientReady', async function() {
-    const eventsList = [
-        {
-            summary: 'Cannabis Cult Connoisseur Pack',
-            description: 'Connoisseur Live Resin Pack Voting!',
-            start: {date: '01/03/2024', datetime: Calendar.dayjs('01-03-2024T09:00:00').format('MM/DD/YYYY')},
-            end: {date: '10/03/2024', datetime: Calendar.dayjs('10-03-2024T09:00:00').format('MM/DD/YYYY')},
-        },
-        {
-            summary: 'Cannabis Cult Live Resin Pack Reveal',
-            description: 'Live Resin Connoisseur Packs are Back!',
-            start: {date: '12/03/2024', datetime: '12-03-2024T09:00:00'},
-            end: {date: '12/03/2024', datetime: '12-03-2024T09:00:00'},
-        },
-        {
-            summary: 'Cannabis Cult Flower Pack Round 3',
-            description: 'Connoisseur Flower Packs are Back! with Round 3 available at Greenlight Dispensaries around the state.',
-            start: {date: '12/04/2024', datetime: '12-04-2024T09:00:00'},
-            end: {date: '21/04/2024', datetime: '21-04-2024T09:00:00'},
-        },
-        {
-            summary: 'Flower Pack Round 3 Reveal',
-            description: 'The winner of Flower Pack Round 3 will be announced.',
-            start: {date: '23/04/2024', datetime: '23-04-2024T09:00:00'},
-            end: {date: '23/04/2024', datetime: '23-04-2024T09:00:00'},
+    async function fetchEvents() {
+        try {
+            const response = await fetch('/search/get-all-events/');
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error("Failed to load events:", error);
         }
-    ];
+    }
+  window.addEventListener('supabaseClientReady', async function() {
+    const eventsList = await fetchEvents();
     const calendar = new CalendarManager(eventsList);
   });
 });
