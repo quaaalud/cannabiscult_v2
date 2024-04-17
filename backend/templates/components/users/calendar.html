@@ -17,52 +17,37 @@
 </div>
 {% endblock %}
 {% block scripts %}
-<script>
+<script type="module">
+import { CalendarManager } from "{{ url_for('static', path='js/cultCalendar.js') }}"; 
 $(document).ready(function() {
-  const calendarElement = document.getElementById('calendar');
-  const spinner = calendarElement.querySelector('.spinner-border');
-  if (spinner) {
-      spinner.remove();
-  }
   window.addEventListener('supabaseClientReady', async function() {
-    const events = [
+    const eventsList = [
         {
             summary: 'Cannabis Cult Connoisseur Pack',
             description: 'Connoisseur Live Resin Pack Voting!',
             start: {date: '01/03/2024', datetime: Calendar.dayjs('01-03-2024T09:00:00').format('MM/DD/YYYY')},
             end: {date: '10/03/2024', datetime: Calendar.dayjs('10-03-2024T09:00:00').format('MM/DD/YYYY')},
-            color: { background: '#3F51B5', foreground: '#FFFFFF' },
-            id: 1
         },
         {
             summary: 'Cannabis Cult Live Resin Pack Reveal',
             description: 'Live Resin Connoisseur Packs are Back!',
             start: {date: '12/03/2024', datetime: '12-03-2024T09:00:00'},
             end: {date: '12/03/2024', datetime: '12-03-2024T09:00:00'},
-            color: { background: '#4DB6AC', foreground: '#FFFFFF' },
-            id: 2
         },
         {
             summary: 'Cannabis Cult Flower Pack Round 3',
-            description: 'Connoisseur Flower Packs are Back! with Round 3 available at Greenligh Dispensaries around the state.',
-            start: {date: '01/04/2024', datetime: '01-04-2024T09:00:00'},
-            end: {date: '12/04/2024', datetime: '12-04-2024T09:00:00'},
-            color: { background: '#cfe0fc', foreground: '#0a47a9' },
-            id: 3
+            description: 'Connoisseur Flower Packs are Back! with Round 3 available at Greenlight Dispensaries around the state.',
+            start: {date: '12/04/2024', datetime: '12-04-2024T09:00:00'},
+            end: {date: '21/04/2024', datetime: '21-04-2024T09:00:00'},
         },
         {
             summary: 'Flower Pack Round 3 Reveal',
             description: 'The winner of Flower Pack Round 3 will be announced.',
-            start: {date: '15/04/2024', datetime: '15-04-2024T09:00:00'},
-            end: {date: '15/04/2024', datetime: '15-04-2024T09:00:00'},
-            color: { background: '#0a47a9', foreground: '#cfe0fc' },
-            id: 4
+            start: {date: '23/04/2024', datetime: '23-04-2024T09:00:00'},
+            end: {date: '23/04/2024', datetime: '23-04-2024T09:00:00'},
         }
     ];
-    const calendarInstance = Calendar.getInstance(calendarElement); 
-    calendarInstance.addEvents(events);
-    calendarInstance.refresh();
-
+    const calendar = new CalendarManager(eventsList);
   });
 });
 </script>

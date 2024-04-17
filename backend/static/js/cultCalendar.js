@@ -2,77 +2,70 @@
  * CalendarManager manages calendar events using MDB Pro Bootstrap library.
  * It allows for adding, removing, and updating events within an MDB Calendar instance.
  */
-class CalendarManager {
+export class CalendarManager {
     /**
      * Creates an instance of CalendarManager.
      * @param {string} elementId The ID of the DOM element where the calendar will be initialized.
      */
-    constructor(elementId) {
-        this.element = document.getElementById(elementId);
+    constructor(eventsList) {
+        this.elementId = 'calendar';
+        this.element = document.getElementById(this.elementId);
         if (!this.element) throw new Error('Element not found');
-        this.events = [
-          {
-              summary: 'Cannabis Cult Flower Pack Round 3 on April 1st',
-              description: 'Connoisseur Flower Packs are Back! with Round 3 available at Greenligh Dispensaries around the state.',
-              start: '26/3/2024',
-              end: '31/3/2024',
-              color: { background: '#cfe0fc', foreground: '#0a47a9' },
-              id: 1
-          }
-        ]
-        calendarManager.addEvent(event);
+        this.colorPalette = [
+            { background: '#BBDEFB', foreground: '#0D47A1' }, // Light Blue and Dark Blue
+            { background: '#B3E5FC', foreground: '#01579B' }, // Lighter Blue and Darker Blue
+            { background: '#B2EBF2', foreground: '#006064' }, // Cyan and Deep Teal
+            { background: '#B2DFDB', foreground: '#004D40' }, // Light Teal and Dark Teal
+            { background: '#E0F7FA', foreground: '#00695C' }, // Lightest Cyan and Teal
+            { background: '#E0F2F1', foreground: '#004D40' }, // Very Light Teal and Dark Teal
+            { background: '#ECEFF1', foreground: '#263238' }, // Lightest Gray and Deep Blue Gray
+            { background: '#CFD8DC', foreground: '#37474F' }, // Light Blue Gray and Dark Blue Gray
+            { background: '#B0BEC5', foreground: '#263238' }, // Blue Gray and Deep Blue Gray
+            { background: '#90A4AE', foreground: '#000000' }  // Medium Blue Gray and Black
+        ];
+        this.eventsList = eventsList; // Store the events list passed to the constructor
+        this.events = []; // Initialize the events array
+        this.processEvents(); // Use the stored events list
         this.initMDBCalendar();
     }
-
     /**
      * Initializes the MDB Calendar component.
      */
     initMDBCalendar() {
-        $(document).ready(function() {
-          window.addEventListener('supabaseClientReady', async function() {
-    
-            // Initialize the MDB Calendar
-            this.calendarInstance = new Calendar(document.getElementById(elementId), options);
-    
-            // Optionally, load initial events if any
-            this.events.forEach(event => this.calendarInstance.addEvent(event));
+        const spinner = this.element.querySelector('.spinner-border');
+        if (spinner) {
+            spinner.remove();
+        }
+
+        this.calendarInstance = Calendar.getInstance(this.element);
+        if (this.events.length > 0) {
+            this.calendarInstance.addEvents(this.events);
+        }
+        this.calendarInstance.refresh();
+    }
+    /**
+     * Creates and adds an event to the calendar and internal events array.
+     * @param {Object} event The event object to add. The object should include summary, description, start, end, color, and id.
+     */
+    createEvent(summary, description, startDate, endDate) {
+        const colorIndex = Math.floor(Math.random() * this.colorPalette.length);
+        const color = this.colorPalette[colorIndex];
+
+        const formattedEvent = {
+            summary: summary,
+            description: description,
+            start: { date: startDate, datetime: startDate + 'T09:00:00' },
+            end: { date: endDate, datetime: endDate + 'T09:00:00' },
+            color: color,
+            id: Math.random().toString(36).substr(2, 9) // Generate a random ID
+        };
+
+        this.events.push(formattedEvent);
+    }
+    processEvents() {
+        this.eventsList.forEach(event => {
+            this.createEvent(event.summary, event.description, event.start.date, event.end.date);
         });
-      });
     }
-    /**
-     * Adds an event to the calendar.
-     * @param {Object} event The event object to add.
-     */
-    addEvent(event) {
-        this.events.push(event);
-        if (this.calendarInstance) {
-            this.calendarInstance.addEvent(event);
-        }
-    }
-
-    /**
-     * Removes an event from the calendar by its ID.
-     * @param {number|string} eventId The ID of the event to remove.
-     */
-    removeEvent(eventId) {
-        this.events = this.events.filter(event => event.id !== eventId);
-        if (this.calendarInstance) {
-            this.calendarInstance.removeEvent(eventId);
-        }
-    }
-
-    /**
-     * Updates an existing event in the calendar.
-     * @param {Object} updatedEvent The updated event object.
-     */
-    updateEvent(updatedEvent) {
-        const index = this.events.findIndex(event => event.id === updatedEvent.id);
-        if (index !== -1) {
-            this.events[index] = updatedEvent;
-            if (this.calendarInstance) {
-                this.calendarInstance.updateEvent(updatedEvent);
-            }
-        }
-    }
-
 }
+ 
