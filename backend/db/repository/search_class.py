@@ -6,9 +6,10 @@ Created on Fri Dec 22 20:12:12 2023
 @author: dale
 """
 
-from typing import Type, List, Dict, Any, Optional
+import random
 import traceback
-from sqlalchemy import inspect, func, or_, not_, union_all, update
+from typing import Type, List, Dict, Any, Optional
+from sqlalchemy import inspect, func, or_, not_, union_all
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
@@ -197,33 +198,48 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
     return all_ratings
 
 
-def get_all_card_paths(db: Session, offset=0, limit=10) -> List[dict]:
+def get_all_card_paths(db: Session, limit=10) -> List[dict]:
     # Prepare select statements for each product type
     select_flower = select(
         Flower.cultivator, Flower.strain, Flower.card_path, Flower.product_type
+    ).filter(
+        Flower.strain.notilike('%Test%'), Flower.cultivator != 'Connoisseur'
     )
     select_concentrate = select(
         Concentrate.cultivator,
         Concentrate.strain,
         Concentrate.card_path,
         Concentrate.product_type,
+    ).filter(
+        Concentrate.strain.notilike('%Test%'), Concentrate.cultivator != 'Connoisseur'
     )
     select_pre_roll = select(
         Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path, Pre_Roll.product_type
+    ).filter(
+        Pre_Roll.strain.notilike('%Test%'), Pre_Roll.cultivator != 'Connoisseur'
     )
     select_edible = select(
         Edible.cultivator, Edible.strain, Edible.card_path, Edible.product_type
+    ).filter(
+        Edible.strain.notilike('%Test%'), Edible.cultivator != 'Connoisseur'
     )
 
     # Combine queries using UNION ALL with limit and offset
-    combined_query = (
-        union_all(select_flower, select_concentrate, select_pre_roll, select_edible)
-        .offset(offset)
-        .limit(limit)
+    combined_query = union_all(
+        select_flower, select_concentrate, select_pre_roll, select_edible
     )
-
+    # Create a subquery for counting
+    subquery = combined_query.alias("subquery")
+    total_rows = db.execute(select(func.count()).select_from(subquery)).scalar()
+    if total_rows == 0:
+        return []  # Early return if no products
+    random_offset = random.randint(0, total_rows - 1)
     # Execute the query
-    result = db.execute(combined_query)
+    result = db.execute(combined_query.offset(random_offset).limit(limit)).fetchall()
+    additional_needed = int(limit) - len(result)
+    if additional_needed > 0:
+        # Fetch the remainder from the beginning of the dataset
+        result += db.execute(combined_query.limit(additional_needed)).fetchall()
     return [
         {
             "cultivator": row.cultivator,
@@ -231,7 +247,7 @@ def get_all_card_paths(db: Session, offset=0, limit=10) -> List[dict]:
             "card_path": row.card_path,
             "product_type": row.product_type,
         }
-        for row in result.all()
+        for row in result
     ]
 
 

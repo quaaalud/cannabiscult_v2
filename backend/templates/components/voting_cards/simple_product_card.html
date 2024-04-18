@@ -1,0 +1,111 @@
+<section class="container text-center my-5" id="product-container">
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="product-grid">
+        <!-- Product cards will be inserted here -->
+    </div>
+    <div class="col-12 col-lg-6 mx-auto pt-5">
+        <button id="loadMoreBtn" class="btn btn-lg btn-secondary btn-outline-secondary w-100 mt-4">Load More</button>
+    </div>
+</section>
+{% block scripts %}
+<script>
+$(document).ready(function() {
+    const limit = 3; // Load 3 products at a time
+    const seenCombinations = new Set();
+    
+    async function fetchProducts() {
+    const url = `/search/get-all-image-urls/?limit=${limit}`;
+        const response = await fetch(url);
+        const products = await response.json();
+        if (products.length > 0) {
+            displayProducts(products);
+        } else {
+            document.getElementById('loadMoreBtn').disabled = true; // Disable button if no more products
+        }
+    }
+    
+    function displayProducts(products) {
+        const container = document.getElementById('product-grid');
+        products.forEach(product => {
+            const combination = `${product.cultivator}-${product.strain}-${product.product_type}`;
+            if (!seenCombinations.has(combination)) {
+                seenCombinations.add(combination);
+                const card = createProductCard(product);
+                container.appendChild(card);
+            }
+        });
+    }
+    
+    function createProductCard(product) {
+        const col = document.createElement('div');
+        col.className = 'col-12 col-sm-10 col-md-4 col-lg-4 mx-auto';
+    
+        const card = document.createElement('div');
+        card.className = 'card shadow-sm h-100';
+    
+        const cardBody = document.createElement('div');
+        cardBody.className = 'card-body';
+    
+        // Construct URL based on product type
+        let reviewUrl = "get-review?";
+        switch (product.product_type) {
+            case "concentrate":
+                reviewUrl = "concentrate-get-review?";
+                break;
+            case "edible":
+                reviewUrl = "edible-get-review?";
+                break;
+            case "pre_roll":
+                reviewUrl = "pre-roll-get-review?";
+                break;
+        }
+        reviewUrl += `strain_selected=${encodeURIComponent(product.strain)}&cultivator_selected=${encodeURIComponent(product.cultivator)}`;
+    
+        // Strain name at the top
+        const cardTitle = document.createElement('h5');
+        cardTitle.className = 'card-title';
+        cardTitle.textContent = product.strain;
+        cardBody.appendChild(cardTitle);
+    
+        // Image with alt text and lazy loading
+        const img = document.createElement('img');
+        img.className = 'bd-placeholder-img card-img-top';
+        img.setAttribute('src', product.signed_url);
+        img.alt = `Product image for ${product.strain}`;
+        img.loading = "lazy";
+        cardBody.appendChild(img);
+    
+        // Cultivator name directly below the image
+        const cultivatorText = document.createElement('small');
+        cultivatorText.className = 'text-muted d-block';
+        cultivatorText.textContent = `${product.cultivator}`;
+        cardBody.appendChild(cultivatorText);
+    
+        // Footer with a 'Get Strain' button wrapped in an anchor
+        const cardFooter = document.createElement('div');
+        cardFooter.className = 'card-footer';
+    
+        const buttonLink = document.createElement('a');
+        buttonLink.href = reviewUrl;
+        buttonLink.className = 'w-100'; // Ensure the link covers the full width
+    
+        const button = document.createElement('button');
+        button.className = 'btn btn-info w-100 shadow'; // Apply Bootstrap classes
+        button.textContent = 'Get Strain';
+        button.style.border = 'none'; // Remove any default border
+    
+        buttonLink.appendChild(button);
+        cardFooter.appendChild(buttonLink);
+        card.appendChild(cardBody);
+        card.appendChild(cardFooter);
+        col.appendChild(card);
+    
+        return col;
+    }
+
+    
+    document.getElementById('loadMoreBtn').addEventListener('click', fetchProducts);
+    
+    fetchProducts(); // Load initial batch
+});
+</script>
+{% endblock %}

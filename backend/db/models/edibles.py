@@ -7,7 +7,7 @@ Created on Mon Oct 30 21:57:01 2023
 """
 
 
-from sqlalchemy import Column, String, BigInteger, Boolean
+from sqlalchemy import Column, String, BigInteger, Boolean, Text
 from db.base_class import Base
 
 
@@ -29,6 +29,7 @@ class Edible(Base):
         Boolean,
         default=False,
     )
+    product_type = Column(Text, default="concentrate")
 
 
 class MysteryEdible(Base):
@@ -40,6 +41,7 @@ class MysteryEdible(Base):
     cultivator = Column(String, nullable=False)
     strain = Column(String, nullable=False)
     card_path = Column(String, nullable=True)
+    product_type = Column(Text, default="concentrate")
 
 
 class VividEdible(Base):
@@ -50,6 +52,7 @@ class VividEdible(Base):
     )
     strain = Column(String, nullable=False)
     card_path = Column(String, nullable=True)
+    product_type = Column(Text, default="concentrate")
 
 
 class VibeEdible(Base):
@@ -61,3 +64,4 @@ class VibeEdible(Base):
     strain = Column(String, nullable=False)
     card_path = Column(String, nullable=True)
     cultivator = Column(String, server_default="Vibe", nullable=True)
+    product_type = Column(Text, default="concentrate")

@@ -29,6 +29,7 @@ class Concentrate(Base):
         Boolean,
         default=True,
     )
+    product_type = Column(Text, default="concentrate")
 
 
 class Concentrate_Description(Base):

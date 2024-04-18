@@ -42,6 +42,7 @@ class Pre_Roll(Base):
         Boolean,
         default=True,
     )
+    product_type = Column(Text, default="concentrate")
 
 
 class Pre_Roll_Description(Base):

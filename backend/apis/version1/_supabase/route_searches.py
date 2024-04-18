@@ -276,10 +276,10 @@ async def get_task_result(task_id: str):
 
 
 @router.get("/get-all-image-urls/", response_model=List[Any])
-async def get_all_image_urls_route(offset=0, limit=10, db: Session = Depends(get_db)):
+async def get_all_image_urls_route(limit=10, db: Session = Depends(get_db)):
     try:
         # Fetch data using the synchronous function
-        product_data = get_all_card_paths(db, offset, limit)
+        product_data = get_all_card_paths(db, limit)
         # Asynchronously generate and stream URLs
         return StreamingResponse(
             generate_signed_urls(product_data), media_type="application/json"
