@@ -32,6 +32,8 @@ from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 async def get_data_by_strain(
     db: Session, model: Type[Base], strain: str
 ) -> List[Dict[str, Any]]:
+    if (model == VibeEdible):
+        return []
     try:
         result = db.execute(
             select(model)
