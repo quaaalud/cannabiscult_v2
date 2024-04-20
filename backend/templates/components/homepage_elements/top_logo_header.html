@@ -1,33 +1,59 @@
 <div 
-  class="container-fluid text-center pt-3 pb-5" 
+  class="container text-center pt-3 pb-5" 
   aria-controls="#picker-editor"
   >
-  <div class="py-5 py-md-0">
-    <div 
-      class="container-fluid text-center py-5" 
-      style="padding:2em"
-      data-aos="fade-in"
-      data-aos-duration="2000"
-      data-aos-easing="ease-in-out"
-      data-aos-mirror="true"
-      data-aos-once="false"
-      data-aos-anchor-placement="top-center"
-    >
-      <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/brain_vector.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL2JyYWluX3ZlY3Rvci5zdmciLCJpYXQiOjE2OTUwOTM0MzIsImV4cCI6MTcyNjYyOTQzMn0.aORzL_pXYA8OQGUdHaMGjO9qDPKZ7mSfeTnGK0ScNuU&t=2023-09-19T03%3A17%3A12.711Z" loading="lazy">
-    </div>
-  </div>
-  <div class="py-lg-5 my-lg-5 py-md-0">
-    <div class="row mx-auto">
-      <div class="col-8 col-md-7 col-lg-6 col-xl-5 mx-auto">
-        <a 
-          class="btn custom-gradient-button btn-lg py-3 w-100" 
-          href="/login" 
-          role="button" 
-          aria-controls="#picker-editor"
+    <div class="py-5 py-md-0">
+        <div 
+          class="container text-center py-5 col-12 col-lg-8 mx-auto" 
+          style="padding:2em"
+          data-aos="fade-in"
+          data-aos-duration="2000"
+          data-aos-easing="ease-in-out"
+          data-aos-mirror="true"
+          data-aos-once="false"
+          data-aos-anchor-placement="top-center"
         >
-          <span>Join the Cult</span>
-        </a>
-      </div>
+            <div id="homepageCarousel" class="carousel slide" data-mdb-ride="carousel" data-mdb-carousel-init>
+                <a href="#cultSignUpButtonContainer">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/webiste_assests/logos/brain_vector.svg?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvd2ViaXN0ZV9hc3Nlc3RzL2xvZ29zL2JyYWluX3ZlY3Rvci5zdmciLCJpYXQiOjE2OTUwOTM0MzIsImV4cCI6MTcyNjYyOTQzMn0.aORzL_pXYA8OQGUdHaMGjO9qDPKZ7mSfeTnGK0ScNuU&t=2023-09-19T03%3A17%3A12.711Z" loading="lazy" alt="Cannabis Cult Primary Logo in Black and White"/>
+                        </div>
+                        <div class="carousel-item">            
+                            <img alt="Poster for the 4/20 event hosted at Mississippi Underground in St. Louis, Missouri." src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/events/mississippi_underground_420/event_420_poster.webp?t=2024-04-20T19%3A56%3A05.102Z" class="img-fluid"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img alt="Set list for the 4/20 event hosted at Mississippi Underground in St. Louis, Missouri." src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/events/mississippi_underground_420/vendor_420_set_list.webp?t=2024-04-20T19%3A56%3A58.409Z" class="img-fluid"/>
+                        </div>
+                        <div class="carousel-item">
+                            <img alt="4/20 event at Mississippi Underground sponsors page" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/events/mississippi_underground_420/vender_420.webp" class="img-fluid d-block w-100" alt=""/>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-mdb-target="homepageCarousel" data-mdb-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-mdb-target="#homepageCarousel" data-mdb-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <div class="py-lg-5 my-lg-5 py-md-0 pt-5" id="cultSignUpButtonContainer">
+            <div class="row mx-auto">
+                <div class="col-8 col-md-7 col-lg-6 col-xl-5 mx-auto">
+                    <a 
+                        id="cultSignUpButton"
+                        class="btn custom-gradient-button btn-lg py-3 w-100" 
+                        href="/login" 
+                        role="button" 
+                        aria-controls="#picker-editor"
+                    >
+                        <span>Join the Cult</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
