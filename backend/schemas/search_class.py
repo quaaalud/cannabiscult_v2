@@ -33,13 +33,13 @@ class RatingModel(BaseModel):
     product_type: str
     strain: str
     cultivator: str
-    appearance_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
-    smell_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
-    freshness_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
-    flavor_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
-    harshness_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
-    effects_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
-    cult_rating: Optional[float] = Field(..., gt=-1, lt=10.1)
+    appearance_rating: Optional[float] = Field(..., gt=-1, lt=11)
+    smell_rating: Optional[float] = Field(..., gt=-1, lt=11)
+    freshness_rating: Optional[float] = Field(..., gt=-1, lt=11)
+    flavor_rating: Optional[float] = Field(..., gt=-1, lt=11)
+    harshness_rating: Optional[float] = Field(..., gt=-1, lt=11)
+    effects_rating: Optional[float] = Field(..., gt=-1, lt=11)
+    cult_rating: Optional[float] = Field(..., gt=-1, lt=11)
 
     class Config:
         from_attributes = True
