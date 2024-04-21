@@ -268,10 +268,20 @@ async def get_aggregated_strain_ratings(
 
 
 @router.get("/get_task_result/{task_id}")
-async def get_task_result(task_id: str):
+async def get_task_result(
+    task_id: str,
+    model_dict: dict = product_type_to_ranking_model,
+    db: Session = Depends(get_db),
+):
     task = tasks.get(task_id)
     if not task:
-        raise HTTPException(status_code=404, detail="Task not found")
+        try:
+            task_id = str(uuid4())
+            await run_aggregation_task(task_id, db, model_dict)
+        except Exception as e:
+            raise HTTPException(status_code=404, detail=f"Task not found: {e}")
+        else:
+            task = tasks.get(task_id)
     return task
 
 
