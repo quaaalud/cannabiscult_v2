@@ -11,25 +11,26 @@ from supabase import create_client, Client
 
 
 def return_created_client(
-        url: str = settings.SUPA_STORAGE_URL,
-        key: str = settings.SUPA_PRIVATE_KEY) -> Client:
+    url: str = settings.SUPA_STORAGE_URL, key: str = settings.SUPA_PRIVATE_KEY
+) -> Client:
     return create_client(url, key)
 
 
-def get_cc_bucket():    
+def get_cc_bucket():
     client = return_created_client()
     return client.storage.get_bucket(
-        settings.POSTGRES_DB, 
-    ) 
+        settings.POSTGRES_DB,
+    )
 
 
-def get_signed_url_from_storage(file_path: str, life_span: int = 6000):    
+def get_signed_url_from_storage(file_path: str, life_span: int = 6000):
     client = return_created_client()
-    return client.storage.from_(settings.POSTGRES_DB).create_signed_url(
-        file_path,
-        life_span
-    ).get('signedURL')
+    return (
+        client.storage.from_(settings.POSTGRES_DB)
+        .create_signed_url(file_path, life_span)
+        .get("signedURL")
+    )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     pass

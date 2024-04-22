@@ -32,7 +32,7 @@ from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 async def get_data_by_strain(
     db: Session, model: Type[Base], strain: str
 ) -> List[Dict[str, Any]]:
-    if (model == VibeEdible):
+    if model == VibeEdible:
         return []
     try:
         result = db.execute(
@@ -204,27 +204,21 @@ def get_all_card_paths(db: Session, limit=10) -> List[dict]:
     # Prepare select statements for each product type
     select_flower = select(
         Flower.cultivator, Flower.strain, Flower.card_path, Flower.product_type
-    ).filter(
-        Flower.strain.notilike('%Test%'), Flower.cultivator != 'Connoisseur'
-    )
+    ).filter(Flower.strain.notilike("%Test%"), Flower.cultivator != "Connoisseur")
     select_concentrate = select(
         Concentrate.cultivator,
         Concentrate.strain,
         Concentrate.card_path,
         Concentrate.product_type,
     ).filter(
-        Concentrate.strain.notilike('%Test%'), Concentrate.cultivator != 'Connoisseur'
+        Concentrate.strain.notilike("%Test%"), Concentrate.cultivator != "Connoisseur"
     )
     select_pre_roll = select(
         Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path, Pre_Roll.product_type
-    ).filter(
-        Pre_Roll.strain.notilike('%Test%'), Pre_Roll.cultivator != 'Connoisseur'
-    )
+    ).filter(Pre_Roll.strain.notilike("%Test%"), Pre_Roll.cultivator != "Connoisseur")
     select_edible = select(
         Edible.cultivator, Edible.strain, Edible.card_path, Edible.product_type
-    ).filter(
-        Edible.strain.notilike('%Test%'), Edible.cultivator != 'Connoisseur'
-    )
+    ).filter(Edible.strain.notilike("%Test%"), Edible.cultivator != "Connoisseur")
 
     # Combine queries using UNION ALL with limit and offset
     combined_query = union_all(
@@ -340,3 +334,37 @@ async def update_calendar_event(
         traceback.print_exc()
         print(f"Error updating event: {e}")
         return False
+
+
+async def get_card_path_by_details(
+    db: Session, product_type: str, strain: str, cultivator: str
+) -> Optional[str]:
+    # Map product types to their respective model classes
+    model_mapping = {
+        "Flower": Flower,
+        "Concentrate": Concentrate,
+        "Edible": Edible,
+        "Pre_Roll": Pre_Roll,
+        "VibeEdible": VibeEdible,
+    }
+    # Fetch the correct model based on product_type
+    model = model_mapping.get(product_type)
+    if model is None:
+        return None
+
+    try:
+        result = db.execute(
+            select(model.card_path)
+            .where(
+                model.strain == strain,
+                model.cultivator == cultivator,
+                model.strain.ilike("%Test%") == False,
+            )
+            .limit(1)
+        ).scalar_one()
+        return result
+    except Exception as e:
+        print(
+            f"Error for card_path on {model.__name__}, {strain}, {cultivator}: {e}"
+        )
+        return None

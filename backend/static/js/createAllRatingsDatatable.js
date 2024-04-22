@@ -35,6 +35,25 @@ class AllRatingsDatatable {
             throw error;
         }
     }
+    // Asynchronous function to fetch image URL
+    async fetchImageUrl(productType, strain, cultivator) {
+        try {
+            const response = await fetch('/images/get-image-url', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ product_type: productType, strain: strain, cultivator: cultivator })
+            });
+            if (!response.ok) {
+                throw new Error('Failed to fetch image URL');
+            }
+            const data = await response.json();
+            return data.img_url;
+        } catch (error) {
+            return 'https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z';
+        }
+    }
     async waitForTaskCompletion(taskId) {
         return new Promise((resolve, reject) => {
             const intervalId = setInterval(async () => {
@@ -163,13 +182,33 @@ class AllRatingsDatatable {
             sort: true,
           });
         });
+        columns.unshift({
+          label: '', // No label for image column
+          width: 125, // Adjust width to fit the image
+        });
     
         // Prepare rows data
         let rows = ratings.map(rating => {
-            return columns.map(col => {
-                let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
-                return rating[key] || rating[col.label.toLowerCase()];
-            });
+          let row = columns.map(col => {
+            let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
+            if (col.label === '') {
+              // Wrap the placeholder image with lightbox attributes
+              return `
+                <div id="lightbox${rating.strain}" class="lightbox" data-mdb-zoom-level="0.25" data-mdb-lightbox-init>
+                  <img 
+                    src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
+                    alt="${rating.strain}"
+                    style="width: 40px; max-height: 40px"
+                    class="rounded-circle"
+                    data-mdb-img="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
+                  />
+                </div>
+              `;
+            } else {
+              return rating[key] || rating[col.label.toLowerCase()];
+            }
+          });
+          return row;
         });
     
         // Create a table container
@@ -195,6 +234,18 @@ class AllRatingsDatatable {
         // Attach search functionality
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
+        });
+        ratings.forEach((rating, index) => {
+          this.fetchImageUrl(productType, rating.strain, rating.cultivator).then(imgUrl => {
+            const imgElements = document.querySelectorAll(`#datatable${productType} img[data-mdb-img]`);
+            if (imgElements[index]) {
+              imgElements[index].src = imgUrl;
+              imgElements[index].setAttribute('data-mdb-img', imgUrl);
+              imgElements[index].alt = `${rating.strain} by ${rating.cultivator} primary image for the Cannabis Cult.`;
+            }
+          });
+          let lightbox = document.getElementById(`lightbox${rating.strain}`);
+          let instance = mdb.Lightbox.getOrCreateInstance(lightbox);
         });
     }
     // Method to create data tables for ratings

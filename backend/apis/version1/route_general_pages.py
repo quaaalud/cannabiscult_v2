@@ -48,7 +48,10 @@ from db.repository.flowers import get_flower_and_description
 from version1._supabase import route_concentrates
 from db.repository import concentrate_reviews, pre_rolls
 from db.repository.concentrates import get_concentrate_data_and_path
-from version1._supabase.route_mystery_voters import get_voter_info_by_email, create_mystery_voter
+from version1._supabase.route_mystery_voters import (
+    get_voter_info_by_email,
+    create_mystery_voter,
+)
 
 templates_dir = Path(
     Path(__file__).parents[2],
@@ -95,7 +98,6 @@ async def user_home(request: Request):
             "user_is_logged_in": user_is_logged_in,
         },
     )
-
 
 
 @general_pages_router.post("/login-submit", response_model=LoggedInUser)
@@ -398,7 +400,9 @@ async def handle_flower_review_post(
     *,
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
-    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar_email"),
+    cultivar_email: str = Query(
+        "aaron.childs@thesocialoutfitus.com", alias="cultivar_email"
+    ),
     product_type_selected: str = Query("flower", alias="product_type_selected"),
     db: Session = Depends(get_db),
 ):
@@ -411,26 +415,25 @@ async def handle_flower_review_post(
 async def process_pre_roll_request(
     request: Request, strain: str, cultivator: str, cultivar_email: str, db: Session
 ):
-    user_is_logged_in = get_current_users_email() is not None
-    review_dict = await pre_rolls.get_pre_roll_and_description(
-        db=db, strain=strain, cultivar_email=cultivar_email, cultivator=cultivator
-    )
-    #    try:
-    request_dict = {
-        "request": request,
-        "user_is_logged_in": user_is_logged_in,
-    }
-    response_dict = {**request_dict, **review_dict}
-    return templates.TemplateResponse(
-        str(Path("general_pages", "connoisseur_pre_rolls.html")), response_dict
-    )
-
-
-#    except Exception as e:
-#        print(f"Error: {e}")  # Log the error for debugging
-#        return templates.TemplateResponse(
-#            str(Path("general_pages", "voting-home.html")), {"request": request}
-#        )
+    try:
+        user_is_logged_in = get_current_users_email() is not None
+        review_dict = await pre_rolls.get_pre_roll_and_description(
+            db=db, strain=strain, cultivar_email=cultivar_email, cultivator=cultivator
+        )
+        #    try:
+        request_dict = {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(Path("general_pages", "connoisseur_pre_rolls.html")), response_dict
+        )
+    except Exception as e:
+        print(f"Error: {e}")  # Log the error for debugging
+        return templates.TemplateResponse(
+            str(Path("general_pages", "voting-home.html")), {"request": request}
+        )
 
 
 @general_pages_router.post("/pre-roll-get-review", response_model=Dict[str, Any])
@@ -492,7 +495,9 @@ async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
 #  Concentrate Review and Voting Pages
 @general_pages_router.get("/get_hidden_concentrate")
 async def handle_hidden_concentrate_post(
-    request: Request, strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
+    request: Request,
+    strain: str = Query(None, alias="strain"),
+    db: Session = Depends(get_db),
 ):
     hidden_concentrate_dict = get_concentrate_data_and_path(
         db,
@@ -554,7 +559,9 @@ async def vibe_concentrates_main_page(request: Request, db: Session = Depends(ge
 
 @general_pages_router.get("/get_vibe_concentrate")
 async def handle_vibe_concentrate_post(
-    request: Request, strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
+    request: Request,
+    strain: str = Query(None, alias="strain"),
+    db: Session = Depends(get_db),
 ):
     concentrate_dict = get_concentrate_data_and_path(
         db,
@@ -655,14 +662,18 @@ async def get_concentrate_cultivators_route(db: Session = Depends(get_db)) -> Li
     return route_concentrates.get_all_cultivators(db)
 
 
-@general_pages_router.get("/concentrate-get-strains-for-cultivator", response_model=List[str])
+@general_pages_router.get(
+    "/concentrate-get-strains-for-cultivator", response_model=List[str]
+)
 async def get_concentrate_strains_for_cultivator_route(
     cultivator_selected: str = Query(...), db: Session = Depends(get_db)
 ) -> List[str]:
     return route_concentrates.get_all_strains_for_cultivator(cultivator_selected, db)
 
 
-@general_pages_router.get("/concentrate-get-cultivators-for-strain", response_model=List[str])
+@general_pages_router.get(
+    "/concentrate-get-cultivators-for-strain", response_model=List[str]
+)
 async def get_concentrate_cultivators_for_strain_route(
     strain_selected: str = Query(...), db: Session = Depends(get_db)
 ) -> List[str]:
@@ -745,7 +756,9 @@ async def handle_concentrate_review_post(
     strain_selected: str = Query(None, alias="strain_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
     product_type_selected: str = Query("concentrate", alias="product_type_selected"),
-    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com", alias="cultivar_email"),
+    cultivar_email: str = Query(
+        "aaron.childs@thesocialoutfitus.com", alias="cultivar_email"
+    ),
     db: Session = Depends(get_db),
 ):
     return await process_concentrate_request(
@@ -832,7 +845,9 @@ async def submit_concentrate_review_vote(
         )
 
 
-@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]])
+@general_pages_router.get(
+    "/check-mystery-voter", response_model=Optional[Dict[str, bool]]
+)
 def check_mystery_voter_email_by_get(
     voter_email: str = Query(None, alias="voter_email"), db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
@@ -842,7 +857,9 @@ def check_mystery_voter_email_by_get(
     return {"exists": True}
 
 
-@general_pages_router.get("/check-mystery-voter", response_model=Optional[Dict[str, bool]])
+@general_pages_router.get(
+    "/check-mystery-voter", response_model=Optional[Dict[str, bool]]
+)
 def check_mystery_voter_email(
     voter_email: str = Form(...), db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
@@ -951,7 +968,9 @@ async def general_transition_page_request(request: Request, file_name: str):
 
 @general_pages_router.get("/{file_name}", response_class=ORJSONResponse)
 async def general_pages_route(request: Request, file_name: str):
-    file_path = Path(Path(__file__).parents[2], "templates", "general_pages", f"{file_name}.html")
+    file_path = Path(
+        Path(__file__).parents[2], "templates", "general_pages", f"{file_name}.html"
+    )
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Page not found")
 
