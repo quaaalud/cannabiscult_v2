@@ -20,7 +20,6 @@ class Product_Types(Base):
 
 class Terp_Table(Base):
     __tablename__ = 'terp_table'
-    row_id = Column(Integer, primary_key=True, autoincrement=True)
     flower_id = Column(Integer, primary_key=True, nullable=True)
     concentrate_id = Column(Integer, primary_key=True, nullable=True)
     pre_roll_id = Column(Integer, primary_key=True, nullable=True)

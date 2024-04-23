@@ -22,13 +22,14 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "LIVE RESIN CP 1": ("Nuthera", "Red Runtz Live Badder"),
             "LIVE RESIN CP 2": ("Vibe", "Liquid Sunshine Live Badder"),
             "LIVE RESIN CP 3": ("Sinse", "Blueberry Muffin Live Badder"),
+            "Cult Flower 1": ("Cloud Cover", "Detroit Runtz"),
+            "Cult Flower 2": ("Vibe", "Grapes and Cream"),
+            "Cult Flower 3": ("Robust", "Government Oasis"),
+            "Cult Flower 4": ("Local", "RS11"),
         }
-
         # Extract query parameters
         query_params = dict(request.query_params)
-
         strain_selected = query_params.get("strain_selected")
-
         # Check and replace old strain values with new ones, updating cultivator if necessary
         if strain_selected in legacy_strain_mapping:
             new_cultivator, new_strain = legacy_strain_mapping[strain_selected]
