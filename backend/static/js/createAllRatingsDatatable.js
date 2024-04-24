@@ -277,7 +277,7 @@ class AllRatingsDatatable {
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
-        this,createTerpProfileTab(productType, tabList, tabContent,);
+        this.createTerpProfileTab(productType, tabList, tabContent,);
         // Optionally, add more tabs for charts related to the DataTable here
         // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
