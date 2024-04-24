@@ -8,19 +8,31 @@ Created on Fri Dec 22 20:12:12 2023
 
 import random
 import traceback
-from typing import Type, List, Dict, Any, Optional
+from typing import Type, List, Dict, Any, Optional, Union
 from sqlalchemy import inspect, func, or_, not_, union_all
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
 from db.base import Base
-from schemas.search_class import RatingModel
+from schemas.search_class import (
+    RatingModel,
+    FlowerTerpTableSchema,
+    ConcentrateTerpTableSchema,
+    EdibleTerpTableSchema,
+    PreRollTerpTableSchema,
+)
 from core.config import settings
 from db.models.flowers import Flower
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
 from db.models.pre_rolls import Pre_Roll
-from db.models.product_types import Product_Types
+from db.models.product_types import (
+    Product_Types,
+    FlowerTerpTable,
+    ConcentrateTerpTable,
+    EdibleTerpTable,
+    PreRollTerpTable,
+)
 from db.models.calendar_events import (
     CalendarEvent,
     CalendarEventQuery,
@@ -364,7 +376,52 @@ async def get_card_path_by_details(
         ).scalar_one()
         return result
     except Exception as e:
-        print(
-            f"Error for card_path on {model.__name__}, {strain}, {cultivator}: {e}"
-        )
+        print(f"Error for card_path on {model.__name__}, {strain}, {cultivator}: {e}")
         return None
+
+
+def get_all_strains_by_product_type(db: Session, product_type: str) -> List[Dict[str, any]]:
+    # Mapping of product types to models
+    product_mapping = {
+        "flower": FlowerTerpTable,
+        "concentrate": ConcentrateTerpTable,
+        "pre_roll": PreRollTerpTable,
+        "edible": EdibleTerpTable,
+    }
+    model = product_mapping.get(product_type.lower())
+    if not model:
+        raise ValueError("Invalid product type provided")
+    try:
+        # Fetch all strains and their primary keys
+        primary_key = [key.name for key in inspect(model).primary_key][0]
+        data = db.query(getattr(model, primary_key), model.strain).all()
+        return [{"product_id": item[0], "strain": item[1]} for item in data]
+    except Exception as e:
+        print(f"Error fetching strains for {product_type}: {e}")
+        return []
+
+
+def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) -> Union[
+    FlowerTerpTableSchema,
+    ConcentrateTerpTableSchema,
+    EdibleTerpTableSchema,
+    PreRollTerpTableSchema,
+]:
+    # Mapping of product types to models and schemas
+    product_mapping = {
+        "flower": (FlowerTerpTable, FlowerTerpTableSchema),
+        "concentrate": (ConcentrateTerpTable, ConcentrateTerpTableSchema),
+        "pre_roll": (PreRollTerpTable, PreRollTerpTableSchema),
+        "edible": (EdibleTerpTable, EdibleTerpTableSchema),
+    }
+    model, schema = product_mapping.get(product_type.lower(), (None, None))
+    if not model:
+        raise ValueError("Invalid product type provided")
+    # Dynamically fetch the primary key column name from the model
+    primary_key = [key.name for key in inspect(model).primary_key][0]
+    # Fetch the data from the database
+    data = db.query(model).filter(getattr(model, primary_key) == product_id).first()
+    if data is None:
+        return None
+    # Serialize data using the corresponding Pydantic schema
+    return schema.from_orm(data)

@@ -12,7 +12,7 @@ from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from db.session import get_db
-from typing import List, Optional, Any, Dict
+from typing import List, Optional, Any, Dict, Union
 from schemas.flower_rankings import GetFlowerRanking
 from schemas.concentrate_rankings import GetConcentrateRanking
 from schemas.pre_rolls import PreRollRankingSchema
@@ -38,6 +38,15 @@ from db.repository.search_class import (
     generate_signed_urls,
     get_all_events,
     add_new_calendar_event,
+    get_all_strains_by_product_type,
+    get_terp_profile_by_type,
+)
+from schemas.search_class import (
+    RatingModel,
+    FlowerTerpTableSchema,
+    ConcentrateTerpTableSchema,
+    EdibleTerpTableSchema,
+    PreRollTerpTableSchema,
 )
 
 tasks = {}  # Dictionary to store task status and results
@@ -323,3 +332,38 @@ async def add_calendar_event(
         raise he
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+  "/strains/{product_type}", response_model=List)
+async def get_list_of_strains_for_terp_profile(
+    product_type: str, db: Session = Depends(get_db)
+):
+    try:
+        strains_list = get_all_strains_by_product_type(db, product_type)
+        if strains_list is None:
+            raise HTTPException(status_code=404, detail="Strains not found")
+        return strains_list
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get(
+    "/terps/{product_type}/{product_id}",
+    response_model=Union[
+        FlowerTerpTableSchema,
+        ConcentrateTerpTableSchema,
+        EdibleTerpTableSchema,
+        PreRollTerpTableSchema,
+    ],
+)
+async def get_product_terp_profile(
+    product_type: str, product_id: int, db: Session = Depends(get_db)
+):
+    try:
+        profile = get_terp_profile_by_type(db, product_type, product_id)
+        if profile is None:
+            raise HTTPException(status_code=404, detail="Product not found")
+        return profile
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))

@@ -277,6 +277,7 @@ class AllRatingsDatatable {
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
+        this,createTerpProfileTab(productType, tabList, tabContent,);
         // Optionally, add more tabs for charts related to the DataTable here
         // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
@@ -519,6 +520,102 @@ class AllRatingsDatatable {
     formatRating(value) {
         return value ? parseFloat(value).toFixed(2) : 'N/A';
     }
+    createTerpProfileTab(productType, tabList, tabContent) {
+        const tab = document.createElement('li');
+        tab.className = 'nav-item';
+        
+        const link = document.createElement('a');
+        link.className = 'nav-link text-dark';
+        link.id = `terp-profile-tab-${productType}`;
+        link.dataset.bsToggle = 'tab';
+        link.href = `#terp-profile-${productType}`;
+        link.role = 'tab';
+        link.ariaControls = `terp-profile-${productType}`;
+        link.innerText = 'Terp Profile';
+        
+        tab.appendChild(link);
+        tabList.appendChild(tab);
+        
+        const terpProfileContent = document.createElement('div');
+        terpProfileContent.className = 'tab-pane fade';
+        terpProfileContent.id = `terp-profile-${productType}`;
+        terpProfileContent.role = 'tabpanel';
+        terpProfileContent.ariaLabelledby = `terp-profile-tab-${productType}`;
+    
+        // Create dropdown and chart canvas
+        const dropdown = this.createDropdown(productType);
+        const canvas = document.createElement('canvas');
+        canvas.id = `terp-profile-chart-${productType}`;
+    
+        terpProfileContent.appendChild(dropdown);
+        terpProfileContent.appendChild(canvas);
+        tabContent.appendChild(terpProfileContent);
+    
+        // Add event listener to dropdown to update chart on change
+        dropdown.addEventListener('change', async (event) => {
+            const productId = event.target.value;
+            this.createPolarChart(productType, productId, canvas);
+        });
+    }
+    
+    createDropdown(productType) {
+        const dropdown = document.createElement('select');
+        dropdown.className = 'form-select';
+        dropdown.id = `terp-profile-dropdown-${productType}`;
+        this.populateStrainDropdown(productType, dropdown); // Assume this function populates the dropdown
+        return dropdown;
+    }
+    
+    populateStrainDropdown(productType, dropdown) {
+        // Fetch strains and populate dropdown, assume fetchStrains is implemented
+        this.fetchStrains(productType).then(strains => {
+            strains.forEach(strain => {
+                const option = document.createElement('option');
+                option.value = strain.product_id;
+                option.textContent = strain.strain;
+                dropdown.appendChild(option);
+            });
+        }).catch(error => {
+            console.error('Error populating strains:', error);
+        });
+    }
+    
+    async fetchStrains(productType) {
+        const response = await fetch(`/search/strains/${productType}`);
+        if (!response.ok) throw new Error('Failed to fetch strains');
+        return response.json();
+    }
+    
+    async createPolarChart(productType, productId, canvas) {
+        const terpeneData = await this.fetchTerpeneProfile(productType, productId);
+        if (!terpeneData) {
+            console.error('No data available to create the chart.');
+            return;
+        }
+        const data = this.extractTerpeneData(terpeneData);
+        if (canvas.chartInstance) {
+            canvas.chartInstance.destroy(); // Destroy the existing chart instance if any
+        }
+        new mdb.Chart(canvas, {
+            type: 'polarArea',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    data: data.values,
+                    backgroundColor: [
+                        'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
+                        'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
+                        'rgba(66, 133, 244, 0.2)'
+                    ],
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    }
+
 }
 
 // Wait for the DOM to be fully loaded and for the Supabase client to be ready
