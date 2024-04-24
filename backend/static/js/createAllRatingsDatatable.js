@@ -545,21 +545,23 @@ class AllRatingsDatatable {
         // Create dropdown and chart canvas
         const dropdown = this.createTerpDropdown(productType);
         const canvas = document.createElement('canvas');
+        if (canvas.chartInstance) {
+            canvas.chartInstance.destroy(); // Destroy the existing chart instance if any
+        }
+        canvas.id = "";
         canvas.id = `terp-profile-chart-${productType}`;
     
         terpProfileContent.appendChild(dropdown);
         terpProfileContent.appendChild(canvas);
         tabContent.appendChild(terpProfileContent);
     
-        // Initialize an empty property to store chart instances if not already initialized
-        this.chartInstances = this.chartInstances || {};
-    
         // Add event listener to dropdown to update chart on change
         dropdown.addEventListener('change', async (event) => {
             const productId = event.target.value;
             this.createPolarChart(productType, productId, canvas);
         });
-    } 
+    }
+    
     createTerpDropdown(productType) {
         const dropdown = document.createElement('select');
         dropdown.className = 'form-select';
@@ -621,17 +623,11 @@ class AllRatingsDatatable {
             console.error('No data available to create the chart.');
             return;
         }
-    
-        // Check if there's an existing chart instance and destroy it
-        if (this.chartInstances[canvas.id]) {
-            this.chartInstances[canvas.id].destroy();
-        }
-    
         const data = this.extractTerpeneData(terpeneData);
-        const ctx = canvas.getContext('2d'); // Get the rendering context
-    
-        // Create a new chart instance and store it
-        this.chartInstances[canvas.id] = new mdb.Chart(ctx, {
+        if (canvas.chartInstance) {
+            canvas.chartInstance.destroy(); // Destroy the existing chart instance if any
+        }
+        new mdb.Chart(canvas, {
             type: 'polarArea',
             data: {
                 labels: data.labels,
@@ -650,7 +646,6 @@ class AllRatingsDatatable {
             }
         });
     }
-
 
 }
 
