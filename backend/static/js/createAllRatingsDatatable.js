@@ -277,7 +277,7 @@ class AllRatingsDatatable {
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
-        this.createTerpProfileTab(productType, tabList, tabContent,);
+        this.createTerpProfileTab(productType, tabList, tabContent);
         // Optionally, add more tabs for charts related to the DataTable here
         // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
@@ -543,7 +543,7 @@ class AllRatingsDatatable {
         terpProfileContent.ariaLabelledby = `terp-profile-tab-${productType}`;
     
         // Create dropdown and chart canvas
-        const dropdown = this.createDropdown(productType);
+        const dropdown = this.createTerpDropdown(productType);
         const canvas = document.createElement('canvas');
         canvas.id = `terp-profile-chart-${productType}`;
     
@@ -558,7 +558,7 @@ class AllRatingsDatatable {
         });
     }
     
-    createDropdown(productType) {
+    createTerpDropdown(productType) {
         const dropdown = document.createElement('select');
         dropdown.className = 'form-select';
         dropdown.id = `terp-profile-dropdown-${productType}`;
@@ -581,13 +581,40 @@ class AllRatingsDatatable {
     }
     
     async fetchStrains(productType) {
-        const response = await fetch(`/search/strains/${productType}`);
+        const response = await fetch(`/search/strains/${productType.toLowerCase()}`);
         if (!response.ok) throw new Error('Failed to fetch strains');
-        return response.json();
+        return await response.json();
+    }
+    async fetchTerpeneProfile(productType, productId) {
+        const url = `/search/terps/${productType}/${productId}`;
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching terpene profile:', error);
+            return null; // Return null or handle the error as you see fit
+        }
+    }
+    extractTerpeneData(terpeneProfile) {
+        const labels = [];
+        const values = [];
+
+        // Assuming terpeneProfile has a consistent structure with keys for terpenes
+        for (const [key, value] of Object.entries(terpeneProfile)) {
+            if (key.startsWith("alpha_") || key.startsWith("beta_") || key.startsWith("delta_") || key.startsWith("gamma_") || key.startsWith("trans_")) {
+                labels.push(this.formatLabel(key));
+                values.push(parseFloat(value));
+            }
+        }
+
+        return { labels, values };
     }
     
-    async createPolarChart(productType, productId, canvas) {
-        const terpeneData = await this.fetchTerpeneProfile(productType, productId);
+    createPolarChart(productType, productId, canvas) {
+        const terpeneData = this.fetchTerpeneProfile(productType, productId);
         if (!terpeneData) {
             console.error('No data available to create the chart.');
             return;
