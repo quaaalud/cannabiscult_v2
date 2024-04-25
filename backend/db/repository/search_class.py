@@ -380,7 +380,9 @@ async def get_card_path_by_details(
         return None
 
 
-def get_all_strains_by_product_type(db: Session, product_type: str) -> List[Dict[str, any]]:
+def get_all_strains_by_product_type(
+    db: Session, product_type: str
+) -> List[Dict[str, any]]:
     # Mapping of product types to models
     product_mapping = {
         "flower": FlowerTerpTable,
@@ -394,8 +396,15 @@ def get_all_strains_by_product_type(db: Session, product_type: str) -> List[Dict
     try:
         # Fetch all strains and their primary keys
         primary_key = [key.name for key in inspect(model).primary_key][0]
-        data = db.query(getattr(model, primary_key), model.strain).all()
-        return [{"product_id": item[0], "strain": item[1]} for item in data]
+        data = (
+            db.query(getattr(model, primary_key), model.strain, model.cultivator)
+            .order_by(model.strain)
+            .all()
+        )
+        return [
+            {"product_id": item[0], "strain": item[1], "cultivator": item[2]}
+            for item in data
+        ]
     except Exception as e:
         print(f"Error fetching strains for {product_type}: {e}")
         return []

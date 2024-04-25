@@ -235,17 +235,22 @@ class AllRatingsDatatable {
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
         });
+        setTimeout(() => {
+            this.populateImages(productType, ratings);
+        }, 0);
+    }
+    async populateImages(productType, ratings) {
         ratings.forEach((rating, index) => {
-          this.fetchImageUrl(productType, rating.strain, rating.cultivator).then(imgUrl => {
-            const imgElements = document.querySelectorAll(`#datatable${productType} img[data-mdb-img]`);
-            if (imgElements[index]) {
-              imgElements[index].src = imgUrl;
-              imgElements[index].setAttribute('data-mdb-img', imgUrl);
-              imgElements[index].alt = `${rating.strain} by ${rating.cultivator} primary image for the Cannabis Cult.`;
-            }
-          });
-          let lightbox = document.getElementById(`lightbox${rating.strain}`);
-          let instance = mdb.Lightbox.getOrCreateInstance(lightbox);
+            this.fetchImageUrl(productType, rating.strain, rating.cultivator).then(imgUrl => {
+                const imgElements = document.querySelectorAll(`#datatable${productType} img[data-mdb-img]`);
+                if (imgElements[index]) {
+                    imgElements[index].src = imgUrl;
+                    imgElements[index].setAttribute('data-mdb-img', imgUrl);
+                    imgElements[index].alt = `${rating.strain} by ${rating.cultivator} primary image for the Cannabis Cult.`;
+                }
+            });
+            let lightbox = document.getElementById(`lightbox${rating.strain}`);
+            let instance = mdb.Lightbox.getOrCreateInstance(lightbox);
         });
     }
     // Method to create data tables for ratings
@@ -277,7 +282,9 @@ class AllRatingsDatatable {
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
-        this.createTerpProfileTab(productType, tabList, tabContent);
+        if (productType.toLowerCase() == "concentrate" || productType.toLowerCase() == "flower") {
+          this.createTerpProfileTab(productType, tabList, tabContent);
+        }
         // Optionally, add more tabs for charts related to the DataTable here
         // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
@@ -544,17 +551,15 @@ class AllRatingsDatatable {
     
         // Create dropdown and chart canvas
         const dropdown = this.createTerpDropdown(productType);
+        const canvasContainer = document.createElement('div');
+        canvasContainer.className = "col-12 col-sm-10 col-md-8 col-lg-6 mx-auto"
         const canvas = document.createElement('canvas');
-        if (canvas.chartInstance) {
-            canvas.chartInstance.destroy(); // Destroy the existing chart instance if any
-        }
         canvas.id = "";
         canvas.id = `terp-profile-chart-${productType}`;
-    
         terpProfileContent.appendChild(dropdown);
-        terpProfileContent.appendChild(canvas);
+        canvasContainer.appendChild(canvas);
+        terpProfileContent.appendChild(canvasContainer);
         tabContent.appendChild(terpProfileContent);
-    
         // Add event listener to dropdown to update chart on change
         dropdown.addEventListener('change', async (event) => {
             const productId = event.target.value;
@@ -576,7 +581,7 @@ class AllRatingsDatatable {
             strains.forEach(strain => {
                 const option = document.createElement('option');
                 option.value = strain.product_id;
-                option.textContent = strain.strain;
+                option.textContent = `${strain.strain} by ${strain.cultivator}`;
                 dropdown.appendChild(option);
             });
         }).catch(error => {
@@ -602,36 +607,42 @@ class AllRatingsDatatable {
             return null; // Return null or handle the error as you see fit
         }
     }
-    extractTerpeneData(terpeneProfile) {
+    async extractTerpeneData(terpeneProfile) {
         const labels = [];
         const values = [];
 
         // Assuming terpeneProfile has a consistent structure with keys for terpenes
+        const excludeKeys = new Set(["flower_id", "concentrate_id", "product_type", "cultivator", "strain", "card_path", "is_mystery", "voting_open"]);
         for (const [key, value] of Object.entries(terpeneProfile)) {
-            if (key.startsWith("alpha_") || key.startsWith("beta_") || key.startsWith("delta_") || key.startsWith("gamma_") || key.startsWith("trans_")) {
+            if (!excludeKeys.has(key) && parseFloat(value) > 0) {
                 labels.push(this.formatLabel(key));
                 values.push(parseFloat(value));
             }
         }
-
         return { labels, values };
     }
     
-    createPolarChart(productType, productId, canvas) {
-        const terpeneData = this.fetchTerpeneProfile(productType, productId);
+    async createPolarChart(productType, productId, canvas) {
+        // Clear existing chart instance if it exists by calling dispose()
+        if (canvas.chartInstance) {
+            canvas.chartInstance.dispose();  // Use dispose() if supported by your chart library
+        }
+    
+        // Fetch the terpene data
+        const terpeneData = await this.fetchTerpeneProfile(productType, productId);
         if (!terpeneData) {
             console.error('No data available to create the chart.');
             return;
         }
-        const data = this.extractTerpeneData(terpeneData);
-        if (canvas.chartInstance) {
-            canvas.chartInstance.destroy(); // Destroy the existing chart instance if any
-        }
-        new mdb.Chart(canvas, {
+        // Extract data for the chart
+        const data = await this.extractTerpeneData(terpeneData);
+        // Create a new chart instance and store it in the canvas object
+        canvas.chartInstance = new mdb.Chart(canvas, {
             type: 'polarArea',
             data: {
                 labels: data.labels,
                 datasets: [{
+                    label: `${productType} Terpenes`,
                     data: data.values,
                     backgroundColor: [
                         'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
@@ -642,7 +653,12 @@ class AllRatingsDatatable {
             },
             options: {
                 responsive: true,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true
+                    }
+                }
             }
         });
     }
