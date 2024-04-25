@@ -571,12 +571,17 @@ class AllRatingsDatatable {
         const dropdown = document.createElement('select');
         dropdown.className = 'form-select';
         dropdown.id = `terp-profile-dropdown-${productType}`;
-        this.populateStrainDropdown(productType, dropdown); // Assume this function populates the dropdown
+        this.populateStrainDropdown(productType, dropdown);
         return dropdown;
     }
     
     populateStrainDropdown(productType, dropdown) {
-        // Fetch strains and populate dropdown, assume fetchStrains is implemented
+        const defaultOption = document.createElement('option');
+        defaultOption.textContent = "Select a strain to see terps";
+        defaultOption.value = "";
+        defaultOption.selected = true;
+        defaultOption.disabled = true;
+        dropdown.appendChild(defaultOption);
         this.fetchStrains(productType).then(strains => {
             strains.forEach(strain => {
                 const option = document.createElement('option');
