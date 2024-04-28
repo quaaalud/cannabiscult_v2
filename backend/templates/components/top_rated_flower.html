@@ -22,13 +22,11 @@ $(document).ready(function() {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const flowerData = await response.json();
-
       updateFlowerData(flowerData);
     } catch (error) {
       console.error('Error fetching flower data:', error);
     }
   }
-
   async function updateFlowerData(data) {
     const container = document.getElementById('flowerContainer');
     let htmlContent = '';
