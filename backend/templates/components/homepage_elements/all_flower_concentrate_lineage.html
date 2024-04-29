@@ -1,0 +1,182 @@
+{% block head %}
+<style>
+.all-lineage-container {
+    width: 100%;
+    height: 100%;
+}
+
+#allLineageChart {
+    width: 100%;
+    height: 100%;
+}
+</style>
+{% endblock %}
+<div class="all-lineage-container">
+  <div id="allLineageChart" style="height: 100vh; width: 100vw;"></div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="infoModalLabel">Strain Details</h5>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-6">
+              <strong>Primary Strain:</strong></span>
+              <ul>
+                <li class="list-item">
+                  <span id="primaryStrain"></span>
+                </li>
+              </ul>
+            </div>
+            <div class="col-6">
+              <strong>Connections:</strong>
+              <ul id="connectionList"></ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary w-100" data-mdb-ripple-init data-mdb-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+<script>
+// Function to fetch data from the API and handle the response
+function fetchFamilyTree() {
+  fetch('/search/strain-family-tree')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
+    .then(data => {
+      initLineageChart(data.nodes, data.edges);
+    })
+    .catch(error => {
+      console.error('Error fetching family tree:', error);
+    });
+}
+
+// Function to initialize the chart with data
+function initLineageChart(nodes, edges) {
+  const lineageContainer = document.getElementById('allLineageChart');
+
+  // Format nodes and edges for Cytoscape
+  const formattedNodes = nodes.map(node => ({ data: { id: node.id } }));
+  const formattedEdges = edges.map(edge => ({
+    data: { source: edge.source, target: edge.target }
+  }));
+
+  // Initialize Cytoscape
+  var cy = cytoscape({
+    container: lineageContainer,
+    elements: [...formattedNodes, ...formattedEdges],
+    style: [
+      {
+        selector: 'node',
+        style: {
+          'background-color': '#666',
+          'label': 'data(id)',
+          'width': '125',  // Set node size
+          'height': '125',  // Set node size
+          'text-valign': 'center',
+          'color': '#fff',  // Set text color for better visibility
+          'text-outline-width': 2,
+          'text-outline-color': '#666',
+          'font-size': '25px'  // Adjust font size for visibility
+        }
+      },
+      {
+        selector: 'edge',
+        style: {
+          'width': 4,  // Make edges thicker
+          'line-color': '#ccc',
+          'target-arrow-color': '#ccc',
+          'target-arrow-shape': 'triangle',
+          'curve-style': 'bezier'
+        }
+      }
+    ],
+    layout: {
+      name: 'cose',  // This layout uses a physics simulation to position nodes
+      idealEdgeLength: 100,
+      nodeOverlap: 20,
+      refresh: 20,
+      fit: false,  // Whether to fit the network to the viewport
+      padding: 10,  // Padding on fit
+      randomize: false,  // Randomize the initial positions of the nodes (before layout)
+      componentSpacing: 100,  // Extra spacing between components in non-compound graphs
+      nodeRepulsion: 400000,  // Node repulsion (non overlapping) multiplier
+      edgeElasticity: 100,  // Divisor to compute edge forces
+      nestingFactor: 5,  // Nesting factor (multiplier) to compute ideal edge length for nested edges
+      gravity: 1,  // Gravity force (constant)
+      numIter: 1000,  // Maximum number of iterations to perform
+      initialTemp: 200,  // Initial temperature (maximum node displacement)
+      coolingFactor: 0.95,  // Cooling factor (how the temperature is reduced between successive iterations
+      minTemp: 1.0  // Lower temperature threshold (below this point the layout will end)
+    },
+  });
+  cy.on('layoutstop', function() {
+    cy.nodes().forEach(function(node) {
+        var degree = node.degree();
+        var nodeColor = '#666'; // Default color
+        var edgeColor = '#999'; // Lighter grey for default
+        
+        if (degree > 2) {
+            nodeColor = '#4B0082'; // Dark Purple for high connectivity
+            edgeColor = '#7D3CB5'; // Lighter purple for edges
+        } else if (degree > 1) {
+            nodeColor = '#ff851b'; // Medium connectivity orange
+            edgeColor = '#FFA500'; // Lighter orange for edges
+        } else {
+            nodeColor = '#3D9970'; // Low connectivity green
+            edgeColor = '#66C2A0'; // Lighter green for edges
+        }
+        
+        node.style('background-color', nodeColor);
+
+        // Update edges to match the complimentary edge color
+        node.connectedEdges().forEach(edge => {
+            edge.style({
+                'line-color': edgeColor,
+                'target-arrow-color': edgeColor
+              });
+          });
+      });
+  });
+  cy.on('tap', 'node', function(evt) {
+      var node = evt.target;
+      var connectedNodes = node.connectedEdges().connectedNodes();
+      var primaryStrain = document.getElementById('primaryStrain');
+      var connectionList = document.getElementById('connectionList');
+  
+      primaryStrain.textContent = node.id(); // Set primary strain
+      connectionList.innerHTML = ''; // Clear previous connections
+  
+      connectedNodes.forEach(function(connectedNode) {
+          if (connectedNode.id() !== node.id()) { // Avoid listing the node itself
+              var li = document.createElement('li');
+              li.textContent = connectedNode.id();
+              connectionList.appendChild(li);
+          }
+      });
+  
+      // Use jQuery to show the modal, as MDB often relies on jQuery
+      $('#infoModal').modal('show');
+  });
+  window.addEventListener('resize', function() {
+      cy.resize();
+  });
+}
+document.addEventListener('DOMContentLoaded', fetchFamilyTree);
+</script>
+{% endblock %}

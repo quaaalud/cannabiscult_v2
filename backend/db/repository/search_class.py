@@ -8,6 +8,7 @@ Created on Fri Dec 22 20:12:12 2023
 
 import random
 import traceback
+import networkx as nx
 from typing import Type, List, Dict, Any, Optional, Union
 from sqlalchemy import inspect, func, or_, not_, union_all
 from sqlalchemy.orm import Session
@@ -32,6 +33,7 @@ from db.models.product_types import (
     ConcentrateTerpTable,
     EdibleTerpTable,
     PreRollTerpTable,
+    Current_Lineages,
 )
 from db.models.calendar_events import (
     CalendarEvent,
@@ -434,3 +436,29 @@ def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) ->
         return None
     # Serialize data using the corresponding Pydantic schema
     return schema.from_orm(data)
+
+
+def build_strains_family_tree_graph(db: Session):
+    # Fetch all strain entries
+    strains = db.query(Current_Lineages).all()
+    # Create a directed graph
+    G = nx.DiGraph()
+    # Process each strain to build the graph
+    for strain in strains:
+        current_strain = strain.strain.strip()
+        if current_strain not in G:
+            G.add_node(current_strain)
+        if strain.lineage:
+            parents = strain.lineage.split(' X ')
+            for parent in parents:
+                parent = parent.strip()
+                if parent not in G:
+                    G.add_node(parent)
+                G.add_edge(parent, current_strain)
+    return G
+
+
+def serialize_graph(graph):
+    nodes = [{'id': node} for node in graph.nodes()]
+    edges = [{'source': edge[0], 'target': edge[1]} for edge in graph.edges()]
+    return {'nodes': nodes, 'edges': edges}

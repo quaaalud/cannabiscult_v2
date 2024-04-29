@@ -6,7 +6,7 @@ Created on Sun Nov  5 17:09:03 2023
 @author: dale
 """
 
-from sqlalchemy import Column, String, Integer, Float
+from sqlalchemy import Column, String, Integer, Float, BigInteger
 from sqlalchemy.dialects.postgresql import JSONB
 from db.base_class import Base
 
@@ -343,3 +343,12 @@ class PreRollTerpTable(Base):
     trans_nerolidol = Column(Float, nullable=True)
     trans_ocimene = Column(Float, nullable=True)
     y_terpinene = Column(Float, nullable=True)
+
+
+class Current_Lineages(Base):
+    __tablename__ = 'current_lineages'
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    strain = Column(String)
+    cultivator = Column(String)
+    lineage = Column(String)

@@ -40,6 +40,8 @@ from db.repository.search_class import (
     add_new_calendar_event,
     get_all_strains_by_product_type,
     get_terp_profile_by_type,
+    build_strains_family_tree_graph,
+    serialize_graph,
 )
 from schemas.search_class import (
     RatingModel,
@@ -367,3 +369,13 @@ async def get_product_terp_profile(
         return profile
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/strain-family-tree", response_model=dict)
+def get_family_tree(db: Session = Depends(get_db)):
+    try:
+        graph = build_strains_family_tree_graph(db)
+        serialized_graph = serialize_graph(graph)
+        return serialized_graph
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

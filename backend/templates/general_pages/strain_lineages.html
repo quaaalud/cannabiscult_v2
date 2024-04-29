@@ -1,0 +1,79 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Strain Lineage Graph - Cannabis Cult</title>
+{% endblock %} 
+
+{% block head %}
+<meta 
+  content="Strain Lineage Graph - Cannabis Cult Page." 
+  name="description"
+/>
+<meta 
+  name="keywords"
+  content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
+/>
+<meta 
+  property="og:image" 
+  content="{% if url_path %}{{ url_path }}{% else %}https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur%20Pack/CP%20Rosin?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1ciBQYWNrL0NQIFJvc2luIiwiaWF0IjoxNzAxMzEzNjc0LCJleHAiOjE3MzI4NDk2NzR9.J7m_xfZWyMGi8v6XSoMVm68e3RPU5UdGPPPXaPNtQ2I&t=2023-11-30T03%3A07%3A54.251Z{% endif %}"
+  alt="Strain Lineage Graph - Cannabis Cult"
+/>
+<meta 
+  property="og:description" 
+  content="Strain Lineage Graph - Cannabis Cult Page." 
+/>
+<meta 
+  property="og:title" 
+  content="Strain Lineage Graph - Cannabis Cult"
+/>
+<meta 
+  name="twitter:card" 
+  content="summary_large_image"
+/>
+<meta 
+  property="twitter:url" 
+  content="https://cannabiscult.co"
+/>
+<meta 
+  property="twitter:site" 
+  content="@cannabiscult"
+/>
+<meta 
+  property="twitter:title" 
+  content="Strain Lineage Graph - Cannabis Cult." 
+/>
+<meta 
+  property="twitter:description" 
+  content="Strain Lineage Graph on CannabisCult.co" 
+/>
+<meta 
+  property="twitter:image" 
+  content="{{ url_path }}"
+/>
+<meta 
+  property="twitter:image:alt"
+  content="Strain Lineage Graph - Cannabis Cult"
+/>
+<link 
+  rel="canonical" 
+  href="https://cannabiscult.co/strain_lineages"
+/>
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+<main class="container-fluid">
+  <div class="row text-center align-items-center py-5">
+    <h1>Strain Lineage Graph</h1>
+  </div>
+  {% include "components/homepage_elements/all_flower_concentrate_lineage.html" %}
+</main>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
