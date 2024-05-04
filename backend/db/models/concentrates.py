@@ -40,16 +40,27 @@ class Concentrate_Description(Base):
         ForeignKey("public.concentrate.concentrate_id", onupdate="CASCADE"),
         nullable=True,
     )
-    description = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
-    effects = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
-    lineage = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
+    description = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
+    effects = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
+    lineage = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
     terpenes_list = Column(ARRAY(Text), nullable=True)
     cultivar_email = Column(Text, ForeignKey("mysteryvoter.email"), nullable=False)
 
     __table_args__ = (
         CheckConstraint(
-            "length(description) < 1500", name="concentrate_descriptions_description_check"
+            "length(description) < 1500",
+            name="concentrate_descriptions_description_check",
         ),
-        CheckConstraint("length(effects) < 1500", name="concentrate_descriptions_effects_check"),
-        CheckConstraint("length(lineage) < 1500", name="concentrate_descriptions_lineage_check"),
+        CheckConstraint(
+            "length(effects) < 1500", name="concentrate_descriptions_effects_check"
+        ),
+        CheckConstraint(
+            "length(lineage) < 1500", name="concentrate_descriptions_lineage_check"
+        ),
     )
