@@ -140,7 +140,7 @@ class AllRatingsDatatable {
         }
     }
     // Method to add a tab for each product type's table
-    addProductTableTab(productType, tabList, tabContent, ratings) {
+    async addProductTableTab(productType, tabList, tabContent, ratings) {
         // Create the ProductTable tab
         const productTableTab = document.createElement('li');
         productTableTab.className = 'nav-item';
@@ -201,29 +201,43 @@ class AllRatingsDatatable {
         });
     
         // Prepare rows data
-        let rows = ratings.map(rating => {
-          let row = columns.map(col => {
+        let rows = await Promise.all(ratings.map(async rating => {
+          return Promise.all(columns.map(async col => {
             let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
             if (col.label === '') {
-              // Wrap the placeholder image with lightbox attributes
-              return `
-                <div id="lightbox${rating.strain}" class="lightbox" data-mdb-zoom-level="0.25" data-mdb-lightbox-init>
-                  <img 
-                    src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
-                    alt="${rating.strain}"
-                    style="width: 40px; max-height: 40px"
-                    class="rounded-circle"
-                    data-mdb-img="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
-                  />
-                </div>
-              `;
+              try {
+                const imgUrl = await this.fetchImageUrl(productType, rating.strain, rating.cultivator); // Fetch image URL asynchronously
+                return `
+                  <div id="lightbox${rating.strain}" class="lightbox" data-mdb-zoom-level="0.25" data-mdb-lightbox-init>
+                    <img 
+                      src="${imgUrl}"
+                      alt="${rating.strain}"
+                      style="width: 40px; max-height: 40px"
+                      class="rounded-circle"
+                      data-mdb-img="${imgUrl}"
+                      loading="lazy"
+                    />
+                  </div>
+                `;
+              } catch (error) {
+                console.error('Failed to load image URL:', error);
+                // Handle error or fallback image
+                return `
+                  <div id="lightbox${rating.strain}" class="lightbox">
+                    <img 
+                      src="path/to/fallback/image.png"  // Provide a valid fallback image path
+                      alt="Fallback Image"
+                      style="width: 40px; max-height: 40px"
+                      class="rounded-circle"
+                    />
+                  </div>
+                `;
+              }
             } else {
-              return rating[key] || rating[col.label.toLowerCase()];
+              return rating[key] || rating[col.label.toLowerCase()] || '-'; // Ensure fallback to '-' if no data
             }
-          });
-          return row;
-        });
-    
+          }));
+        }));
         // Create a table container
         const tableContainer = document.createElement('div');
         tableContainer.id = `datatable${productType}`;
@@ -248,9 +262,14 @@ class AllRatingsDatatable {
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
         });
-        setTimeout(() => {
-            this.populateImages(productType, ratings);
-        }, 0);
+        this.initializeLightboxes();
+    }
+    initializeLightboxes() {
+        // Select all elements whose IDs start with 'lightbox'
+        const lightboxes = document.querySelectorAll('[id^="lightbox"]');
+        lightboxes.forEach(lightbox => {
+            mdb.Lightbox.getOrCreateInstance(lightbox); // Initialize the MDB Lightbox instance
+        });
     }
     async populateImages(productType, ratings) {
         ratings.forEach((rating, index) => {
@@ -298,6 +317,7 @@ class AllRatingsDatatable {
         if (productType.toLowerCase() == "concentrate" || productType.toLowerCase() == "flower") {
           this.createTerpProfileTab(productType, tabList, tabContent);
         }
+        this.initializeLightboxes();
         // Optionally, add more tabs for charts related to the DataTable here
         // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
