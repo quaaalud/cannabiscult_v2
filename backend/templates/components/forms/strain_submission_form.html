@@ -68,7 +68,7 @@
                 </div>
               </div>
               <div class="col-12 mb-3 pb-2">
-                <select class="form-outline w-100" data-mdb-select-init data-mdb-placeholder="Select One or Multiple Terpenes" multiple>
+                <select class="form-outline w-100" data-mdb-select-init data-mdb-placeholder="Select One or Multiple Terpenes" multiple id="terpenesSubmission">
                   <option value="alpha_bergamotene">Alpha Bergamotene</option>
                   <option value="alpha_beta_cis_ocimene">Alpha Beta Cis Ocimene</option>
                   <option value="alpha_beta_pinene">Alpha Beta Pinene</option>
@@ -137,13 +137,17 @@
                     <label class="form-label" for="effectsSubmission">Effects</label>
                   </div>
                 </div>
-                <div class="input-group text-center mx-auto align-items-center py-3">
-                  <input type="text" id="terpeneInput" class="form-control form-outline-light" placeholder="Enter terpenes" aria-label="Enter Terpenes"/>
-                  <button type="button" id="addTerpene" class="form-control form-outline btn-dark btn-outline-info btn-lg" data-mdb-ripple-init data-mdb-ripple-color="secondary">Add Terp</button>
+                <div class="input-group text-center mx-auto align-items-center py-3 rounded-5" data-mdb-input-init>
+                  <input type="text" id="lineageInput" class="form-control form-outline-light" placeholder="Enter Lineage" aria-label="Enter Strain Lineage" />
+                  <button type="button" id="addLineage" class="form-control form-outline btn-light btn-outline-light btn-lg" data-mdb-ripple-init data-mdb-ripple-color="secondary">
+                    Save
+                  </button>
                 </div>
               </div>
               <div class="col-12 align-items-center text-center mx-auto py-5 form-control form-outline align-conent-center">
-                <div id="terpeneChipsContainer" class="chips-container row my-2 mx-auto align-items-center"></div>
+                <div id="lineageChipsContainer" class="chips-container row my-2 mx-auto align-items-center">
+                  <p class="text-dark">Add parent strains above to create lineage tree.</p>  
+                </div>
               </div>
               <div class="row pt-4">
                 <div class="col-12 mb-3 mx-auto me-3 pt-2">
@@ -221,6 +225,9 @@ async function submitStrainForm(event) {
     const emailAddressValue = document.getElementById("emailAddress").value.toLowerCase();
     const descriptionValue = document.getElementById("strainDescription").value;
     const effectsValue = document.getElementById("effectsSubmission").value;
+    const lineageValues = window.lineageList;
+    const terpenesElement = document.getElementById("terpenesSubmission");
+    const selectedTerpenes = Array.from(terpenesElement.selectedOptions).map(option => option.value);
 
     // Determine the selected product type
     const productTypeElements = document.getElementsByName("inlineRadioOptions");
@@ -240,6 +247,8 @@ async function submitStrainForm(event) {
     if (!descriptionValue) missingFields.push('Description');
     if (!effectsValue) missingFields.push('Effects');
     if (!emailAddressValue) missingFields.push('Email Address');
+    if (!lineageValues) missingFields.push('Missing Lineage');
+    if (selectedTerpenes.length === 0) missingFields.push('Terpenes');
 
     if (missingFields.length > 0) {
         // Update modal body with missing fields
@@ -251,7 +260,8 @@ async function submitStrainForm(event) {
     } else {
       const cleanCultivatorString = window.supabaseClient.sanitizeInputString(cultivatorValue);
       const cleanStrainString = window.supabaseClient.sanitizeInputString(strainValue);
-      // Prepare the FormData object
+      
+      let lineageFormSubmission = lineageValues.join(' X ');
       const formData = new FormData();
       
       formData.append('strain', cleanStrainString);
@@ -260,6 +270,8 @@ async function submitStrainForm(event) {
       formData.append('description', descriptionValue || 'Coming Soon');
       formData.append('effects', effectsValue || 'Coming Soon');
       formData.append('product_type', productTypeValue);
+      formData.append('lineage', lineageFormSubmission);
+      formData.append('terpenes_list', selectedTerpenes);
       
       // Submit the form data
       const root = window.location.origin;
@@ -285,21 +297,24 @@ async function submitStrainForm(event) {
     }
 }
 document.addEventListener('DOMContentLoaded', (event) => {
-    document.getElementById('addTerpene').addEventListener('click', function() {
+    const lineageList = []; // Array to hold the values for form submission
+    window.lineageList = lineageList;
+    document.getElementById('addLineage').addEventListener('click', function() {
         createChip();
     });
     
-    document.getElementById('terpeneInput').addEventListener('keypress', function(event) {
+    document.getElementById('lineageInput').addEventListener('keypress', function(event) {
         if (event.key === "Enter") {
             event.preventDefault(); // Prevent the form from being submitted
             createChip();
         }
     });
-    
-    const terpenes = []; // Array to hold the values for form submission
-    
     function createChip() {
-        const input = document.getElementById('terpeneInput');
+        if (window.lineageList.length === 0) {
+          lineageContainer = document.getElementById('lineageChipsContainer');
+          lineageContainer.innerHTML = ""
+        }
+        const input = document.getElementById('lineageInput');
         const value = input.value.trim();
     
         if (value) {
@@ -313,15 +328,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
           chip.setAttribute('data-mdb-chip-init', '');
           chip.setAttribute('data-mdb-ripple-color', 'dark');
           chip.textContent = value;
+          chip.id = value;
+          chip.value = value;
   
           // Add close icon
           const closeIcon = document.createElement('i');
           closeIcon.className = 'close fas fa-times';
           closeIcon.addEventListener('click', function() {
             chipContainer.remove(); // Remove the entire column on close
-            const index = terpenes.indexOf(value);
+            const index = window.lineageList.indexOf(value);
             if (index > -1) {
-              terpenes.splice(index, 1); // Remove value from array
+              window.lineageList.splice(index, 1); // Remove value from array
             }
           });
   
@@ -329,10 +346,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
           chipContainer.appendChild(chip);
   
           // Append the column to the chips container
-          document.getElementById('terpeneChipsContainer').appendChild(chipContainer);
+          document.getElementById('lineageChipsContainer').appendChild(chipContainer);
   
           // Add the value to the array for form submission
-          terpenes.push(value);
+          window.lineageList.push(value);
   
           // Clear the input
           input.value = '';

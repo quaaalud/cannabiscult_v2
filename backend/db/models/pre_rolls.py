@@ -42,7 +42,7 @@ class Pre_Roll(Base):
         Boolean,
         default=True,
     )
-    product_type = Column(Text, default="concentrate")
+    product_type = Column(Text, default="pre-roll")
 
 
 class Pre_Roll_Description(Base):
@@ -53,9 +53,15 @@ class Pre_Roll_Description(Base):
         ForeignKey("public.pre_roll.pre_roll_id", onupdate="CASCADE"),
         nullable=True,
     )
-    description = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
-    effects = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
-    lineage = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
+    description = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
+    effects = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
+    lineage = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
     terpenes_list = Column(ARRAY(Text), nullable=True)
     cultivar_email = Column(
         Text,
@@ -63,15 +69,23 @@ class Pre_Roll_Description(Base):
         nullable=False,
         default="aaron.childs@thesocialoutfitus.com",
     )
-    unused1 = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
-    unused2 = Column(Text, nullable=False, default="Coming Soon", server_default="Coming Soon")
+    unused1 = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
+    unused2 = Column(
+        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    )
 
     __table_args__ = (
         CheckConstraint(
             "length(description) < 1500", name="pre_roll_descriptions_description_check"
         ),
-        CheckConstraint("length(effects) < 1500", name="pre_roll_descriptions_effects_check"),
-        CheckConstraint("length(lineage) < 1500", name="pre_roll_descriptions_lineage_check"),
+        CheckConstraint(
+            "length(effects) < 1500", name="pre_roll_descriptions_effects_check"
+        ),
+        CheckConstraint(
+            "length(lineage) < 1500", name="pre_roll_descriptions_lineage_check"
+        ),
     )
 
 
@@ -101,7 +115,9 @@ class Pre_Roll_Ranking(Base):
     burn_explanation = Column(String(500), nullable=True)
     effects_explanation = Column(String(500), nullable=True)
     purchase_bool = Column(Boolean, nullable=True)
-    pack_code = Column(String, nullable=True, server_default="Not Provided", default="Not Provided")
+    pack_code = Column(
+        String, nullable=True, server_default="Not Provided", default="Not Provided"
+    )
     pre_roll_id = Column(Integer, nullable=False)
 
 
@@ -117,7 +133,9 @@ def calculate_overall_score(mapper, connection, target):
         "effects_rating",
     ]
     # Calculate average rating
-    ratings = [getattr(target, col) for col in rating_columns if getattr(target, col) is not None]
+    ratings = [
+        getattr(target, col) for col in rating_columns if getattr(target, col) is not None
+    ]
     if ratings:
         target.overall_score = sum(ratings) / len(ratings)
     else:
