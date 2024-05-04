@@ -136,7 +136,7 @@ class AllRatingsDatatable {
             accordionContainer.appendChild(accordionItem);
         }
     }
-    async initializeLightboxes(productType, ratings) {
+    initializeLightboxes(productType, ratings) {
         ratings.forEach(rating => {
             const lightboxElement = document.getElementById(`lightbox${rating.strain}`);
             if (lightboxElement) {
