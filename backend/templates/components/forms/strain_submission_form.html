@@ -1,21 +1,3 @@
-<div class="modal fade pt-5 mt-5" id="missingInfoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="false">
-  <div class="modal-dialog modal-dialog-center">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalLabel">Missing Information</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <!-- The missing fields information will be inserted here -->
-      </div>
-      <div class="modal-footer">
-        <div class="col-12 mx-auto">
-          <button type="button" class="btn btn-lg btn-dark w-100" data-bs-dismiss="modal" aria-label="Close">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <section class="container">
   <div class="row justify-content-center">
     <div class="col-12 col-lg-9 col-xl-7">
@@ -85,6 +67,63 @@
                   </div>
                 </div>
               </div>
+              <div class="col-12 mb-3 pb-2">
+                <select class="form-outline w-100" data-mdb-select-init data-mdb-placeholder="Select One or Multiple Terpenes" multiple>
+                  <option value="alpha_bergamotene">Alpha Bergamotene</option>
+                  <option value="alpha_beta_cis_ocimene">Alpha Beta Cis Ocimene</option>
+                  <option value="alpha_beta_pinene">Alpha Beta Pinene</option>
+                  <option value="alpha_beta_thujene">Alpha Beta Thujene</option>
+                  <option value="alpha_bisabolene">Alpha Bisabolene</option>
+                  <option value="alpha_bisabolol">Alpha Bisabolol</option>
+                  <option value="alpha_cedrene">Alpha Cedrene</option>
+                  <option value="alpha_fenchene">Alpha Fenchene</option>
+                  <option value="alpha_humulene">Alpha Humulene</option>
+                  <option value="alpha_humulene_epoxide_i">Alpha Humulene Epoxide I</option>
+                  <option value="alpha_phellandrene">Alpha Phellandrene</option>
+                  <option value="alpha_pinene">Alpha Pinene</option>
+                  <option value="alpha_terpinene">Alpha Terpinene</option>
+                  <option value="alpha_terpineol">Alpha Terpineol</option>
+                  <option value="alpha_terpinolene">Alpha Terpinolene</option>
+                  <option value="alpha_thujene">Alpha Thujene</option>
+                  <option value="alpha_zingiberene">Alpha Zingiberene</option>
+                  <option value="beta_asarone">Beta Asarone</option>
+                  <option value="beta_bisabolene">Beta Bisabolene</option>
+                  <option value="beta_caryophyllene_oxide">Beta Caryophyllene Oxide</option>
+                  <option value="beta_farnesene">Beta Farnesene</option>
+                  <option value="beta_myrcene">Beta Myrcene</option>
+                  <option value="beta_ocimene">Beta Ocimene</option>
+                  <option value="beta_pinene">Beta Pinene</option>
+                  <option value="beta_selinene">Beta Selinene</option>
+                  <option value="beta_terpinene">Beta Terpinene</option>
+                  <option value="camphene">Camphene</option>
+                  <option value="caryophyllene">Caryophyllene</option>
+                  <option value="caryophyllene_oxide">Caryophyllene Oxide</option>
+                  <option value="cis_nerolidol">Cis Nerolidol</option>
+                  <option value="cis_beta_ocimene">Cis Beta Ocimene</option>
+                  <option value="delta_3_carene">Delta 3 Carene</option>
+                  <option value="delta_limonene">Delta Limonene</option>
+                  <option value="eucalyptol">Eucalyptol</option>
+                  <option value="gamma_terpinene">Gamma Terpinene</option>
+                  <option value="geraniol">Geraniol</option>
+                  <option value="guaiol">Guaiol</option>
+                  <option value="isoborneol">Isoborneol</option>
+                  <option value="isopulegol">Isopulegol</option>
+                  <option value="limonene">Limonene</option>
+                  <option value="linalool">Linalool</option>
+                  <option value="myrcene">Myrcene</option>
+                  <option value="nerolidol">Nerolidol</option>
+                  <option value="ocimene">Ocimene</option>
+                  <option value="p_cymene">P Cymene</option>
+                  <option value="para_cymene">Para Cymene</option>
+                  <option value="phellandrene">Phellandrene</option>
+                  <option value="terpineol">Terpineol</option>
+                  <option value="terpinolene">Terpinolene</option>
+                  <option value="trans_nerolidol">Trans Nerolidol</option>
+                  <option value="trans_ocimene">Trans Ocimene</option>
+                  <option value="y_terpinene">Y Terpinene</option>
+                  <option value="beta_caryophyllene">Beta Caryophyllene</option>
+                </select>
+              </div>
               <div class="row">
                 <div class="col-12">
                   <div data-mdb-input-init class="form-outline mb-4">
@@ -98,18 +137,25 @@
                     <label class="form-label" for="effectsSubmission">Effects</label>
                   </div>
                 </div>
+                <div class="input-group text-center mx-auto align-items-center py-3">
+                  <input type="text" id="terpeneInput" class="form-control form-outline-light" placeholder="Enter terpenes" aria-label="Enter Terpenes"/>
+                  <button type="button" id="addTerpene" class="form-control form-outline btn-dark btn-outline-info btn-lg" data-mdb-ripple-init data-mdb-ripple-color="secondary">Add Terp</button>
+                </div>
               </div>
-              <div class="row">
-                <div class="col-12 mb-3 mx-auto pe-3">
+              <div class="col-12 align-items-center text-center mx-auto py-5 form-control form-outline align-conent-center">
+                <div id="terpeneChipsContainer" class="chips-container row my-2 mx-auto align-items-center"></div>
+              </div>
+              <div class="row pt-4">
+                <div class="col-12 mb-3 mx-auto me-3 pt-2">
                   <div data-mdb-input-init class="form-outline">
                     <input type="email" id="emailAddress" class="form-control" />
                     <label class="form-label" for="emailAddress">Your Email Address</label>
                   </div>
                 </div>
               </div>
-              <div class="col-9 mx-auto">
+              <div class="col-12 mx-auto">
                 <div class="mt-4 pe-0">
-                  <button data-mdb-ripple-init class="btn btn-info btn-lg w-100 text-dark" type="submit"/>Submit Strain</button>
+                  <button data-mdb-ripple-init class="btn btn-info btn-lg w-100 text-dark" type="submit" data-mdb-ripple-color="info"/>Submit Strain</button>
                 </div>
               </div>
             </form>
@@ -119,6 +165,24 @@
     </div>
   </div>
 </section>
+<div class="modal fade" id="missingInfoModal" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true" data-bs-backdrop="false">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalLabel">Missing Information</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <!-- The missing fields information will be inserted here -->
+      </div>
+      <div class="modal-footer">
+        <div class="col-12 mx-auto">
+          <button type="button" class="btn btn-lg btn-dark w-100" data-bs-dismiss="modal" aria-label="Close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% block scripts %}
 <script>
 
@@ -221,6 +285,59 @@ async function submitStrainForm(event) {
     }
 }
 document.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('addTerpene').addEventListener('click', function() {
+        createChip();
+    });
+    
+    document.getElementById('terpeneInput').addEventListener('keypress', function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent the form from being submitted
+            createChip();
+        }
+    });
+    
+    const terpenes = []; // Array to hold the values for form submission
+    
+    function createChip() {
+        const input = document.getElementById('terpeneInput');
+        const value = input.value.trim();
+    
+        if (value) {
+          // Create the chip element
+          const chipContainer = document.createElement('div');
+          chipContainer.className = 'col-6';
+  
+          // Create the chip element
+          const chip = document.createElement('div');
+          chip.className = 'chip chip-outline btn-outline-dark';
+          chip.setAttribute('data-mdb-chip-init', '');
+          chip.setAttribute('data-mdb-ripple-color', 'dark');
+          chip.textContent = value;
+  
+          // Add close icon
+          const closeIcon = document.createElement('i');
+          closeIcon.className = 'close fas fa-times';
+          closeIcon.addEventListener('click', function() {
+            chipContainer.remove(); // Remove the entire column on close
+            const index = terpenes.indexOf(value);
+            if (index > -1) {
+              terpenes.splice(index, 1); // Remove value from array
+            }
+          });
+  
+          chip.appendChild(closeIcon);
+          chipContainer.appendChild(chip);
+  
+          // Append the column to the chips container
+          document.getElementById('terpeneChipsContainer').appendChild(chipContainer);
+  
+          // Add the value to the array for form submission
+          terpenes.push(value);
+  
+          // Clear the input
+          input.value = '';
+        }
+    }
     const form = document.getElementById("strainSubmissionForm");
     const modalBody = document.querySelector('#missingInfoModal .modal-body');
     form.addEventListener('submit', async function(event) {

@@ -177,6 +177,7 @@ class QuestionBuilder {
             <div class="col-5 align-content-center align-items-center justify-content-center ">
               <select class="form-select px-3 px-lg-4" id="effects_explanation" name="effects_explanation" aria-label="Effects Rating Explanation Field" multiple>
                 <option value="sedative">Sedative</option>
+                <option value="anxious">Anxious</option>
                 <option value="relaxing">Relaxing</option>
                 <option value="sleepy">Sleepy</option>
                 <option value="tingly">Tingly</option>
