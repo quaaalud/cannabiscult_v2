@@ -58,10 +58,13 @@ class AllRatingsDatatable {
                 throw new Error('Failed to fetch image URL');
             }
             const data = await response.json();
-            localStorage.setItem(cacheKey, JSON.stringify({ url: data.img_url, timestamp: Date.now() }));
-            return data.img_url;
+            const imgUrl = data.img_url;
+            localStorage.setItem(cacheKey, JSON.stringify({ url: imgUrl, timestamp: Date.now() }));
+            return imgUrl;
         } catch (error) {
-            return 'https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z';
+            const imgUrl = 'https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z';
+            localStorage.setItem(cacheKey, JSON.stringify({ url: imgUrl, timestamp: Date.now() }));
+            return imgUrl;
         }
     }
     async waitForTaskCompletion(taskId) {
@@ -136,16 +139,8 @@ class AllRatingsDatatable {
             accordionContainer.appendChild(accordionItem);
         }
     }
-    initializeLightboxes(productType, ratings) {
-        ratings.forEach(rating => {
-            const lightboxElement = document.getElementById(`lightbox${rating.strain}`);
-            if (lightboxElement) {
-                mdb.Lightbox.getOrCreateInstance(lightboxElement); // Initialize or get the existing instance
-            }
-        });
-    }
     // Method to add a tab for each product type's table
-    async addProductTableTab(productType, tabList, tabContent, ratings) {
+    addProductTableTab(productType, tabList, tabContent, ratings) {
         // Create the ProductTable tab
         const productTableTab = document.createElement('li');
         productTableTab.className = 'nav-item';
@@ -204,34 +199,31 @@ class AllRatingsDatatable {
           label: '', // No label for image column
           width: 125, // Adjust width to fit the image
         });
+    
         // Prepare rows data
-        let rows = await Promise.all(ratings.map(async rating => { // Make sure to use `await Promise.all` at the top level
-            let row = await Promise.all(columns.map(async col => { // Also use `async` here to handle the promise from `fetchImageUrl`
-                let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
-                if (col.label === '') {
-                    const imgUrl = await this.fetchImageUrl(productType, rating.strain, rating.cultivator); // Fetch image URL asynchronously
-                    const lightboxId = `lightbox${rating.strain}`;
-                    // Create the image HTML with the lightbox
-                    const imgHtml = `
-                        <div id="${lightboxId}" class="lightbox" data-mdb-zoom-level="0.25" data-mdb-lightbox-init>
-                          <img 
-                            src="${imgUrl}"
-                            alt="${rating.strain}"
-                            style="width: 40px; max-height: 40px"
-                            class="rounded-circle"
-                            data-mdb-src="${imgUrl}"
-                          />
-                        </div>
-                    `;
-                    // Initialize Lightbox
-                    
-                    return imgHtml;
-                } else {
-                    return rating[key] || rating[col.label.toLowerCase()];
-                }
-            }));
-            return row;
-        }));
+        let rows = ratings.map(rating => {
+          let row = columns.map(col => {
+            let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
+            if (col.label === '') {
+              // Wrap the placeholder image with lightbox attributes
+              return `
+                <div id="lightbox${rating.strain}" class="lightbox" data-mdb-zoom-level="0.25" data-mdb-lightbox-init>
+                  <img 
+                    src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
+                    alt="${rating.strain}"
+                    style="width: 40px; max-height: 40px"
+                    class="rounded-circle"
+                    data-mdb-img="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
+                  />
+                </div>
+              `;
+            } else {
+              return rating[key] || rating[col.label.toLowerCase()];
+            }
+          });
+          return row;
+        });
+    
         // Create a table container
         const tableContainer = document.createElement('div');
         tableContainer.id = `datatable${productType}`;
@@ -256,7 +248,23 @@ class AllRatingsDatatable {
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
         });
-        this.initializeLightboxes(productType, ratings);
+        setTimeout(() => {
+            this.populateImages(productType, ratings);
+        }, 0);
+    }
+    async populateImages(productType, ratings) {
+        ratings.forEach((rating, index) => {
+            this.fetchImageUrl(productType, rating.strain, rating.cultivator).then(imgUrl => {
+                const imgElements = document.querySelectorAll(`#datatable${productType} img[data-mdb-img]`);
+                if (imgElements[index]) {
+                    imgElements[index].src = imgUrl;
+                    imgElements[index].setAttribute('data-mdb-img', imgUrl);
+                    imgElements[index].alt = `${rating.strain} by ${rating.cultivator} primary image for the Cannabis Cult.`;
+                }
+            });
+            let lightbox = document.getElementById(`lightbox${rating.strain}`);
+            let instance = mdb.Lightbox.getOrCreateInstance(lightbox);
+        });
     }
     // Method to create data tables for ratings
     createTableForProductType(productType, ratings) {
