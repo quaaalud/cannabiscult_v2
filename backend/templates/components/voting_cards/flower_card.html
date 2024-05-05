@@ -171,7 +171,7 @@ async function removeStrainFromList(email, strain, cultivator, type) {
     if (response.status === 204) {  // Check for the correct status code for no content
       console.log('Strain removed successfully');
       alert('Strain removed from your list successfully!');
-      window.location.reload();
+      initializeButtonState(email, strain, cultivator, type, document.getElementById('addToListBtn'));
     } else {
       throw new Error('Failed to remove strain from list');
     }

@@ -52,6 +52,11 @@
                     </div>
                   </div>
                 </div>
+                <div class="col-9 mx-auto">
+                  <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
+                    <strong>Add to My List</strong>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -76,13 +81,20 @@
 </div>
 {% block scripts %}
 <script>
-  document.addEventListener('DOMContentLoaded', (event) => {
+  const productType = "concentrate";
+  const strainValue = "{{ strain }}";
+  const cultivatorValue = "{{ cultivator }}";
+  let concentrateIdValue = "{{ concentrate_id }}";
+  if (!concentrateIdValue) {
+    concentrateIdValue = "{{ id }}";
+  }
+  document.addEventListener('DOMContentLoaded', async (event) => {
     const startReviewBtn = document.getElementById('startReviewBtn');
     const backToCardBtn = document.getElementById('backToCardBtn');
     const voteInterface = document.getElementById('vote-interface');
     const reviewInterface = document.getElementById('review-interface');
     const reviewImage = document.getElementById('reviewImage');
-
+    const addToListBtn = document.getElementById('addToListBtn');
     const toggleReviewInterface = () => {
       voteInterface.style.display = 'none';
       reviewInterface.style.display = 'block';
@@ -96,19 +108,95 @@
       voteInterface.style.display = 'block';
     });
   });
-</script>
-<script>
-  const strainValue = "{{ strain }}";
-  const cultivatorValue = "{{ cultivator }}";
-  let concentrateIdValue = "{{ concentrate_id }}";
-  if (!concentrateIdValue) {
-    concentrateIdValue = "{{ id }}";
+  async function fetchUserStrains(email) {
+    try {
+      const response = await fetch('/users/my_strains/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email: email})
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch strains');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching strains:', error);
+      return [];  // Return empty array on failure to avoid further errors
+    }
   }
+  async function addStrainToMyList(email, strain, cultivator, type) {
+    const data = { email, strain, cultivator, product_type: type, to_review: true };
+    try {
+      const response = await fetch('/users/add_strain_to_list', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add strain to list');
+      }
+
+      const result = await response.json();
+      console.log('Added to list successfully:', result);
+      alert('Strain added to your list successfully!');
+      initializeButtonState(email, strain, cultivator, type, document.getElementById('addToListBtn'));
+    } catch (error) {
+      console.error('Error adding strain to list:', error);
+      alert('Error adding strain to your list.');
+    }
+  }
+  async function removeStrainFromList(email, strain, cultivator, type) {
+    const data = {
+      email: email,
+      strain: strain,
+      cultivator: cultivator,
+      product_type: type
+    };
+
+    try {
+      const response = await fetch('/users/delete_strain_from_list/', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      });
+
+      if (response.status === 204) {  // Check for the correct status code for no content
+        console.log('Strain removed successfully');
+        alert('Strain removed from your list successfully!');
+        initializeButtonState(email, strain, cultivator, type, document.getElementById('addToListBtn'));
+      } else {
+        throw new Error('Failed to remove strain from list');
+      }
+    } catch (error) {
+      console.error('Error removing strain from list:', error);
+      alert('Error removing strain from your list.');
+    }
+  }
+  async function initializeButtonState(email, strain, cultivator, type, button) {
+    const myStrains = await fetchUserStrains(email);
+    const isListed = myStrains.some(item => 
+      item.strain === strain && item.cultivator === cultivator && item.product_type === type
+    );
+
+    button.textContent = isListed ? 'Remove from My List' : 'Add to My List';
+    button.onclick = isListed ? () => removeStrainFromList(email, strain, cultivator, type) : () => addStrainToMyList(email, strain, cultivator, type);
+  }
+
   window.addEventListener('supabaseClientReady', async function() {
-  const imageUrls = await window.supabaseClient.fetchImageUrls("concentrate", concentrateIdValue);
+    const imageUrls = await window.supabaseClient.fetchImageUrls("concentrate", concentrateIdValue);
     if (imageUrls && imageUrls.length > 0) {
       await window.supabaseClient.updateCarouselWithImages(imageUrls);
     }
+    const strainValue = "{{ strain }}";
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
   });
 </script>
 
