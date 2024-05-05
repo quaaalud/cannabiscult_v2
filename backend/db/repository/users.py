@@ -14,7 +14,7 @@ from schemas.users import (
     UserStrainListCreate,
     UserStrainListUpdate,
     UserStrainListSchema,
-    UserStrainListSubmit,
+    UserStrainListRemove,
 )
 from db.models.users import User, UserStrainList
 from core.config import settings
@@ -174,7 +174,7 @@ async def update_strain_review_status(
 
 
 @settings.retry_db
-async def delete_strain_from_list(strain_to_remove: UserStrainListCreate, db: Session):
+async def delete_strain_from_list(strain_to_remove: UserStrainListRemove, db: Session):
     try:
         strain = (
             db.query(UserStrainList)
@@ -182,6 +182,7 @@ async def delete_strain_from_list(strain_to_remove: UserStrainListCreate, db: Se
                 UserStrainList.strain == strain_to_remove.strain
                 and UserStrainList.cultivator == strain_to_remove.cultivator
                 and UserStrainList.email == strain_to_remove.email
+                and UserStrainList.product_type == strain_to_remove.product_type
             )
             .one()
         )

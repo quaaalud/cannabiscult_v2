@@ -18,6 +18,7 @@ from schemas.users import (
     UserStrainListSchema,
     UserStrainListCreate,
     UserStrainListUpdate,
+    UserStrainListSubmit,
 )
 from db.session import get_db
 from db.repository.users import (
@@ -156,7 +157,7 @@ async def get_strains_by_email(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.patch("/update_strain_list/{strain_id}", response_model=UserStrainListSchema)
+@router.patch("/update_strain_list/{strain_id}", response_model=UserStrainListSubmit)
 async def update_strain_status(
     strain_id: int, update_data: UserStrainListUpdate, db: Session = Depends(get_db)
 ):
