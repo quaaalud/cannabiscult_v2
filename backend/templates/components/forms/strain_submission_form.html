@@ -1,8 +1,11 @@
-<section class="container">
-  <div class="row justify-content-center">
-    <div class="col-12 col-lg-9 col-xl-7">
+<section class="row mx-auto">
+  <div class="col-12 col-lg-9 col-xl-7 mx-auto">
+    <button id="toggleFormButton" class="btn btn-info btn-lg w-100">Show Strain Submission Form</button>
+  </div>
+  <div class="container justify-content-center" id="strainSubmissionContainerRow" style="display: none;">
+    <div class="col-12 col-lg-9 col-xl-7 mx-auto pt-3">
       <div class="card">
-        <div class="card-body p-4 p-md-5">
+        <div class="card-body p-2 p-md-5">
           <div class="card-body p-4 p-md-5">
             <h3 class="mb-4 pb-2">Submissions Form</h3>
             <form action="#" id="strainSubmissionForm">
@@ -297,6 +300,18 @@ async function submitStrainForm(event) {
     }
 }
 document.addEventListener('DOMContentLoaded', (event) => {
+    const toggleButton = document.getElementById('toggleFormButton');
+    const formContainer = document.getElementById('strainSubmissionContainerRow');
+  
+    toggleButton.addEventListener('click', function() {
+      if (formContainer.style.display === "none") {
+        formContainer.style.display = "block";
+        toggleButton.textContent = "Hide Strain Submission Form";
+      } else {
+        formContainer.style.display = "none";
+        toggleButton.textContent = "Show Strain Submission Form";
+      }
+    });
     const lineageList = []; // Array to hold the values for form submission
     window.lineageList = lineageList;
     document.getElementById('addLineage').addEventListener('click', function() {

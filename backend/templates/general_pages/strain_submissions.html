@@ -1,7 +1,7 @@
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Cannabis Cult Strain Submission</title>
+  <title>Cannabis Cult Home</title>
 {% endblock %} 
 
 {% block head %}
@@ -56,7 +56,7 @@
 />
 <link 
   rel="canonical" 
-  href="https://cannabiscult.co/strain_submissions"
+  href="https://cannabiscult.co/home"
 />
 {% endblock %}
 
@@ -69,7 +69,7 @@
     <div class="text-center">
       <h2 class="py-2 text-dark">Cult Member Landing</h2>
     </div>
-    <div class="container container-sm py-5 d-none" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center" id="strainSubmissionContainer">
+    <div class="container container-sm py-5 d-none" id="strainSubmissionContainer">
       {% include "components/forms/strain_submission_form.html" %}
     </div>
     <div class="container container-sm py-5" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
