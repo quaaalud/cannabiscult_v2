@@ -55,10 +55,12 @@ export class UserStrainList {
     }
     renderDataTable() {
         if (this.userStrainsList.length === 0) {
-            console.log("No strains to display.");
+            const message = document.createElement('h4');
+            message.textContent = "Add strains to your list to track products you want to rate.";
+            message.className = 'text-center mt-4 text-dark';
+            document.getElementById('data-table-container').appendChild(message);
             return;
         }
-
         let columns = [
             { label: 'Type', key: 'product_type' },
             { label: 'Strain', key: 'strain' },
