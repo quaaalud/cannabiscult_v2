@@ -162,16 +162,7 @@ async def update_strain_review_status(
     strain_id: int, strain_list_update: UserStrainListUpdate, db: Session
 ):
     try:
-        strain = (
-            db.query(UserStrainList)
-            .filter(
-                UserStrainList.email == strain_list_update.email
-                and UserStrainList.id == strain_id
-                and UserStrainList.strain == strain_list_update.strain
-                and UserStrainList.cultivator == strain_list_update.cultivator
-            )
-            .one()
-        )
+        strain = db.query(UserStrainList).filter(UserStrainList.id == strain_id).one()
         strain.to_review = strain_list_update.to_review
         db.commit()
         db.refresh(strain)

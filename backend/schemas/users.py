@@ -59,6 +59,12 @@ class UserStrainListSubmit(BaseModel):
     )
     product_type: str = Field(..., description="Product type for the strain notes")
 
+    @validator("*", pre=True)
+    def check_not_empty(cls, v):
+        if v == "":
+            raise ValueError("Field must not be empty")
+        return v
+
     class Config:
         from_attributes = True
 
@@ -74,16 +80,17 @@ class UserStrainListCreate(BaseModel):
     )
     product_type: str = Field(..., description="Product type for the strain notes")
 
+    @validator("*", pre=True)
+    def check_not_empty(cls, v):
+        if v == "":
+            raise ValueError("Field must not be empty")
+        return v
+
     class Config:
         from_attributes = True
 
 
 class UserStrainListUpdate(BaseModel):
-    email: EmailStr = Field(
-        ..., description="User's email address linked to the strain list"
-    )
-    strain: str = Field(None, description="Name of the cannabis strain")
-    cultivator: str = Field(None, description="Name of the cultivator of the strain")
     to_review: bool = Field(
         None, description="Flag indicating if the strain needs to be reviewed"
     )
@@ -96,6 +103,7 @@ class UserStrainListUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
 
 
 class UserStrainListSchema(BaseModel):
