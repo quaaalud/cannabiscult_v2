@@ -9,8 +9,14 @@ Created on Fri Mar 10 21:13:37 2023
 from supabase import Client
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from schemas.users import UserCreate
-from db.models.users import User
+from schemas.users import (
+    UserCreate,
+    UserStrainListCreate,
+    UserStrainListUpdate,
+    UserStrainListSchema,
+    UserStrainListSubmit,
+)
+from db.models.users import User, UserStrainList
 from core.config import settings
 
 
@@ -102,3 +108,90 @@ def get_user_and_update_password(
             return user
     else:
         return None
+
+
+@settings.retry_db
+async def add_strain_to_list(
+    user_email: str, strain_data: UserStrainListSubmit, db: Session
+):
+    strain = (
+        db.query(UserStrainList)
+        .filter(
+            UserStrainList.email == user_email
+            and UserStrainList.cultivator == strain_data.cultivator
+            and UserStrainList.strain == strain_data.strain
+            and UserStrainList.product_type == strain_data.product_type
+        )
+        .first()
+    )
+    if strain:
+        return UserStrainListSchema.from_orm(strain)
+
+    strain = UserStrainList(
+        email=user_email,
+        strain=strain_data.strain,
+        cultivator=strain_data.cultivator,
+        to_review=strain_data.to_review,
+        product_type=strain_data.product_type,
+    )
+    try:
+        db.add(strain)
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+    else:
+        db.commit()
+        db.refresh(strain)
+    return UserStrainListSchema.from_orm(strain)
+
+
+@settings.retry_db
+async def get_strain_list_by_email(user_email: str, db: Session):
+    try:
+        return [
+            UserStrainListSchema.from_orm(strain_list_item)
+            for strain_list_item in db.query(UserStrainList)
+            .filter(UserStrainList.email == user_email)
+            .all()
+        ]
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+
+
+@settings.retry_db
+async def update_strain_review_status(
+    strain_id: int, strain_list_update: UserStrainListUpdate, db: Session
+):
+    try:
+        strain = (
+            db.query(UserStrainList)
+            .filter(
+                UserStrainList.email == strain_list_update.email
+                and UserStrainList.id == strain_id
+                and UserStrainList.strain == strain_list_update.strain
+                and UserStrainList.cultivator == strain_list_update.cultivator
+            )
+            .one()
+        )
+        strain.to_review = strain_list_update.to_review
+        db.commit()
+        db.refresh(strain)
+        return strain
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+    return UserStrainListSchema.from_orm(strain)
+
+
+@settings.retry_db
+async def delete_strain_from_list(strain_id: int, db: Session):
+    try:
+        strain = db.query(UserStrainList).filter(UserStrainList.id == strain_id).one()
+        db.delete(strain)
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+    else:
+        db.commit()
+    return {"data": f"removed {strain_id}"}

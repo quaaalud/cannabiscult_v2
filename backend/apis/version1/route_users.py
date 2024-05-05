@@ -6,14 +6,29 @@ Created on Fri Mar 10 21:12:40 2023
 @author: dale
 """
 
-from fastapi import APIRouter, BackgroundTasks, Depends
-from typing import Dict, Optional, Any
+from fastapi import APIRouter, BackgroundTasks, Depends, status, HTTPException
+from typing import Dict, Any, List
 from sqlalchemy.orm import Session
-from schemas.users import UserCreate, UserLogin, ShowUser, LoggedInUser
+from schemas.users import (
+    UserCreate,
+    UserLogin,
+    ShowUser,
+    LoggedInUser,
+    UserStrainListSchema,
+    UserStrainListCreate,
+    UserStrainListSubmit,
+    UserStrainListUpdate,
+)
 from db.session import get_db
-from db.repository.users import create_new_user
-from db.repository.users import get_user_by_email
-from db.repository.users import get_user_and_update_password
+from db.repository.users import (
+    create_new_user,
+    get_user_by_email,
+    get_user_and_update_password,
+    add_strain_to_list,
+    get_strain_list_by_email,
+    update_strain_review_status,
+    delete_strain_from_list,
+)
 from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
@@ -111,3 +126,58 @@ def return_is_superuser_status(user_email: str, db: Session = Depends(get_db)):
     user = get_user_by_email(user_email=user_email, db=db)
     if user:
         return {"supuser_status": user.is_superuser}
+
+
+@router.post(
+    "/add_strain_to_list",
+    response_model=UserStrainListSchema,
+    status_code=status.HTTP_201_CREATED,
+)
+async def add_strain(
+    strain_data: UserStrainListSubmit,
+    current_user_email: str = None,
+    db: Session = Depends(get_db),
+):
+    if not current_user_email:
+        raise HTTPException(status_code=404, detail="Not authorized: Please log in.")
+    try:
+        return await add_strain_to_list(current_user_email, strain_data, db)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/my_strains/{user_email}", response_model=List[UserStrainListSchema])
+async def get_strains_by_email(user_email: str, db: Session = Depends(get_db)):
+    try:
+        strains = await get_strain_list_by_email(user_email, db)
+        if strains is None:
+            raise HTTPException(status_code=404, detail="Strains not found")
+        return strains
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.patch("/update_strain_list/{strain_id}", response_model=UserStrainListSchema)
+async def update_strain_status(
+    strain_id: int, update_data: UserStrainListUpdate, db: Session = Depends(get_db)
+):
+    try:
+        updated_strain = await update_strain_review_status(
+            strain_id, update_data, db
+        )
+        if updated_strain is None:
+            raise HTTPException(status_code=404, detail="Strain not found")
+        return updated_strain
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.delete(
+    "/delete_strain_from_list/{strain_id}", status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_strain(strain_id: int, db: Session = Depends(get_db)):
+    try:
+        await delete_strain_from_list(strain_id, db)
+        return {"message": "Strain deleted successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=404, detail=str(e))
