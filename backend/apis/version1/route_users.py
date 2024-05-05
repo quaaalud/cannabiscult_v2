@@ -14,9 +14,9 @@ from schemas.users import (
     UserLogin,
     ShowUser,
     LoggedInUser,
+    UserEmailSchema,
     UserStrainListSchema,
     UserStrainListCreate,
-    UserStrainListSubmit,
     UserStrainListUpdate,
 )
 from db.session import get_db
@@ -134,22 +134,21 @@ def return_is_superuser_status(user_email: str, db: Session = Depends(get_db)):
     status_code=status.HTTP_201_CREATED,
 )
 async def add_strain(
-    strain_data: UserStrainListSubmit,
-    current_user_email: str = None,
+    strain_data: UserStrainListCreate,
     db: Session = Depends(get_db),
 ):
-    if not current_user_email:
-        raise HTTPException(status_code=404, detail="Not authorized: Please log in.")
     try:
-        return await add_strain_to_list(current_user_email, strain_data, db)
+        return await add_strain_to_list(strain_data, db)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/my_strains/{user_email}", response_model=List[UserStrainListSchema])
-async def get_strains_by_email(user_email: str, db: Session = Depends(get_db)):
+@router.post("/my_strains/", response_model=List[UserStrainListSchema])
+async def get_strains_by_email(
+    user_email_schema: UserEmailSchema, db: Session = Depends(get_db)
+):
     try:
-        strains = await get_strain_list_by_email(user_email, db)
+        strains = await get_strain_list_by_email(user_email_schema.email, db)
         if strains is None:
             raise HTTPException(status_code=404, detail="Strains not found")
         return strains
@@ -162,9 +161,7 @@ async def update_strain_status(
     strain_id: int, update_data: UserStrainListUpdate, db: Session = Depends(get_db)
 ):
     try:
-        updated_strain = await update_strain_review_status(
-            strain_id, update_data, db
-        )
+        updated_strain = await update_strain_review_status(strain_id, update_data, db)
         if updated_strain is None:
             raise HTTPException(status_code=404, detail="Strain not found")
         return updated_strain
@@ -173,11 +170,13 @@ async def update_strain_status(
 
 
 @router.delete(
-    "/delete_strain_from_list/{strain_id}", status_code=status.HTTP_204_NO_CONTENT
+    "/delete_strain_from_list/", status_code=status.HTTP_204_NO_CONTENT
 )
-async def delete_strain(strain_id: int, db: Session = Depends(get_db)):
+async def delete_strain(
+    strain_to_remove: UserStrainListCreate, db: Session = Depends(get_db)
+):
     try:
-        await delete_strain_from_list(strain_id, db)
+        await delete_strain_from_list(strain_to_remove, db)
         return {"message": "Strain deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))

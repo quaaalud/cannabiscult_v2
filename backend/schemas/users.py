@@ -44,6 +44,13 @@ class LoggedInUser(BaseModel):
         from_attributes = True
 
 
+class UserEmailSchema(BaseModel):
+    email: EmailStr = Field(..., description="User's email address for login")
+
+    class Config:
+        from_attributes = True
+
+
 class UserStrainListSubmit(BaseModel):
     strain: str = Field(..., description="Name of the cannabis strain")
     cultivator: str = Field(..., description="Name of the cultivator of the strain")

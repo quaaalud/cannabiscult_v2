@@ -111,13 +111,11 @@ def get_user_and_update_password(
 
 
 @settings.retry_db
-async def add_strain_to_list(
-    user_email: str, strain_data: UserStrainListSubmit, db: Session
-):
+async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
     strain = (
         db.query(UserStrainList)
         .filter(
-            UserStrainList.email == user_email
+            UserStrainList.email == strain_data.email
             and UserStrainList.cultivator == strain_data.cultivator
             and UserStrainList.strain == strain_data.strain
             and UserStrainList.product_type == strain_data.product_type
@@ -128,7 +126,7 @@ async def add_strain_to_list(
         return UserStrainListSchema.from_orm(strain)
 
     strain = UserStrainList(
-        email=user_email,
+        email=strain_data.email,
         strain=strain_data.strain,
         cultivator=strain_data.cultivator,
         to_review=strain_data.to_review,
@@ -185,13 +183,21 @@ async def update_strain_review_status(
 
 
 @settings.retry_db
-async def delete_strain_from_list(strain_id: int, db: Session):
+async def delete_strain_from_list(strain_to_remove: UserStrainListCreate, db: Session):
     try:
-        strain = db.query(UserStrainList).filter(UserStrainList.id == strain_id).one()
+        strain = (
+            db.query(UserStrainList)
+            .filter(
+                UserStrainList.strain == strain_to_remove.strain
+                and UserStrainList.cultivator == strain_to_remove.cultivator
+                and UserStrainList.email == strain_to_remove.email
+            )
+            .one()
+        )
         db.delete(strain)
     except SQLAlchemyError:
         db.rollback()
         raise
     else:
         db.commit()
-    return {"data": f"removed {strain_id}"}
+    return {"data": f"removed {strain_to_remove.strain}"}
