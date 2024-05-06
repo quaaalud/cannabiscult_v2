@@ -136,7 +136,7 @@ def return_is_superuser_status(user_email: str, db: Session = Depends(get_db)):
     response_model=UserStrainListSchema,
     status_code=status.HTTP_201_CREATED,
 )
-async def add_strain(
+async def add_strain_to_user_list(
     strain_data: UserStrainListCreate,
     db: Session = Depends(get_db),
 ):

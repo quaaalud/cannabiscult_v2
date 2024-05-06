@@ -127,7 +127,7 @@
     }
   }
   async function addStrainToMyList(email, strain, cultivator, type) {
-    const data = { email, strain, cultivator, product_type: type, to_review: true };
+    const data = { "email": email, "strain": strain, "cultivator": cultivator, "product_type": type, "to_review": true , "strain_notes": "N/A"};
     try {
       const response = await fetch('/users/add_strain_to_list', {
         method: 'POST',

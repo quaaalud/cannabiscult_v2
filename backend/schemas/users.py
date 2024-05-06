@@ -98,6 +98,7 @@ class UserStrainListCreate(BaseModel):
         default=True, description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
+    strain_notes: str = Field("N/A", description="User's strain notes")
 
     @validator("*", pre=True)
     def check_not_empty(cls, v):
