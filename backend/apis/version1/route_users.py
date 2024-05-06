@@ -19,6 +19,7 @@ from schemas.users import (
     UserStrainListCreate,
     UserStrainListUpdate,
     UserStrainListSubmit,
+    AddUserStrainListNotes,
 )
 from db.session import get_db
 from db.repository.users import (
@@ -28,6 +29,7 @@ from db.repository.users import (
     add_strain_to_list,
     get_strain_list_by_email,
     update_strain_review_status,
+    add_strain_notes_to_list,
     delete_strain_from_list,
 )
 from db._supabase.connect_to_auth import SupaAuth
@@ -157,12 +159,25 @@ async def get_strains_by_email(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.patch("/update_strain_list/{strain_id}", response_model=UserStrainListSubmit)
+@router.patch("/update_strain_list/", response_model=UserStrainListSubmit)
 async def update_strain_status(
-    strain_id: int, update_data: UserStrainListUpdate, db: Session = Depends(get_db)
+    update_data: UserStrainListCreate, db: Session = Depends(get_db)
 ):
     try:
-        updated_strain = await update_strain_review_status(strain_id, update_data, db)
+        updated_strain = await update_strain_review_status(update_data, db)
+        if updated_strain is None:
+            raise HTTPException(status_code=404, detail="Strain not found")
+        return updated_strain
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.patch("/update_strain_notes/", response_model=UserStrainListSubmit)
+async def update_strain_notes(
+    strain_notes: AddUserStrainListNotes, db: Session = Depends(get_db)
+):
+    try:
+        updated_strain = await add_strain_notes_to_list(strain_notes, db)
         if updated_strain is None:
             raise HTTPException(status_code=404, detail="Strain not found")
         return updated_strain

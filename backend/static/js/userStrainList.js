@@ -13,7 +13,6 @@ export class UserStrainList {
             throw error;
         }
     }
-
     async fetchUserStrains(email) {
         try {
             const response = await fetch('/users/my_strains/', {
@@ -32,10 +31,16 @@ export class UserStrainList {
             return [];
         }
     }
-    async updateStrainReviewStatus(strainId, toReview) {
-        const updatedData = { to_review: this.parseReviewedValue(toReview) }; // Invert the value for server side logic
+    async updateStrainReviewStatus(strainUpdate) {
+        const updatedData = { 
+          email: this.email,
+          strain: strainUpdate.strain,
+          cultivator: strainUpdate.cultivator,
+          product_type: strainUpdate.product_type,
+          to_review: this.parseReviewedValue(strainUpdate.to_review) 
+        };
         try {
-            const response = await fetch(`/users/update_strain_list/${strainId}`, {
+            const response = await fetch(`/users/update_strain_list/`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -43,17 +48,47 @@ export class UserStrainList {
                 body: JSON.stringify(updatedData)
             });
             if (!response.ok) {
-                throw new Error(`Failed to update strain with ID ${strainId}`);
+                throw new Error(`Failed to update: ${strainUpdate.strain}`);
             }
-            console.log(`Strain ${strainId} review status updated to ${!toReview}`);
+            console.log(`{strainUpdate.strain} review status updated to ${!strainUpdate.to_review}`);
         } catch (error) {
-            console.error(`Error updating strain ${strainId}:`, error);
+            console.error(`Error updating strain ${strainUpdate.strain}:`, error);
+        }
+    }
+    async updateStrainReviewNotes(strainNotes) {
+        const updatedData = { 
+            "strain": strainNotes.strain,
+            "cultivator": strainNotes.cultivator,
+            "email": this.email,
+            "to_review": strainNotes.to_review,
+            "product_type": strainNotes.product_type,
+            "strain_notes": strainNotes.strain_notes
+        }    
+        try {
+            const response = await fetch(`/users/update_strain_notes/`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedData)
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to update strain notes for ${strainNotes.strain}`);
+            }
+            console.log(`Notes added to ${strainNotes.strain}`);
+        } catch (error) {
+            console.error(`Error updating notes for ${strainNotes.strain}:`, error);
         }
     }
     async deleteStrain(strainData) {
-        alert(strainData.product_type);
         try {
-            const deleteData = {email: this.email, strain: strainData.strain, cultivator: strainData.cultivator, product_type: strainData.product_type, to_review: false }
+            const deleteData = {
+                email: this.email,
+                strain: strainData.strain,
+                cultivator: strainData.cultivator,
+                product_type: strainData.product_type,
+                to_review: false
+            }
             const response = await fetch(`/users/delete_strain_from_list/`, {
                 method: 'DELETE',
                 headers: {
@@ -98,15 +133,17 @@ export class UserStrainList {
         let columns = [
             { label: 'Strain', field: 'strain', sort: true, editable: false },
             { label: 'Cultivator', field: 'cultivator', sort: true, editable: false },
-            { label: 'Reviewed', field: 'to_review', sort: true , inputType: 'checkbox', editable: false },
+            { label: 'Reviewed', field: 'to_review', sort: true , inputType: 'checkbox', editable: true },
             { label: 'Type', field: 'product_type', sort: true, editable: false },
+            { label: 'Notes', field: 'strain_notes', sort: false, editable: true },
             { label: '', field: 'go_to_strain', sort: false, editable: false }
         ];
         let rows = this.userStrainsList.map(item => ({
             strain: item.strain,
             cultivator: item.cultivator,
-            to_review: `<input type="checkbox" class="form-check-input" ${this.parseReviewedValue(item.to_review) ? 'checked' : ''} data-strain-id="${item.id}">`,
+            to_review: item.to_review,
             product_type: item.product_type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+            strain_notes: item.strain_notes,
             go_to_strain: `<a class="btn btn-sm btn-info" href="${this.getFormAction(item.product_type)}?strain_selected=${encodeURIComponent(item.strain)}&cultivator_selected=${encodeURIComponent(item.cultivator)}&product_type=${encodeURIComponent(item.product_type)}"><span class="text-dark">Go</span></a>`,
         }));
         const tableEditor = new TableEditor(container, {
@@ -127,9 +164,16 @@ export class UserStrainList {
             const strainData = { "strain": row.strain, "cultivator": row.cultivator, "product_type": row.product_type, "to_review": row.to_review };
             this.deleteStrain(strainData);
         })
-        container.addEventListener('editorOpen.mdb.tableEditor', (e) => {
-            e.preventDefault();
-            return;
+        container.addEventListener('update.mdb.tableEditor', (e) => {
+            const row = event.row; // Find the closest tr parent
+            const strainData = { 
+                "strain": row.strain,
+                "cultivator": row.cultivator,
+                "product_type": row.product_type,
+                "to_review": row.to_review,
+                "strain_notes": row.strain_notes
+            };
+            this.updateStrainReviewNotes(strainData); 
         })
         
     }

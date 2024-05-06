@@ -51,5 +51,6 @@ class UserStrainList(Base):
     cultivator = Column(Text, nullable=False)
     to_review = Column(Boolean, nullable=False, default=True)
     product_type = Column(Text, nullable=True)
+    strain_notes = Column(Text, nullable=True, default="N/A", server_default="N/A")
     # Relationship to user model, assuming 'User' is the name of the user model
     user = relationship("User", back_populates="strain_lists")

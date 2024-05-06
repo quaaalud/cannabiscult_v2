@@ -12,9 +12,9 @@ from sqlalchemy.exc import SQLAlchemyError
 from schemas.users import (
     UserCreate,
     UserStrainListCreate,
-    UserStrainListUpdate,
     UserStrainListSchema,
     UserStrainListRemove,
+    AddUserStrainListNotes,
 )
 from db.models.users import User, UserStrainList
 from core.config import settings
@@ -131,6 +131,7 @@ async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
         cultivator=strain_data.cultivator,
         to_review=strain_data.to_review,
         product_type=strain_data.product_type,
+        strain_notes="N/A",
     )
     try:
         db.add(strain)
@@ -159,17 +160,48 @@ async def get_strain_list_by_email(user_email: str, db: Session):
 
 @settings.retry_db
 async def update_strain_review_status(
-    strain_id: int, strain_list_update: UserStrainListUpdate, db: Session
+    strain_list_update: UserStrainListCreate, db: Session
 ):
     try:
-        strain = db.query(UserStrainList).filter(UserStrainList.id == strain_id).one()
+        strain = (
+            db.query(UserStrainList)
+            .filter(
+                UserStrainList.strain == strain_list_update.strain
+                and UserStrainList.cultivator == strain_list_update.cultivator
+                and UserStrainList.email == strain_list_update.email
+                and UserStrainList.product_type == strain_list_update.product_type
+            )
+        )
         strain.to_review = strain_list_update.to_review
         db.commit()
         db.refresh(strain)
-        return strain
     except SQLAlchemyError:
         db.rollback()
         raise
+    return UserStrainListSchema.from_orm(strain)
+
+
+@settings.retry_db
+async def add_strain_notes_to_list(strain_notes: AddUserStrainListNotes, db: Session):
+    try:
+        strain = (
+            db.query(UserStrainList)
+            .filter(
+                UserStrainList.strain == strain_notes.strain
+                and UserStrainList.cultivator == strain_notes.cultivator
+                and UserStrainList.email == strain_notes.email
+                and UserStrainList.product_type == strain_notes.product_type
+            )
+            .one()
+        )
+        strain.to_review = strain_notes.to_review
+        strain.strain_notes = strain_notes.strain_notes
+    except SQLAlchemyError:
+        db.rollback()
+        raise
+    else:
+        db.commit()
+        db.refresh(strain)
     return UserStrainListSchema.from_orm(strain)
 
 

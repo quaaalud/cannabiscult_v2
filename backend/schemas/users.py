@@ -58,6 +58,7 @@ class UserStrainListSubmit(BaseModel):
         default=True, description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
+    strain_notes: str = Field("None", description="User's strain notes")
 
     @validator("*", pre=True)
     def check_not_empty(cls, v):
@@ -135,6 +136,24 @@ class UserStrainListSchema(BaseModel):
         ..., description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
+    strain_notes: str = Field("N/A", description="User's strain notes")
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+
+
+class AddUserStrainListNotes(BaseModel):
+    email: EmailStr = Field(
+        ..., description="User's email address linked to the strain list"
+    )
+    strain: str = Field(..., description="Name of the cannabis strain")
+    cultivator: str = Field(..., description="Name of the cultivator of the strain")
+    to_review: bool = Field(
+        ..., description="Flag indicating if the strain needs to be reviewed"
+    )
+    product_type: str = Field(..., description="Product type for the strain notes")
+    strain_notes: str = Field(..., description="User's strain notes")
 
     class Config:
         from_attributes = True
