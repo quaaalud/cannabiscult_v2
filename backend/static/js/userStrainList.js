@@ -127,6 +127,10 @@ export class UserStrainList {
             const strainData = { "strain": row.strain, "cultivator": row.cultivator, "product_type": row.product_type, "to_review": row.to_review };
             this.deleteStrain(strainData);
         })
+        container.addEventListener('editorOpen.mdb.tableEditor', (e) => {
+            e.preventDefault();
+            return;
+        })
         
     }
     bindCheckboxListeners() {
