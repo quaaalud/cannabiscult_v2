@@ -123,7 +123,7 @@ async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
         .first()
     )
     if strain:
-        if strain.strain == strain_data.strain:
+        if strain.strain == strain_data.strain:  # this should not be required but works
             return UserStrainListSchema.from_orm(strain)
 
     strain = UserStrainList(
