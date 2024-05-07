@@ -132,7 +132,7 @@ async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
         cultivator=strain_data.cultivator,
         to_review=strain_data.to_review,
         product_type=strain_data.product_type,
-        strain_notes="N/A",
+        strain_notes="",
     )
     try:
         db.add(strain)
