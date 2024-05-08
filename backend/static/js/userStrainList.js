@@ -31,16 +31,10 @@ export class UserStrainList {
             return [];
         }
     }
-    async updateStrainReviewStatus(strainUpdate) {
-        const updatedData = { 
-          email: this.email,
-          strain: strainUpdate.strain,
-          cultivator: strainUpdate.cultivator,
-          product_type: strainUpdate.product_type,
-          to_review: this.parseReviewedValue(strainUpdate.to_review) 
-        };
+    async updateStrainReviewStatus(strainId, toReview) {
+        const updatedData = { to_review: this.parseReviewedValue(toReview) }; // Invert the value for server side logic
         try {
-            const response = await fetch(`/users/update_strain_list/`, {
+            const response = await fetch(`/users/update_strain_list/${strainId}`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,11 +42,11 @@ export class UserStrainList {
                 body: JSON.stringify(updatedData)
             });
             if (!response.ok) {
-                throw new Error(`Failed to update: ${strainUpdate.strain}`);
+                throw new Error(`Failed to update strain with ID ${strainId}`);
             }
-            console.log(`{strainUpdate.strain} review status updated to ${!strainUpdate.to_review}`);
+            console.log(`Strain ${strainId} review status updated to ${!toReview}`);
         } catch (error) {
-            console.error(`Error updating strain ${strainUpdate.strain}:`, error);
+            console.error(`Error updating strain ${strainId}:`, error);
         }
     }
     async updateStrainReviewNotes(strainNotes) {
@@ -121,6 +115,7 @@ export class UserStrainList {
     }
     renderDataTable() {
         const container = document.getElementById('tableContent');
+        container.className = "text-center align-items-center";
         container.innerHTML = ''; // Clear previous content
 
         if (this.userStrainsList.length === 0) {
@@ -133,49 +128,44 @@ export class UserStrainList {
         let columns = [
             { label: 'Strain', field: 'strain', sort: true, editable: false },
             { label: 'Cultivator', field: 'cultivator', sort: true, editable: false },
-            { label: 'Reviewed', field: 'to_review', sort: true , inputType: 'checkbox', editable: true },
+            { label: 'Reviewed', field: 'to_review', sort: true , editable: false },
             { label: 'Type', field: 'product_type', sort: true, editable: false },
-            { label: 'Notes', field: 'strain_notes', sort: false, editable: true },
-            { label: '', field: 'go_to_strain', sort: false, editable: false }
+            { label: '', field: 'go_to_strain', sort: false, editable: false, width: 1 }
         ];
         let rows = this.userStrainsList.map(item => ({
             strain: item.strain,
             cultivator: item.cultivator,
-            to_review: item.to_review,
+            to_review: `<input type="checkbox" class="form-check-input" ${this.parseReviewedValue(item.to_review) ? 'checked' : ''} data-strain-id="${item.id}">`,
             product_type: item.product_type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
-            strain_notes: item.strain_notes,
-            go_to_strain: `<a class="btn btn-sm btn-info" href="${this.getFormAction(item.product_type)}?strain_selected=${encodeURIComponent(item.strain)}&cultivator_selected=${encodeURIComponent(item.cultivator)}&product_type=${encodeURIComponent(item.product_type)}"><span class="text-dark">Go</span></a>`,
+            go_to_strain: `<a class="d-none btn btn-sm btn-info" href="${this.getFormAction(item.product_type)}?strain_selected=${encodeURIComponent(item.strain)}&cultivator_selected=${encodeURIComponent(item.cultivator)}&product_type=${encodeURIComponent(item.product_type)}"><span class="text-dark">Go</span></a>`,
         }));
         const tableEditor = new TableEditor(container, {
             columns: columns,
             rows: rows,
-            bordered: true,
-            layout: {
-              striped: true,
-              responsive: true,
-              pagination: true
-            }
           },
-          { confirm: true, hover: true }
+          { confirm: true, hover: true , striped: true, borderless: true, actionHeader: "Review/Remove", color: "bg-gray", actionPosition: "start" }
         );
         this.bindCheckboxListeners();
-        container.addEventListener('delete.mdb.tableEditor', (e) => {
+        container.addEventListener('delete.mdb.tableEditor', (event) => {
             const row = event.row; // Find the closest tr parent
-            const strainData = { "strain": row.strain, "cultivator": row.cultivator, "product_type": row.product_type, "to_review": row.to_review };
+            const strainData = { "strain": row.strain, "cultivator": row.cultivator, "product_type": row.product_type, "to_review": false };
             this.deleteStrain(strainData);
         })
-        container.addEventListener('update.mdb.tableEditor', (e) => {
-            const row = event.row; // Find the closest tr parent
-            const strainData = { 
-                "strain": row.strain,
-                "cultivator": row.cultivator,
-                "product_type": row.product_type,
-                "to_review": row.to_review,
-                "strain_notes": row.strain_notes
-            };
-            this.updateStrainReviewNotes(strainData); 
+        container.addEventListener('editorOpen.mdb.tableEditor', (event) => {
+          event.preventDefault();
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = event.target.innerHTML;
+          const anchor = tempDiv.querySelector('a');
+    
+          if (anchor && anchor.href) {
+              window.location.href = anchor.href;
+          } else {
+              return;
+          }
         })
-        
+        container.addEventListener('update.mdb.tableEditor', (event) => {
+            event.preventDefault();
+        })
     }
     bindCheckboxListeners() {
         // Ensure the DOM has been updated with the new HTML before attaching listeners

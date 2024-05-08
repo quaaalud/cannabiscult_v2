@@ -9,9 +9,11 @@ Created on Fri Mar 10 21:13:37 2023
 from supabase import Client
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from typing import Union
 from schemas.users import (
     UserCreate,
     UserStrainListCreate,
+    UserStrainListUpdate,
     UserStrainListSchema,
     UserStrainListRemove,
     AddUserStrainListNotes,
@@ -161,18 +163,12 @@ async def get_strain_list_by_email(user_email: str, db: Session):
 
 @settings.retry_db
 async def update_strain_review_status(
-    strain_list_update: UserStrainListCreate, db: Session
+    strain_id: Union[str, int], strain_list_update: UserStrainListUpdate, db: Session
 ):
     try:
-        strain = (
-            db.query(UserStrainList)
-            .filter(
-                UserStrainList.strain == strain_list_update.strain
-                and UserStrainList.cultivator == strain_list_update.cultivator
-                and UserStrainList.email == strain_list_update.email
-                and UserStrainList.product_type == strain_list_update.product_type
-            )
-        )
+        strain = db.query(UserStrainList).filter(
+            UserStrainList.id == int(strain_id)
+        ).first()
         strain.to_review = strain_list_update.to_review
         db.commit()
         db.refresh(strain)

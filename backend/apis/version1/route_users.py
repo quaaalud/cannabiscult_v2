@@ -7,7 +7,7 @@ Created on Fri Mar 10 21:12:40 2023
 """
 
 from fastapi import APIRouter, BackgroundTasks, Depends, status, HTTPException
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Union
 from sqlalchemy.orm import Session
 from schemas.users import (
     UserCreate,
@@ -159,17 +159,19 @@ async def get_strains_by_email(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.patch("/update_strain_list/", response_model=UserStrainListSubmit)
+@router.patch("/update_strain_list/{strain_id}", response_model=UserStrainListSubmit)
 async def update_strain_status(
-    update_data: UserStrainListCreate, db: Session = Depends(get_db)
+    strain_id: Union[str, int],
+    update_data: UserStrainListUpdate,
+    db: Session = Depends(get_db),
 ):
-    try:
-        updated_strain = await update_strain_review_status(update_data, db)
-        if updated_strain is None:
-            raise HTTPException(status_code=404, detail="Strain not found")
-        return updated_strain
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+    #try:
+    updated_strain = await update_strain_review_status(strain_id, update_data, db)
+    if updated_strain is None:
+        raise HTTPException(status_code=404, detail="Strain not found")
+    return updated_strain
+    #except Exception as e:
+    #    raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.patch("/update_strain_notes/", response_model=UserStrainListSubmit)
@@ -185,9 +187,7 @@ async def update_strain_notes(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.delete(
-    "/delete_strain_from_list/", status_code=status.HTTP_204_NO_CONTENT
-)
+@router.delete("/delete_strain_from_list/", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_strain(
     strain_to_remove: UserStrainListCreate, db: Session = Depends(get_db)
 ):

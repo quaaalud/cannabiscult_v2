@@ -80,14 +80,15 @@
         <div class="py-3 pt-lg-5">
           <a 
             href="#data-table-container"
-            class="pt-2 text-decoration-none text-dark fs-3"
+            class="pt-2 text-decoration-none text-dark fs-6"
             data-mdb-collapse-init
             data-mdb-ripple-init
             data-mdb-target="#data-table-container"
             aria-expanded="true"
             aria-controls="data-table-container"
+            id="toggleStrainList"
           >
-              My Strain List
+            <h3 class="text-center">My Strain List</h3><span class="text-muted">Click To Hide</span>
           </a>
         </div>
         {% include "components/users/my_strain_list.html" %}
@@ -114,6 +115,7 @@
     </div>
   </section>
   <section class="container mx-auto py-5">
+    <h3 class="text-center">My Strain Ratings</h3>
     <div class="container-fluid py-3">
       {% include "components/users/my_ratings.html" %}
     </div>
@@ -155,7 +157,6 @@ $(document).ready(function() {
     }
   }
   window.addEventListener('supabaseClientReady', async function() {
-
     const currentEmail = await window.supabaseClient.getCurrentUserEmail();
     if (!currentEmail) {
       var failModal = new bootstrap.Modal(document.getElementById('notAuthorizedModal'));
