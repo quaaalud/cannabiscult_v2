@@ -84,10 +84,12 @@ def create_new_user(user: UserCreate, db: Session):
 
 @settings.retry_db
 def get_user_by_email(user_email: str, db: Session) -> User:
-    user = db.query(User).filter(User.email == user_email).first()
-    if user:
-        return user
-    return None
+    try:
+        user = db.query(User).filter(User.email == user_email).first()
+    except:
+        db.rollback()
+        return None
+    return user
 
 
 @settings.retry_db
@@ -166,9 +168,9 @@ async def update_strain_review_status(
     strain_id: Union[str, int], strain_list_update: UserStrainListUpdate, db: Session
 ):
     try:
-        strain = db.query(UserStrainList).filter(
-            UserStrainList.id == int(strain_id)
-        ).first()
+        strain = (
+            db.query(UserStrainList).filter(UserStrainList.id == int(strain_id)).first()
+        )
         strain.to_review = strain_list_update.to_review
         db.commit()
         db.refresh(strain)
