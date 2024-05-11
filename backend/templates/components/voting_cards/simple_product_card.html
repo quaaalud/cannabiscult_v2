@@ -66,13 +66,17 @@ $(document).ready(function() {
         cardTitle.textContent = product.strain;
         cardBody.appendChild(cardTitle);
     
+        const lightboxDiv = document.createElement('div');
+        lightboxDiv.className = 'lightbox';
+        lightboxDiv.setAttribute('data-mdb-lightbox-init', 'true');
         // Image with alt text and lazy loading
         const img = document.createElement('img');
         img.className = 'bd-placeholder-img card-img-top';
         img.setAttribute('src', product.signed_url);
-        img.alt = `Product image for ${product.strain}`;
+        img.alt = `Cannabis Cult image for ${product.cultivator}'s ${product.strain}`;
         img.loading = "lazy";
-        cardBody.appendChild(img);
+        lightboxDiv.appendChild(img);
+        cardBody.appendChild(lightboxDiv);
     
         // Cultivator name directly below the image
         const cultivatorText = document.createElement('small');
