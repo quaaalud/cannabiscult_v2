@@ -52,49 +52,49 @@ $(document).ready(function() {
       const effects = flower["effects"];
       const lineage = flower["lineage"];
       htmlContent += `
-      <div class="container-fluid">
-        <div class="row mb-4 my-auto">
-          <div class="col-12 col-md-12 col-lg-12 col-xl-5 mb-4 mb-lg-0 ms-auto order-md-1">
-            <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4 mb-4" data-mdb-ripple-color="light">
+      <div class="container-fluid col-12 col-sm-11 mx-auto">
+        <div class="row my-auto">
+          <div class="col-11 col-xl-5 mb-lg-0 ms-auto order-md-1 mx-auto pb-2 pb-lg-0">
+            <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4" data-mdb-ripple-color="light">
               <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}">
                 <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
               </a>
             </div>
           </div>
-          <div class="col-12 col-md-12 col-lg-12 col-xl-7 mb-4 mb-md-0 me-auto order-md-2">
-            <div class="row my-auto">
-              <div class="col-12 col-lg-5 my-auto">
+          <div class="col-11 col-xl-7 mb-md-0 me-auto order-md-2 mx-auto align-items-top">
+            <div class="row my-auto align-content-top align-items-top text-top">
+              <div class="col-12 col-sm-6 col-md-5 my-auto pt-3 pt-sm-0">
                 <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}" class="text-decoration-none text-dark">
-                  <h5 class="fs-2">${strain}</h5>
+                  <h5 class="fs-4">${strain}</h5>
                 </a>
-                <div class="mb-2 text-info small">
-                  <span class="fs-4">${cultivator}</span>
+                <div class="mb-1 text-info small">
+                  <span class="fs-6">${cultivator}</span>
                   <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
                 </div>
-                <p class="fs-2 text-dark">${score} <span class="fs-4">Overall</span></p>
+                <p class="fs-4 text-dark">${score} <span class="fs-5">Overall</span></p>
               </div>
-              <div class="col-12 col-lg-7 mx-auto my-auto pt-lg-3">
+              <div class="col-12 col-sm-6 col-md-7 mx-auto my-auto pt-lg-3">
                 <div class="vstack gap-0">
-                  <hr class="hr d-lg-none" />
-                  <p class="fs-4 text-muted text-uppercase">Effects:</p>
-                  <p class="text-dark text-uppercase fw-bold">${effects}</p>
+                  <hr class="hr d-sm-none" />
+                  <p class="fs-5 text-muted text-uppercase pt-sm-2"><small>Effects:</small></p>
+                  <p class="text-dark text-uppercase fw-bold"><small>${effects}</small></p>
                   <hr class="hr" />
-                  <p class="fs-4 text-muted text-uppercase">Lineage:</p>
-                  <p class="text-dark text-uppercase fw-bold">${lineage}</p>
-                  <hr class="hr d-lg-none" />
-                  <p class="fs-4 text-muted text-uppercase d-lg-none">Notes by ${username}:</p>
-                  <p class="text-dark text-uppercase fw-bold d-lg-none pb-5">${description_text}</p>
-                  <hr class="hr d-lg-none" />
+                  <p class="fs-5 text-muted text-uppercase"><small>Lineage:</small></p>
+                  <p class="text-dark text-uppercase fw-bold"><small>${lineage}</small></p>
+                  <hr class="hr d-sm-none" />
+                  <p class="fs-5 text-muted text-uppercase d-sm-none"><small>Notes by ${username}:</small></p>
+                  <p class="text-dark text-uppercase fw-bold d-sm-none"><small>${description_text}</small></p>
+                  <hr class="hr d-sm-none" />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="row my-auto">
-          <div class="d-none d-lg-block pb-lg-5">
+          <div class="d-none d-sm-block pb-lg-3 col-11 col-xl-12 mx-auto pt-0">
             <div class="row mx-auto text-start mb-lg-5">
-              <p class="fs-4 text-muted text-uppercase ps-0">Notes by ${username}:</p>
-              <p class="text-dark text-uppercase fw-bold pb-5 ps-0">${description_text}</p>
+              <p class="fs-5 text-muted text-uppercase ps-0"><small>Notes by ${username}:</small></p>
+              <p class="text-dark text-uppercase fw-bold pb-5 ps-0"><small>${description_text}</small></p>
               <hr class="hr" />
             </div>
           </div>
@@ -103,7 +103,6 @@ $(document).ready(function() {
     }
     container.innerHTML = htmlContent;
   }
-
   fetchFlowerData();
 });
 </script>
