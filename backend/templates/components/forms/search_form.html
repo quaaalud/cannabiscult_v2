@@ -14,80 +14,78 @@
 {% block scripts %}
 <script async defer>
 document.addEventListener('DOMContentLoaded', () => {
-    const existingCategories = {};
+    let lastFetch = null; // To handle overlapping fetches
+
     function updateCustomSearchResults(searchTerm) {
+        const trimmedSearchTerm = searchTerm.trim();
         const resultsContainer = document.getElementById('custom-search-results');
         const resultsRow = resultsContainer.querySelector('.row');
-        resultsRow.innerHTML = ''; // Clear previous results
 
-        if (searchTerm.trim().length < 3) {
+        if (trimmedSearchTerm.length < 3) {
             return; // Avoid searching for overly broad terms
         }
-
-        fetch(`/search/all/${encodeURIComponent(searchTerm)}`)
+        const currentFetch = fetch(`/search/all/${encodeURIComponent(trimmedSearchTerm)}`)
             .then(response => response.json())
             .then(data => {
+                if (lastFetch !== currentFetch) {
+                    return; // Ignore this fetch as a newer one is in progress
+                }
+
                 if (data.length === 0) {
                     resultsRow.innerHTML = '<p class="text-center">No results found.</p>';
                     return;
                 }
+                const categorizedResults = {};
 
-                const categorizedResults = {
-                    Flower: new Map(),
-                    Concentrate: new Map(),
-                    Edible: new Map(),
-                    Pre_Roll: new Map()
-                };
-
+                // Dynamically categorize results, ensuring no leading/trailing spaces and consistent casing
                 data.forEach(item => {
-                    const key = `${item.type}-${item.cultivator}-${item.strain}`; // Unique key for product type and combination
-                    if (item.type in categorizedResults) {
-                        categorizedResults[item.type].set(key, item); // Store item under unique key
+                    const category = item.type.trim().toLowerCase();
+                    if (!categorizedResults[category]) {
+                        categorizedResults[category] = [];
                     }
+                    categorizedResults[category].push(item);
                 });
-
+                resultsRow.innerHTML = '';
+                // Render categories and items
                 Object.keys(categorizedResults).forEach(type => {
-                    if (categorizedResults[type].size > 0) {
+                    if (categorizedResults[type].length > 0) { // Corrected from .size to .length
                         const typeRow = document.createElement('div');
                         typeRow.className = 'row mb-4';
                         const typeHeading = document.createElement('h3');
-                        typeHeading.textContent = type;
+                        typeHeading.textContent = type.charAt(0).toUpperCase() + type.slice(1); // Capitalize for display
                         typeHeading.className = 'col-12 mx-auto text-start text-md-center';
                         typeRow.appendChild(typeHeading);
 
                         categorizedResults[type].forEach(item => {
                             const col = document.createElement('div');
-                            col.className = 'col-12 col-sm-10 col-md-6 col-lg-4 my-1 mx-auto text-center';
+                            col.className = 'col-6 col-sm-6 col-md-6 col-lg-4 my-1 mx-auto text-center';
+
                             const lightboxDiv = document.createElement('div');
                             lightboxDiv.className = 'lightbox';
                             lightboxDiv.setAttribute('data-mdb-lightbox-init', 'true');
+
                             const img = document.createElement('img');
                             img.className = 'img w-100';
                             img.src = item.url_path;
                             img.alt = `${item.strain} by ${item.cultivator}`;
-                            img.setAttribute('data-mdb-img', item.url_path);
-                            // Cultivator caption overlayed on top of the image
+                            lightboxDiv.appendChild(img);
+
                             const caption = document.createElement('div');
                             caption.className = 'position-absolute text-secondary fs-5';
                             caption.style = 'padding: 0.5rem; top: 10%; left: 50%; transform: translateX(-50%); width: 75%;';
-                            let captionText = `${item.cultivator}`;
-                            if (window.innerWidth <= 768) {
-                                if (captionText.length > 7) {
-                                    captionText = captionText.slice(0, 7);
-                                }
-                            }
-                            caption.innerHTML = captionText;
+                            caption.textContent = item.cultivator.length > 7 ? item.cultivator.slice(0, 7) : item.cultivator;
                             lightboxDiv.appendChild(caption);
-                            lightboxDiv.appendChild(img);
-                            const buttonCol = document.createElement('div');
-                            buttonCol.className = 'col-4 col-md-10 mx-auto text-center';
-                            const button = document.createElement('a');
-                            button.className = 'btn btn-secondary w-100 mx-auto';
-                            button.textContent = `${item.strain}`;
-                            button.href = constructReviewUrl(item);
-                            buttonCol.append(button);
-                            
+
                             col.appendChild(lightboxDiv);
+
+                            const buttonCol = document.createElement('div');
+                            buttonCol.className = 'col-10 col-sm-8 col-md-10 mx-auto text-center';
+                            const button = document.createElement('a');
+                            button.className = 'btn btn-secondary w-100 mx-auto flex-shrink';
+                            button.textContent = item.strain;
+                            button.href = constructReviewUrl(item);
+                            buttonCol.appendChild(button);
+
                             col.appendChild(buttonCol);
                             typeRow.appendChild(col);
                         });
@@ -99,8 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => {
                 console.error('Error fetching search results:', error);
                 resultsRow.innerHTML = '<p class="text-center">No results found.</p>';
-                return;
             });
+
+        lastFetch = currentFetch; // Update lastFetch to the current fetch
     }
 
     function constructReviewUrl(item) {
@@ -120,4 +119,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 {% endblock %}
+
 
