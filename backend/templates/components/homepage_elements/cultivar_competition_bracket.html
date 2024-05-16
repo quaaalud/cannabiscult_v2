@@ -1,0 +1,73 @@
+{% block head %}
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.5/mermaid.min.css"
+      rel="stylesheet"
+    />
+    <style>
+        .mermaid {
+            background-color: #ffffff;
+            padding: 1rem;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container">
+        <h1 class="text-center mb-4">Cannabiscult.co Competition Diagram</h1>
+        <div class="mermaid">
+          flowchart TB;
+                subgraph "Round_1"
+                    direction RL
+                    Round1A["Cultivar A"]
+                    Round1B["Cultivar B"]
+                    Round1C["Cultivar C"]
+                    Round1D["Cultivar D"]
+                end
+
+                subgraph "Round_2"
+                direction RL
+                    Round2A["Cultivar 1"] 
+                    Round2B["Cultivar 2"]
+                    Round2C["Cultivar 3"]
+                    Round2D["Cultivar 4"]
+                end
+
+                subgraph "Round_3"
+                direction RL
+                    Round3A["Cultivar W"]
+                    Round3B["Cultivar X"]
+                    Round3C["Cultivar Y"]
+                    Round3D["Cultivar Z"]
+                end
+                WinnerRd1(("Round 1 Champ"))
+                WinnerRd2(("Round 2 Champ"))
+                WinnerRd3(("Round 3 Champ"))
+                WinnerRd0(("Local Cannabis"))
+                
+                Round_1 -..-> WinnerRd1(("Round 1 Champ"))
+                Round_2 -..-> WinnerRd2(("Round 2 Champ"))
+                Round_3 -..-> WinnerRd3(("Round 3 Champ"))
+                WinnerRd0{"Local Cannabis"}
+            
+                champ{"Cultivar Champion"}
+                WinnerRd1(("Round 1 Champ")) ===> champ{"Cultivar Champion"}
+                WinnerRd2(("Round 2 Champ")) ===> champ{"Cultivar Champion"}
+                WinnerRd3(("Round 3 Champ")) ===> champ{"Cultivar Champion"}
+                WinnerRd0(("Local Cannabis")) ===> champ{"Cultivar Champion"}
+        </div>
+    </div>
+  {% endblock %}
+  {% block scripts %}
+    <!-- MDB JavaScript -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"
+    ></script>
+    <!-- Mermaid.js JavaScript -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/8.13.5/mermaid.min.js"
+    ></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'neutral' });
+    </script>
+{% endblock %}
