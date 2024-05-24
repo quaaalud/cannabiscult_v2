@@ -499,6 +499,10 @@ async def handle_hidden_concentrate_post(
     strain: str = Query(None, alias="strain"),
     db: Session = Depends(get_db),
 ):
+    if strain == "CP3":
+        return await process_concentrate_request(
+            request, "Cult Rosin 2", "Cultivar", "aaron.childs@thesocialoutfitus.com", db
+        )
     hidden_concentrate_dict = get_concentrate_data_and_path(
         db,
         strain=strain,
