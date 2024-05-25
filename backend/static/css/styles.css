@@ -150,6 +150,10 @@ h4 {
   border-width: 1px !important;
 }
 
+.btn-purple {
+  background-color: hsl(231, 52.6%, 20%);
+}
+
 .modal-info-shadow {
   text-shadow: 
     1px 1px 2px rgba(0, 0, 0, 0.2),

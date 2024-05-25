@@ -39,7 +39,7 @@
                   <div class="row my-auto mx-auto justify-content-center">
                     <div class="col-xs-11 col-10 mx-auto">
                       <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#FlowerRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
-                        <i class="fas fa-arrow-right pe-2"></i> <strong>Start Review</strong>
+                        <i class="fas fa-arrow-right pe-2 d-none d-sm-inline"></i> <strong><span class="flex-shrink-0">Start Review</span></strong>
                       </button>
                     </div>
                   </div>
@@ -53,9 +53,9 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-9 mx-auto">
+                <div class="col-10 col-sm-9 mx-auto">
                   <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
-                    <strong>Add to My List</strong>
+                    <strong><span class="flex-shrink-0">+ My List</span></strong>
                   </button>
                 </div>
               </div>
@@ -186,7 +186,7 @@ async function initializeButtonState(email, strain, cultivator, type, button) {
     item.strain === strain && item.cultivator === cultivator && item.product_type === type
   );
 
-  button.textContent = isListed ? 'Remove from My List' : 'Add to My List';
+  button.textContent = isListed ? '- My List' : '+ My List';
   button.onclick = isListed ? () => removeStrainFromList(email, strain, cultivator, type) : () => addStrainToMyList(email, strain, cultivator, type);
 }
 
