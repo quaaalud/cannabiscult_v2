@@ -196,7 +196,12 @@
     }
     const strainValue = "{{ strain }}";
     const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!userEmail) {
+      return;
+    }
     await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
+    const emailInput = document.getElementById('connoisseur');
+    emailInput.value = userEmail;
   });
 </script>
 
