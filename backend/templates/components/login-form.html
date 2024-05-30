@@ -52,9 +52,9 @@
         <!-- Pills navs -->  
         <!-- Pills content -->
         <div class="card-header">
-          <div class="container pb-3">
+          <div class="container-fluid container-sm container-md pb-3">
             <div class="row text-start justify-content-center">
-              <div class="col-sm-12 col-md-9 col-lg-6">
+              <div class="col-12 col-md-9 col-lg-6">
                 <div class="tab-content">
                   <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
                     <form id="log-in" name="log-in">
@@ -71,22 +71,16 @@
                       <input type="password" id="login_password" name="login_password" class="form-control" />
                       <label class="form-label" for="login_password">Password</label>
                     </div>
-                    <!-- 2 column grid layout -->
-                    <div class="row mb-4">
-                      <div class="col-md-6 d-flex justify-content-center">
-                        <!-- Checkbox -->
-                        <div class="form-check mb-3 mb-md-0">
-                          <input class="form-check-input" type="checkbox" value="" id="loginCheck" checked />
-                          <label class="form-check-label" for="loginCheck"> Remember me </label>
-                        </div>
-                      </div>
-                      <div class="col-md-6 d-flex justify-content-center">
+                    <!-- Submit button -->
+                    <div class="row my-3">
+                      <button name="login-submit" type="submit" class="btn btn-info btn-block mb-4">Sign in</button>
+                    </div>
+                    <div class="row my-2">
+                      <div class="col-12 d-flex justify-content-end">
                         <!-- Simple link -->
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">Forgot password?</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" class="text-danger">Forgot password?</a>
                       </div>
                     </div>
-                    <!-- Submit button -->
-                    <button name="login-submit" type="submit" class="btn btn-primary btn-block mb-4">Sign in</button>
                   </form>
                 </div>
                 <div class="tab-pane fade" id="pills-register" role="tabpanel" aria-labelledby="tab-register">
@@ -94,58 +88,70 @@
                     <div class="text-center mb-3">
                       <p>Sign up:</p>
                     <!-- Username input -->
-                    <div class="form-outline mb-4">
-                      <input type="text" id="register_username" name="register_username" class="form-control" />
-                      <label class="form-label" for="register_username">Username</label>
+                    <div class="row g-1 align-items-center">
+                      <div class="col-6">
+                        <div class="form-outline mb-4">
+                          <input type="text" id="register_username" name="register_username" class="form-control" />
+                          <label class="form-label" for="register_username">Username</label>
+                        </div>
+                      </div>
+                      <!-- Name input -->
+                      <div class="col-6">
+                        <div class="form-outline mb-4">
+                          <input type="text" id="register_name" name="register_name" class="form-control" />
+                          <label class="form-label" for="register_name">Name</label>
+                        </div>
+                      </div>
+                      <!-- Email input -->
+                      <div class="col-12">
+                        <div class="form-outline mb-4">
+                          <input type="email" id="register_email" name="register_email" class="form-control" />
+                          <label class="form-label" for="register_email">Email</label>
+                        </div>
+                      </div>
+                      <!-- Zip Code input -->
+                      <div class="col-5">
+                        <div class="form-outline mb-4">
+                          <input type="text" id="register_zip_code" name="register_zip_code" class="form-control" />
+                          <label class="form-label" for="register_zip_code">Zip Code</label>
+                        </div>
+                      </div>
+                      <!-- Phone input -->
+                      <div class="col-7">
+                        <div class="form-outline mb-4">
+                          <input type="text" id="register_phone" name="register_phone" class="form-control" />
+                          <label class="form-label" for="register_phone">Phone</label>
+                        </div>
+                      </div>
+                      <!-- Password input -->
+                      <div class="col-12 col-md-6">
+                        <div class="form-outline mb-4">
+                          <input type="password" id="register_password" name="register_password" class="form-control" />
+                          <label class="form-label" for="register_password">Password</label>
+                        </div>
+                      </div>
+                      <div class="col-12 col-md-6">
+                      <!-- Repeat Password input -->
+                        <div class="form-outline mb-4">
+                          <input type="password" id="register_repeat_password" name="register_repeat_password" class="form-control" />
+                          <label class="form-label" for="register_repeat_password">Repeat password</label>
+                        </div>
+                      </div>
+                      <div class="col-12 mx-auto">
+                        <!-- Checkbox -->
+                        <div class="form-check d-flex justify-content-start pb-4">
+                          <input class="form-check-input" type="checkbox" value="" id="register_check" name="register_check" checked
+                            aria-describedby="registerCheckHelpText" />
+                          <label class="form-check-label" for="register_check">
+                            I agree to Terms of Use
+                          </label>
+                        </div>
+                      </div>
+                      <!-- Submit button -->
+                      <div class="col-12 mx-auto">
+                        <button id="register-submit" name="register-submit" type="submit" class="btn btn-info btn-block mb-3">Sign Up</button>
+                      </div>
                     </div>
-                    
-                    <!-- Email input -->
-                    <div class="form-outline mb-4">
-                      <input type="email" id="register_email" name="register_email" class="form-control" />
-                      <label class="form-label" for="register_email">Email</label>
-                    </div>
-                    
-                    <!-- Name input -->
-                    <div class="form-outline mb-4">
-                      <input type="text" id="register_name" name="register_name" class="form-control" />
-                      <label class="form-label" for="register_name">Name</label>
-                    </div>
-                    
-                    <!-- Zip Code input -->
-                    <div class="form-outline mb-4">
-                      <input type="text" id="register_zip_code" name="register_zip_code" class="form-control" />
-                      <label class="form-label" for="register_zip_code">Zip Code</label>
-                    </div>
-                  
-                  
-                    <!-- Phone input -->
-                    <div class="form-outline mb-4">
-                      <input type="text" id="register_phone" name="register_phone" class="form-control" />
-                      <label class="form-label" for="register_phone">Phone</label>
-                    </div>
-                  
-                    <!-- Password input -->
-                    <div class="form-outline mb-4">
-                      <input type="password" id="register_password" name="register_password" class="form-control" />
-                      <label class="form-label" for="register_password">Password</label>
-                    </div>
-                  
-                    <!-- Repeat Password input -->
-                    <div class="form-outline mb-4">
-                      <input type="password" id="register_repeat_password" name="register_repeat_password" class="form-control" />
-                      <label class="form-label" for="register_repeat_password">Repeat password</label>
-                    </div>
-                  
-                    <!-- Checkbox -->
-                    <div class="form-check d-flex justify-content-center mb-4">
-                      <input class="form-check-input me-2" type="checkbox" value="" id="register_check" name="register_check" checked
-                        aria-describedby="registerCheckHelpText" />
-                      <label class="form-check-label" for="register_check">
-                        I have read and agree to the terms
-                      </label>
-                    </div>
-                    <!-- Submit button -->
-                    <button id="register-submit" name="register-submit" type="submit" class="btn btn-primary btn-block mb-3">Sign Up</button>
                   </form>
                 </div>
               </div>

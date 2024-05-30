@@ -1,0 +1,292 @@
+<!-- Forgot Password Modal -->
+<div class="modal fade" id="forgotPasswordLoginModal" tabindex="-1" aria-labelledby="forgotPasswordTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <div class="col-auto mx-auto">
+          <h5 class="modal-title" id="forgotPasswordTitle">Forgot Password</h5>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form id="forgotPasswordModalForm" name="forgotPasswordModalForm">
+          <div class="mb-3">
+            <label for="forgotPasswordEmail" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="forgotPasswordEmail" aria-describedby="forgotPasswordHelp">
+            <div id="forgotPasswordHelp" class="form-text">We'll send a password reset link to this email.</div>
+          </div>
+          <div class="row py-3">
+            <div class="col-9 mx-auto">
+              <button type="submit" class="btn btn-info w-100" id="forgotPasswordSendButton">Send Link</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <div class="col-auto mx-auto">
+          <h5 class="modal-title" id="loginModalTitle" class="text-center">Login to your Cult Account</h5>
+        </div>
+      </div>
+      <form id="logInModalForm" name="logInModalForm">
+        <div class="modal-body">
+          <div class="row mb-3 align-content-center">
+            <!-- Email input -->
+            <div class="col-11 mx-auto">
+              <div class="form-outline mb-4">
+                <input name="loginModalEmail" type="email" id="loginModalEmail" class="form-control" />
+                <label class="form-label" for="loginModalEmail">Email</label>
+              </div>
+            </div>
+            <!-- Password input -->
+            <div class="col-11 mx-auto">
+              <div class="form-outline mb-4">
+                <input type="password" id="loginModalPassword" name="loginModalPassword" class="form-control" />
+                <label class="form-label" for="loginModalPassword">Password</label>
+              </div>
+            </div>
+          </div>
+          <!-- Submit button -->
+          <div class="col-11 mx-auto">
+            <button name="login-submit" type="submit" class="btn btn-info btn-block mb-4">Sign in</button>
+          </div>
+        </div>
+        <div class="modal-footer text-center">
+          <div class="col-12">
+            <div class="row align-content-center">
+              <!-- Register Modal Link -->
+              <div class="col-6">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#signUpModal" id="registerModalShowLink" class="text-warning">Register</a>
+              </div>
+              <div class="col-6">
+                <!-- Forgot Password Modal link -->
+                <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordLoginModal" id="forgotPasswordModalLink" class="text-danger">Forgot password?</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="signUpModal" tabindex="-1" aria-labelledby="signUpModalTitle" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <div class="col-auto mx-auto">
+          <h5 class="modal-title" id="signUpModalTitle">Register for the Cannabis Cult</h5>
+        </div>
+      </div>
+      <form class="pb-1" id="signUpModalForm" name="signUpModalForm" class="form-control">
+        <div class="modal-body container">
+          <div class="row">
+            <div class="col-11 mx-auto">
+              <div class="row align-content-center g-4">
+                <div class="col-5">
+                  <div class="form-outline">
+                    <input type="text" id="signUpModalUsername" name="signUpModalUsername" class="form-control" />
+                    <label class="form-label" for="signUpModalUsername">Username</label>
+                  </div>
+                </div>
+                <!-- Email input -->
+                <div class="col-7">
+                  <div class="form-outline">
+                    <input type="email" id="signUpModalEmail" name="signUpModalEmail" class="form-control" />
+                    <label class="form-label" for="signUpModalEmail">Email</label>
+                  </div>
+                </div>
+                <!-- Name input -->
+                <div class="col-4">
+                  <div class="form-outline">
+                    <input type="text" id="signUpModalName" name="signUpModalName" class="form-control" />
+                    <label class="form-label" for="signUpModalName">Name</label>
+                  </div>
+                </div>
+                <!-- Zip Code input -->
+                <div class="col-4">
+                  <div class="form-outline">
+                    <input type="text" id="signUpModalZipCode" name="signUpModalZipCode" class="form-control" />
+                    <label class="form-label" for="signUpModalZipCode">Zip Code</label>
+                  </div>
+                </div>
+                <!-- Phone input -->
+                <div class="col-4">
+                  <div class="form-outline">
+                    <input type="text" id="signUpModalPhone" name="signUpModalPhone" class="form-control" />
+                    <label class="form-label" for="signUpModalPhone">Phone</label>
+                  </div>
+                </div>
+                <!-- Password input -->
+                <div class="col-6">
+                  <div class="form-outline">
+                    <input type="password" id="signUpModalPassword" name="signUpModalPassword" class="form-control" />
+                    <label class="form-label" for="signUpModalPassword">Password</label>
+                  </div>
+                </div>
+                <!-- Repeat Password input -->
+                <div class="col-6">
+                  <div class="form-outline">
+                    <input type="password" id="signUpModalPasswordRepeat" name="signUpModalPasswordRepeat" class="form-control" />
+                    <label class="form-label" for="signUpModalPasswordRepeat">Repeat password</label>
+                  </div>
+                </div>
+                <!-- Terms Agree Checkbox -->
+                <div class="col-12 pb-2">
+                  <div class="form-check d-flex justify-content-center">
+                    <input class="form-check-input me-2" type="checkbox" value="" id="signUpModalTermsAgreeCheck" name="signUpModalTermsAgreeCheck" checked
+                      aria-describedby="signUpModalTermsAgreeText" />
+                    <label class="form-check-label" for="signUpModalTermsAgreeCheck" id="signUpModalTermsAgreeText">
+                      I have read and agree to the terms
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer text-center">
+              <div class="col-11 mx-auto pt-2">
+                <div class="row align-content-center">
+                  <div class="col-6">
+                    <!-- Submit button -->
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#loginModal" id="loginModalShowLink" class="btn btn-secondary w-100">Login</a>
+                  </div>
+                  <div class="col-6">
+                    <button id="signUpModalSubmit" name="signUpModalSubmit" type="submit" class="btn btn-info w-100">Sign Up</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelector('#registerModalShowLink').addEventListener('click', function() {
+    $('#loginModal').modal('hide');
+    var signUpModal = new bootstrap.Modal(document.getElementById('signUpModal'));
+    $('#signUpModal').modal('show');
+  });
+  document.querySelector('#loginModalShowLink').addEventListener('click', function() {
+    $('#signUpModal').modal('hide');
+    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    $('#loginModal').modal('show');
+  });
+  async function handleLoginModalFormSubmission() {
+      const loginForm = document.getElementById('loginModal');
+      if (!loginForm) {
+          return;
+      }
+      loginForm.addEventListener('submit', async function(event) {
+          event.preventDefault();
+          const email = document.getElementById('loginModalEmail').value;
+          const password = document.getElementById('loginModalPassword').value;
+          try {
+              const { user, session, error } = await window.supabaseClient.signInWithEmail(email, password);
+              if (error) throw error;
+              window.location.reload();
+          } catch (error) {
+              console.error('Login error:', error.message);
+              alert('Login failed: ' + error.message);
+          }
+      }, false);
+  }
+  
+  async function submitRegistrationModalForm() {
+    const registerForm = document.getElementById('signUpModalForm');
+    registerForm.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      const formData = new FormData(registerForm);
+      const userDetails = {
+          email: formData.get('signUpModalEmail'),
+          password: formData.get('signUpModalPassword'),
+          confirmPassword: formData.get('signUpModalPasswordRepeat'),
+          username: formData.get('signUpModalUsername'),
+          name: formData.get('signUpModalName'),
+          zip_code: formData.get('signUpModalZipCode'),
+          phone: formData.get('signUpModalPhone'),
+          type: "user"
+      };
+      try {
+          if (window.supabaseClient.checkUserStatus() === true) {
+            alert('You are already registered. Login or use the Password Reset if needed.');
+            return;
+          }
+          const user = await window.supabaseClient.registerUser(userDetails);
+          await fetch('/users/create_user', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(userDetails),
+          });
+          alert('Registration successful. Check your email to confirm your registration details.');
+          registerForm.reset(); 
+          window.location.reload();
+      } catch (error) {
+          alert('Registration failed. Please try again');
+      }
+    });
+  }
+  
+  async function handleModalPasswordReset() {
+    var myForgotPassowrdModal = new bootstrap.Modal(document.getElementById('forgotPasswordLoginModal'));
+    var email = document.getElementById('forgotPasswordEmail').value;
+    try {
+      await window.supabaseClient.sendResetPassword(email);
+      alert('Password reset email sent successfully, be sure to log in and reset your password from the same device.');
+    } catch (error) {
+      console.error('Error:', error.message);
+    } finally {
+      myForgotPassowrdModal.hide();
+    }
+  }
+  window.addEventListener('load', function() {
+    handleLoginModalFormSubmission();
+    submitRegistrationModalForm();
+  }, false);
+  
+  document.querySelector('#forgotPasswordModalLink').addEventListener('click', function() {
+    $('#loginModal').modal('hide');
+    var forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgotPasswordLoginModal'));
+    $('#forgotPasswordLoginModal').modal('show');
+  });
+  const forgotPasswordForm = document.getElementById('forgotPasswordModalForm');
+  
+  forgotPasswordForm.addEventListener('submit', async function(event) {
+    event.preventDefault();
+    const email = document.getElementById('forgotPasswordEmail').value;
+    if (email) {
+      handleModalPasswordReset();
+    }
+  });
+  $('#loginModal').on('hidden.bs.modal', async function () {
+    const currentUserEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!currentUserEmail && !$('#loginModal').hasClass('show') && !$('#signUpModal').hasClass('show') && !$('#forgotPasswordLoginModal').hasClass('show')) {
+      $('#signUpModal').modal('show');
+    }
+  });
+  $('#signUpModal').on('hidden.bs.modal', async function () {
+    const currentUserEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!currentUserEmail && !$('#loginModal').hasClass('show') && !$('#signUpModal').hasClass('show') && !$('#forgotPasswordLoginModal').hasClass('show')) {
+      $('#loginModal').modal('show');
+    }
+  });
+  $('#forgotPasswordLoginModal').on('hidden.bs.modal', async function () {
+    const currentUserEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!currentUserEmail && !$('#loginModal').hasClass('show') && !$('#signUpModal').hasClass('show') && !$('#forgotPasswordLoginModal').hasClass('show')) {
+      $('#loginModal').modal('show');
+    }
+  });
+});
+</script>
+{% endblock %}

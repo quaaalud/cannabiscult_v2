@@ -171,11 +171,50 @@
     {% include "components/homepage_elements/top_logo_header.html" %}
     </div>
   </div>
+  {% include "components/forms/login_register_modal.html" %}
 </div>
+
 {% endblock %}  
 
 {% block footer %}
 {% endblock %}
   
-{% block scripts %} 
+{% block scripts %}
+<script async>
+$(document).ready(function() {
+  async function checkVoterExists(email) {
+    const lowerCaseEmail = email.toLowerCase();
+    const root = window.location.origin;
+    const url = new URL('/check-mystery-voter', root);
+    url.searchParams.append('voter_email', lowerCaseEmail);
+
+    const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      if (!data.exists) {
+        return false;
+      }
+      return true;
+    } else {
+      console.log("Request failed:", response.status, response.statusText);
+      return false;
+    }
+  }
+  window.addEventListener('supabaseClientReady', async function() {
+    const currentEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!currentEmail) {
+      var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+      $('#loginModal').modal('show');
+      return;
+    }
+    return;
+  });
+});
+</script>
 {% endblock %}
