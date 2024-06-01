@@ -298,11 +298,11 @@
     .catch(error => console.error('Error:', error));
   }
   function populateLineageChartIfExists() {
-    const lineage = {{ lineage | tojson | safe }};
+    const lineage = {{ lineage | default('{}') | tojson | safe }};
     const strain = `{{ strain }}`;
     const cultivator = `{{ cultivator }}`;
     const urlPath = `{{ url_path }}`;
-    if (cultivator && strain && lineage) {
+    if (cultivator && strain && lineage && !isEmpty(lineage)) {
       const lineageChart = new createLineageChart(lineage, strain, cultivator, urlPath);
       lineageChart.renderLineageChart();
     }
