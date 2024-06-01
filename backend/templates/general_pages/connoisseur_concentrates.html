@@ -248,7 +248,11 @@
     } else {
       await fetchAndUpdatConcentrateDescription();
       await fetchAndUpdateConcentrateRatings();
-      populateLineageChartIfExists();
+      try {
+          populateLineageChartIfExists();
+      } catch (error) {
+          return;
+      }
     }
   });
   function initTerpeneChart(labels, dataValues) {

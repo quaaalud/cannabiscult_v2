@@ -264,7 +264,11 @@
         initTerpeneChart(terpenesList, dataValues);
       }
       fetchAndUpdateStrainRatings();
-      populateLineageChartIfExists();
+      try {
+          populateLineageChartIfExists();
+      } catch (error) {
+          return;
+      }
     }
   });
   function populateLineageChartIfExists() {
