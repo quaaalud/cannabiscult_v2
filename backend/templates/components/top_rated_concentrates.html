@@ -27,24 +27,32 @@ $(document).ready(function() {
       console.error('Error fetching concentrate data:', error);
     }
   }
-
+  function encodeEmail(email) {
+      return btoa(email);
+  }
   async function updateconcentrateData(data) {
     const container = document.getElementById('concentrateContainer');
     let htmlContent = '';
     let username
     for (const concentrate of data) {
+      const encodedEmail = encodeEmail(concentrate["cultivar"])
       try {
-        const response = await fetch('/users/get_username?user_email=' + encodeURIComponent(concentrate["cultivar"]));
+        const response = await fetch('/users/get_username', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: encodedEmail })
+        });
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
         const usernameJson = await response.json();
         username = usernameJson["username"];
       } catch (error) {
-        console.error('Fetch error:', error);
-        username = "Ace Louie"; // Default username if fetch fails
+          console.error('Fetch error:', error);
+          username = "Cannabis Cult";
       }
-
       const strain = concentrate["strain"];
       const cultivator = concentrate["cultivator"];
       const score = concentrate["overall_score"];

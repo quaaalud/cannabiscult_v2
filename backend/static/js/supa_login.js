@@ -232,7 +232,9 @@ class SupabaseClient {
             throw error;
         }
     }
-
+    encodeEmail(email) {
+        return btoa(email);
+    }
     async checkSuperuserStatus() {
       try {
           // Retrieve the user object
@@ -244,22 +246,17 @@ class SupabaseClient {
           }
           if (user && user.email) {
               // Construct the URL for the FastAPI endpoint
-              const url = `https://cannabiscult.co/users/super_user_status?user_email=${encodeURIComponent(user.email)}`;
-  
-              // Make a GET request to the FastAPI route
-              const response = await fetch(url, {
-                  method: 'GET',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  }
+              const response = await fetch('/users/super_user_status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email: this.encodeEmail(user.email) })
               });
-  
               if (!response.ok) {
                   throw new Error(`HTTP error! status: ${response.status}`);
               }
-  
               const data = await response.json();
-  
               if (data.supuser_status === true) {
                   return true;
               }
@@ -275,23 +272,17 @@ class SupabaseClient {
 
     async checkUserStatus() {
       try {
-          // Construct the URL for the FastAPI endpoint
-          const url = `https://cannabiscult.co/users/get_username?user_email=${encodeURIComponent(user.email)}`;
-
-          // Make a GET request to the FastAPI route
-          const response = await fetch(url, {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-              }
+          const response = await fetch('/users/get_username', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email: this.encodeEmail(user.email) })
           });
-
           if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
           }
-
           const data = await response.json();
-
           if (data.username) {
               return true;
           }

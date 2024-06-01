@@ -7,9 +7,10 @@ Created on Fri Mar 10 21:12:40 2023
 """
 
 from fastapi import APIRouter, BackgroundTasks, Depends, status, HTTPException
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Optional
 from sqlalchemy.orm import Session
 from schemas.users import (
+    EncodedUserEmailSchema,
     UserCreate,
     UserLogin,
     ShowUser,
@@ -117,18 +118,21 @@ def return_current_user_vote_status(user_email: str, db: Session = Depends(get_d
         return {"user_vote_status": user.can_vote}
 
 
-@router.get("/get_username", response_model=Dict[str, Any])
-def return_username_by_email(user_email: str, db: Session = Depends(get_db)):
-    user = get_user_by_email(user_email=user_email, db=db)
+@router.post("/get_username", response_model=Optional[Dict[str, Any]])
+async def return_username_by_email(
+    user_email: EncodedUserEmailSchema, db: Session = Depends(get_db)
+):
+    user = await get_user_by_email(user_email=user_email.email, db=db)
     if user:
         return {"username": user.username}
 
 
-@router.get("/super_user_status", response_model=Dict[str, Any])
-def return_is_superuser_status(user_email: str, db: Session = Depends(get_db)):
-    user = get_user_by_email(user_email=user_email, db=db)
+@router.post("/super_user_status", response_model=Dict[str, Any])
+async def return_is_superuser_status(user_email: EncodedUserEmailSchema, db: Session = Depends(get_db)):
+    user = await get_user_by_email(user_email=user_email.email, db=db)
     if user:
         return {"supuser_status": user.is_superuser}
+    return {"supuser_status": False}
 
 
 @router.post(

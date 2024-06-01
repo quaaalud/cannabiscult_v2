@@ -44,6 +44,13 @@ class LoggedInUser(BaseModel):
         from_attributes = True
 
 
+class EncodedUserEmailSchema(BaseModel):
+    email: str = Field(..., description="User's email address for validations")
+
+    class Config:
+        from_attributes = True
+
+
 class UserEmailSchema(BaseModel):
     email: EmailStr = Field(..., description="User's email address for login")
 

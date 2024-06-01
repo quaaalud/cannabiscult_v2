@@ -6,6 +6,7 @@ Created on Fri Mar 10 21:13:37 2023
 @author: dale
 """
 
+import base64
 from supabase import Client
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -20,6 +21,10 @@ from schemas.users import (
 )
 from db.models.users import User, UserStrainList
 from core.config import settings
+
+
+def decode_email(encoded_email: str) -> str:
+    return base64.b64decode(encoded_email).decode('utf-8')
 
 
 @settings.retry_db
@@ -54,7 +59,7 @@ def add_user_to_supabase(user: UserCreate, _auth: Client):
             }
         )
         return res
-    except:
+    except Exception:
         pass
 
 
@@ -73,7 +78,7 @@ def create_new_user(user: UserCreate, db: Session):
     )
     try:
         db.add(user)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()
@@ -83,10 +88,11 @@ def create_new_user(user: UserCreate, db: Session):
 
 
 @settings.retry_db
-def get_user_by_email(user_email: str, db: Session) -> User:
+async def get_user_by_email(user_email: str, db: Session) -> User:
     try:
-        user = db.query(User).filter(User.email == user_email).first()
-    except:
+        decoded_email = decode_email(user_email)
+        user = db.query(User).filter(User.email == decoded_email).first()
+    except Exception:
         db.rollback()
         return None
     return user
