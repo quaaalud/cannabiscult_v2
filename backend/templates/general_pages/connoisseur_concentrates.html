@@ -239,7 +239,8 @@
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+<script type="module">
+  import createLineageChart from "{{ url_for('static', path='js/getLineageChart.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
     var isMystery = "{{ is_mystery }}";
     if (isMystery === "True") {
@@ -249,86 +250,6 @@
       await fetchAndUpdateConcentrateRatings();
     }
   });
-
-  async function fetchAndUpdatConcentrateDescription() {
-    var cultivator = "{{ cultivator }}";
-    var strain = "{{ strain }}";
-    var endpoint = "/concentrate_reviews/get_concentrate_description?&strain=" + encodeURIComponent(strain) + "&cultivator=" + encodeURIComponent(cultivator);
-
-    fetch(endpoint)
-    .then(response => response.json())
-    .then(data => {
-        if (!data.error) {
-            let terpenesList = data.terpenes_list
-            if (terpenesList && terpenesList.length > 0) {
-              const dataValues = terpenesList.map(() => 1);
-              initTerpeneChart(terpenesList, dataValues);
-            }
-        } else {
-            console.error('Error fetching data:', data.error);
-        }
-    })
-    .catch(error => console.error('Error:', error));
-  }
-
-  async function fetchAndUpdateConcentrateRatings() {
-    const concentrateId = "{{ concentrate_id }}";
-    const endpoint = "/concentrate_ranking/get_concentrate_ratings_by_id/" + concentrateId;
-    function parseLineage(lineage) {
-      if (!lineage) return [];
-      return lineage.split(' X ').map(part => part.trim());
-    }
-    try {
-      const response = await fetch(endpoint);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const ratingsData = await response.json();
-      
-      if (!ratingsData.error) {
-          const formatRating = (rating) => {
-            return rating !== null ? parseFloat(rating).toFixed(2) : '?';
-          };
-          document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
-          document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
-          document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
-          document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
-          document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
-          document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
-          document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
-          const lineage = {{ lineage | tojson | safe }};
-          const strain = `{{ strain }}`;
-          const cultivator = `{{ cultivator }}`;
-          const urlPath = "{{ url_path }}";
-          if (cultivator && strain && lineage) {
-            const parentStrains = parseLineage(lineage);
-            initLineageChart(cultivator, strain, urlPath, parentStrains);
-          }
-        } else {
-          console.error('Error fetching data:', ratingsData.error);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-  }
-  function initLineageChart(cultivator, strain, urlPath, parentStrains) {
-    const lineageContainer = document.getElementById('lineageChart');
-
-    const parentNodes = parentStrains.map(parent => ({
-      label: "",
-      name: parent
-    }));
-
-    const chartData = {
-      label: cultivator,
-      name: strain,
-      avatar: urlPath,
-      children: parentNodes
-    };
-    new OrganizationChart(lineageContainer, {
-      data: chartData
-    });
-  }
   function initTerpeneChart(labels, dataValues) {
     const ctx = document.getElementById('terpeneChart').getContext('2d');
     new Chart(ctx, {
@@ -350,6 +271,65 @@
       'rgba(66, 133, 244, 0.2)'
     ];
     return colors.slice(0, count);
+  }
+  async function fetchAndUpdatConcentrateDescription() {
+    var cultivator = "{{ cultivator }}";
+    var strain = "{{ strain }}";
+    var endpoint = "/concentrate_reviews/get_concentrate_description?&strain=" + encodeURIComponent(strain) + "&cultivator=" + encodeURIComponent(cultivator);
+
+    fetch(endpoint)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.error) {
+            let terpenesList = data.terpenes_list
+            if (terpenesList && terpenesList.length > 0) {
+              const dataValues = terpenesList.map(() => 1);
+              initTerpeneChart(terpenesList, dataValues);
+            }
+        } else {
+            console.error('Error fetching data:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+  }
+  function populateLineageChartIfExists() {
+    const lineageChart = new createLineageChart();
+    const lineage = {{ lineage | tojson | safe }};
+    const strain = `{{ strain }}`;
+    const cultivator = `{{ cultivator }}`;
+    const urlPath = "{{ url_path }}";
+    if (cultivator && strain && lineage) {
+      lineageChart.renderLineageChart(lineage, strain, cultivator, urlPath);
+    }
+  }
+  async function fetchAndUpdateConcentrateRatings() {
+    const concentrateId = "{{ concentrate_id }}";
+    const endpoint = "/concentrate_ranking/get_concentrate_ratings_by_id/" + concentrateId;
+    try {
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const ratingsData = await response.json();
+      
+      if (!ratingsData.error) {
+          const formatRating = (rating) => {
+            return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+          };
+          document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
+          document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
+          document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
+          document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
+          document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
+          document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
+          document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
+          populateLineageChartIfExists()
+        } else {
+          console.error('Error fetching data:', ratingsData.error);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
   }
 </script>
 <script type="module">
