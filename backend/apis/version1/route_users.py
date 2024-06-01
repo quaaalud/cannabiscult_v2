@@ -165,13 +165,13 @@ async def update_strain_status(
     update_data: UserStrainListUpdate,
     db: Session = Depends(get_db),
 ):
-    #try:
-    updated_strain = await update_strain_review_status(strain_id, update_data, db)
-    if updated_strain is None:
-        raise HTTPException(status_code=404, detail="Strain not found")
-    return updated_strain
-    #except Exception as e:
-    #    raise HTTPException(status_code=400, detail=str(e))
+    try:
+        updated_strain = await update_strain_review_status(strain_id, update_data, db)
+        if updated_strain is None:
+            raise HTTPException(status_code=404, detail="Strain not found")
+        return updated_strain
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
 @router.patch("/update_strain_notes/", response_model=UserStrainListSubmit)

@@ -169,7 +169,18 @@
 </div>
 
 {% block scripts %}
-<script>
+<script async>
+$(document).ready(function() {
+  window.addEventListener('supabaseClientReady', async function() {
+    const currentEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (!currentEmail) {
+      var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+      $('#loginModal').modal('show');
+      return;
+    }
+    return;
+  });
+});
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelector('#registerModalShowLink').addEventListener('click', function() {
     $('#loginModal').modal('hide');
@@ -193,6 +204,7 @@ document.addEventListener('DOMContentLoaded', function () {
           try {
               const { user, session, error } = await window.supabaseClient.signInWithEmail(email, password);
               if (error) throw error;
+              localStorage.setItem("ageConfirmed", "true");
               window.location.reload();
           } catch (error) {
               console.error('Login error:', error.message);
@@ -200,7 +212,6 @@ document.addEventListener('DOMContentLoaded', function () {
           }
       }, false);
   }
-  
   async function submitRegistrationModalForm() {
     const registerForm = document.getElementById('signUpModalForm');
     registerForm.addEventListener('submit', async function(event) {
@@ -237,7 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
-  
   async function handleModalPasswordReset() {
     var myForgotPassowrdModal = new bootstrap.Modal(document.getElementById('forgotPasswordLoginModal'));
     var email = document.getElementById('forgotPasswordEmail').value;
@@ -254,14 +264,12 @@ document.addEventListener('DOMContentLoaded', function () {
     handleLoginModalFormSubmission();
     submitRegistrationModalForm();
   }, false);
-  
   document.querySelector('#forgotPasswordModalLink').addEventListener('click', function() {
     $('#loginModal').modal('hide');
     var forgotPasswordModal = new bootstrap.Modal(document.getElementById('forgotPasswordLoginModal'));
     $('#forgotPasswordLoginModal').modal('show');
   });
   const forgotPasswordForm = document.getElementById('forgotPasswordModalForm');
-  
   forgotPasswordForm.addEventListener('submit', async function(event) {
     event.preventDefault();
     const email = document.getElementById('forgotPasswordEmail').value;
