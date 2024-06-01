@@ -23,6 +23,9 @@
 
 <script>
   async function checkAgeConfirmedAndLogin() {
+    if (localStorage.getItem("ageConfirmed") === "true") {
+      return;
+    }
     const currentEmail = await window.supabaseClient.getCurrentUserEmail();
     if (!currentEmail || localStorage.getItem("ageConfirmed") !== "true") {
       $('html, body').css({
@@ -39,7 +42,7 @@
     }
   }
   window.addEventListener('supabaseClientReady', async function() {
-    checkAgeConfirmedAndLogin();
+    await checkAgeConfirmedAndLogin();
   });
   $('#age-confirm-btn').click(function() {
     localStorage.setItem("ageConfirmed", "true");
@@ -54,7 +57,7 @@
   });
   $('#staticBackdrop').on('hidden.bs.modal', async function () {
     if (localStorage.getItem("ageConfirmed") !== "true") {
-        checkAgeConfirmedAndLogin();
-      }
+      checkAgeConfirmedAndLogin();
+    }
   });
 </script>
