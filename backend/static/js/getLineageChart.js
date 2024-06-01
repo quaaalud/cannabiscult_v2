@@ -1,6 +1,12 @@
 class createLineageChart {
-  constructor() {
+  constructor(lineage, strain, cultivator, urlPath) {
     this.lineageContainer = document.getElementById('lineageChart');
+    if (this.lineageContainer) {
+      this.lineage = lineage;
+      this.strain = strain;
+      this.cultivator = cultivator;
+      this.urlPath = urlPath;
+    }
   }
   parseLineage(lineage) {
     if (!lineage) return [];
@@ -11,23 +17,25 @@ class createLineageChart {
       return;
     }
     const parentNodes = parentStrains.map(parent => ({
-      label: "",
+      label: "_",
       name: parent
     }));
-  
     const chartData = {
       label: cultivator,
       name: strain,
       avatar: urlPath,
       children: parentNodes
     };
+    if (!this.lineageContainer) {
+      return;
+    }
     new OrganizationChart(this.lineageContainer, {
       data: chartData
     });
   }
-  renderLineageChart(lineage, strain, cultivator, urlPath) {
-    const parentStrains = this.parseLineage(lineage);
-    this.initLineageChart(cultivator, strain, urlPath, parentStrains);
+  renderLineageChart() {
+    const parentStrains = this.parseLineage(this.lineage);
+    this.initLineageChart(this.cultivator, this.strain, this.urlPath, parentStrains);
   }
 }
 

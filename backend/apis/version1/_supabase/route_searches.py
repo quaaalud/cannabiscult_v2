@@ -6,6 +6,7 @@ Created on Fri Dec 22 20:27:46 2023
 @author: dale
 """
 
+import base64
 import random
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from fastapi.responses import StreamingResponse
@@ -98,6 +99,10 @@ def model_to_dict(model_instance):
     }
 
 
+def decode_email(encoded_email: str) -> str:
+    return base64.b64decode(encoded_email).decode('utf-8')
+
+
 async def gather_user_ratings_by_product_type(
     user_email: str, db: Session
 ) -> Dict[str, List[Any]]:
@@ -125,9 +130,9 @@ async def gather_user_ratings_by_product_type(
 async def get_my_ratings(user_email: str, db: Session = Depends(get_db)):
     if not user_email:
         raise HTTPException(status_code=400, detail="User email is required")
-
     try:
-        ratings = await gather_user_ratings_by_product_type(user_email, db)
+        decoded_email = decode_email(user_email)
+        ratings = await gather_user_ratings_by_product_type(decoded_email, db)
         return ratings
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

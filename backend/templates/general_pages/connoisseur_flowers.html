@@ -254,7 +254,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
   import createLineageChart from "{{ url_for('static', path='js/getLineageChart.js') }}";
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', async function() {
     var isMystery = {{ is_mystery | tojson | safe }};
     if (isMystery) { 
       return
@@ -264,22 +264,22 @@
         initTerpeneChart(terpenesList, dataValues);
       }
       fetchAndUpdateStrainRatings();
+      populateLineageChartIfExists();
     }
   });
   function populateLineageChartIfExists() {
-    const lineageChart = new createLineageChart();
     const lineage = {{ lineage | tojson | safe }};
     const strain = `{{ strain }}`;
     const cultivator = `{{ cultivator }}`;
-    const urlPath = "{{ url_path }}";
+    const urlPath = `{{ url_path }}`;
     if (cultivator && strain && lineage) {
-      lineageChart.renderLineageChart(lineage, strain, cultivator, urlPath);
+      const lineageChart = new createLineageChart(lineage, strain, cultivator, urlPath);
+      lineageChart.renderLineageChart();
     }
   }
   function fetchAndUpdateStrainRatings() {
     var flowerId = {{ flower_id }};
     var endpoint = "/flower_voting/get_strain_ratings_by_id/" + flowerId;
-
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {
@@ -291,7 +291,6 @@
             document.getElementById('smell_rating_value').innerText = data.smell_rating.toFixed(2);
             document.getElementById('harshess_rating_value').innerText = data.harshness_rating.toFixed(2);
             document.getElementById('freshness_rating_value').innerText = data.freshness_rating.toFixed(2);
-            populateLineageChartIfExists();
         } else {
             console.error('Error fetching data:', data.error);
         }
@@ -299,7 +298,7 @@
     .catch(error => console.error('Error:', error));
   }
   function initTerpeneChart(labels, dataValues) {
-    const ctx = document.getElementById('terpeneChart').getContext('3d');
+    const ctx = document.getElementById('terpeneChart').getContext('2d');
     new Chart(ctx, {
       type: 'pie',
       data: {

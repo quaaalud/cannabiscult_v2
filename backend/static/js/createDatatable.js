@@ -1,9 +1,11 @@
 class RatingsDatatable {
     constructor(userEmail) {
-        this.userEmail = userEmail;
+        this.userEmail = this.encodeEmail(userEmail);
         this.init();
     }
-
+    encodeEmail(email) {
+        return btoa(email);
+    }
     async init() {
         try {
             const ratingsByProductType = await this.fetchRatings(this.userEmail);

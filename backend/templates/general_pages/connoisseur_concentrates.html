@@ -248,6 +248,7 @@
     } else {
       await fetchAndUpdatConcentrateDescription();
       await fetchAndUpdateConcentrateRatings();
+      populateLineageChartIfExists();
     }
   });
   function initTerpeneChart(labels, dataValues) {
@@ -293,13 +294,13 @@
     .catch(error => console.error('Error:', error));
   }
   function populateLineageChartIfExists() {
-    const lineageChart = new createLineageChart();
     const lineage = {{ lineage | tojson | safe }};
     const strain = `{{ strain }}`;
     const cultivator = `{{ cultivator }}`;
-    const urlPath = "{{ url_path }}";
+    const urlPath = `{{ url_path }}`;
     if (cultivator && strain && lineage) {
-      lineageChart.renderLineageChart(lineage, strain, cultivator, urlPath);
+      const lineageChart = new createLineageChart(lineage, strain, cultivator, urlPath);
+      lineageChart.renderLineageChart();
     }
   }
   async function fetchAndUpdateConcentrateRatings() {
@@ -323,7 +324,6 @@
           document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
           document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
           document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
-          populateLineageChartIfExists()
         } else {
           console.error('Error fetching data:', ratingsData.error);
         }
