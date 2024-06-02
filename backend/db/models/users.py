@@ -35,6 +35,7 @@ class User(Base):
     can_vote = Column(Boolean(), default=True)
     is_superuser = Column(Boolean(), default=False)
     strain_lists = relationship("UserStrainList", back_populates="user")
+    cultivator_voting = relationship("CultivatorVoting", back_populates="voter_info")
 
 
 class UserStrainList(Base):

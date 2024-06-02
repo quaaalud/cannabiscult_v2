@@ -35,6 +35,7 @@ import route_general_pages
 import route_subscribers
 import route_users
 from _supabase import route_flowers
+from _supabase import route_cultivator_voting
 from _supabase import route_concentrates
 from _supabase import route_concentrate_rankings
 from _supabase import route_edibles
@@ -135,4 +136,9 @@ api_router.include_router(
     route_images.router,
     prefix="/images",
     tags=["images"]
+)
+api_router.include_router(
+    route_cultivator_voting.router,
+    prefix="/cultivator_voting",
+    tags=["cultivator_voting"]
 )
