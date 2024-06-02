@@ -18,11 +18,11 @@ from schemas.unique_cultivators import (
     CultivatorVoteCreate,
     CultivatorVoteResponse,
     CultivatorVotingResponse,
-    UniqueCultivatorInfo,
     UniqueCultivatorOption,
     ListCultivatorVotingResponse,
 )
 from schemas.users import UserEmailSchema
+from core.config import settings
 
 
 def decode_base64_email(encoded_email: str) -> str:
@@ -45,6 +45,7 @@ def encode_base64_email(user_email: str) -> str:
 
 
 # Create a new cultivator, ensuring no duplicates
+@settings.retry_db
 def create_cultivator_for_voting(
     db: Session, cultivator: UniqueCultivatorCreate
 ) -> UniqueCultivatorResponse:
@@ -77,15 +78,18 @@ def create_cultivator_for_voting(
 
 # Read all cultivator votes
 def get_all_cultivator_votes(db: Session) -> ListCultivatorVotingResponse:
-    votes = db.query(CultivatorVoting).options(
-        joinedload(CultivatorVoting.cultivator_info),
-        joinedload(CultivatorVoting.voter_info)
-    ).all()
+    votes = (
+        db.query(CultivatorVoting)
+        .options(
+            joinedload(CultivatorVoting.cultivator_info),
+            joinedload(CultivatorVoting.voter_info),
+        )
+        .all()
+    )
 
     if not votes:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="No votes found."
+            status_code=status.HTTP_404_NOT_FOUND, detail="No votes found."
         )
 
     cultivator_votes = [
@@ -93,13 +97,15 @@ def get_all_cultivator_votes(db: Session) -> ListCultivatorVotingResponse:
             id=vote.id,
             cultivator_id=vote.cultivator_info.id,
             email=encode_base64_email(vote.email),
-            cultivator_name=vote.cultivator_info.cultivator
-        ) for vote in votes
+            cultivator_name=vote.cultivator_info.cultivator,
+        )
+        for vote in votes
     ]
     return ListCultivatorVotingResponse(cultivator_votes=cultivator_votes)
 
 
 # Create a new vote
+@settings.retry_db
 def create_cultivator_vote(
     db: Session, vote: CultivatorVoteCreate
 ) -> CultivatorVoteResponse:
@@ -108,15 +114,19 @@ def create_cultivator_vote(
     except Exception:
         validated_email = UserEmailSchema(email=vote.email)
         decoded_email = validated_email.email
-    existing_vote = db.query(CultivatorVoting).filter(
-        CultivatorVoting.email == decoded_email,
-        CultivatorVoting.cultivator_id == vote.cultivator_id
-    ).first()
+    existing_vote = (
+        db.query(CultivatorVoting)
+        .filter(
+            CultivatorVoting.email == decoded_email,
+            CultivatorVoting.cultivator_id == vote.cultivator_id,
+        )
+        .first()
+    )
 
     if existing_vote:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="You have already voted for this cultivator."
+            detail="You have already voted for this cultivator.",
         )
     new_vote = CultivatorVoting(cultivator_id=vote.cultivator_id, email=decoded_email)
     db.add(new_vote)
@@ -137,12 +147,15 @@ def create_cultivator_vote(
 
 
 # Delete a cultivator by ID
-def delete_cultivator_vote_for_user(db: Session, user_email: str, cultivator_id: int) -> None:
+@settings.retry_db
+def delete_cultivator_vote_for_user(
+    db: Session, user_email: str, cultivator_id: int
+) -> None:
     cultivator_vote = (
         db.query(CultivatorVoting)
         .filter(
             CultivatorVoting.email == user_email,
-            CultivatorVoting.cultivator_id == cultivator_id
+            CultivatorVoting.cultivator_id == cultivator_id,
         )
         .first()
     )

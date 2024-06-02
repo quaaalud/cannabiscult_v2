@@ -18,13 +18,14 @@ def create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Session):
     created_ranking = Flower_Ranking(**ranking_data_dict)
     try:
         db.add(created_ranking)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()
         db.refresh(created_ranking)
     finally:
         return created_ranking
+
 
 @settings.retry_db
 def update_or_create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Session):
@@ -47,12 +48,13 @@ def update_or_create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Sessi
             db.commit()
             db.refresh(existing_ranking)
             return existing_ranking
-        except:
+        except Exception:
             db.rollback()
             raise
     else:
         # Create a new ranking record
         return create_flower_ranking(ranking_dict, db)
+
 
 @settings.retry_db
 def create_hidden_flower_ranking(ranking_dict: CreateHiddenFlowerRanking, db: Session):
@@ -60,7 +62,7 @@ def create_hidden_flower_ranking(ranking_dict: CreateHiddenFlowerRanking, db: Se
     created_ranking = Hidden_Flower_Ranking(**ranking_data_dict)
     try:
         db.add(created_ranking)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()
