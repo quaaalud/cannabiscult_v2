@@ -137,12 +137,12 @@ def create_cultivator_vote(
 
 
 # Delete a cultivator by ID
-def delete_cultivator_vote_for_user(db: Session, user_email: str, cultivator_id) -> None:
+def delete_cultivator_vote_for_user(db: Session, user_email: str, cultivator_id: int) -> None:
     cultivator_vote = (
         db.query(CultivatorVoting)
         .filter(
-            CultivatorVoting.email == user_email
-            and CultivatorVoting.cultivator_id == cultivator_id
+            CultivatorVoting.email == user_email,
+            CultivatorVoting.cultivator_id == cultivator_id
         )
         .first()
     )

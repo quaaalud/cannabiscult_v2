@@ -72,9 +72,6 @@
     <div class="container container-sm py-5" id="cultivatorVotingFormContainer">
       {% include "components/forms/cultivator_voting_form.html" %}
     </div>
-    <div class="container container-sm py-5 d-none" id="strainSubmissionContainer">
-      {% include "components/forms/strain_submission_form.html" %}
-    </div>
     <div class="container container-sm py-5" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
       {% include "components/users/calendar.html" %}
     </div>
@@ -96,6 +93,9 @@
         </div>
         {% include "components/users/my_strain_list.html" %}
       </div>
+    </div>
+    <div class="container container-sm py-5 d-none" id="strainSubmissionContainer">
+      {% include "components/forms/strain_submission_form.html" %}
     </div>
     <div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
