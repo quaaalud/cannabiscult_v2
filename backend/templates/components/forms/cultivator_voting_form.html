@@ -147,7 +147,7 @@
           userVotesContainer.appendChild(divider);
         }
       });
-      userVotesContainer.querySelectorAll('.btn-danger').forEach(button => {
+      userVotesContainer.querySelectorAll('.btn-outline-dark').forEach(button => {
         button.addEventListener('click', async function() {
           const cultivatorId = this.getAttribute('data-id');
           await removeUserVote(cultivatorId);
