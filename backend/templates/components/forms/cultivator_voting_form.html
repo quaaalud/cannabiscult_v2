@@ -8,8 +8,8 @@
       <div class="card shadow-5">
         <div class="row mx-5 my-auto pt-3">
           <div class="container-fluid col-12 mx-auto">
-            <h2 class="text-center">Vote on Cultivators</h2>
-            <h3 class="text-center"><small>For the Upcoming Cultivar Tournament</small></h3>
+            <h2 class="text-center">Nominate Cultivators</h2>
+            <h4 class="text-center"><small>To Compete in the Flower Pack Tournament</small></h4>
           </div>
         </div>
         <div class="col-12">
@@ -22,7 +22,7 @@
                 <input type="text" id="customCultivatorInput" class="form-control" placeholder="Enter custom cultivator name">
               </div>
               <div class="col-10 mx-auto m-2">
-                <button type="submit" class="btn btn-success w-100">Submit Vote</button>
+                <button type="submit" class="btn custom-gradient-button w-100">Submit Vote</button>
               </div>
             </div>
             <div class="row text-center">
@@ -136,7 +136,7 @@
         voteElement.innerHTML = `
           <div class="d-flex justify-content-between align-items-center px-1">
             <span class="text-start">${vote.cultivator_name}</span>
-            <button class="btn btn-danger btn-sm" data-id="${vote.cultivator_id}">Remove</button>
+            <button class="btn btn-outline-dark btn-sm" data-id="${vote.cultivator_id}">Remove</button>
           </div>
         `;
         userVotesContainer.appendChild(voteElement);
