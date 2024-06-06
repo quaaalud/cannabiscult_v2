@@ -7,21 +7,25 @@ Created on Fri Dec 22 20:12:30 2023
 """
 
 from pydantic import BaseModel, Field, HttpUrl
-from typing import List, Optional
+from typing import List, Optional, Union
 
 
 class SearchResultItem(BaseModel):
     cultivator: str = Field(..., description="Name of the cultivator")
     strain: str = Field(..., description="Name of the strain")
     type: str = Field(..., description="Type of the product")
-    url_path: HttpUrl = Field(..., description="URL path to the product details")
+    url_path: Union[HttpUrl, str] = Field(
+        ..., description="URL path to the product details"
+    )
 
     class Config:
         from_attributes = True
 
 
 class SearchResults(BaseModel):
-    results: List[SearchResultItem] = Field(..., description="List of search result items")
+    results: List[SearchResultItem] = Field(
+        ..., description="List of search result items"
+    )
 
 
 class StrainCultivator(BaseModel):
@@ -54,7 +58,7 @@ class RatingModel(BaseModel):
                 "flavor_rating": 8.67,
                 "harshness_rating": 8.33,
                 "effects_rating": 8,
-                "cult_rating": 8.28
+                "cult_rating": 8.28,
             }
         }
 

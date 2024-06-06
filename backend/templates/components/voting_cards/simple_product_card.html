@@ -1,10 +1,13 @@
 <section class="container text-center my-5" id="product-container">
-    <div class="row row-cols-1 row-cols-md-3 g-4" id="product-grid">
-        <!-- Product cards will be inserted here -->
+  <div class="row row-cols-1 row-cols-md-3 g-4 align-items-center" id="product-grid"></div>
+  <div id="loading-more-random-spinner" class="text-center my-4" style="display: none;">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
     </div>
-    <div class="col-12 col-lg-6 mx-auto pt-5">
-        <button id="loadMoreBtn" class="btn btn-lg btn-secondary btn-outline-secondary w-100 mt-4">Load More</button>
-    </div>
+  </div>
+  <div class="col-12 col-lg-6 mx-auto pt-5">
+    <button id="loadMoreBtn" class="btn btn-lg btn-secondary btn-outline-secondary w-100 mt-4">Load More</button>
+  </div>
 </section>
 {% block scripts %}
 <script>
@@ -13,13 +16,16 @@ $(document).ready(function() {
     const seenCombinations = new Set();
     
     async function fetchProducts() {
-    const url = `/search/get-all-image-urls/?limit=${limit}`;
+        const showMoreLoadingSpinner = document.getElementById('loading-more-random-spinner');
+        showMoreLoadingSpinner.style.display = 'block';
+        const url = `/search/get-all-image-urls/?limit=${limit}`;
         const response = await fetch(url);
         const products = await response.json();
         if (products.length > 0) {
+            showMoreLoadingSpinner.style.display = 'none';
             displayProducts(products);
         } else {
-            document.getElementById('loadMoreBtn').disabled = true; // Disable button if no more products
+            document.getElementById('loadMoreBtn').disabled = true;
         }
     }
     

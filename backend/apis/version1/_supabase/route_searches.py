@@ -100,7 +100,7 @@ def model_to_dict(model_instance):
 
 
 def decode_email(encoded_email: str) -> str:
-    return base64.b64decode(encoded_email).decode('utf-8')
+    return base64.b64decode(encoded_email).decode("utf-8")
 
 
 async def gather_user_ratings_by_product_type(
@@ -162,11 +162,15 @@ async def check_existence(
     return {"exists": False}
 
 
-@router.get("/all/{search_term}", response_model=List[SearchResultItem])
-async def get_search_matches(search_term: str, db: Session = Depends(get_db)):
+@router.get(
+    "/all/{search_term}", response_model=List[SearchResultItem]
+)
+async def get_search_matches(
+    search_term: str, with_images_flag: bool = False, db: Session = Depends(get_db)
+):
     if not search_term or len(search_term) < 3:
         return []
-    results = await search_strain(db, search_term)
+    results = await search_strain(db, search_term, with_images_flag)
     if not results:
         raise HTTPException(status_code=404, detail="No matches found")
     return results
@@ -225,16 +229,13 @@ async def get_strains(
     models = product_type_dict.get(product_type)
     if not models:
         raise HTTPException(status_code=404, detail="Product type not found")
-
     all_strains = []
     for model in models:
         strains = get_strains_by_cultivator(db, model, cultivator)
         if strains:
             all_strains.extend(strains)
-
     if not all_strains:
         raise HTTPException(status_code=500, detail="An error occurred")
-
     return all_strains
 
 
@@ -341,8 +342,7 @@ async def add_calendar_event(
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get(
-  "/strains/{product_type}", response_model=List)
+@router.get("/strains/{product_type}", response_model=List)
 async def get_list_of_strains_for_terp_profile(
     product_type: str, db: Session = Depends(get_db)
 ):

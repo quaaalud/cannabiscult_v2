@@ -10,7 +10,7 @@ import random
 import traceback
 import networkx as nx
 from typing import Type, List, Dict, Any, Optional, Union
-from sqlalchemy import inspect, func, or_, not_, union_all
+from sqlalchemy import inspect, func, or_, and_, not_, union_all
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
@@ -44,7 +44,7 @@ from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
 async def get_data_by_strain(
-    db: Session, model: Type[Base], strain: str
+    db: Session, model: Type[Base], strain: str, get_image_url_flag: bool = False
 ) -> List[Dict[str, Any]]:
     if model == VibeEdible:
         return []
@@ -53,37 +53,59 @@ async def get_data_by_strain(
             select(model)
             .filter(model.cultivator != "Cultivar")
             .filter(model.cultivator != "Connoisseur")
-            .filter(model.strain.ilike(f"%{strain}%"))
-            .filter(model.strain.ilike("%Test%") == False)
+            .filter(
+                or_(
+                    model.cultivator.ilike(f"%{strain}%"),
+                    model.strain.ilike(f"%{strain}%"),
+                )
+            )
+            .filter(
+                and_(
+                    model.strain.ilike("%Test%") == False,
+                    model.cultivator.ilike("%Cultivar%") == False,
+                    model.cultivator.ilike("%Connoisseur%") == False,
+                )
+            )
         )
         items = result.scalars().all()
-        return [
-            {
-                "cultivator": item.cultivator,
-                "strain": item.strain,
-                "type": model.__name__,
-                "url_path": return_image_url_from_supa_storage(str(item.card_path)),
-            }
-            for item in items
-        ]
+        if get_image_url_flag:
+            return [
+                {
+                    "cultivator": item.cultivator,
+                    "strain": item.strain,
+                    "type": model.__name__,
+                    "url_path": return_image_url_from_supa_storage(str(item.card_path)),
+                }
+                for item in items
+            ]
+        else:
+            return [
+                {
+                    "cultivator": item.cultivator,
+                    "strain": item.strain,
+                    "type": model.__name__,
+                    "url_path": str(item.card_path),
+                }
+                for item in items
+            ]
     except Exception as e:
         traceback.print_exc()
         print(f"Error fetching data for {model.__name__}: {e}")
         return []
 
 
-async def search_strain(db: Session, strain: str) -> List[Dict[str, Any]]:
-    flower_results = await get_data_by_strain(db, Flower, strain)
-    concentrate_results = await get_data_by_strain(db, Concentrate, strain)
+async def search_strain(db: Session, strain: str, get_image_url_flag: bool = False) -> List[Dict[str, Any]]:
+    flower_results = await get_data_by_strain(db, Flower, strain, get_image_url_flag)
+    concentrate_results = await get_data_by_strain(db, Concentrate, strain, get_image_url_flag)
     try:
-        general_edibles = await get_data_by_strain(db, Edible, strain)
+        general_edibles = await get_data_by_strain(db, Edible, strain, get_image_url_flag)
     except ProgrammingError:
         general_edibles = []
-    vibe_edibles = await get_data_by_strain(db, VibeEdible, strain)
+    vibe_edibles = await get_data_by_strain(db, VibeEdible, strain, get_image_url_flag)
     for item in vibe_edibles:
         item["type"] = "Edible"
     edible_results = [*general_edibles, *vibe_edibles]
-    pre_roll_results = await get_data_by_strain(db, Pre_Roll, strain)
+    pre_roll_results = await get_data_by_strain(db, Pre_Roll, strain, get_image_url_flag)
     return flower_results + concentrate_results + edible_results + pre_roll_results
 
 
@@ -130,7 +152,7 @@ def get_strains_by_cultivator(
     except Exception as e:
         traceback.print_exc()
         print(
-            f"Error fetching strains for {model.__name__} and cultivator {cultivator}: {e}"
+            f"Error fetching strains for {model.__name__} & cultivator {cultivator}: {e}"
         )
         return None
 
@@ -295,7 +317,6 @@ async def get_all_events(db: Session) -> List[CalendarEventQuery]:
 
 async def add_new_calendar_event(db: Session, event_data: dict) -> bool:
     try:
-        # Check if an event with the same summary and start date exists
         existing_event = (
             db.execute(
                 select(CalendarEvent).filter_by(
@@ -305,12 +326,10 @@ async def add_new_calendar_event(db: Session, event_data: dict) -> bool:
             .scalars()
             .first()
         )
-        # If the event exists, use update_calendar_event to update it
         if existing_event:
             return await update_calendar_event(
                 db, event_data["summary"], event_data["start_date"], event_data
             )
-        # If no existing event, create a new one
         new_event = CalendarEvent(**event_data)
         db.add(new_event)
     except SQLAlchemyError as e:
@@ -449,7 +468,7 @@ def build_strains_family_tree_graph(db: Session):
         if current_strain not in G:
             G.add_node(current_strain)
         if strain.lineage:
-            parents = strain.lineage.split(' X ')
+            parents = strain.lineage.split(" X ")
             for parent in parents:
                 parent = parent.strip()
                 if parent not in G:
@@ -459,6 +478,6 @@ def build_strains_family_tree_graph(db: Session):
 
 
 def serialize_graph(graph):
-    nodes = [{'id': node} for node in graph.nodes()]
-    edges = [{'source': edge[0], 'target': edge[1]} for edge in graph.edges()]
-    return {'nodes': nodes, 'edges': edges}
+    nodes = [{"id": node} for node in graph.nodes()]
+    edges = [{"source": edge[0], "target": edge[1]} for edge in graph.edges()]
+    return {"nodes": nodes, "edges": edges}

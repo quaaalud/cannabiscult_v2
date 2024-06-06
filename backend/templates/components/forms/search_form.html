@@ -8,36 +8,46 @@
           <p class="text-center pt-5 fs-2">Search for a Cult Review above or browse reviews below.</p>
       </div>
     </div>
+    <div id="loading-search-results-spinner" class="text-center my-4" style="display: none;">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
   </div>
 </div>
 
 {% block scripts %}
 <script async defer>
 document.addEventListener('DOMContentLoaded', () => {
-    let lastFetch = null; // To handle overlapping fetches
-
+    let lastFetch = null;
+    function capitalizeWordsWithUnderscore(str) {
+        return str
+            .split('_')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
     function updateCustomSearchResults(searchTerm) {
         const trimmedSearchTerm = searchTerm.trim();
         const resultsContainer = document.getElementById('custom-search-results');
         const resultsRow = resultsContainer.querySelector('.row');
+        const searchLoadingSpinner = document.getElementById('loading-search-results-spinner');
 
         if (trimmedSearchTerm.length < 3) {
-            return; // Avoid searching for overly broad terms
+            return;
         }
-        const currentFetch = fetch(`/search/all/${encodeURIComponent(trimmedSearchTerm)}`)
+        searchLoadingSpinner.style.display = 'block';
+        const currentFetch = fetch(`/search/all/${encodeURIComponent(trimmedSearchTerm)}?with_images_flag=true`)
             .then(response => response.json())
             .then(data => {
                 if (lastFetch !== currentFetch) {
-                    return; // Ignore this fetch as a newer one is in progress
+                    return;
                 }
-
+                searchLoadingSpinner.style.display = 'none';
                 if (data.length === 0) {
                     resultsRow.innerHTML = '<p class="text-center">No results found.</p>';
                     return;
                 }
-                const categorizedResults = {};
-
-                // Dynamically categorize results, ensuring no leading/trailing spaces and consistent casing
+                const categorizedResults = {}
                 data.forEach(item => {
                     const category = item.type.trim().toLowerCase();
                     if (!categorizedResults[category]) {
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         const typeRow = document.createElement('div');
                         typeRow.className = 'row mb-4';
                         const typeHeading = document.createElement('h3');
-                        typeHeading.textContent = type.charAt(0).toUpperCase() + type.slice(1); // Capitalize for display
+                        typeHeading.textContent = capitalizeWordsWithUnderscore(type);
                         typeHeading.className = 'col-12 mx-auto text-start text-md-center';
                         typeRow.appendChild(typeHeading);
 
