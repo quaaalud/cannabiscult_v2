@@ -46,6 +46,7 @@ kiwisolver==1.4.5
 MarkupSafe==2.1.2
 matplotlib==3.8.2
 more-itertools==9.1.0
+networkx==3.3
 numpy==1.24.2
 openapi==1.1.0
 orjson==3.9.12
@@ -72,6 +73,7 @@ python-dateutil==2.8.2
 python-dotenv==1.0.0
 python-gitlab==3.15.0
 python-jose==3.3.0
+python-magic==0.4.27
 python-multipart==0.0.6
 python-semantic-release==7.33.2
 pytz==2022.7.1
