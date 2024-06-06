@@ -26,6 +26,8 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "Cult Flower 2": ("Vibe", "Grapes and Cream"),
             "Cult Flower 3": ("Robust", "Government Oasis"),
             "Cult Flower 4": ("Local", "RS11"),
+            "Cult Rosin 1": ("Vibe", "Liquid Sunshine"),
+            "Cult Rosin 2": ("Robust", "Orange Runtz"), "Cult Rosin 3": ("Local", "RS11")
         }
         # Extract query parameters
         query_params = dict(request.query_params)

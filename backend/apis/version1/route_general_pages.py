@@ -765,28 +765,6 @@ async def handle_concentrate_review_post(
     ),
     db: Session = Depends(get_db),
 ):
-    if (strain_selected in ["Cult Rosin 1", "Cult Rosin 2", "Cult Rosin 3"]) and (
-        product_type_selected != "contest"
-    ):
-        partner_data = await get_current_partner_data()
-        user_is_logged_in = await async_get_current_users_email() is not None
-        config = await get_config_obj()
-        return templates.TemplateResponse(
-            str(
-                Path(
-                    "general_pages",
-                    "pack_transition_pages",
-                    "connoisseur_rosin_division.html",
-                )
-            ),
-            {
-                "request": request,
-                "dispensaries": partner_data,
-                "user_is_logged_in": user_is_logged_in,
-                "SUPA_URL": config.SUPA_STORAGE_URL,
-                "PUB_KEY": config.SUPA_PUBLIC_KEY,
-            },
-        )
     return await process_concentrate_request(
         request, strain_selected, cultivator_selected, cultivar_email, db
     )
