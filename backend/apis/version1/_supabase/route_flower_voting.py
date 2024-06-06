@@ -11,11 +11,11 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from fastapi import Depends
 from typing import Dict, Any
+from datetime import datetime, timedelta
 from db.session import get_supa_db
 from db.models.flower_voting import FlowerVoting
 from db.models.flower_rankings import Flower_Ranking
 from db.repository.flower_voting import add_new_flower_vote
-from db.repository.flower_reviews import get_review_data_and_path
 from schemas.flower_rankings import FlowerVoteCreate
 
 # New Flower Models
@@ -100,7 +100,6 @@ async def get_top_strains(db: Session = Depends(get_supa_db)):
 
 @router.get("/get_top_rated_flower_strains", response_model=list)
 async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
-
     avg_ratings = (
         db.query(
             Flower_Ranking.strain,
@@ -112,6 +111,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
             func.avg(Flower_Ranking.harshness_rating),
             func.avg(Flower_Ranking.freshness_rating),
         )
+        .filter(Flower_Ranking.date_posted >= (datetime.now() - timedelta(days=30)))
         .filter(Flower_Ranking.cultivator != "Connoisseur")
         .filter(Flower_Ranking.strain.ilike("%Test%") == False)
         .group_by(Flower_Ranking.strain, Flower_Ranking.cultivator)
