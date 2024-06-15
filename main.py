@@ -7,6 +7,10 @@ Created on Sun Mar  5 21:13:44 2023
 """
 
 import sys
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.gzip import GZipMiddleware
 from pathlib import Path
 
 MAIN_DIR = Path(__file__).parent
@@ -46,15 +50,9 @@ if str(MODELS_DIR) not in sys.path:
     sys.path.append(str(MODELS_DIR))
 
 
-from fastapi import FastAPI, Request, Response
-from fastapi.staticfiles import StaticFiles
-from starlette.responses import FileResponse
-import os
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.gzip import GZipMiddleware
+
 from core.config import settings
 from apis.base import api_router, mystery_pack_route_handler
-from fastapi.staticfiles import StaticFiles
 from db.session import engine
 from db.base import Base
 

@@ -177,16 +177,13 @@ async def _return_image_url(card_path: str):
 @router.post("/get-image-url", response_model=Dict[str, str])
 async def get_image_from_file_path(
     image_request: ImagePathRequest,
-    db: Session = Depends(get_db),  # Ensure you have this dependency
+    db: Session = Depends(get_db),
     supabase: Client = Depends(_return_supabase_private_client),
 ) -> Dict[str, str]:
-    # Fetch card_path using the new function
     card_path = await get_card_path_by_details(
         db, image_request.product_type, image_request.strain, image_request.cultivator
     )
     if not card_path:
         card_path = "reviews/Connoisseur_Pack/CP_strains.png"
-    # Get the image URL from storage
-    print(card_path)
     img_url = await _return_image_url(card_path)
     return {"img_url": img_url}

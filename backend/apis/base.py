@@ -42,7 +42,6 @@ from _supabase import route_edibles
 from _supabase import route_flower_rankings
 from _supabase import route_flower_reviews
 from _supabase import route_flower_voting
-from _supabase import route_mystery_flower_review
 from _supabase import route_mystery_voters
 from _supabase import route_edible_rankings
 from _supabase import route_searches
@@ -106,11 +105,6 @@ api_router.include_router(
     route_flower_voting.router,
     prefix="/flower_voting",
     tags=["flower_voting"]
-)
-api_router.include_router(
-    route_mystery_flower_review.router,
-    prefix="/mystery_flower_review",
-    tags=["mystery_flower_review"]
 )
 api_router.include_router(
     route_mystery_voters.router,
