@@ -7,6 +7,13 @@ const flowerQuestionsContainer = document.getElementById('cardBody');
 const cardTitle = document.getElementById('cardTitle');
 let step = 0;
 
+let packQuestion
+
+if (cultivator === "Connoisseur" || cultivator === "Cultivar") {
+  packQuestion = QuestionBuilder.createTextInputQuestion("Enter the Cult Pack ID", "pack_code", "For example, C1965, B4741 etc");
+} else {
+  packQuestion = QuestionBuilder.createTextInputQuestion("Please enter Pack Code listed on the product label.", "pack_code", "For example, P1, B4 etc");
+}
 const flowerQuestions = [
   QuestionBuilder.createEmailQuestion(strain, cultivator),
   QuestionBuilder.createConsumptionMethodQuestion(strain, cultivator),
@@ -21,19 +28,13 @@ const flowerQuestions = [
   QuestionBuilder.createRatingQuestion(strain, "harshness_rating", "Smoothness Rating", { startLabel: "Very Harsh", endLabel: "Enjoyable" }),
   QuestionBuilder.createTextInputQuestion(`${strain} - Smoothness Rating Explanation`, "harshness_explanation", "Explain your smoothness rating for this strain"),
   QuestionBuilder.createRatingQuestion(strain, "effects_rating", "Effects Rating", { startLabel: "Short-Lived, No Effects", endLabel: "Strong, Lasting Effects" }),
-  QuestionBuilder.createEffectsExplanationQuestion(strain), // For explaining the effects rating
-  QuestionBuilder.createTextInputQuestion("Please enter Pack Code listed on the product label.", "pack_code", "For example, P1, B4 etc"),
+  QuestionBuilder.createEffectsExplanationQuestion(strain),
+  packQuestion
+  
 ];
 const int_keys = flowerQuestions
 .filter(question => question.key.endsWith('rating') || question.key.endsWith('score'))
 .map(question => question.key);
-
-document.addEventListener('keydown', function enterKeyHandler(event) {
-  if (event.keyCode === 13) {
-    event.preventDefault();
-    nextBtn.click();
-  }
-});
 
 let formState = await loadFormStateforFlowers();
 
@@ -49,7 +50,6 @@ window.jumpToQuestion = async function jumpToQuestion(questionIndex) {
 }
 
 async function loadFormStateforFlowers() {
-  // Check for localStorage availability
   if (typeof localStorage === 'undefined') {
     console.warn('localStorage is not available, defaulting to initial state.');
     return getDefaultFormStateForFlowers();
@@ -60,18 +60,16 @@ async function loadFormStateforFlowers() {
     if (!savedState) {
       return getDefaultFormStateForFlowers();
     }
-
     const parsedState = JSON.parse(savedState);
-    // Ensure the parsedState is for the current flower item
     if (parsedState.flower_id !== flowerId) {
       console.warn('Saved form state is for a different flower item, defaulting to initial state.');
       return getDefaultFormStateForFlowers();
     }
 
-    return parsedState; // Return the saved state if it matches the current flower ID
+    return parsedState;
   } catch (e) {
     console.error('Error reading or parsing saved form state:', e);
-    return getDefaultFormStateForFlowers(); // Fallback to default state in case of any error
+    return getDefaultFormStateForFlowers();
   }
 }
 
@@ -122,7 +120,7 @@ async function createPagination() {
   }
   adjustPaginationForScreenSize();
   $('[data-toggle="tooltip"]').tooltip({
-    trigger: 'hover focus' // 'focus' for touch devices
+    trigger: 'hover focus'
   });
 }
 
@@ -148,7 +146,7 @@ async function saveCurrentAnswer() {
       formState[question.key] = radioVal;
     }
   }
-  formState.lastSavedIndex = step; // Save the current index
+  formState.lastSavedIndex = step;
   localStorage.setItem('formState', JSON.stringify(formState));
 }
 async function validateResponses() {
@@ -193,10 +191,13 @@ async function loadQuestion() {
         const question = flowerQuestions[step];
         cardTitle.innerHTML = question.title;
         flowerQuestionsContainer.innerHTML = question.content;
+        const inputElement = document.querySelector('#cardBody input, #cardBody select, #cardBody textarea');
+        if (inputElement) {
+            inputElement.focus();
+        }
         if (int_keys.includes(question.key)) {
             QuestionBuilder.setSelectedRadioValue(question.key, formState[question.key]);
         } else {
-            const inputElement = document.getElementById(question.key);
             if (inputElement && formState[question.key]) {
                 inputElement.value = formState[question.key];
             }
@@ -207,11 +208,14 @@ async function loadQuestion() {
       nextBtn.textContent = 'Submit';
     }
     await createPagination();
+    document.querySelectorAll('button, input, select, textarea').forEach(element => {
+        element.setAttribute('tabindex', '0');
+    });
 }
 function convertToIntegers(formState, integerKeys) {
     integerKeys.forEach(key => {
         if (formState.hasOwnProperty(key) && formState[key] !== null && formState[key] !== '') {
-            formState[key] = parseInt(formState[key], 10); // 10 is the radix parameter for base-10 (decimal) numbers
+            formState[key] = parseInt(formState[key], 10);
         }
     });
 }
@@ -233,13 +237,13 @@ async function submitForm(formState) {
     if (response.ok) {
       const data = await response.json();
       if (formState.cultivator === "Connoisseur" || formState.cultivator === "Cultivar") {
-        const connoisseurEmail = formState.connoisseur; // Save the email value
+        const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
         window.location.href = "/success/connoisseur_flower_edition";
         
       } else {
-        const connoisseurEmail = formState.connoisseur; // Save the email value
+        const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
         window.location.href = "/success";
@@ -252,6 +256,32 @@ async function submitForm(formState) {
   }
   step = 0
 }
+document.addEventListener('keydown', function(event) {
+    const activeElement = document.activeElement;
+    const formElements = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'];
+    const nonFormElements = ['startReviewBtn', 'closeBtn'];
+    const startReviewButton = document.getElementById('startReviewBtn')
+    if (event.key === 'Enter') {
+        if (activeElement.type === 'radio') {
+            activeElement.checked = true;
+        } else if (activeElement === nextBtn) {
+            event.preventDefault();
+            nextBtn.click();
+        } else if (activeElement === nextBtn || activeElement === startReviewButton) {
+            event.preventDefault();
+            activeElement.click();
+        } else if (!formElements.includes(activeElement.tagName)) {
+            event.preventDefault();
+        }
+    } else if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        document.getElementById('backBtn').click();
+    } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        document.getElementById('nextBtn').click();
+    }
+});
+
 document.getElementById('nextBtn').addEventListener('click', async function() {
   if (step === 0) {
     const emailInput = document.getElementById('connoisseur');
@@ -293,11 +323,23 @@ window.addEventListener('supabaseClientReady', async function() {
         return;
       }
       const emailInput = document.getElementById('connoisseur');
-      emailInput.value = userEmail;
+      if (emailInput) {
+          emailInput.value = userEmail.toLowerCase();
+      }
     } catch {
       return;
     }
     return;
   });
 });
+$('#FlowerVoterInfoCaptureModal').on('shown.bs.modal', function () {
+    $('#FlowerVoterInfoCaptureModal').attr('aria-modal', 'true');
+    $('#FlowerVoterInfoCaptureModal').attr('role', 'dialog');
+    $('#FlowerVoterInfoCaptureModal input').first().focus();
+});
 
+$('#FlowerVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+    $('#FlowerVoterInfoCaptureModal').removeAttr('aria-modal');
+    $('#FlowerVoterInfoCaptureModal').removeAttr('role');
+    nextBtn.focus();
+});

@@ -44,11 +44,3 @@
   </div>
 </div>
 {% include "components/forms/add_new_voter_modal.html" %}
-<script>
-document.addEventListener('keydown', function enterKeyHandler(event) {
-  if (event.keyCode === 13) {
-    event.preventDefault();
-    nextBtn.click();
-  }
-});
-</script>
