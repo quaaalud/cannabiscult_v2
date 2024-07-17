@@ -163,9 +163,6 @@ $(document).ready(function() {
     const currentEmail = await window.supabaseClient.getCurrentUserEmail();
     if (!currentEmail) {
       var failModal = new bootstrap.Modal(document.getElementById('notAuthorizedModal'));
-      $('#notAuthorizedModal').on('hidden.bs.modal', function () {
-        window.location.href = "/login";
-      });
       failModal.show();
       return;
     } else {
