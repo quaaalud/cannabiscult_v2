@@ -81,8 +81,8 @@ def start_application():
     app = FastAPI(
         title=settings.PROJECT_NAME,
         version=settings.PROJECT_VERSION,
-        #        docs_url=None,
-        #        redoc_url=None,
+        docs_url=None,
+        redoc_url=None,
     )
     app.add_middleware(mystery_pack_route_handler.LegacyURLMiddleware)
     include_router(app)
