@@ -170,7 +170,6 @@ async def _return_image_url(card_path: str):
     try:
         return return_image_url_from_supa_storage(card_path)
     except Exception as e:
-        print(f"Image not found: {card_path} caused {e}\n")
         return "https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
 
 
@@ -187,6 +186,5 @@ async def get_image_from_file_path(
     if not card_path:
         card_path = "reviews/Connoisseur_Pack/CP_strains.png"
     # Get the image URL from storage
-    print(card_path)
     img_url = await _return_image_url(card_path)
     return {"img_url": img_url}

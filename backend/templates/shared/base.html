@@ -7,6 +7,31 @@
     <meta name="Cannabis Cult" content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices.">
     <meta content="Missouri, Kansas, Saint Louis, Cannabis, Marijuana, Weed, Pot, Dispensary, Dispensaries Near Me, Weed Near Me, Cultivator, Leafly, Weedmaps, Weed Maps," name="keywords">
     
+    <div id="preloaderMain" class="preloader-main d-flex justify-content-center align-items-center">
+      <div class="spinner-border text-dark" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    <style>
+    .preloader-main {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #ffffff;
+      z-index: 9999;
+    }
+    </style>
+    <script>
+    document.onreadystatechange = function () {
+      if (document.readyState === "complete") {
+        const preloaderMain = document.getElementById("preloaderMain");
+        preloaderMain.style.display = "none";
+        preloaderMain.classList.add("d-none")
+      }
+    };
+    </script>
     {% block head %}
     {%  endblock %}
     
