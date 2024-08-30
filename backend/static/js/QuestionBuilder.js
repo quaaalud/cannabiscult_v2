@@ -60,7 +60,7 @@ class QuestionBuilder {
               <div class="form-outline" data-mdb-input-init>
                 <textarea class="form-control shadow-2-strong" id="${key}" name="${key}" rows="4" placeholder="Start typing here..." aria-labelledby="${key}_label"></textarea>
               </div>
-              <label class="form-label pt-4" for="${key}" name="${key}_label" id="${key}_label">Explain your rating in the space above.</label>
+              <label class="form-label d-none pt-4" for="${key}" name="${key}_label" id="${key}_label">Explain your rating in the space above.</label>
             </div>
           </div>
         `,

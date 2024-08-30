@@ -29,10 +29,10 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "Cult Rosin 1": ("Vibe", "Liquid Sunshine"),
             "Cult Rosin 2": ("Robust", "Orange Runtz"),
             "Cult Rosin 3": ("Local", "RS11"),
-            "CC1": ("Notorious", "Piezatti"),
-            "CC2": ("Amaze", "Sub Zero"),
-            "CC3": ("Daybreak", "AF-1"),
-            "CC4": ("Camp", "Biscotti Pie 6"),
+            "CC 1": ("Notorious", "Piezatti"),
+            "CC 2": ("Amaze", "Sub Zero"),
+            "CC 3": ("Daybreak", "AF-1"),
+            "CC 4": ("Camp", "Biscotti Pie 6"),
         }
         # Extract query parameters
         query_params = dict(request.query_params)

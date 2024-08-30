@@ -133,8 +133,8 @@ def get_flower_and_description_by_id(
                 terpenes_list = description.terpenes_list
                 strain = flower.strain
             else:
-                strain = f"CP {flower.flower_id}"
-                cultivator = "Hidden"
+                strain = flower.strain
+                cultivator = "Connoisseur"
                 description_text = "Hidden"
                 effects = "Hidden"
                 lineage = "Hidden"
@@ -157,7 +157,6 @@ def get_flower_and_description_by_id(
             }
 
             return flower_info
-
         return None
 
     except Exception as e:

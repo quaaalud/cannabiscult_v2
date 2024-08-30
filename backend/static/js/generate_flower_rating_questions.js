@@ -240,7 +240,7 @@ async function submitForm(formState) {
         const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success/connoisseur_flower_pack_july";
+        window.location.href = "/success/connoisseur_flower_pack_september";
         
       } else {
         const connoisseurEmail = formState.connoisseur;
