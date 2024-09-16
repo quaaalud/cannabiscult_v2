@@ -84,7 +84,6 @@ def start_application():
         docs_url=None,
         redoc_url=None,
     )
-    app.add_middleware(mystery_pack_route_handler.LegacyURLMiddleware)
     include_router(app)
     configure_static(app)
     create_tables()
@@ -95,6 +94,7 @@ def start_application():
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(mystery_pack_route_handler.LegacyURLMiddleware)
     app.add_middleware(GZipMiddleware, minimum_size=1000)
     return app
 
