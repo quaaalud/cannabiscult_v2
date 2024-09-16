@@ -33,6 +33,10 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "CC 2": ("Amaze", "Sub Zero"),
             "CC 3": ("Daybreak", "AF-1"),
             "CC 4": ("Camp", "Biscotti Pie 6"),
+            "CC1": ("Illicit", "GMO Cookies"),
+            "CC2": ("Sundro", "Super Buff Cherries"),
+            "CC3": ("Robust", "Tahiti Lime"),
+            "CC4": ("Cloud Cover", "Peach Crescendo"),
         }
         # Extract query parameters
         query_params = dict(request.query_params)
