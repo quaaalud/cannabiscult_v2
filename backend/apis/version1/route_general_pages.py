@@ -943,6 +943,19 @@ async def sitemap(request: Request):
     )
 
 
+@general_pages_router.get("/test_pages/glb_test", response_class=HTMLResponse)
+async def glp_test_page(request: Request):
+    user_is_logged_in = await async_get_current_users_email() is not None
+
+    return templates.TemplateResponse(
+        str(Path("general_pages", "test_pages", "glp_test.html")),
+        {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        },
+    )
+
+
 @general_pages_router.get("/success/{file_name}")
 async def general_transition_page_request(request: Request, file_name: str):
     file_path = Path(
