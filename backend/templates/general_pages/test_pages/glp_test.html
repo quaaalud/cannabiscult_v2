@@ -11,55 +11,105 @@
     <div id="dropZone" class="bg-light text-center border border-primary py-5 my-4">
         <p>Drag and drop a .glb file here or click to upload</p>
     </div>
+
     <!-- Canvas for rendering 3D model -->
     <canvas id="modelCanvas" class="w-100 border" style="height: 600px;"></canvas>
+
+    <!-- User Controls -->
+    <div class="mt-4">
+        <h3>Controls</h3>
+        <div class="form-group">
+            <label for="lightIntensity">Light Intensity</label>
+            <input id="lightIntensity" type="range" min="0" max="2" step="0.1" value="1" class="form-control-range">
+        </div>
+        <div class="form-group">
+            <label for="cameraX">Camera X Position</label>
+            <input id="cameraX" type="range" min="-10" max="10" step="0.1" value="0" class="form-control-range">
+        </div>
+        <div class="form-group">
+            <label for="cameraY">Camera Y Position</label>
+            <input id="cameraY" type="range" min="-10" max="10" step="0.1" value="0" class="form-control-range">
+        </div>
+        <div class="form-group">
+            <label for="cameraZ">Camera Z Position</label>
+            <input id="cameraZ" type="range" min="1" max="10" step="0.1" value="5" class="form-control-range">
+        </div>
+        <div class="form-group">
+            <label for="bgColor">Background Color</label>
+            <input id="bgColor" type="color" value="#aaaaaa" class="form-control">
+        </div>
+    </div>
 </div>
 {% endblock %}
 
-{% block scripts %}
-<!-- Import map to load specific modules from CDN -->
-<script type="importmap">
-    {
-        "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.150.1/build/three.module.js",
-            "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.150.1/examples/jsm/"
-        }
-    }
-</script>
 
+{% block scripts %}
 <!-- Main Script to handle GLB model loading -->
 <script type="module">
     import * as THREE from "{{ url_for('static', path='js/three/three.module.js') }}";
     import { GLTFLoader } from "{{ url_for('static', path='js/three/GLTFLoader.js') }}";
+    import { OrbitControls } from "{{ url_for('static', path='js/three/examples/jsm/controls/OrbitControls.js') }}";
 
     document.addEventListener('DOMContentLoaded', function () {
         const dropZone = document.getElementById('dropZone');
         const canvas = document.getElementById('modelCanvas');
-        let renderer, scene, camera;
+        let renderer, scene, camera, light, controls;
 
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropZone.addEventListener(eventName, preventDefaults, false);
-        });
+        const lightIntensityInput = document.getElementById('lightIntensity');
+        const bgColorInput = document.getElementById('bgColor');
+        const cameraXInput = document.getElementById('cameraX');
+        const cameraYInput = document.getElementById('cameraY');
+        const cameraZInput = document.getElementById('cameraZ');
 
-        // Handle dropped files
-        dropZone.addEventListener('drop', handleDrop, false);
+        // Initialize Three.js scene and renderer
+        function initThreeJS(modelURL) {
+            if (!renderer) {
+                renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
 
-        // Handle click event to trigger file input
-        dropZone.addEventListener('click', () => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = '.glb';
-            input.onchange = (e) => {
-                const file = e.target.files[0];
-                if (file.name.endsWith('.glb')) {
-                    loadGLBFile(file);
-                } else {
-                    alert('Please upload a valid .glb file.');
-                }
-            };
-            input.click();
-        });
+                scene = new THREE.Scene();
+                renderer.setClearColor(bgColorInput.value);  // Set initial background color
 
+                camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+                camera.position.set(parseFloat(cameraXInput.value), parseFloat(cameraYInput.value), parseFloat(cameraZInput.value));
+
+                // Add directional light and ambient light
+                light = new THREE.DirectionalLight(0xffffff, parseFloat(lightIntensityInput.value));
+                light.position.set(1, 1, 1).normalize();
+                scene.add(light);
+
+                const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+                scene.add(ambientLight);
+
+                // Initialize OrbitControls
+                controls = new OrbitControls(camera, renderer.domElement);
+                controls.enableDamping = true;  // Smooth the movement
+                controls.dampingFactor = 0.25;
+                controls.screenSpacePanning = false;  // Disable panning
+
+                controls.minDistance = 2;  // Limit how close the camera can zoom in
+                controls.maxDistance = 50;  // Limit how far the camera can zoom out
+                controls.maxPolarAngle = Math.PI / 2;  // Limit the vertical rotation to prevent flipping
+
+                // Handle resizing
+                window.addEventListener('resize', onWindowResize, false);
+            }
+
+            // Clear previous models from the scene
+            while (scene.children.length > 2) { // Leave lights intact
+                scene.remove(scene.children[2]);
+            }
+
+            // Load GLB model
+            const loader = new GLTFLoader();
+            loader.load(modelURL, function (gltf) {
+                scene.add(gltf.scene);
+                animate();
+            });
+        }
+
+        // Handle file dropping and uploading
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -81,52 +131,71 @@
 
         function loadGLBFile(file) {
             const reader = new FileReader();
-
             reader.onload = function (event) {
                 const arrayBuffer = event.target.result;
                 const blob = new Blob([arrayBuffer], { type: 'model/gltf-binary' });
                 const url = URL.createObjectURL(blob);
-
-                // Initialize Three.js and load the model
                 initThreeJS(url);
             };
-
             reader.readAsArrayBuffer(file);
         }
 
-        function initThreeJS(modelURL) {
-            // Initialize renderer, scene, and camera if not already set
-            if (!renderer) {
-                renderer = new THREE.WebGLRenderer({ canvas: canvas });
-                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-
-                scene = new THREE.Scene();
-                camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
-                camera.position.z = 5;
-
-                // Add lighting
-                const light = new THREE.DirectionalLight(0xffffff, 1);
-                light.position.set(1, 1, 1).normalize();
-                scene.add(light);
-            }
-
-            // Clear previous models from the scene
-            while (scene.children.length > 0) {
-                scene.remove(scene.children[0]);
-            }
-
-            // Load the GLB model using GLTFLoader
-            const loader = new GLTFLoader();
-            loader.load(modelURL, function (gltf) {
-                scene.add(gltf.scene);
-                animate();
-            });
+        function onWindowResize() {
+            camera.aspect = canvas.clientWidth / canvas.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
         }
 
         function animate() {
             requestAnimationFrame(animate);
+            controls.update();  // Update the controls (important for damping)
             renderer.render(scene, camera);
         }
+
+        // Event listeners for user controls
+        lightIntensityInput.addEventListener('input', () => {
+            light.intensity = parseFloat(lightIntensityInput.value);
+        });
+
+        bgColorInput.addEventListener('input', () => {
+            renderer.setClearColor(bgColorInput.value);
+        });
+
+        cameraXInput.addEventListener('input', () => {
+            camera.position.x = parseFloat(cameraXInput.value);
+            controls.update();  // Ensure controls stay in sync with camera movement
+        });
+
+        cameraYInput.addEventListener('input', () => {
+            camera.position.y = parseFloat(cameraYInput.value);
+            controls.update();
+        });
+
+        cameraZInput.addEventListener('input', () => {
+            camera.position.z = parseFloat(cameraZInput.value);
+            controls.update();
+        });
+
+        // Set up drop zone events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        dropZone.addEventListener('drop', handleDrop, false);
+        dropZone.addEventListener('click', () => {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.glb';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (file.name.endsWith('.glb')) {
+                    loadGLBFile(file);
+                } else {
+                    alert('Please upload a valid .glb file.');
+                }
+            };
+            input.click();
+        });
     });
 </script>
 {% endblock %}
