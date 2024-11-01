@@ -30,7 +30,7 @@ const flowerQuestions = [
   QuestionBuilder.createRatingQuestion(strain, "effects_rating", "Effects Rating", { startLabel: "Short-Lived, No Effects", endLabel: "Strong, Lasting Effects" }),
   QuestionBuilder.createEffectsExplanationQuestion(strain),
   packQuestion
-  
+
 ];
 const int_keys = flowerQuestions
 .filter(question => question.key.endsWith('rating') || question.key.endsWith('score'))
@@ -240,8 +240,8 @@ async function submitForm(formState) {
         const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success/connoisseur_flower_pack_september";
-        
+        window.location.href = "/success/connoisseur_flower_pack_november";
+
       } else {
         const connoisseurEmail = formState.connoisseur;
         formState = {};
