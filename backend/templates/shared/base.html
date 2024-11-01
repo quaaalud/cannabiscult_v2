@@ -5,8 +5,7 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="Cannabis Cult" content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices.">
-    <meta content="Missouri, Kansas, Saint Louis, Cannabis, Marijuana, Weed, Pot, Dispensary, Dispensaries Near Me, Weed Near Me, Cultivator, Leafly, Weedmaps, Weed Maps," name="keywords">
-    
+    <meta content="Connoisseur, Cannabis Tournament, Missouri, Kansas City, Saint Louis, Cannabis, Marijuana, Weed, Pot, Dispensary, Dispensaries Near Me, Weed Near Me, Cultivator, Leafly, Weedmaps, Weed Maps," name="keywords">
     <div id="preloaderMain" class="preloader-main d-flex justify-content-center align-items-center">
       <div class="spinner-border text-dark" role="status">
         <span class="visually-hidden">Loading...</span>
@@ -34,7 +33,7 @@
     </script>
     {% block head %}
     {%  endblock %}
-    
+    <meta name="robots" content="index, follow">
     <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
@@ -51,10 +50,25 @@
       src="{{ url_for('static', path='src/aos/aos.js') }}"
     ></script>
     <script type="module" src="{{ url_for('static', path='js/supa_login.js') }}"></script>
-    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Cannabis Cult",
+      "url": "https://cannabiscult.co",
+      "logo": "https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/logos/brain_vector-optimized.png",
+      "sameAs": [
+        "https://www.facebook.com/100089202138069",
+        "https://twitter.com/TheCannabisCvlt",
+        "https://www.instagram.com/missouricannabisreviews",
+        "https://www.reddit.com/r/thecannabiscult/"
+        
+      ]
+    }
+    </script>
     {% block title %}
     {% endblock %}
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E9FRJKXKF7"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-E9FRJKXKF7" rel="dns-prefetch"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
