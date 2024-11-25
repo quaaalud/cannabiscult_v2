@@ -37,6 +37,10 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "CC2": ("Sundro", "Super Buff Cherries"),
             "CC3": ("Robust", "Tahiti Lime"),
             "CC4": ("Cloud Cover", "Peach Crescendo"),
+            "CultFlower1": ("Nuthera", "Grape Cream Cake"),
+            "CultFlower2": ("Vibe", "RKO"),
+            "CultFlower3": ("Sinse", "Cap Junky"),
+            "CultFlower4": ("C4", "Lemon Drip"),
         }
         query_params = dict(request.query_params)
         strain_selected = query_params.get("strain_selected")
