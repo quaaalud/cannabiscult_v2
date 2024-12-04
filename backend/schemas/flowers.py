@@ -6,7 +6,7 @@ Created on Sun Nov  5 16:47:38 2023
 @author: dale
 """
 
-from pydantic import BaseModel, constr, EmailStr, root_validator, Field
+from pydantic import BaseModel, constr, EmailStr, root_validator, Field, validator
 from typing import List, Optional
 
 
@@ -18,6 +18,14 @@ class FlowersBase(BaseModel):
     card_path: str = Field(..., description="Path to the flower's image card")
     voting_open: bool = Field(True, description="Indicates if voting is open for this flower")
     product_type: str = Field("flower", description="Type of the product, default is 'flower'")
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def verify_string_and_capitalize_name(cls, v):
+        return v.capitalize() if isinstance(v, str) else None
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def strip_whitespace(cls, v):
+        return v.strip() if isinstance(v, str) else None
 
     class Config:
         from_attributes = True

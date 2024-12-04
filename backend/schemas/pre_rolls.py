@@ -6,8 +6,7 @@ Created on Sun Jan 21 12:53:04 2024
 @author: dale
 """
 
-from pydantic import BaseModel, Field, constr, confloat, conint, EmailStr
-from datetime import date
+from pydantic import BaseModel, Field, constr, EmailStr, validator
 from typing import Optional, List
 
 
@@ -19,6 +18,14 @@ class PreRollSchema(BaseModel):
     pre_roll_id: int = Field(..., description="Unique identifier for the pre-roll")
     is_mystery: bool = Field(True, description="Flag to indicate if the pre-roll is a mystery roll")
     product_type: str = Field("pre-roll", description="Product Type for Pre-Rolls")
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def verify_string_and_capitalize_name(cls, v):
+        return v.capitalize() if isinstance(v, str) else "None Submitted"
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def strip_whitespace(cls, v):
+        return v.strip() if isinstance(v, str) else v
 
     class Config:
         from_attributes = True
@@ -99,6 +106,14 @@ class PreRollRankingSchema(BaseModel):
         None, max_length=99, description="Pack code of the pre-roll, if provided"
     )
     pre_roll_id: int = Field(..., description="ID of the associated pre-roll")
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def verify_string_and_capitalize_name(cls, v):
+        return v.capitalize() if isinstance(v, str) else "None Submitted"
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def strip_whitespace(cls, v):
+        return v.strip() if isinstance(v, str) else v
 
     class Config:
         from_attributes = True
