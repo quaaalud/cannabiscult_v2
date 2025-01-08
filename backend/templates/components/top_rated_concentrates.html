@@ -65,7 +65,7 @@ $(document).ready(function() {
         <div class="row my-auto">
           <div class="col-11 col-xl-5 mb-lg-0 ms-auto order-md-1 mx-auto pb-2 pb-lg-0">
             <div class="bg-image hover-overlay ripple shadow-1-strong rounded-4" data-mdb-ripple-color="light">
-              <a href="/concentrate-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}">
+              <a href="/concentrate-get-review?strain_selected=${strain.replace(/ /g, '+')}&cultivator_selected=${cultivator}">
                 <img src=${url_path} class="w-100" alt="Cannabis Cult Review Image for ${strain}" loading="lazy">
               </a>
             </div>
@@ -73,7 +73,7 @@ $(document).ready(function() {
           <div class="col-11 col-xl-7 mb-md-0 me-auto order-md-2 mx-auto align-items-top">
             <div class="row my-auto align-content-top align-items-top text-top">
               <div class="col-12 col-sm-6 col-md-5 my-auto pt-3 pt-sm-0">
-                <a href="/get-review?strain_selected=${strain}&cultivator_selected=${cultivator}" class="text-decoration-none text-dark">
+                <a href="/concentrate-get-review?strain_selected=${strain.replace(/ /g, '+')}&cultivator_selected=${cultivator}" class="text-decoration-none text-dark">
                   <h5 class="fs-4">${strain}</h5>
                 </a>
                 <div class="mb-1 text-info small">

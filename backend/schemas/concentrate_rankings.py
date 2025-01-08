@@ -6,9 +6,8 @@ Created on Sun Nov  5 16:57:17 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, Field, constr, confloat
+from pydantic import BaseModel, EmailStr, Field, constr, confloat, validator
 from typing import Optional, Union
-from datetime import date
 
 
 class ConcentrateRankingBase(BaseModel):
@@ -51,6 +50,10 @@ class ConcentrateRankingBase(BaseModel):
     pack_code: Optional[str] = Field(
         None, max_length=99, description="Pack code of the concentrate, if provided"
     )
+
+    @validator("pack_code", pre=True, always=True)
+    def strip_whitespace(cls, v):
+        return v.strip() if isinstance(v, str) else v
 
     class Config:
         from_attributes = True
