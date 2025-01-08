@@ -126,6 +126,9 @@
           <a href="/strain_lineages" class="nav-link">Lineages</a>
         </li>
         <li class="nav-item">
+          <a href="https://thecannabiscult.myshopify.com/" class="nav-link" target="_blank">Merch</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="/search">Search</a>
         </li>
         <li class="nav-item">
@@ -211,7 +214,6 @@ function ensureSupabaseClient(retries = 3, delay = 500) {
 }
 window.addEventListener('load', function() {
   ensureSupabaseClient().then(() => {
-      // This ensures the Supabase client is ready before attaching the event listener
       const logoutButton = document.getElementById('confirmLogoutButton');
       if (logoutButton) {
           logoutButton.addEventListener('click', function(event) {

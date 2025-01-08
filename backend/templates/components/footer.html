@@ -29,20 +29,23 @@
   </div>
   <!-- Copyright -->
   <div class="row justify-content-end align-items-center" style="background-color: rgba(48, 25, 52, 1.0);">
-    <div class="text-end pt-3 pt-md-0 me-3 me-md-0 text-center-lg py-3 col-12 d-block d-md-none">
-      <a href="https://app.brandbay.io/brand/cannabis-cult" class="text-white-50 text-decoration-underline" target="_blank" rel="noopener noreferrer">
-        Brand / Media Kit
-      </a>
+    <div class="text-center py-3 pt-md-5 text-white col-12 col-md-6">
+      © <span id="current-year">2024</span> The Social Outfit. All Rights Reserved
     </div>
-    <div class="text-center py-3 text-white col-12 col-md-6">
-      © 2024 The Social Outfit. All Rights Reserved
-    </div>
-    <div class="text-center py-3 col-3 d-none d-md-block">
-      <a href="https://app.brandbay.io/brand/cannabis-cult" class="text-white-50 text-decoration-underline" target="_blank" rel="noopener noreferrer">
+    <div class="col-12 col-md-3 text-end text-md-center py-3 me-3 me-md-0">
+      <a 
+        href="https://app.brandbay.io/brand/cannabis-cult"
+        class="text-white-50 text-decoration-underline"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         Brand / Media Kit
       </a>
     </div>
   </div>
+  <script defer>
+    document.getElementById("current-year").textContent = new Date().getFullYear();
+  </script>
   <!-- Copyright -->
 </footer>
 {% endblock %}
