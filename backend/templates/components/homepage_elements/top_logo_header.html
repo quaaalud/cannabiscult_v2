@@ -9,102 +9,108 @@
 }
 </style>
 {% endblock %}
-<div class="min-vh-90">
-  <div 
-    class="container text-center pt-3 pb-5" 
-    aria-controls="#picker-editor"
+<div class="d-flex align-items-center justify-content-center h-100 mt-5 py-md-5 my-md-5">
+  <div class="row text-center">
+    <div 
+      class="col-12 col-lg-10 col-xl-8 mx-auto h-100" 
+      style="padding:4em"
+      data-aos="fade-in"
+      data-aos-duration="2000"
+      data-aos-easing="ease-in-out"
+      data-aos-mirror="true"
+      data-aos-once="false"
+      data-aos-anchor-placement="top-center"
     >
-      <div class="row py-5 py-md-0 align-items-center">
-          <div 
-            class="container text-center py-5 col-12 col-lg-8 mx-auto h-100" 
-            style="padding:2em"
-            data-aos="fade-in"
-            data-aos-duration="2000"
-            data-aos-easing="ease-in-out"
-            data-aos-mirror="true"
-            data-aos-once="false"
-            data-aos-anchor-placement="top-center"
-          >
-              <div id="homepageCarousel" class="carousel slide carousel-fade carousel-dark" data-mdb-ride="carousel" data-mdb-carousel-init>
-                  <div class="carousel-indicators carousel-dark text-dark">
-                      <button 
-                          data-mdb-target="#homepageCarousel"
-                          data-mdb-slide-to="0"
-                          class="active"
-                          aria-current="true"
-                          aria-label="First Slide Button"
-                      ></button>
-                      <!--
-                      <button 
-                          data-mdb-target="#homepageCarousel"
-                          data-mdb-slide-to="1"
-                          aria-label="Second Slide Button"
-                      ></button>
-                      <button 
-                          data-mdb-target="#homepageCarousel"
-                          data-mdb-slide-to="2"
-                          aria-label="Third Slide Button"
-                      ></button>
-                      -->
-                  </div>
-                  <div class="carousel-inner">
-                      <div class="carousel-item active pb-4">
-                          <a href="#cultSignUpButtonContainer" data-mdb-smooth-scroll-init data-mdb-container="#cultSignUpButtonContainer">
-                              <img 
-                                class="img-fluid d-block w-100 rounded-5 pb-5" 
-                                src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/logos/brain_vector-optimized.webp" loading="lazy" alt="Cannabis Cult Primary Logo in Black and White"
-                                data-mdb-interval="5000"
-                                draggable="false"
-                                data-mdb-interval="5000"
-                                loading="lazy"
-                                style="cover"
-                              />
-                          </a>
-                      </div>
-                      <!--
-                      <div class="carousel-item">
-                          <a href="#cultSignUpButtonContainer" data-mdb-smooth-scroll-init data-mdb-container="#cultSignUpButtonContainer">
-                              <img 
-                                class="img-fluid d-block w-100 rounded-5 pb-5"
-                                src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/events/FlowerRound1Results/1.webp"
-                                data-mdb-interval="5000"
-                                draggable="false"
-                                data-mdb-interval="5000"
-                                style="cover"
-                              />
-                          </a>
-                      </div>
-                      <div class="carousel-item pb-4">
-                          <a href="#cultSignUpButtonContainer" data-mdb-smooth-scroll-init data-mdb-container="#cultSignUpButtonContainer">
-                              <img 
-                                class="img-fluid d-block w-100 rounded-5 pb-5"
-                                src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/events/FlowerRound1Results/2.webp"
-                                data-mdb-interval="5000"
-                                draggable="false"
-                                data-mdb-interval="5000"
-                                style="cover"
-                              />
-                          </a>
-                      </div>
-                      -->
-                  </div>
-              </div>
+      <div id="homepageCarousel" class="carousel slide carousel-fade carousel-dark" data-mdb-ride="carousel" data-mdb-carousel-init>
+        <div class="carousel-indicators carousel-dark text-dark">
+          <button 
+              data-mdb-target="#homepageCarousel"
+              data-mdb-slide-to="0"
+              class="active"
+              aria-current="true"
+              aria-label="First Slide Button"
+          ></button>
+        </div>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <a href="#cultSignUpButtonContainer" data-mdb-smooth-scroll-init data-mdb-container="#cultSignUpButtonContainer">
+              <img 
+                class="img-fluid d-block w-100" 
+                src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/logos/text_logo/cc_text_logo.webp" alt="Cannabis Cult Primary Text Only Logo in Black and White"
+                data-mdb-interval="15000"
+                draggable="false"
+                style="cover"
+              />
+            </a>
           </div>
-          <div class="py-lg-5 my-lg-5 py-md-0 pt-5" id="cultSignUpButtonContainer">
-              <div class="row mx-auto">
-                  <div class="col-8 col-md-7 col-lg-6 col-xl-5 mx-auto">
-                      <a 
-                          id="cultSignUpButton"
-                          class="btn custom-gradient-button btn-lg py-3 w-100" 
-                          href="/login" 
-                          role="button" 
-                          aria-controls="#picker-editor"
-                      >
-                          <span>Join the Cult</span>
-                      </a>
-                  </div>
-              </div>
-          </div>
+        </div>
       </div>
+    </div>
+    <div class="col-10 col-md-9 col-lg-6 col-xl-5 mx-auto pt-5 mt-md-5 pb-3 pb-5" id="cultSignUpButtonContainer">
+      <a 
+        id="cultSignUpButton"
+        class="btn custom-gradient-button btn-lg py-3 w-100" 
+        href="https://cannabiscult.co/login" 
+        role="button" 
+        aria-controls="#picker-editor"
+      >
+        <span id="cultSignUpButtonText">Join the Cult</span>
+      </a>
+    </div>
   </div>
 </div>
+<script type="module" async>
+import { SimpleTypewriter } from "{{ url_for('static', path='js/utils/simpleTextTypewriter.js') }}"
+window.addEventListener('supabaseClientReady', () => {
+  let wasLoggedIn = null;
+
+  let cultSignUpTypewriter = null;
+
+  function checkAuthAndUpdateButton() {
+    const isLoggedIn = window.supabaseClient.isUserLoggedIn();
+    if (wasLoggedIn === isLoggedIn) {
+      return;
+    }
+    wasLoggedIn = isLoggedIn;
+    if (cultSignUpTypewriter?.isAnimating) {
+      cultSignUpTypewriter.stop();
+    }
+    const textSpan = document.getElementById('cultSignUpButtonText');
+    if (textSpan) {
+      textSpan.textContent = '';
+    }
+  
+    let buttonText = [
+      'Join the Cult Today!',
+      'Start Reviewing Strains',
+      'Receive Pack Drop Updates'
+    ];
+    let linkHref = 'https://cannabiscult.co/login';
+  
+    if (isLoggedIn) {
+      buttonText = [
+        'See Your Rankings',
+        'Compare With Other Connoisseurs',
+        'Add Strains to Your List'
+      ];
+      linkHref = '/home';
+    }
+    const cultButton = document.getElementById('cultSignUpButton');
+    if (cultButton) {
+      cultButton.href = linkHref;
+    }
+    cultSignUpTypewriter = new SimpleTypewriter({
+      targetId: 'cultSignUpButtonText',
+      phrases: buttonText,
+      typingSpeed: 100,
+      pauseDuration: 1500,
+      backspace: true,
+      respectReducedMotion: false
+    });
+    cultSignUpTypewriter.start();
+  }
+  window.addEventListener('userAuthChange', () => {
+    checkAuthAndUpdateButton();
+  });
+});
+</script>

@@ -9,6 +9,7 @@ export function initializeSupabaseClient() {
 class SupabaseClient {
     constructor() {
         this.supabase = null;
+        this.currentUser = null;
     }
 
     async loadScript(src) {
@@ -58,16 +59,22 @@ class SupabaseClient {
         this.supabase.auth.onAuthStateChange((event, session) => {
             switch (event) {
                 case 'INITIAL_SESSION':
+                    window.dispatchEvent(new CustomEvent('userAuthChange'));
+                    if (session && session.user) {
+                        this.currentUser = session.user;
+                    }
                     break;
                 case 'SIGNED_IN':
                     this.onSignIn(session);
                     this.addLogoutLink();
                     break;
-                case 'SIGNED_OUT':
-                    this.onSignOut(session);
-                    break;
                 case 'TOKEN_REFRESHED':
                     this.onSignIn(session);
+                    this.addLogoutLink();
+                    break;
+                case 'SIGNED_OUT':
+                    this.onSignOut(session);
+                    window.dispatchEvent(new CustomEvent('userAuthChange'));
                     break;
                 case 'PASSWORD_RECOVERY':
                     this.onPasswordRecovery(session);
@@ -87,6 +94,10 @@ class SupabaseClient {
           console.error('Invalid session data received during sign-in.');
           return;
       }
+      if (!this.currentUser) {
+        window.dispatchEvent(new CustomEvent('userAuthChange'));
+      }
+      this.currentUser = session.user;
       try {
         this.removeloginLink();
         this.setAuthCookies(session, true);
@@ -99,7 +110,7 @@ class SupabaseClient {
       }
     }
     onSignOut(session) {
-        console.log('User signed out');
+        this.currentUser = null;
         this.setAuthCookies(session, false);
         this.clearStorage();
         this.removeLogoutLink();
@@ -127,6 +138,9 @@ class SupabaseClient {
             document.cookie = `my-access-token=; path=/; expires=${expires}; SameSite=Lax; secure`;
             document.cookie = `my-refresh-token=; path=/; expires=${expires}; SameSite=Lax; secure`;
         }
+    }
+    isUserLoggedIn() {
+        return !!this.currentUser;
     }
     validateFormData(data) {
         // Password validation
@@ -330,6 +344,7 @@ class SupabaseClient {
           logoutLink.setAttribute('data-bs-target', '#logoutModal');
           logoutListItem.appendChild(logoutLink);
           navlinks.appendChild(logoutListItem);
+          window.dispatchEvent(new CustomEvent('userAuthChange'));
       }
     }
     

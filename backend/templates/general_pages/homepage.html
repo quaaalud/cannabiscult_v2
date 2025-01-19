@@ -62,24 +62,23 @@
 {% block content %}
   {% include "components/homepage_elements/top_logo_header.html" %}
   <hr class="hr hr-blurry" />
-  <div class="container align-items-center justify-items-center">
+  <div class="container align-items-center justify-items-center py-4">
     {% include "components/homepage_elements/homepage_features.html" %}
   </div>
   <hr class="hr hr-blurry" />
-  <div class="col-12 py-5">
-    {% include "components/flower_review_selector.html" %}
-  </div>
-  <hr class="hr hr-blurry" />
-  <div class="container-fluid align-items-center justify-items-center">
-    {% include "components/homepage_elements/all_ratings_tables.html" %}
+  <div class="container py-3 bg-transparent" style="max-height:950px; overflow-y:scroll">
+      <div class="text-muted text-center">
+          <p class="fs-3">Cult Strain Reviews</p>
+      </div>
+      {% include "components/voting_cards/simple_product_card.html" %}
   </div>
   <hr class="hr hr-blurry" />
   <div class="container-fluid">
-    <div class="row g-0">
-      <div class="col-12 col-lg-6">
+    <div class="row g-0 align-content-stretch">
+      <div class="col-12 col-lg-6 align-content-stretch">
         {% include "components/top_rated_flower.html" %}
       </div>
-      <div class="col-12 col-lg-6">
+      <div class="col-12 col-lg-6 align-content-stretch">
         {% include "components/top_rated_concentrates.html" %}
       </div>
     </div>
@@ -93,11 +92,15 @@
       <div id="zenlocator-map-pg2vvfnw"></div><script type="text/javascript" src="https://js.zenlocator.com/xhtkvgxg.min.js" async></script>
     </div>
   </div>
+  <hr class="hr hr-blurry" />
+    <div class="container-fluid align-items-center justify-items-center pb-5">
+      {% include "components/homepage_elements/all_ratings_tables.html" %}
+    </div>
+  
 {% endblock %}  
 
 {% block footer %}
 {% endblock %}
   
 {% block scripts %}
-
 {% endblock %}
