@@ -40,7 +40,7 @@
     <div class="col-10 col-md-9 col-lg-6 col-xl-5 mx-auto pt-5 mt-md-5 pb-3 pb-5" id="cultSignUpButtonContainer">
       <a 
         id="cultSignUpButton"
-        class="btn custom-gradient-button btn-lg py-3 w-100" 
+        class="btn custom-gradient-button btn-lg py-3 w-100 h-100" 
         href="https://cannabiscult.co/login" 
         role="button" 
         aria-controls="#picker-editor"
@@ -68,7 +68,7 @@ window.addEventListener('supabaseClientReady', () => {
     }
     const textSpan = document.getElementById('cultSignUpButtonText');
     if (textSpan) {
-      textSpan.textContent = ' ';
+      textSpan.textContent = '';
     }
   
     let buttonText = [

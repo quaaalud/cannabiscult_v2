@@ -199,14 +199,16 @@ export class SimpleTypewriter {
    * Erase text one character at a time.
    */
   eraseCharacter() {
-    if (!this.isAnimating) return;
-
-    if (this.targetElem.textContent.length > 0) {
-      this.targetElem.textContent = this.targetElem.textContent.slice(0, -1);
-      this.timeoutId = setTimeout(() => this.eraseCharacter(), 30);
-    } else {
-      this.advancePhraseIndex();
-    }
+      if (!this.isAnimating) return;
+      if (this.targetElem.textContent.length > 1) {
+          this.targetElem.textContent = this.targetElem.textContent.slice(0, -1);
+          this.timeoutId = setTimeout(() => this.eraseCharacter(), 30);
+      } else {
+          this.targetElem.textContent = '\u00A0';
+          this.timeoutId = setTimeout(() => {
+              this.advancePhraseIndex();
+          }, this.pauseDuration);
+      }
   }
 
   /**
