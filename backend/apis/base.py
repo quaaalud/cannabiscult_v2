@@ -39,10 +39,6 @@ from _supabase import route_cultivator_voting
 from _supabase import route_concentrates
 from _supabase import route_concentrate_rankings
 from _supabase import route_edibles
-from _supabase import route_flower_rankings
-from _supabase import route_flower_reviews
-from _supabase import route_flower_voting
-from _supabase import route_mystery_flower_review
 from _supabase import route_mystery_voters
 from _supabase import route_edible_rankings
 from _supabase import route_searches
@@ -91,26 +87,6 @@ api_router.include_router(
     route_concentrate_rankings.router,
     prefix="/concentrate_ranking",
     tags=["concentrate_ranking"]
-)
-api_router.include_router(
-    route_flower_rankings.router,
-    prefix="/flower_ranking",
-    tags=["flower_ranking"]
-)
-api_router.include_router(
-    route_flower_reviews.router,
-    prefix="/flower_reviews",
-    tags=["flower_reviews"]
-)
-api_router.include_router(
-    route_flower_voting.router,
-    prefix="/flower_voting",
-    tags=["flower_voting"]
-)
-api_router.include_router(
-    route_mystery_flower_review.router,
-    prefix="/mystery_flower_review",
-    tags=["mystery_flower_review"]
 )
 api_router.include_router(
     route_mystery_voters.router,

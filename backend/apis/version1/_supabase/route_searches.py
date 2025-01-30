@@ -14,16 +14,15 @@ from sqlalchemy.orm import Session
 from uuid import uuid4
 from db.session import get_db
 from typing import List, Optional, Any, Dict, Union
-from schemas.flower_rankings import GetFlowerRanking
+from schemas.flowers import GetFlowerRanking
 from schemas.concentrate_rankings import GetConcentrateRanking
 from schemas.pre_rolls import PreRollRankingSchema
 from schemas.edible_rankings import GetVibeEdibleRanking
 from schemas.search_class import SearchResultItem, StrainCultivator, RatingModel
-from db.models.flowers import Flower
+from db.base import Flower, Flower_Ranking
 from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
 from db.models.pre_rolls import Pre_Roll, Pre_Roll_Ranking
-from db.models.flower_rankings import Flower_Ranking
 from db.models.concentrate_rankings import Concentrate_Ranking
 from db.models.edible_rankings import MysteryEdibleRanking, Vibe_Edible_Ranking
 from db.models.calendar_events import CalendarEvent, CalendarEventQuery

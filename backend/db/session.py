@@ -20,13 +20,10 @@ def get_db() -> Generator:
     try:
         db = SupaLocal()
         yield db
+    except Exception:
+        db.rollback()
     finally:
         db.close()
 
 
-def get_supa_db() -> Generator:
-    try:
-        db = SupaLocal()
-        yield db
-    finally:
-        db.close()
+get_supa_db = get_db

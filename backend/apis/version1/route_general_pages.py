@@ -18,7 +18,6 @@ from typing import List, Optional, Dict, Any
 from db.session import get_db
 from core.config import settings, Config
 from db.repository.edibles import get_vivd_edible_data_by_strain
-from db.repository.edibles import get_vibe_edible_data_by_strain
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
     create_user,
@@ -33,18 +32,14 @@ from route_users import (
 from schemas.mystery_voters import MysteryVoterCreate
 from schemas.subscribers import SubscriberCreate
 from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
-from version1._supabase.route_flower_reviews import (
+from version1._supabase.route_flowers import (
     get_all_strains,
     get_all_cultivators,
     get_all_strains_for_cultivator,
     get_all_cultivators_for_strain,
-    return_selected_review,
-    add_new_votes_to_flower_strain,
+    add_new_votes_to_flower_values,
+    get_flower_and_description
 )
-from version1._supabase.route_flower_voting import (
-    add_flower_vote_to_db,
-)
-from db.repository.flowers import get_flower_and_description
 from version1._supabase import route_concentrates
 from db.repository import concentrate_reviews, pre_rolls
 from db.repository.concentrates import get_concentrate_data_and_path
@@ -370,7 +365,7 @@ async def process_flower_request(
         return templates.TemplateResponse(
             str(Path("general_pages", "connoisseur_flowers.html")), response_dict
         )
-    except:
+    except Exception:
         return templates.TemplateResponse(
             str(Path("general_pages", "voting-home.html")),
             {
@@ -474,9 +469,6 @@ async def handle_pre_roll_review_post_from_form(
     ),  # No alias needed
     db: Session = Depends(get_db),
 ):
-    print(strain)
-    print(cultivator)
-    print(product_type_selected)
     return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
 
 
@@ -539,10 +531,7 @@ async def handle_vibe_edible_post(
     strain_selected: str = Query(None, alias="strain_selected"),
     db: Session = Depends(get_db),
 ):
-    # Decide which strain to use based on the provided parameters
     strain_to_use = strain_selected if strain_selected else edible_strain
-
-    # Additional logic to handle product_type_selected and cultivator_selected if needed
 
     edible_dict = get_vibe_edible_data_by_strain(
         db,
@@ -625,7 +614,7 @@ async def submit_flower_review_vote(
             user_email=user_email,
             db=db,
         )
-    except:
+    except Exception:
         pass
     try:
         review_dict = add_new_votes_to_flower_strain(
@@ -637,7 +626,6 @@ async def submit_flower_review_vote(
             effects_vote,
             db,
         )
-
         request_dict = {
             "request": request,
             "user_is_logged_in": user_is_logged_in,
@@ -646,7 +634,7 @@ async def submit_flower_review_vote(
         return templates.TemplateResponse(
             str(Path("general_pages", "vote_success.html")), response_dict
         )
-    except:
+    except Exception:
         return templates.TemplateResponse(
             str(Path("general_pages", "voting-home.html")),
             {

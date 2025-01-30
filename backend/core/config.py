@@ -7,6 +7,7 @@ Created on Sun Mar  5 21:17:34 2023
 """
 
 import os
+import datetime
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
@@ -49,6 +50,13 @@ class Settings:
 
     def __init__(self):
         self.retry_db = self.set_retry()
+
+    @staticmethod
+    def date_handler(obj):
+        if isinstance(obj, datetime.date):
+            return obj.isoformat()
+        else:
+            raise TypeError("Type %s not serializable" % type(obj))
 
     @staticmethod
     # Retry configuration enhanced for more exceptions
