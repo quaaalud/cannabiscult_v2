@@ -375,7 +375,7 @@ async def get_product_terp_profile(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/strain-family-tree", response_model=dict)
+@router.get("/strain-family-tree", response_model=Dict)
 def get_family_tree(db: Session = Depends(get_db)):
     try:
         graph = build_strains_family_tree_graph(db)
