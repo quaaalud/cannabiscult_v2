@@ -118,20 +118,16 @@ async function loadFormStateforConcentrates() {
     console.warn('localStorage is not available, defaulting to initial state.');
     return getDefaultFormStateForConcentrates();
   }
-
   try {
     const savedState = localStorage.getItem('formState');
     if (!savedState) {
       return getDefaultFormStateForConcentrates();
     }
-
     const parsedState = JSON.parse(savedState);
-    // Ensure the parsedState is for the current concentrate item
     if (parsedState.concentrate_id !== concentrateId) {
       console.warn('Saved form state is for a different concentrate item, defaulting to initial state.');
       return getDefaultFormStateForConcentrates();
     }
-
     return parsedState; // Return the saved state if it matches the current concentrate ID
   } catch (e) {
     console.error('Error reading or parsing saved form state:', e);
@@ -229,14 +225,12 @@ async function checkVoterExists(email) {
   const root = window.location.origin;
   const url = new URL('/check-mystery-voter', root);
   url.searchParams.append('voter_email', lowerCaseEmail);
-
   const response = await fetch(url, {
       method: 'GET',
       headers: {
           'Content-Type': 'application/json'
       }
   });
-
   if (response.ok) {
     const data = await response.json();
     if (!data.exists) {

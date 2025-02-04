@@ -1,10 +1,11 @@
-{% extends "shared/base_light.html" %}
+{% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Cannabis Cult Connoisseur Ranking Success</title>
+  <title>Cannabis Cult Logout Success</title>
 {% endblock %} 
 
 {% block head %}
+  <meta http-equiv="refresh" content="3; url=/">
   <meta 
     property="og:image" 
     content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
@@ -32,7 +33,7 @@
   />
   <meta 
     property="twitter:title" 
-    content="The Cannabis Cult Connoisseur Ranking Success"
+    content="The Cannabis Cult"
   />
   <meta 
     property="twitter:description" 
@@ -49,37 +50,33 @@
   />
 {% endblock %}
 {% block content %}
-
-<main class="container-fluid align-items-center justify-content-center text-center bg-dark">
-  <a href="/"><section id="bg-container" class="row d-flex mx-auto my-auto align-items-center justify-content-center text-center" style="background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/success_brain.webp'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 100vh;">
-    <div id="success-text" class="container-fluid" style="background-image: url('https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/svg/success_text.svg'); background-size: cover; background-position: center; background-repeat: no-repeat; min-height: 80vh;"></div>
- </section></a>
-</main>        
+<main class="container-fluid pt-3 pb-5">
+  <section class="container align-content-center pt-5 pb-5">
+    <div class="text-center pt-5 pb-5">
+      <span>
+        <h1>Your logout was successful</h1>
+      </span>
+      <span>
+        <h2>
+          Add @cannabiscult.co to your address book so you do not miss an update!
+        </h2>
+      </span>
+    </div>
+  </section>
+  <section class="container align-content-center">
+    <div class="container mb-5">
+      <div class="pb-5">
+        <div class="container-fluid text-center" style="padding:2em">
+          <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp">
+        </div>
+      </div>
+    </div>
+  </section>   
+</main>     
 {% endblock %}  
 
 {% block footer %}
 {% endblock %}
   
-{% block scripts %} 
-<script>
-  function adjustTextImgSize() {
-    const textElement = document.querySelector('#success-text');
-    if (window.innerWidth < 600) {
-      textElement.style.minHeight = 'Clamp(300px, 55vh, 75vh';
-      textElement.style.maxHeight = '100vh';
-      textElement.style.maxWidth = '600px !important';
-      
-      
-    } else {
-      textElement.style.minHeight = '750px';
-      textElement.style.maxHeight = '85vh';
-      textElement.style.maxWidth = '65vw !important';
-      
-    }
-  }
-  
-  adjustTextImgSize();
-  
-  window.addEventListener('resize', adjustTextImgSize);
-</script> 
+{% block scripts %}  
 {% endblock %}

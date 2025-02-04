@@ -70,26 +70,6 @@
 {% endblock %}
 
 {% block content %}
-<main class="container-fluid">
-{% if cultivator == "Connoisseur" %}
-  <div class="pt-4 pt-md-5">
-  {% include "components/mystery_vote_template.html" %}
-  </div>
-  {% include "components/mystery_vote_modal.html" %}
-    <div class="text-center">
-      <div class="container-fluid text-center pb-5">
-        <a href="/">
-          <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
-        </a>
-      </div>
-    </div>
-{% else %}
-  <div class="text-center">
-    <div class="container-fluid text-center" style="padding:2em">
-      <img src="{{ url_for('static', path='images/small_black_cc_logo.png') }}">
-    </div>
-  </div>
-  {% include "components/vote_template.html" %}
   <div class="container align-items-center justify-items-center pt-5">
     {% include "components/homepage_elements/homepage_features.html" %}
   </div>
@@ -106,7 +86,6 @@
   <section class="py-4 container" id="topRatedStrains">
     {% include "components/top_rated_concentrates.html" %}
   </section>
-{% endif %}
 </main>
 {% endblock %}
 

@@ -14,7 +14,7 @@ from fastapi.responses import RedirectResponse, HTMLResponse, ORJSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict
 from db.session import get_db
 from core.config import settings, Config
 from db.repository.edibles import get_vivd_edible_data_by_strain, get_vibe_edible_data_by_strain
@@ -58,21 +58,27 @@ templates = Jinja2Templates(directory=str(templates_dir))
 general_pages_router = APIRouter()
 
 
-@general_pages_router.get("/")
+async def get_config_obj():
+    return Config(
+        SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
+        SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
+        ALGO=settings.ALGO,
+    )
+
+
+@general_pages_router.get("/", response_class=HTMLResponse)
 async def home(request: Request):
-    partner_data = await get_current_partner_data()
     user_is_logged_in = await async_get_current_users_email() is not None
     return templates.TemplateResponse(
         str(Path("general_pages", "homepage.html")),
         {
             "request": request,
-            "dispensaries": partner_data,
             "user_is_logged_in": user_is_logged_in,
         },
     )
 
 
-@general_pages_router.get("/voting-home")
+@general_pages_router.get("/voting-home", response_class=HTMLResponse)
 async def voting_home(request: Request):
     user_is_logged_in = await async_get_current_users_email() is not None
     return templates.TemplateResponse(
@@ -84,7 +90,7 @@ async def voting_home(request: Request):
     )
 
 
-@general_pages_router.get("/home")
+@general_pages_router.get("/home", response_class=HTMLResponse)
 async def user_home(request: Request):
     user_is_logged_in = await async_get_current_users_email() is not None
     return templates.TemplateResponse(
@@ -96,13 +102,24 @@ async def user_home(request: Request):
     )
 
 
-@general_pages_router.post("/login-submit")
+@general_pages_router.get("/forgot-password", response_class=HTMLResponse)
+async def forgot_password_landing_page(request: Request):
+    user_is_logged_in = await async_get_current_users_email() is not None
+    return templates.TemplateResponse(
+        str(Path("general_pages", "auth", "forgot_password.html")),
+        {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        },
+    )
+
+
+@general_pages_router.post("/login-submit", response_class=HTMLResponse)
 async def submit_login_form(
     request: Request,
     login_email: str = Form(...),
     login_password: str = Form(...),
 ):
-
     user = UserLogin(
         email=login_email.lower(),
         password=login_password,
@@ -110,7 +127,7 @@ async def submit_login_form(
     try:
         user = login_supa_user(user=user)
         return templates.TemplateResponse(
-            str(Path("general_pages", "login_success.html")),
+            str(Path("general_pages", "auth", "login_success.html")),
             {
                 "request": request,
                 "username": login_email.lower(),
@@ -119,7 +136,7 @@ async def submit_login_form(
         )
     except AuthApiError:
         return templates.TemplateResponse(
-            str(Path("general_pages", "submit-failed.html")),
+            str(Path("general_pages", "auth", "submit-failed.html")),
             {
                 "request": request,
                 "username": login_email.lower(),
@@ -127,7 +144,7 @@ async def submit_login_form(
         )
 
 
-@general_pages_router.post("/register")
+@general_pages_router.post("/register", response_class=HTMLResponse)
 async def submit_register_form(
     request: Request,
     register_email: str = Form(...),
@@ -139,7 +156,15 @@ async def submit_register_form(
     register_phone: str = Form(...),
     db: Session = Depends(get_db),
 ):
-    if register_password == register_repeat_password:
+    response_dict = (
+        {
+            "request": request,
+            "username": register_name,
+        },
+    )
+    if register_password != register_repeat_password:
+        return templates.TemplateResponse(str(Path("general_pages", "auth", "submit-failed.html")), response_dict)
+    try:
         user = UserCreate(
             email=str(register_email.lower()),
             password=register_password,
@@ -151,42 +176,23 @@ async def submit_register_form(
             can_vote=False,
             is_superuser=False,
         )
-
         create_user(user=user, db=db)
         create_supa_user(user=user)
-
         existing_voter = get_voter_info_by_email(register_email.lower(), db)
         if not existing_voter:
-            try:
-                voter = MysteryVoterCreate(
-                    email=register_email.lower(),
-                    name=register_name,
-                    zip_code=register_zip_code,
-                    phone=register_phone,
-                )
-                create_mystery_voter(voter=voter, db=db)
-            except Exception as e:
-                print(f"Error: {e}\n\n{e.with_traceback()}")
-                pass
-
-        return templates.TemplateResponse(
-            str(Path("general_pages", "register_success.html")),
-            {
-                "request": request,
-                "username": register_name,
-            },
-        )
-    else:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "submit-failed.html")),
-            {
-                "request": request,
-                "username": register_name,
-            },
-        )
+            voter = MysteryVoterCreate(
+                email=register_email.lower(),
+                name=register_name,
+                zip_code=register_zip_code,
+                phone=register_phone,
+            )
+            create_mystery_voter(voter=voter, db=db)
+        return templates.TemplateResponse(str(Path("general_pages", "auth", "register_success.html")), response_dict)
+    except Exception:
+        return templates.TemplateResponse(str(Path("general_pages", "auth", "submit-failed.html")), response_dict)
 
 
-@general_pages_router.post("/logout-submit")
+@general_pages_router.post("/logout-submit", response_class=HTMLResponse)
 async def submit_user_logout(request: Request, db: Session = Depends(get_db)):
     user = get_current_users_email()
     try:
@@ -195,18 +201,16 @@ async def submit_user_logout(request: Request, db: Session = Depends(get_db)):
     except AuthApiError:
         pass
     finally:
-        partner_data = await get_current_partner_data()
         return templates.TemplateResponse(
-            str(Path("general_pages", "logout_success.html")),
+            str(Path("general_pages", "auth", "logout_success.html")),
             {
                 "request": request,
-                "dispensaries": partner_data,
                 "user_is_logged_in": user is not None,
             },
         )
 
 
-@general_pages_router.post("/submit-new-password")
+@general_pages_router.post("/submit-new-password", response_class=HTMLResponse)
 async def submit_new_password_form(
     request: Request,
     user_email: str = Form(...),
@@ -215,9 +219,7 @@ async def submit_new_password_form(
     repeated_password: str = Form(...),
     db: Session = Depends(get_db),
 ):
-
     user_is_logged_in = get_current_users_email() is not None
-
     try:
         user = update_user_password(
             user_email=user_email.lower(),
@@ -227,16 +229,16 @@ async def submit_new_password_form(
             db=db,
         )
         return templates.TemplateResponse(
-            str(Path("general_pages", "register_success.html")),
+            str(Path("general_pages", "auth", "register_success.html")),
             {
                 "request": request,
                 "username": user_email.lower(),
                 "can_vote_status": user.can_vote,
             },
         )
-    except:
+    except Exception:
         return templates.TemplateResponse(
-            str(Path("general_pages", "submit-failed.html")),
+            str(Path("general_pages", "auth", "submit-failed.html")),
             {
                 "request": request,
                 "user_is_logged_in": user_is_logged_in,
@@ -244,7 +246,7 @@ async def submit_new_password_form(
         )
 
 
-@general_pages_router.post("/submit")
+@general_pages_router.post("/submit", response_class=HTMLResponse)
 async def submit_subscriber_form(
     request: Request,
     name: str = Form(...),
@@ -263,7 +265,7 @@ async def submit_subscriber_form(
     create_subscriber(subscriber=subscriber_data, db=db)
 
     return templates.TemplateResponse(
-        str(Path("general_pages", "success.html")),
+        str(Path("general_pages", "auth", "success.html")),
         {
             "request": request,
             "name": name,
@@ -274,7 +276,7 @@ async def submit_subscriber_form(
     )
 
 
-@general_pages_router.get("/privacy-policy")
+@general_pages_router.get("/privacy-policy", response_class=HTMLResponse)
 async def privacy_policy(request: Request):
     user_is_logged_in = get_current_users_email() is not None
     return templates.TemplateResponse(
@@ -286,7 +288,7 @@ async def privacy_policy(request: Request):
     )
 
 
-@general_pages_router.get("/terms-of-use")
+@general_pages_router.get("/terms-of-use", response_class=HTMLResponse)
 async def terms_and_conditions(request: Request):
     user_is_logged_in = get_current_users_email() is not None
     return templates.TemplateResponse(
@@ -298,20 +300,12 @@ async def terms_and_conditions(request: Request):
     )
 
 
-@general_pages_router.post("/unsubscribe-submit")
-async def submit_unsubscribe_form(
-    request: Request, email: str = Form(...), db: Session = Depends(get_db)
-):
-
+@general_pages_router.post("/unsubscribe-submit", response_class=HTMLResponse)
+async def submit_unsubscribe_form(request: Request, email: str = Form(...), db: Session = Depends(get_db)):
     remove_subscriber(email, db=db)
-
-    partner_data = await get_current_partner_data()
     return templates.TemplateResponse(
         str(Path("general_pages", "homepage.html")),
-        {
-            "request": request,
-            "dispensaries": partner_data,
-        },
+        {"request": request},
     )
 
 
@@ -361,7 +355,9 @@ async def process_flower_request(
         }
         response_dict = {**request_dict, **review_dict}
 
-        return templates.TemplateResponse(str(Path("general_pages", "connoisseur_flowers.html")), response_dict)
+        return templates.TemplateResponse(
+            str(Path("general_pages", "ranking_pages", "connoisseur_flowers.html")), response_dict
+        )
     except Exception:
         return templates.TemplateResponse(
             str(Path("general_pages", "voting-home.html")),
@@ -371,7 +367,7 @@ async def process_flower_request(
         )
 
 
-@general_pages_router.post("/get-review")
+@general_pages_router.post("/get-review", response_class=HTMLResponse)
 async def handle_flower_review_get(
     request: Request,
     *,
@@ -384,7 +380,7 @@ async def handle_flower_review_get(
     return await process_flower_request(request, strain_selected, cultivator_selected, cultivar_email, db)
 
 
-@general_pages_router.get("/get-review")
+@general_pages_router.get("/get-review", response_class=HTMLResponse)
 async def handle_flower_review_post(
     request: Request,
     *,
@@ -404,19 +400,19 @@ async def process_pre_roll_request(request: Request, strain: str, cultivator: st
         review_dict = await pre_rolls.get_pre_roll_and_description(
             db=db, strain=strain, cultivar_email=cultivar_email, cultivator=cultivator
         )
-        #    try:
         request_dict = {
             "request": request,
             "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(str(Path("general_pages", "connoisseur_pre_rolls.html")), response_dict)
-    except Exception as e:
-        print(f"Error: {e}")  # Log the error for debugging
+        return templates.TemplateResponse(
+            str(Path("general_pages", "ranking_pages", "connoisseur_pre_rolls.html")), response_dict
+        )
+    except Exception:
         return templates.TemplateResponse(str(Path("general_pages", "voting-home.html")), {"request": request})
 
 
-@general_pages_router.post("/pre-roll-get-review")
+@general_pages_router.post("/pre-roll-get-review", response_class=HTMLResponse)
 async def handle_pre_roll_review_get(
     request: Request,
     *,
@@ -429,7 +425,7 @@ async def handle_pre_roll_review_get(
     return await process_pre_roll_request(request, strain, cultivator, db)
 
 
-@general_pages_router.get("/pre-roll-get-review")
+@general_pages_router.get("/pre-roll-get-review", response_class=HTMLResponse)
 async def handle_pre_roll_review_post(
     request: Request,
     *,
@@ -442,7 +438,7 @@ async def handle_pre_roll_review_post(
     return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
 
 
-@general_pages_router.get("/pre-roll-get-review-form")
+@general_pages_router.get("/pre-roll-get-review-form", response_class=HTMLResponse)
 async def handle_pre_roll_review_post_from_form(
     request: Request,
     *,
@@ -455,7 +451,7 @@ async def handle_pre_roll_review_post_from_form(
     return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
 
 
-@general_pages_router.get("/vibe-hash-hole")
+@general_pages_router.get("/vibe-hash-hole", response_class=HTMLResponse)
 async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
     cultivator = "Vibe"
     strain = "Hash Hole"
@@ -466,40 +462,24 @@ async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
 
 
 #  Concentrate Review and Voting Pages
-@general_pages_router.get("/get_hidden_concentrate")
+@general_pages_router.get("/get_hidden_concentrate", response_class=HTMLResponse)
 async def handle_hidden_concentrate_post(
     request: Request,
     strain: str = Query(None, alias="strain"),
     db: Session = Depends(get_db),
 ):
-    if strain == "CP3":
-        return await process_concentrate_request(
-            request, "Cult Rosin 3", "Cultivar", "aaron.childs@thesocialoutfitus.com", db
-        )
     hidden_concentrate_dict = get_concentrate_data_and_path(
         db,
         strain=strain,
     )
     response_dict = {"request": request, **hidden_concentrate_dict}
-    return templates.TemplateResponse(str(Path("general_pages", "connoisseur_concentrates.html")), response_dict)
-
-
-@general_pages_router.get("/get-vivid-edible")
-async def handle_vivid_edible_post(
-    request: Request,
-    edible_strain: str = Query(None, alias="edible_strain"),
-    db: Session = Depends(get_db),
-):
-    edible_dict = get_vivd_edible_data_by_strain(
-        db,
-        edible_strain=edible_strain,
+    return templates.TemplateResponse(
+        str(Path("general_pages", "ranking_pages", "connoisseur_concentrates.html")), response_dict
     )
-    response_dict = {"request": request, **edible_dict}
-    return templates.TemplateResponse(str(Path("general_pages", "vivid-edible-ratings.html")), response_dict)
 
 
-@general_pages_router.get("/get-vibe-edible")
-@general_pages_router.get("/edible-get-review")
+@general_pages_router.get("/get-vibe-edible", response_class=HTMLResponse)
+@general_pages_router.get("/edible-get-review", response_class=HTMLResponse)
 async def handle_vibe_edible_post(
     request: Request,
     edible_strain: str = Query(None, alias="edible_strain"),
@@ -515,17 +495,19 @@ async def handle_vibe_edible_post(
         edible_strain=strain_to_use,
     )
     response_dict = {"request": request, **edible_dict}
-    return templates.TemplateResponse(str(Path("general_pages", "vibe-edible-ratings.html")), response_dict)
-
-
-@general_pages_router.get("/vibe_concentrate_ratings")
-async def vibe_concentrates_main_page(request: Request, db: Session = Depends(get_db)):
     return templates.TemplateResponse(
-        str(Path("general_pages", "vibe-concentrate-ratings.html")), {"request": request}
+        str(Path("general_pages", "ranking_pages", "vibe-edible-ratings.html")), response_dict
     )
 
 
-@general_pages_router.get("/get_vibe_concentrate")
+@general_pages_router.get("/vibe_concentrate_ratings", response_class=HTMLResponse)
+async def vibe_concentrates_main_page(request: Request, db: Session = Depends(get_db)):
+    return templates.TemplateResponse(
+        str(Path("general_pages", "ranking_pages", "vibe-concentrate-ratings.html")), {"request": request}
+    )
+
+
+@general_pages_router.get("/get_vibe_concentrate", response_class=HTMLResponse)
 async def handle_vibe_concentrate_post(
     request: Request,
     strain: str = Query(None, alias="strain"),
@@ -536,10 +518,12 @@ async def handle_vibe_concentrate_post(
         strain=strain,
     )
     response_dict = {"request": request, **concentrate_dict}
-    return templates.TemplateResponse(str(Path("general_pages", "vibe-concentrate-ratings.html")), response_dict)
+    return templates.TemplateResponse(
+        str(Path("general_pages", "ranking_pages", "vibe-concentrate-ratings.html")), response_dict
+    )
 
 
-@general_pages_router.post("/submit-vote")
+@general_pages_router.post("/submit-vote", response_class=HTMLResponse)
 async def submit_flower_review_vote(
     request: Request,
     strain_selected: str = Form(...),
@@ -604,7 +588,9 @@ async def submit_flower_review_vote(
             "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(str(Path("general_pages", "vote_success.html")), response_dict)
+        return templates.TemplateResponse(
+            str(Path("general_pages", "success_transitions", "vote_success.html")), response_dict
+        )
     except Exception:
         return templates.TemplateResponse(
             str(Path("general_pages", "voting-home.html")),
@@ -646,43 +632,26 @@ async def process_concentrate_request(
     cultivar_email: str,
     db: Session,
 ):
-    review_dict = await route_concentrates.get_concentrate_by_strain_and_cultivator(
-        strain=strain_selected, cultivator=cultivator_selected, db=db
-    )
-    if review_dict:
-        request_dict = {
-            "request": request,
-        }
-        response_dict = {**request_dict, **review_dict}
-        if response_dict.get("is_mystery") is True:
-            return templates.TemplateResponse(
-                str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
-            )
-        else:
+    try:
+        strain_dict = await route_concentrates.get_concentrate_by_strain_and_cultivator(
+            strain=strain_selected, cultivator=cultivator_selected, db=db
+        )
+        if not strain_dict:
+            return templates.TemplateResponse(str(Path("general_pages", "voting-home.html")), {"request": request})
+        request_dict = {"request": request}
+        response_dict = {**request_dict, **strain_dict}
+        if not response_dict.get("is_mystery") is True:
             review_dict = await route_concentrates.get_concentrate_and_description(
                 db=db,
                 strain=strain_selected,
                 cultivator=cultivator_selected,
                 cultivar_email=cultivar_email,
             )
-            request_dict = {
-                "request": request,
-            }
             response_dict = {**request_dict, **review_dict}
-            return templates.TemplateResponse(
-                str(Path("general_pages", "connoisseur_concentrates.html")), response_dict
-            )
-    try:
-        review_dict = concentrate_reviews.get_review_data_and_path(
-            cultivator_select=cultivator_selected, strain_select=strain_selected, db=db
+        return templates.TemplateResponse(
+            str(Path("general_pages", "ranking_pages", "connoisseur_concentrates.html")), response_dict
         )
-        request_dict = {
-            "request": request,
-        }
-        response_dict = {**request_dict, **review_dict}
-
-        return templates.TemplateResponse(str(Path("general_pages", "concentrate_ratings.html")), response_dict)
-    except:
+    except Exception:
         return templates.TemplateResponse(
             str(Path("general_pages", "voting-home.html")),
             {
@@ -691,7 +660,7 @@ async def process_concentrate_request(
         )
 
 
-@general_pages_router.post("/concentrate-get-review")
+@general_pages_router.post("/concentrate-get-review", response_class=HTMLResponse)
 async def handle_concentrate_review_get(
     request: Request,
     *,
@@ -704,7 +673,7 @@ async def handle_concentrate_review_get(
     return await process_concentrate_request(request, strain_selected, cultivator_selected, cultivar_email, db)
 
 
-@general_pages_router.get("/concentrate-get-review")
+@general_pages_router.get("/concentrate-get-review", response_class=HTMLResponse)
 async def handle_concentrate_review_post(
     request: Request,
     *,
@@ -717,7 +686,7 @@ async def handle_concentrate_review_post(
     return await process_concentrate_request(request, strain_selected, cultivator_selected, cultivar_email, db)
 
 
-@general_pages_router.post("/concentrate-submit-vote")
+@general_pages_router.post("/concentrate-submit-vote", response_class=HTMLResponse)
 async def submit_concentrate_review_vote(
     request: Request,
     strain_selected: str = Form(...),
@@ -783,7 +752,9 @@ async def submit_concentrate_review_vote(
             "user_is_logged_in": user_is_logged_in,
         }
         response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(str(Path("general_pages", "vote_success.html")), response_dict)
+        return templates.TemplateResponse(
+            str(Path("general_pages", "success_transitions", "vote_success.html")), response_dict
+        )
     except Exception:
         return templates.TemplateResponse(
             str(Path("general_pages", "voting-home.html")),
@@ -797,16 +768,6 @@ async def submit_concentrate_review_vote(
 @general_pages_router.get("/check-mystery-voter")
 def check_mystery_voter_email_by_get(
     voter_email: str = Query(None, alias="voter_email"), db: Session = Depends(get_db)
-) -> Optional[Dict[str, bool]]:
-    voter = get_voter_info_by_email(voter_email=voter_email.lower(), db=db)
-    if not voter:
-        return {"exists": False}
-    return {"exists": True}
-
-
-@general_pages_router.get("/check-mystery-voter")
-def check_mystery_voter_email(
-    voter_email: str = Form(...), db: Session = Depends(get_db)
 ) -> Optional[Dict[str, bool]]:
     voter = get_voter_info_by_email(voter_email=voter_email.lower(), db=db)
     if not voter:
@@ -853,25 +814,11 @@ async def get_config():
     )
 
 
-async def get_config_obj():
-    return Config(
-        SUPA_STORAGE_URL=settings.SUPA_STORAGE_URL,
-        SUPA_PUBLIC_KEY=settings.SUPA_PUBLIC_KEY,
-        ALGO=settings.ALGO,
-    )
-
-
 @general_pages_router.get("/{subdomain}.cannabiscult.co")
 async def redirect_to_auth_provider(subdomain: str, auth_url: str = None):
     if not auth_url:
         raise HTTPException(status_code=400, detail="auth_provider_url must be provided")
     return RedirectResponse(url=auth_url)
-
-
-async def get_current_partner_data():
-    import get_partner_gsheet.get_gsheet_pandas as get_gsheet
-
-    return get_gsheet._get_deal_workbook_and_return_dict()
 
 
 @general_pages_router.get("/sitemap.xml")
@@ -884,7 +831,7 @@ async def sitemap(request: Request):
     )
 
 
-@general_pages_router.get("/test_pages/glb_test")
+@general_pages_router.get("/test_pages/glb_test", response_class=HTMLResponse)
 async def glp_test_page(request: Request):
     user_is_logged_in = await async_get_current_users_email() is not None
 
@@ -897,7 +844,7 @@ async def glp_test_page(request: Request):
     )
 
 
-@general_pages_router.get("/success/{file_name}")
+@general_pages_router.get("/success/{file_name}", response_class=HTMLResponse)
 async def general_transition_page_request(request: Request, file_name: str):
     file_path = Path(
         Path(__file__).parents[2],
@@ -909,14 +856,12 @@ async def general_transition_page_request(request: Request, file_name: str):
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="Page not found")
 
-    partner_data = await get_current_partner_data()
     user_is_logged_in = await async_get_current_users_email() is not None
     config = await get_config_obj()
     return templates.TemplateResponse(
         str(Path("general_pages", "pack_transition_pages", f"{file_name}.html")),
         {
             "request": request,
-            "dispensaries": partner_data,
             "user_is_logged_in": user_is_logged_in,
             "SUPA_URL": config.SUPA_STORAGE_URL,
             "PUB_KEY": config.SUPA_PUBLIC_KEY,
@@ -924,20 +869,23 @@ async def general_transition_page_request(request: Request, file_name: str):
     )
 
 
-@general_pages_router.get("/{file_name}")
+@general_pages_router.get("/{file_name}", response_class=HTMLResponse)
 async def general_pages_route(request: Request, file_name: str):
-    file_path = Path(Path(__file__).parents[2], "templates", "general_pages", f"{file_name}.html")
-    if not file_path.exists():
-        raise HTTPException(status_code=404, detail="Page not found")
-
-    partner_data = await get_current_partner_data()
     user_is_logged_in = await async_get_current_users_email() is not None
     config = await get_config_obj()
+    file_path = Path(Path(__file__).parents[2], "templates", "general_pages", f"{file_name}.html")
+    if not file_path.exists():
+        return templates.TemplateResponse(
+            str(Path("general_pages", "homepage.html")),
+            {
+                "request": request,
+                "user_is_logged_in": user_is_logged_in,
+            },
+        )
     return templates.TemplateResponse(
         str(Path("general_pages", f"{file_name}.html")),
         {
             "request": request,
-            "dispensaries": partner_data,
             "user_is_logged_in": user_is_logged_in,
             "SUPA_URL": config.SUPA_STORAGE_URL,
             "PUB_KEY": config.SUPA_PUBLIC_KEY,

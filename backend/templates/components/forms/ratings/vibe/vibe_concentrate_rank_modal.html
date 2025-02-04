@@ -1,8 +1,8 @@
 <!-- Modal Structure Template -->
-<div class="modal fade w-100" id="ConcentrateRankingsModal" tabindex="-1" aria-labelledby="modalTitle" aria-="true" style="min-width:100%">
+<div class="modal fade w-100" id="vibeConcentrateRankingsModal" tabindex="-1" aria-labelledby="vibeConcentrateRankingsModalLabel" aria-hidden="true" style="min-width:100%">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content overflow-auto">
-      <form method="POST" action="/submit-{{ strain }}-edible-ranking" id="vidid-edible-ranking-form" name="submit-vidid-edible-form">
+      <form method="POST" action="/submit-vibe-concentrate-ranking" id="vidid-concentrate-ranking-form" name="submit-vidid-concentrate-form">
         <div class="container text-center pt-1 pb-1">
           <div class="row align-content-center justify-content-center pt-4">
               <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
@@ -14,7 +14,7 @@
               </div>
             </div>
           </div>
-          <div class="container">
+          <div class="container"> 
             <div class="col-12">
               <div class="row justify-content-center pt-4 px-4">
                 <div class="col-6">
@@ -39,13 +39,13 @@
 </div>
 
 <!-- Voter Info Capture Modal -->
-<div class="modal fade" id="ConcentrateVoterInfoCaptureModal" tabindex="-1" aria-labelledby="ConcentrateVoterInfoCaptureModalLabel">
+<div class="modal fade" id="vibeConcentrateVoterInfoCaptureModal" tabindex="-1" aria-labelledby="vibeConcentrateVoterInfoCaptureModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <div class="container text-center">
           <div class="row text-center">
-            <h5 class="modal-title" id="ConcentrateVoterInfoCaptureModalLabel">New Connoisseur Information</h5>
+            <h5 class="modal-title" id="vibeConcentrateVoterInfoCaptureModalLabel">New Connoisseur Information</h5>
           </div>
         </div>
       </div>
@@ -55,7 +55,7 @@
             <input type="text" class="form-control" placeholder="Enter Your Name" id="connoisseur_name" name="connoisseur_name" autocomplete="name">
           </div>
           <div class="mb-3">
-            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="new_connoisseur" autocomplete="email" required>
+            <input type="email" class="form-control email-input-field" placeholder="Enter Your Email" id="new_connoisseur" name="connoisseur" autocomplete="email" required>
           </div>
           <div class="mb-3">
             <input type="text" class="form-control" placeholder="Enter Your Phone Number" id="connoisseur_phone" name="connoisseur_phone" autocomplete="phone">
@@ -102,30 +102,26 @@
             </div>
           </div>
           <div class="row pb-3 pt-4">
-            <h6 id="ConcentrateVoterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
+            <h6 id="vibeConcentrateVoterInfoCaptureModalLabel">Submit once to rate all strains.</h6>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
 <script>
   const termsCheckbox = document.getElementById('register_check');
   const submitButton = document.getElementById('submitNewVoterBtn');
-
+  
   function toggleSubmitButtonState() {
       submitButton.disabled = !termsCheckbox.checked;
   }
-
   termsCheckbox.addEventListener('change', toggleSubmitButtonState);
-
   toggleSubmitButtonState();
 </script>
 
 
-{% block scripts %}
-<script src="{{ url_for('static', path='dist/mdb-bootstrap-bundle.js') }}"></script>
+{% block scripts %}  
 <script>
   const questions = [
     {
@@ -139,144 +135,158 @@
       key: "connoisseur"
     },
     {
-      title: "{{ strain }} - Color Rating",
+      title: "Select Vibe Concentrate Strain",
+      content: `
+        <div class="container px-4">
+          <div class="row px-4 py-2 py-lg-3 text-start">
+            <p class="ps-0 pb-2">Please select the strain you are voting on:</p>
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example" name="strain" id="strain">
+              <option selected>Select Strain</option>
+              <option name="strainOptions" id="strainOptions">Test</option>
+            </select>
+          </div>
+        </div>`,
+      key: "strain"
+    },
+    {
+      title: "Vibe Concentrates - Color Rating",
       content: `
         <div class="container-fluid align-items-center text-center btn-group-container">
           <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="color_1_point">Not Desirable</label>
-              </div>
+            <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="color_1_point">Not Healthy</label>
+            </div>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Color Rating">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="color_rating" id="color_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="color_rating{{ i }}" {% if i == 1 or i == 10 %}id="color_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrates Color Rating">
+            <div class="row btn-group-container">
+              {% for i in range(1, 11) %}
+                <input type="radio" class="btn-check btn-light" name="color_rating" id="color_rating{{ i }}" value="{{ i }}" autocomplete="off">
+                <label class="btn btn-light" for="color_rating{{ i }}" {% if i == 1 or i == 10 %}id="color_{{ i }}_point"{% endif %}>{{ i }}</label>
+              {% endfor %}
+            </div>
           </div>
           <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="color_10_point">Desirable</label>
-              </div>
+            <div class="col-6 text-center mx-auto">
+              <label class="modal-info-shadow" for="color_10_point">Very Healthy</label>
+            </div>
           </div>
-      </div>
+        </div>
       `,
       key: "color_rating"
     },
     {
-      title: "{{ strain }} - Color Rating Explation",
+      title: "Vibe Concentrates - Color Rating Explation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="color_explanation" name="color_explanation" placeholder="Explain your color rating for {{ strain }}" aria-label="Color Rating Explantion Field" autocomplete="off"/>
+            <input class="form-control text-center" type="text" id="color_explanation" name="color_explanation" placeholder="Explain your color rating for Vibe Concentrates" aria-label="Color Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "color_explanation"
     },
     {
-      title: "{{ strain }} - Aroma Rating",
+      title: "Vibe Concentrates - Aroma Rating",
       content: `
-        <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
-              </div>
+      <div class="container-fluid align-items-center text-center btn-group-container">
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="smell_1_point">Weak <span class="long-voting-label">or</span> None</label>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Aroma Rating">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="smell_rating" id="smell_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="smell_rating{{ i }}" {% if i == 1 or i == 10 %}id="smell_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrates Aroma Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="smell_rating" id="smell_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="smell_rating{{ i }}" {% if i == 1 or i == 10 %}id="smell_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungent</label>
-              </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="smell_10_point">Strong <span class="long-voting-label">and</span> Pungent</label>
           </div>
+        </div>
       </div>
       `,
       key: "smell_rating"
     },
     {
-      title: "{{ strain }} - Aroma Rating Explation",
+      title: "Vibe Conentrates - Aroma Rating Explation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="smell_explanation" name="smell_explanation" placeholder="Explain your aroma rating for {{ strain }}" aria-label="Smell Rating Explantion Field" autocomplete="off"/>
+            <input class="form-control text-center" type="text" id="smell_explanation" name="smell_explanation" placeholder="Explain your aroma rating for Vibe Conentrates" aria-label="Aroma Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "smell_explanation"
     },
     {
-      title: "{{ strain }} - Consistency Rating",
+      title: "Vibe Conentrates - Consistency Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="consistency_1_point">Too Hard <span class="long-voting-label">or</span> Dry</label>
-              </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="consistency_1_point">Not Desirable</label>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Consistency Rating">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="consistency_rating" id="consistency_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="consistency_rating{{ i }}" {% if i == 1 or i == 10 %}id="consistency_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Consistency Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="consistency_rating" id="consistency_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="consistency_rating{{ i }}" {% if i == 1 or i == 10 %}id="consistency_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="consistency_10_point">Soft <span class="long-voting-label">with</span> Good Moisture</label>
-              </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="consistency_10_point">Desirable</label>
           </div>
+        </div>
       </div>
       `,
       key: "consistency_rating"
     },
     {
-      title: "{{ strain }} - Consistency Rating Explation",
+      title: "Vibe Conentrates - Consistency Rating Explation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="consistency_explanation" name="consistency_explanation" placeholder="Explain your consistency rating for {{ strain }}" aria-label="Consistency Rating Explantion Field" autocomplete="off"/>
+            <input class="form-control text-center" type="text" id="consistency_explanation" name="consistency_explanation" placeholder="Explain your consistency rating for Vibe Concentrates" aria-label="Consistency Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "consistency_explanation"
     },
     {
-      title: "{{ strain }} - Flavor Rating",
+      title: "Vibe Conentrates - Flavor Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="flavor_1_point">Bad <span class="long-voting-label">or</span> No Flavor</label>
-              </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_1_point">Bad<span class="long-voting-label"> or </span>No Flavor</label>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Flavor Rating">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="flavor_rating" id="flavor_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="flavor_rating{{ i }}" {% if i == 1 or i == 10 %}id="flavor_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Flavor Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="flavor_rating" id="flavor_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="flavor_rating{{ i }}" {% if i == 1 or i == 10 %}id="flavor_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
-              </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="flavor_10_point">Tasty Flavor</label>
           </div>
+        </div>
       </div>
       `,
       key: "flavor_rating"
     },
     {
-      title: "{{ strain }} - Flavor Rating Explanation",
+      title: "Vibe's Concentrate Flavor Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
@@ -287,112 +297,112 @@
       key: "flavor_explanation"
     },
     {
-      title: "{{ strain }} - Smoothness on Inhale Rating",
+      title: "Smoothness on Inhale Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow long-voting-label" for="harshness_1_point">Very Harsh</label>
-              </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="harshness_1_point">Very Harsh</label>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Harshness Rating">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="harshness_rating" id="harshness_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="harshness_rating{{ i }}" {% if i == 1 or i == 10 %}id="harshness_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Concentrate Harshness Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="harshness_rating" id="harshness_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="harshness_rating{{ i }}" {% if i == 1 or i == 10 %}id="harshness_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center">
-                  <label class="modal-info-shadow long-voting-label" for="harshness_10_point">Enjoyable</label>
-              </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="harshness_10_point">Smooth & Enjoyable</label>
           </div>
+        </div>
       </div>
       `,
       key: "harshness_rating"
     },
     {
-      title: "{{ strain }} - Smoothness on Inhale Rating Explanation",
+      title: "Smoothness on Inhale Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your harshness rating for {{ strain }}" aria-label="Harshness Rating Explantion Field" autocomplete="off"/>
+            <input class="form-control text-center" type="text" id="harshness_explanation" name="harshness_explanation" placeholder="Explain your smoothness rating for Vibe's Concentrate" aria-label="Harshness Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "harshness_explanation"
     },
     {
-      title: "{{ strain }} - Residuals Rating",
+      title: "Residuals Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow long-voting-label" for="residuals_1_point">A lot <span class="long-voting-label">of</span> Residue</label>
-              </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="residuals_1_point">Thick, Dirty Melt</label>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="{{ strain }} Residuals Rating">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="residuals_rating" id="residuals_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="residuals_rating{{ i }}" {% if i == 1 or i == 10 %}id="residuals_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Vibe Residuals Rating">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="residuals_rating" id="residuals_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="residuals_rating{{ i }}" {% if i == 1 or i == 10 %}id="residuals_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow long-voting-label" for="residuals_10_point">Clean Melt</label>
-              </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="residuals_10_point">Clean Melt</label>
           </div>
+        </div>
       </div>
       `,
       key: "residuals_rating"
     },
     {
-      title: "{{ strain }} - Residuals Rating Explanation",
+      title: "Residuals Rating Explanation",
       content: `
         <div class="container px-4">
           <div class="row px-4 py-2 py-lg-3">
-            <input class="form-control text-center" type="text" id="residuals_explanation" name="residuals_explanation" placeholder="Explain your residuals rating for {{ strain }}" aria-label="Residuals Rating Explantion Field" autocomplete="off"/>
+            <input class="form-control text-center" type="text" id="residuals_explanation" name="residuals_explanation" placeholder="Explain your residuals rating for {{ strain }}" aria-label="Residuals Rating Explantion Field" />
           </div>
         </div>
       `,
       key: "residuals_explanation"
     },
     {
-      title: "{{ strain }} - Effects Rating",
+      title: "Vibe Conentrates - Effects Rating",
       content: `
       <div class="container-fluid align-items-center text-center btn-group-container">
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow long-voting-label" for="effects_1_point">Short-Lived, No Effects</label>
-              </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="effects_1_point">Short-Lived, No Effects</label>
           </div>
-          <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Connoisseur Effects Vote">
-              <div class="row btn-group-container">
-                  {% for i in range(1, 11) %}
-                  <input type="radio" class="btn-check {% if i == 1 %}btn-light{% endif %}" name="effects_rating" id="effects_rating{{ i }}" value="{{ i }}" autocomplete="off">
-                  <label class="btn btn-light" for="effects_rating{{ i }}" {% if i == 1 or i == 10 %}id="effects_{{ i }}_point"{% endif %}>{{ i }}</label>
-                  {% endfor %}
-              </div>
+        </div>
+        <div class="col-10 btn-group btn-group-sm btn-group-container" role="group" aria-label="Connoisseur Effects Vote">
+          <div class="row btn-group-container">
+            {% for i in range(1, 11) %}
+              <input type="radio" class="btn-check btn-light" name="effects_rating" id="effects_rating{{ i }}" value="{{ i }}" autocomplete="off">
+              <label class="btn btn-light" for="effects_rating{{ i }}" {% if i == 1 or i == 10 %}id="effects_{{ i }}_point"{% endif %}>{{ i }}</label>
+            {% endfor %}
           </div>
-          <div class="row pt-1 mx-auto">
-              <div class="col-6 text-center mx-auto">
-                  <label class="modal-info-shadow long-voting-label" for="effects_10_point">Strong, Lasting Effects</label>
-              </div>
+        </div>
+        <div class="row pt-1 mx-auto">
+          <div class="col-6 text-center mx-auto">
+            <label class="modal-info-shadow" for="effects_10_point">Strong, Lasting Effects</label>
           </div>
+        </div>
       </div>
       `,
       key: "effects_rating"
     },
     {
-      title: "{{ strain }} - Effects Rating Explanation",
+      title: "Vibe Conentrates - Effects Rating Explanation",
       content: `
         <div class="container align-content-center align-items-center justify-content-center text-center">
           <div class="row align-items-center">
             <div class="col-7">
-              <label class="pb-3 ps-2 fs-5 text-start" for="effects_explanation">Please pick a minimum of two (2) to explain how {{ strain }} made you feel:</label>
+              <label class="pb-3 ps-2 fs-5 text-start" for="effects_explanation">Please pick a minimum of two (2) to explain how the concentrate made you feel:</label>
             </div>
             <div class="col-5 align-content-center align-items-center justify-content-center ">
               <select class="form-select px-3 px-lg-4" id="effects_explanation" name="effects_explanation" aria-label="Effects Rating Explanation Field" multiple>
@@ -427,7 +437,7 @@
       elements.forEach(element => {
         element.classList.remove('btn-group-lg');
       });
-
+      
       const formElements = document.querySelectorAll('.form-select-lg');
       formElements.forEach(element => {
         element.classList.remove('form-select-lg');
@@ -465,7 +475,37 @@
     }
   }
   window.addEventListener('resize', adjustButtonSize);
-
+  
+  function fetchAndPopulateStrains() {
+    fetch('/concentrate_reviews/get-vibe-concentrate-strains')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return response.json();
+      })
+      .then(strainsObject => {
+        const selectElement = document.getElementById('strain');
+        while (selectElement.options.length > 1) {
+          selectElement.remove(1);
+        }
+        
+        if (Array.isArray(strainsObject)) {
+          strainsObject.forEach(strain => {
+            const option = document.createElement('option');
+            option.value = strain;
+            option.textContent = strain;
+            selectElement.appendChild(option);
+          });
+        } else {
+          console.error('Strains object is not an array:', strainsObject);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching strains:', error);
+      });
+  }
+  
   document.addEventListener("DOMContentLoaded", function() {
     var checkbox = document.getElementById('cannabisIndustryCheck');
     var employmentDiv = document.getElementById('employmentQuestions');
@@ -477,17 +517,15 @@
         employmentDiv.style.display = 'none';
       }
     });
-    
     const submitButton = document.getElementById("submitNewVoterBtn");
     const form = document.getElementById("newVoterForm");
-    
-    document.getElementById("newUserBackBtn").onclick = function() {
-      $('#ConcentrateVoterInfoCaptureModal').modal('hide');
+        document.getElementById("newUserBackBtn").onclick = function() {
+      $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
     };
 
     submitButton.addEventListener("click", function(event) {
       event.preventDefault();
-
+  
       const formData = new URLSearchParams();
         const emailInput = document.getElementById("new_connoisseur").value
         const lowerCasedEmail = emailInput.toLowerCase()
@@ -497,7 +535,7 @@
         formData.append('voter_zip_code', document.getElementById("connoisseur_zip_code").value);
         formData.append('voter_industry_employer', document.getElementById("connoisseur_employer").value);
         formData.append('voter_industry_job_title', document.getElementById("connoisseur_job_title").value);
-
+    
         fetch("/submit-new-voter", {
           method: "POST",
           headers: {
@@ -508,7 +546,7 @@
       .then(response => response.json())
       .then(data => {
         if (data.status === true) {
-          $('#ConcentrateVoterInfoCaptureModal').modal('hide');
+          $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
           step = 0;
           loadQuestion();
         } else {
@@ -520,20 +558,20 @@
         console.error("Error:", error);
       });
     });
-
+      
     async function checkVoterExists(email) {
       const lowerCaseEmail = email.toLowerCase();
       const root = window.location.origin;
       const url = new URL('/check-mystery-voter', root);
       url.searchParams.append('voter_email', lowerCaseEmail);
-
+      
       const response = await fetch(url, {
           method: 'GET',
           headers: {
               'Content-Type': 'application/json'
           }
       });
-
+  
       if (response.ok) {
           const data = await response.json();
           return data.exists;
@@ -542,30 +580,51 @@
           return false;
       }
     }
-
+      
     let step = 0;
     const formState = {
-      "concentrate_id": "{{ concentrate_id }}",
-      "cultivator": "{{ cultivator }}",
-      "strain": "{{ strain }}",
+      "cultivator": "Vibe",
     };
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
     const nextBtn = document.getElementById('nextBtn');
     const backBtn = document.getElementById('backBtn');
-
+    
     async function submitForm(formState) {
+      
       try {
-        const response = await fetch('/concentrate_ranking/submit-concentrate-ranking', {
+        const strain = formState.strain;
+
+        if (!strain) {
+          throw new Error('Strain value is missing from the form state');
+        }
+
+        const concentrateUrl = `/concentrate_reviews/get-concentrate?strain=${encodeURIComponent(strain)}`;
+
+        const concentrateResponse = await fetch(concentrateUrl);
+        if (!concentrateResponse.ok) {
+          throw new Error(`Failed to fetch concentrate data: ${concentrateResponse.status}`);
+        }
+        const concentrateData = await concentrateResponse.json();
+        
+        if (concentrateData && concentrateData.id) {
+          formState.concentrate_id = concentrateData.id;
+        } else {
+          throw new Error('Concentrate ID not found');
+        }
+        // Submitting the updated form data
+        const response = await fetch('/concentrate_ranking/submit-vibe-concentrate-ranking', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify(formState)
         });
+
+        // Handling the response
         if (response.ok) {
           const data = await response.json();
-          window.location.href = "/success";
+          window.location.href = "https://cannabiscult.co/vibe_concentrate_ratings";
         } else {
           console.log("Submission failed:", response.status, response.statusText);
         }
@@ -574,20 +633,21 @@
       }
     }
 
+    
     function updatePageLabel() {
       const currentQuestionIndex = step+1
       const totalQuestions = questions.length;
-
+    
       const currentPairIndex = Math.floor(currentQuestionIndex / 2);
       const totalPairs = Math.floor((totalQuestions+1) / 2);
-
+    
       const pageNumElement = document.getElementById("page_num");
       const pageLabelElement = document.getElementById("page_label");
-
+  
       pageNumElement.textContent = currentPairIndex + 1;
       pageLabelElement.innerHTML = `<span id="page_num" name="page_num">${currentPairIndex}</span> / ${totalPairs}`;
     }
-
+  
     function loadQuestion() {
       const intKeys = [
         "color_rating",
@@ -595,10 +655,10 @@
         "effects_rating",
         "consistency_rating",
         "smell_rating",
-        "harshness_rating",
         "residuals_rating",
+        "harshness_rating",
       ];
-
+      
       if (step < 0) {
         step = 0;
       }
@@ -606,39 +666,49 @@
         const question = questions[step];
         modalTitle.innerHTML = question.title;
         modalBody.innerHTML = question.content;
-
-
+        
+    
         const input = document.getElementById(question.key);
-
+        
         document.addEventListener('keydown', function enterKeyHandler(event) {
           if (event.keyCode === 13) {
             event.preventDefault();
             nextBtn.click();
           }
         });
-
+    
         nextBtn.onclick = async function () {
           if (input) {
             var inputVal = input.value;
-
+              
             if (question.key === "connoisseur") {
               const voterExists = await checkVoterExists(input.value);
               if (!voterExists) {
-                $('#ConcentrateVoterInfoCaptureModal').modal('show');
+                $('#vibeConcentrateVoterInfoCaptureModal').modal('show');
                 return;
               }
               const lowerCaseEmail = input.value.toLowerCase();
               formState[question.key] = lowerCaseEmail;
+              fetchAndPopulateStrains();
+            }
+            else if (question.key === "strain") {
+              const selectElement = document.getElementById('strain');
+              const selectedValue = selectElement.value;
+              if (selectedValue === "Select Strain") {
+                alert("Please select a strain before continuing.");
+                return;
+              }
+              formState[question.key] = selectedValue;
             }
             else if (question.key === "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
               if (selectedOptions.length <= 1) {
-                alert("Please tell us two ways {{ strain }} made you feel.  On desktop you will need to hold the control key to highlight multiple selections.");
+                alert("Please tell us two ways the concentrate made you feel.  On desktop you will need to hold the control key to highlight multiple selections."); 
                 return;
               }
               const combinedString = selectedOptions.join(' ');
-              formState[question.key] = combinedString;
-            }
+              formState['effects_explanation'] = combinedString;
+            } 
             else {
               formState[question.key] = input.value;
             }
@@ -646,20 +716,20 @@
             const radioCheck = Array.from(document.getElementsByName(question.key)).find(radio => radio.checked);
             const radioVal = radioCheck ? radioCheck.value : "0";
             if (radioVal === "0") {
-              alert("Connoisseur Ratings Must Have a Value!");
+              alert("Connoisseur Ratings Must Have a Value!"); 
               return;
             }
             formState[question.key] = radioVal;
           }
-
-          $('#ConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+           
+          $('#vibeConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
             step++;
             loadQuestion();
             updatePageLabel()
             adjustButtonSize();
           });
-
-          if (!$('#ConcentrateVoterInfoCaptureModal').hasClass('show')) {
+    
+          if (!$('#vibeConcentrateVoterInfoCaptureModal').hasClass('show')) {
             step++;
             loadQuestion();
             updatePageLabel()
@@ -672,19 +742,19 @@
           submitForm(formState);
         };
         modalTitle.textContent = 'All questions completed.';
-        modalBody.textContent = 'Your ratings for {{ strain }} are completed.';
+        modalBody.textContent = 'Your ratings for Vibe are completed.';
       }
       backBtn.onclick = function () {
-        $('#ConcentrateVoterInfoCaptureModal').modal('hide');
-
-        $('#ConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+        $('#vibeConcentrateVoterInfoCaptureModal').modal('hide');
+        
+        $('#vibeConcentrateVoterInfoCaptureModal').on('hidden.bs.modal', function () {
           step--;
           loadQuestion();
           updatePageLabel()
           adjustButtonSize();
         });
-
-        if (!$('#ConcentrateVoterInfoCaptureModal').hasClass('show')) {
+        
+        if (!$('#vibeConcentrateVoterInfoCaptureModal').hasClass('show')) {
           step--;
           loadQuestion();
           updatePageLabel()
@@ -694,7 +764,7 @@
     }
     adjustButtonSize();
     loadQuestion();
-    updatePageLabel()
+    updatePageLabel();
     adjustButtonSize();
   });
 </script>
