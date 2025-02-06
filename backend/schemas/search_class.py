@@ -20,6 +20,9 @@ class SearchResultItem(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class SearchResults(BaseModel):
@@ -31,6 +34,12 @@ class SearchResults(BaseModel):
 class StrainCultivator(BaseModel):
     strain: str
     cultivator: str
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class RatingModel(BaseModel):

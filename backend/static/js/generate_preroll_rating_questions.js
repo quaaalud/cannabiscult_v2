@@ -239,7 +239,9 @@ async function submitForm(formState) {
   formState.connoisseur = formState.connoisseur.toLowerCase();
   delete formState.lastSavedIndex;
   formState.purchase_bool = convertYesNoToBoolean(formState.purchase_bool);
-  const integerKeys = ['ease_to_light_rating', 'burn_rating', 'tightness_rating', 'roll_rating', 'overall_score', 'pre_roll_id'];
+  const integerKeys = [
+    'ease_to_light_rating', 'burn_rating', 'tightness_rating', 'roll_rating', 'overall_score', 'pre_roll_id'
+  ];
   convertToIntegers(formState, integerKeys);
   try {
     const response = await fetch('/prerolls/update_or_create_pre_roll_ranking', {
@@ -251,18 +253,10 @@ async function submitForm(formState) {
     });
     if (response.ok) {
       const data = await response.json();
-      if (formState.cultivator === "Connoisseur") {
-        const connoisseurEmail = formState.connoisseur; // Save the email value
-        formState = {};
-        formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success/connoisseur_citrus_one";
-        
-      } else {
-        const connoisseurEmail = formState.connoisseur; // Save the email value
-        formState = {};
-        formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success";
-      }
+      const connoisseurEmail = formState.connoisseur;
+      formState = {};
+      formState.connoisseur = connoisseurEmail;
+      window.location.href = "/success";
     } else {
       console.log("Submission failed:", response.status, response.statusText);
     }

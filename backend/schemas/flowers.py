@@ -6,12 +6,12 @@ Created on Sun Nov  5 16:47:38 2023
 @author: dale
 """
 
-from pydantic import BaseModel, constr, confloat, EmailStr, root_validator, Field, validator, computed_field
+from pydantic import BaseModel, confloat, EmailStr, root_validator, Field, validator, StringConstraints
 from typing import List, Optional, Annotated
 import enum
 
 
-StrainType = Annotated[str, constr(min_length=1, max_length=100)]
+StrainType = Annotated[str, Annotated[str, StringConstraints(min_length=1, max_length=500)]]
 RatingType = Annotated[float, Field(gt=0, lt=10.1)]
 OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
 
@@ -54,11 +54,15 @@ class HiddenFlower(FlowersBase):
 
 class FlowerDescriptionBase(BaseModel):
     flower_id: int = Field(None, description="Unique identifier for the flower")
-    description: constr(max_length=1500) = Field(
+    description: Annotated[str, StringConstraints(max_length=500)] = Field(
         "Coming Soon", description="Description of the flower, max 1500 characters"
     )
-    effects: constr(max_length=1500) = Field("Coming Soon", description="Effects of the flower, max 1500 characters")
-    lineage: constr(max_length=1500) = Field("Coming Soon", description="Lineage of the flower, max 1500 characters")
+    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+        "Coming Soon", description="Effects of the flower, max 1500 characters"
+    )
+    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+        "Coming Soon", description="Lineage of the flower, max 1500 characters"
+    )
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the flower")
     cultivar_email: EmailStr = Field(..., description="Email of the cultivar")
     strain_category: StrainCategoryEnum = Field(
@@ -86,11 +90,15 @@ class GetFlowerWithDescription(BaseModel):
     product_type: str = Field("flower", description="Type of the product, default is 'flower'")
 
     description_id: int = Field(..., description="Unique identifier for the flower description")
-    description_text: constr(max_length=1500) = Field(
+    description_text: Annotated[str, StringConstraints(max_length=500)] = Field(
         "Coming Soon", description="Description of the flower, max 1500 characters"
     )
-    effects: constr(max_length=1500) = Field("Coming Soon", description="Effects of the flower, max 1500 characters")
-    lineage: constr(max_length=1500) = Field("Coming Soon", description="Lineage of the flower, max 1500 characters")
+    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+        "Coming Soon", description="Effects of the flower, max 1500 characters"
+    )
+    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+        "Coming Soon", description="Lineage of the flower, max 1500 characters"
+    )
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the flower")
     cultivar: EmailStr = Field(..., description="Email of the cultivar")
     strain_category: StrainCategoryEnum = Field(
@@ -105,16 +113,24 @@ class GetFlowerWithDescription(BaseModel):
 class FlowerVoteCreate(BaseModel):
     cultivator_selected: str = Field(..., description="Selected cultivator's name")
     strain_selected: str = Field(..., description="Selected strain's name")
-    structure_vote: constr(max_length=50) = Field(..., description="Vote for the structure of the flower")
-    structure_explanation: constr(max_length=500) = Field(..., description="Explanation for the structure vote")
-    nose_vote: confloat(ge=0, le=10) = Field(
+    structure_vote: confloat(ge=0, le=10.1) = Field(..., description="Vote for the structure of the flower")
+    structure_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the structure vote"
+    )
+    nose_vote: confloat(ge=0, le=10.1) = Field(
         ..., description="Vote for the nose/fragrance of the flower, from 0 to 10"
     )
-    nose_explanation: constr(max_length=500) = Field(..., description="Explanation for the nose vote")
+    nose_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the nose vote"
+    )
     flavor_vote: confloat(ge=0.0, le=10.1) = Field(..., description="Vote for the flavor of the flower, from 0 to 10")
-    flavor_explanation: constr(max_length=500) = Field(..., description="Explanation for the flavor vote")
+    flavor_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the flavor vote"
+    )
     effects_vote: confloat(ge=00, le=10.1) = Field(..., description="Vote for the effects of the flower, from 0 to 10")
-    effects_explanation: constr(max_length=500) = Field(..., description="Explanation for the effects vote")
+    effects_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the effects vote"
+    )
     user_email: EmailStr = Field(..., description="Email address of the connoisseur")
 
     class Config:
@@ -127,16 +143,24 @@ class FlowerVoteCreate(BaseModel):
 class FlowerVoteResponse(BaseModel):
     cultivator_selected: str = Field(..., description="Selected cultivator's name")
     strain_selected: str = Field(..., description="Selected strain's name")
-    structure_vote: constr(max_length=50) = Field(..., description="Vote for the structure of the flower")
-    structure_explanation: constr(max_length=500) = Field(..., description="Explanation for the structure vote")
+    structure_vote: confloat(ge=0.0, le=10.1) = Field(..., description="Vote for the structure of the flower")
+    structure_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the structure vote"
+    )
     nose_vote: confloat(ge=0, le=10) = Field(
         ..., description="Vote for the nose/fragrance of the flower, from 0 to 10"
     )
-    nose_explanation: constr(max_length=500) = Field(..., description="Explanation for the nose vote")
+    nose_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the nose vote"
+    )
     flavor_vote: confloat(ge=0.0, le=10.1) = Field(..., description="Vote for the flavor of the flower, from 0 to 10")
-    flavor_explanation: constr(max_length=500) = Field(..., description="Explanation for the flavor vote")
+    flavor_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the flavor vote"
+    )
     effects_vote: confloat(ge=00, le=10.1) = Field(..., description="Vote for the effects of the flower, from 0 to 10")
-    effects_explanation: constr(max_length=500) = Field(..., description="Explanation for the effects vote")
+    effects_explanation: Annotated[str, StringConstraints(max_length=500)] = Field(
+        ..., description="Explanation for the effects vote"
+    )
 
     class Config:
         from_attributes = True
@@ -192,29 +216,21 @@ class CreateMysteryFlowerReview(BaseModel):
     voter_email: EmailStr = Field(..., description="Email address of the voter")
     method_of_consumption: str = Field(..., description="Method used to consume the flower")
     mystery_size_vote: int = Field(..., description="Vote for the mystery size")
-    mystery_size_explanation: Optional[str] = Field(
-        None, description="Explanation for the mystery size vote"
-    )
+    mystery_size_explanation: Optional[str] = Field(None, description="Explanation for the mystery size vote")
     mystery_structure_vote: int = Field(..., description="Vote for the mystery structure")
     mystery_structure_explanation: Optional[str] = Field(
         None, description="Explanation for the mystery structure vote"
     )
     mystery_smell_vote: int = Field(..., description="Vote for the mystery smell")
-    mystery_smell_explanation: Optional[str] = Field(
-        None, description="Explanation for the mystery smell vote"
-    )
+    mystery_smell_explanation: Optional[str] = Field(None, description="Explanation for the mystery smell vote")
     mystery_freshness_vote: int = Field(..., description="Vote for the mystery freshness")
     mystery_freshness_explanation: Optional[str] = Field(
         None, description="Explanation for the mystery freshness vote"
     )
     mystery_flavor_vote: int = Field(..., description="Vote for the mystery flavor")
-    mystery_flavor_explanation: Optional[str] = Field(
-        None, description="Explanation for the mystery flavor vote"
-    )
+    mystery_flavor_explanation: Optional[str] = Field(None, description="Explanation for the mystery flavor vote")
     mystery_effects_vote: int = Field(..., description="Vote for the mystery effects")
-    mystery_effects_explanation: Optional[str] = Field(
-        None, description="Explanation for the mystery effects vote"
-    )
+    mystery_effects_explanation: Optional[str] = Field(None, description="Explanation for the mystery effects vote")
     mystery_smoothness_vote: int = Field(..., description="Vote for the mystery smoothness")
     mystery_smoothness_explanation: Optional[str] = Field(
         None, description="Explanation for the mystery smoothness vote"

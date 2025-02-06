@@ -16,3 +16,6 @@ class ProductTypes(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True

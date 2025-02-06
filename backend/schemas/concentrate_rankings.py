@@ -6,13 +6,16 @@ Created on Sun Nov  5 16:57:17 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, Field, constr, confloat, validator
-from typing import Optional, Union
+from pydantic import BaseModel, EmailStr, Field, confloat, validator
+from typing import Optional, Union, Annotated
+
+
+OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
 
 
 class ConcentrateRankingBase(BaseModel):
-    cultivator: constr(strict=True) = Field(..., description="Name of the cultivator")
-    strain: constr(strict=True) = Field(..., description="Name of the strain")
+    cultivator: OptionalStr(strict=True) = Field(..., description="Name of the cultivator")
+    strain: OptionalStr(strict=True) = Field(..., description="Name of the strain")
     color_rating: confloat(gt=0, lt=10.1) = Field(..., description="Color rating, range 0-10")
     consistency_rating: confloat(gt=0, lt=10.1) = Field(
         ..., description="Consistency rating, range 0-10"

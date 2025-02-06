@@ -19,6 +19,9 @@ class UniqueCultivatorCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class UniqueCultivatorResponse(BaseModel):
@@ -31,6 +34,9 @@ class UniqueCultivatorResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class CultivatorVoteCreate(BaseModel):
@@ -39,6 +45,9 @@ class CultivatorVoteCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class CultivatorVoteResponse(BaseModel):
@@ -51,6 +60,9 @@ class CultivatorVoteResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class UniqueCultivatorInfo(BaseModel):
@@ -70,6 +82,9 @@ class CultivatorVotingResponse(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class ListCultivatorVotingResponse(BaseModel):
@@ -82,7 +97,16 @@ class UniqueCultivatorOption(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class UniqueCultivatorOptionsResponse(BaseModel):
     cultivators: List[UniqueCultivatorOption]
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True

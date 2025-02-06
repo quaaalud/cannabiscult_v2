@@ -6,13 +6,15 @@ Created on Sun Jan 21 12:53:04 2024
 @author: dale
 """
 
-from pydantic import BaseModel, Field, constr, EmailStr, validator
-from typing import Optional, List
+from pydantic import BaseModel, Field, EmailStr, validator
+from typing import Optional, List, Annotated
+
+OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
 
 
 class PreRollSchema(BaseModel):
-    cultivator: constr(strict=True) = Field(..., description="Name of the cultivator")
-    strain: constr(strict=True) = Field(..., description="Name of the strain")
+    cultivator: OptionalStr(strict=True) = Field(..., description="Name of the cultivator")
+    strain: OptionalStr(strict=True) = Field(..., description="Name of the strain")
     card_path: Optional[str] = Field(None, description="Path to the pre-roll's image card")
     voting_open: bool = Field(True, description="Flag to indicate if voting is open")
     pre_roll_id: int = Field(..., description="Unique identifier for the pre-roll")
@@ -21,14 +23,13 @@ class PreRollSchema(BaseModel):
 
     @validator("cultivator", "strain", pre=True, always=True)
     def verify_string_and_capitalize_name(cls, v):
-        return v.capitalize() if isinstance(v, str) else "None Submitted"
-
-    @validator("cultivator", "strain", pre=True, always=True)
-    def strip_whitespace(cls, v):
-        return v.strip() if isinstance(v, str) else v
+        return v.title() if isinstance(v, str) else "None Submitted"
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class PreRollDescriptionSchema(BaseModel):
@@ -109,11 +110,10 @@ class PreRollRankingSchema(BaseModel):
 
     @validator("cultivator", "strain", pre=True, always=True)
     def verify_string_and_capitalize_name(cls, v):
-        return v.capitalize() if isinstance(v, str) else "None Submitted"
-
-    @validator("cultivator", "strain", pre=True, always=True)
-    def strip_whitespace(cls, v):
-        return v.strip() if isinstance(v, str) else v
+        return v.title() if isinstance(v, str) else "None Submitted"
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True

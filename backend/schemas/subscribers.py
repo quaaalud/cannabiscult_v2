@@ -6,7 +6,7 @@ Created on Sat Apr 15 20:04:19 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, field_validator
 
 
 class SubscriberCreate(BaseModel):
@@ -14,8 +14,21 @@ class SubscriberCreate(BaseModel):
     name: str = Field(..., description="Subscriber's full name")
     zip_code: str = Field(..., description="Subscriber's postal zip code")
     phone: str = Field(
-        ..., description="Subscriber's phone number", min_length=10, pattern="^[0-9]+$"
+        ..., description="Subscriber's phone number", min_length=10,
     )
+
+    @field_validator("phone", mode="before")
+    def validate_and_format_phone_number(cls, v):
+        v = "".join(filter(str.isdigit, v))
+        if v.startswith("1") and (len(v) == 11):
+            v = f"{v[1:]}"
+        return f"{v[0:11]}"
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+        strip_whitespace = True
+        exclude_unset = True
 
 
 class ShowSubscriber(BaseModel):
@@ -23,3 +36,6 @@ class ShowSubscriber(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True

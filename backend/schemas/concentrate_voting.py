@@ -6,7 +6,10 @@ Created on Mon Sep  4 17:20:10 2023
 @author: dale
 """
 
-from pydantic import BaseModel, Field, EmailStr, constr, confloat
+from pydantic import BaseModel, Field, EmailStr, confloat
+from typing import Annotated, Optional
+
+OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
 
 
 class ConcentrateVoteCreate(BaseModel):
@@ -15,26 +18,25 @@ class ConcentrateVoteCreate(BaseModel):
     structure_vote: confloat(ge=0, le=10) = Field(
         ..., description="Vote for the concentrate structure, from 0 to 10"
     )
-    structure_explanation: constr(max_length=500) = Field(
+    structure_explanation: OptionalStr = Field(
         ..., description="Explanation for the structure vote"
     )
     nose_vote: confloat(ge=0, le=10) = Field(
         ..., description="Vote for the concentrate nose/fragrance, from 0 to 10"
     )
-    nose_explanation: constr(max_length=500) = Field(
+    nose_explanation: OptionalStr = Field(
         ..., description="Explanation for the nose vote"
     )
     flavor_vote: confloat(ge=0, le=10) = Field(
         ..., description="Vote for the concentrate flavor, from 0 to 10"
     )
-    flavor_explanation: constr(max_length=500) = Field(
+    flavor_explanation: OptionalStr = Field(
         ..., description="Explanation for the flavor vote"
     )
     effects_vote: confloat(ge=0, le=10) = Field(
         ..., description="Vote for the concentrate effects, from 0 to 10"
     )
-    effects_explanation: constr(max_length=500) = Field(
+    effects_explanation: OptionalStr = Field(
         ..., description="Explanation for the effects vote"
     )
     user_email: EmailStr = Field(..., description="Email address of the user")
-

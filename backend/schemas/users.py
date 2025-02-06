@@ -20,10 +20,22 @@ class UserCreate(BaseModel):
     can_vote: bool = Field(False, description="Eligibility to vote")
     is_superuser: bool = Field(False, description="Admin status")
 
+    class Config:
+        from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
+
 
 class UserLogin(BaseModel):
     email: EmailStr = Field(..., description="User's email address for login")
     password: str = Field(..., description="User's password for login")
+
+    class Config:
+        from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class ShowUser(BaseModel):
@@ -32,6 +44,9 @@ class ShowUser(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class LoggedInUser(BaseModel):
@@ -42,6 +57,9 @@ class LoggedInUser(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class EncodedUserEmailSchema(BaseModel):
@@ -49,6 +67,9 @@ class EncodedUserEmailSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class UserEmailSchema(BaseModel):
@@ -56,6 +77,9 @@ class UserEmailSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class UserStrainListSubmit(BaseModel):
@@ -75,6 +99,9 @@ class UserStrainListSubmit(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class UserStrainListRemove(BaseModel):
@@ -93,6 +120,9 @@ class UserStrainListRemove(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class UserStrainListCreate(BaseModel):
@@ -115,6 +145,9 @@ class UserStrainListCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
 
 
 class UserStrainListUpdate(BaseModel):
@@ -130,6 +163,8 @@ class UserStrainListUpdate(BaseModel):
 
     class Config:
         from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
         exclude_unset = True
 
 
@@ -148,6 +183,7 @@ class UserStrainListSchema(BaseModel):
 
     class Config:
         from_attributes = True
+        populate_by_name = True
         exclude_unset = True
 
 
@@ -166,3 +202,5 @@ class AddUserStrainListNotes(BaseModel):
     class Config:
         from_attributes = True
         exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True

@@ -6,8 +6,8 @@ Created on Mon Sep 11 21:55:38 2023
 @author: dale
 """
 
-from pydantic import BaseModel, EmailStr, validator, Field
-from typing import Optional, Dict
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
 
 class MysteryVoterCreate(BaseModel):
@@ -24,6 +24,9 @@ class MysteryVoterCreate(BaseModel):
 
     class Config:
         from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
 
 
 class ShowMysteryVoter(BaseModel):
@@ -31,27 +34,6 @@ class ShowMysteryVoter(BaseModel):
 
     class Config:
         from_attributes = True
-
-
-class StrainGuessInput(BaseModel):
-    strain_guesses: Dict = Field(..., description="Dictionary of strain guesses")
-    email: EmailStr = Field(..., description="Connoisseur's email address")
-
-    @validator("strain_guesses")
-    def validate_strain_guesses(cls, v):
-        if not isinstance(v, dict):
-            raise ValueError("strain_guesses must be a dictionary")
-        if not all(isinstance(key, str) and isinstance(value, str) for key, value in v.items()):
-            raise ValueError(
-                "strain_guesses must be a dictionary with string keys and integer values"
-            )
-        return v
-
-    class Config:
-        from_attributes = True
-        json_schema_extra = {
-            "example": {
-                "strain_guesses": {"Citrus 1": "strain_guess", "Citrus 2": "strain_guess"},
-                "email": "example@example.com",
-            }
-        }
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
