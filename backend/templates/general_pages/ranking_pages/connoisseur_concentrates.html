@@ -58,13 +58,13 @@
   rel="canonical" 
   href="https://cannabiscult.co/connoisseur-concentrates{% if strain %}/get-concentrate?{{ strain }}{% endif %}"
 />
+  {% include "components/auth/login_register_modal.html" %}
 {% endblock %}
 
 {% block header %}
 {% endblock %}
 
 {% block content %}
-{% include "components/auth/login_register_modal.html" %}
 <main class="container pt-5">
     <section draggable="false" class="container pt-3" data-v-271253ee="">
       <section class="mb-10">
