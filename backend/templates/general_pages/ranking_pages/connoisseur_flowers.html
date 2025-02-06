@@ -234,7 +234,7 @@
   </section>
   <section class="container py-5">
     <div class="row mx-auto">
-      <div class="col-auto mx-auto">
+      <div class="col-12 col-md-10 col-lg-6 mx-auto">
         <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"/>
       </div>
     </div>
@@ -283,7 +283,7 @@
   }
   function fetchAndUpdateStrainRatings() {
     var flowerId = {{ flower_id }};
-    var endpoint = "/flower_voting/get_strain_ratings_by_id/" + flowerId;
+    var endpoint = "/flowers/get_strain_ratings_by_id/" + flowerId;
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {

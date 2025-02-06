@@ -10,14 +10,25 @@ from pathlib import Path
 from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
 
 # from fastapi import BackgroundTasks
-from fastapi.responses import RedirectResponse, HTMLResponse, ORJSONResponse
+from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from gotrue.errors import AuthApiError
-from typing import List, Optional, Dict
+from typing import Optional, Dict
 from db.session import get_db
 from core.config import settings, Config
-from db.repository.edibles import get_vivd_edible_data_by_strain, get_vibe_edible_data_by_strain
+from db.repository.edibles import get_vibe_edible_data_by_strain
+from db.repository import pre_rolls
+from db.repository.concentrates import get_concentrate_data_and_path
+from schemas.mystery_voters import MysteryVoterCreate
+from schemas.subscribers import SubscriberCreate
+from schemas.users import UserCreate, UserLogin
+from version1._supabase.route_flowers import get_flower_and_description
+from version1._supabase import route_concentrates
+from version1._supabase.route_mystery_voters import (
+    get_voter_info_by_email,
+    create_mystery_voter,
+)
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
     create_user,
@@ -25,29 +36,10 @@ from route_users import (
     login_supa_user,
     get_current_users_email,
     async_get_current_users_email,
-    return_current_user_vote_status,
     update_user_password,
     logout_current_user,
 )
-from schemas.mystery_voters import MysteryVoterCreate
-from schemas.subscribers import SubscriberCreate
-from schemas.users import UserCreate, ShowUser, UserLogin, LoggedInUser
-from version1._supabase.route_flowers import (
-    get_all_strains,
-    get_all_cultivators,
-    get_all_strains_for_cultivator,
-    get_all_cultivators_for_strain,
-    add_new_votes_to_flower_values,
-    get_flower_and_description,
-    add_flower_vote_to_db,
-)
-from version1._supabase import route_concentrates
-from db.repository import concentrate_reviews, pre_rolls
-from db.repository.concentrates import get_concentrate_data_and_path
-from version1._supabase.route_mystery_voters import (
-    get_voter_info_by_email,
-    create_mystery_voter,
-)
+
 
 templates_dir = Path(
     Path(__file__).parents[2],
@@ -309,31 +301,6 @@ async def submit_unsubscribe_form(request: Request, email: str = Form(...), db: 
     )
 
 
-#  Flower Review and Voting Pages
-@general_pages_router.get("/get-all-strains")
-async def get_all_strains_route(db: Session = Depends(get_db)) -> List[str]:
-    return get_all_strains(db)
-
-
-@general_pages_router.get("/get-all-cultivators")
-async def get_all_cultivators_route(db: Session = Depends(get_db)) -> List[str]:
-    return get_all_cultivators(db)
-
-
-@general_pages_router.get("/get-strains-for-cultivator")
-async def get_all_strains_for_cultivator_route(
-    cultivator_selected: str = Query(...), db: Session = Depends(get_db)
-) -> List[str]:
-    return get_all_strains_for_cultivator(cultivator_selected, db)
-
-
-@general_pages_router.get("/get-cultivators-for-strain")
-async def get_all_cultivators_for_strain_route(
-    strain_selected: str = Query(...), db: Session = Depends(get_db)
-) -> List[str]:
-    return get_all_cultivators_for_strain(strain_selected, db)
-
-
 async def process_flower_request(
     request: Request,
     strain_selected: str,
@@ -461,23 +428,6 @@ async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-#  Concentrate Review and Voting Pages
-@general_pages_router.get("/get_hidden_concentrate", response_class=HTMLResponse)
-async def handle_hidden_concentrate_post(
-    request: Request,
-    strain: str = Query(None, alias="strain"),
-    db: Session = Depends(get_db),
-):
-    hidden_concentrate_dict = get_concentrate_data_and_path(
-        db,
-        strain=strain,
-    )
-    response_dict = {"request": request, **hidden_concentrate_dict}
-    return templates.TemplateResponse(
-        str(Path("general_pages", "ranking_pages", "connoisseur_concentrates.html")), response_dict
-    )
-
-
 @general_pages_router.get("/get-vibe-edible", response_class=HTMLResponse)
 @general_pages_router.get("/edible-get-review", response_class=HTMLResponse)
 async def handle_vibe_edible_post(
@@ -521,108 +471,6 @@ async def handle_vibe_concentrate_post(
     return templates.TemplateResponse(
         str(Path("general_pages", "ranking_pages", "vibe-concentrate-ratings.html")), response_dict
     )
-
-
-@general_pages_router.post("/submit-vote", response_class=HTMLResponse)
-async def submit_flower_review_vote(
-    request: Request,
-    strain_selected: str = Form(...),
-    cultivator_selected: str = Form(...),
-    structure_vote: str = Form(...),
-    nose_vote: str = Form(...),
-    flavor_vote: str = Form(...),
-    effects_vote: str = Form(...),
-    structure_explanation: str = Form("None"),
-    nose_explanation: str = Form("None"),
-    flavor_explanation: str = Form("None"),
-    effects_explanation: str = Form("None"),
-    db: Session = Depends(get_db),
-    current_user_email=Depends(get_current_users_email),
-):
-
-    can_vote_status = return_current_user_vote_status(
-        user_email=current_user_email,
-        db=db,
-    )
-
-    user_email = get_current_users_email()
-    user_is_logged_in = user_email is not None
-
-    if not can_vote_status:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "login.html")),
-            {
-                "request": request,
-                "user_is_logged_in": user_is_logged_in,
-            },
-        )
-    try:
-        add_flower_vote_to_db(
-            cultivator_selected=cultivator_selected,
-            strain_selected=strain_selected,
-            structure_vote=structure_vote,
-            structure_explanation=structure_explanation,
-            nose_vote=nose_vote,
-            nose_explanation=nose_explanation,
-            flavor_vote=flavor_vote,
-            flavor_explanation=flavor_explanation,
-            effects_vote=effects_vote,
-            effects_explanation=effects_explanation,
-            user_email=user_email,
-            db=db,
-        )
-    except Exception:
-        pass
-    try:
-        review_dict = add_new_votes_to_flower_values(
-            cultivator_selected,
-            strain_selected,
-            structure_vote,
-            nose_vote,
-            flavor_vote,
-            effects_vote,
-            db,
-        )
-        request_dict = {
-            "request": request,
-            "user_is_logged_in": user_is_logged_in,
-        }
-        response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(
-            str(Path("general_pages", "success_transitions", "vote_success.html")), response_dict
-        )
-    except Exception:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "voting-home.html")),
-            {
-                "request": request,
-                "user_is_logged_in": user_is_logged_in,
-            },
-        )
-
-
-@general_pages_router.get("/concentrate-get-all-strains")
-async def get_concentrate_strains_route(db: Session = Depends(get_db)) -> List[str]:
-    return route_concentrates.get_all_strains(db)
-
-
-@general_pages_router.get("/concentrate-get-all-cultivators")
-async def get_concentrate_cultivators_route(db: Session = Depends(get_db)) -> List[str]:
-    return route_concentrates.get_all_cultivators(db)
-
-
-@general_pages_router.get("/concentrate-get-strains-for-cultivator")
-async def get_concentrate_strains_for_cultivator_route(
-    cultivator_selected: str = Query(...), db: Session = Depends(get_db)
-) -> List[str]:
-    return route_concentrates.get_all_strains_for_cultivator(cultivator_selected, db)
-
-
-@general_pages_router.get("/concentrate-get-cultivators-for-strain")
-async def get_concentrate_cultivators_for_strain_route(
-    strain_selected: str = Query(...), db: Session = Depends(get_db)
-) -> List[str]:
-    return route_concentrates.get_all_cultivators_for_strain(strain_selected, db)
 
 
 async def process_concentrate_request(
@@ -684,85 +532,6 @@ async def handle_concentrate_review_post(
     db: Session = Depends(get_db),
 ):
     return await process_concentrate_request(request, strain_selected, cultivator_selected, cultivar_email, db)
-
-
-@general_pages_router.post("/concentrate-submit-vote", response_class=HTMLResponse)
-async def submit_concentrate_review_vote(
-    request: Request,
-    strain_selected: str = Form(...),
-    cultivator_selected: str = Form(...),
-    structure_vote: str = Form(...),
-    nose_vote: str = Form(...),
-    flavor_vote: str = Form(...),
-    effects_vote: str = Form(...),
-    structure_explanation: str = Form("None"),
-    nose_explanation: str = Form("None"),
-    flavor_explanation: str = Form("None"),
-    effects_explanation: str = Form("None"),
-    db: Session = Depends(get_db),
-    current_user_email=Depends(get_current_users_email),
-):
-
-    can_vote_status = return_current_user_vote_status(
-        user_email=current_user_email.lower(),
-        db=db,
-    )
-
-    user_email = get_current_users_email()
-    user_is_logged_in = user_email is not None
-
-    if not can_vote_status:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "login.html")),
-            {
-                "request": request,
-                "user_is_logged_in": user_is_logged_in,
-            },
-        )
-    try:
-        route_concentrates.add_concentrate_vote_to_db(
-            cultivator_selected=cultivator_selected,
-            strain_selected=strain_selected,
-            structure_vote=structure_vote,
-            structure_explanation=structure_explanation,
-            nose_vote=nose_vote,
-            nose_explanation=nose_explanation,
-            flavor_vote=flavor_vote,
-            flavor_explanation=flavor_explanation,
-            effects_vote=effects_vote,
-            effects_explanation=effects_explanation,
-            user_email=user_email.lower(),
-            db=db,
-        )
-    except Exception:
-        pass
-    try:
-        review_dict = route_concentrates.add_new_votes_to_concentrate_values(
-            cultivator_selected,
-            strain_selected,
-            structure_vote,
-            nose_vote,
-            flavor_vote,
-            effects_vote,
-            db,
-        )
-
-        request_dict = {
-            "request": request,
-            "user_is_logged_in": user_is_logged_in,
-        }
-        response_dict = {**request_dict, **review_dict}
-        return templates.TemplateResponse(
-            str(Path("general_pages", "success_transitions", "vote_success.html")), response_dict
-        )
-    except Exception:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "voting-home.html")),
-            {
-                "request": request,
-                "user_is_logged_in": user_is_logged_in,
-            },
-        )
 
 
 @general_pages_router.get("/check-mystery-voter")

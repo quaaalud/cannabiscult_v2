@@ -10,126 +10,27 @@ from sqlalchemy import Column, Integer, Float, String, Date, func
 from db.base_class import Base
 
 
-class MysteryEdibleRanking(Base):
-    mystery_edible_ranking_id = Column(
+class Edible_Ranking(Base):
+    edible_ranking_id = Column(
         Integer,
         primary_key=True,
         index=True,
         autoincrement="auto",
     )
-    cultivator = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    strain = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    voter_email = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    appearance_vote = Column(
-        Float,
-        nullable=False
-    )
-    appearance_explanation = Column(
-        String,
-        nullable=True
-    )
-    flavor_vote = Column(
-        Float,
-        nullable=False
-    )
-    flavor_explanation = Column(
-        String,
-        nullable=True
-    )
-    aftertaste_vote = Column(
-        Float,
-        nullable=False
-    )
-    aftertaste_explanation = Column(
-        String,
-        nullable=True
-    )
-    effects_vote = Column(
-        Float,
-        nullable=False
-    )
-    effects_explanation = Column(
-        String,
-        nullable=True
-    )
-    date_posted = Column(
-        Date,
-        default=func.now()
-    )
-    
-    
-    
-class Vivid_Edible_Ranking(Base):
-    vivid_edible_ranking_id = Column(
-        Integer,
-        primary_key=True,
-        index=True,
-        autoincrement="auto",
-    )
-    vivid_edible_id = Column(
-        Integer,
-        nullable=False,
-    )
-    strain = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    voter_email = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    appearance_vote = Column(
-        Float,
-        nullable=False
-    )
-    appearance_explanation = Column(
-        String,
-        nullable=True
-    )
-    flavor_vote = Column(
-        Float,
-        nullable=False
-    )
-    flavor_explanation = Column(
-        String,
-        nullable=True
-    )
-    aftertaste_vote = Column(
-        Float,
-        nullable=False
-    )
-    aftertaste_explanation = Column(
-        String,
-        nullable=True
-    )
-    effects_vote = Column(
-        Float,
-        nullable=False
-    )
-    effects_explanation = Column(
-        String,
-        nullable=True
-    )
-    date_posted = Column(
-        Date,
-        default=func.now()
-    )
-    
-    
+    cultivator = Column(String, nullable=False, index=True)
+    strain = Column(String, nullable=False, index=True)
+    voter_email = Column(String, nullable=False, index=True)
+    appearance_vote = Column(Float, nullable=False)
+    appearance_explanation = Column(String, nullable=True)
+    flavor_vote = Column(Float, nullable=False)
+    flavor_explanation = Column(String, nullable=True)
+    aftertaste_vote = Column(Float, nullable=False)
+    aftertaste_explanation = Column(String, nullable=True)
+    effects_vote = Column(Float, nullable=False)
+    effects_explanation = Column(String, nullable=True)
+    date_posted = Column(Date, default=func.now())
+
+
 class Vibe_Edible_Ranking(Base):
     vibe_edible_ranking_id = Column(
         Integer,
@@ -141,64 +42,23 @@ class Vibe_Edible_Ranking(Base):
         Integer,
         nullable=False,
     )
-    strain = Column(
-        String,
-        nullable=False,
-        index=True
-    )
+    strain = Column(String, nullable=False, index=True)
     cultivator = Column(
-        String, 
+        String,
     )
     flavor = Column(
         String,
         nullable=False,
     )
-    connoisseur = Column(
-        String,
-        nullable=False,
-        index=True
-    )
-    appearance_rating = Column(
-        Float,
-        nullable=False
-    )
-    appearance_explanation = Column(
-        String,
-        nullable=True
-    )
-    feel_rating = Column(
-        Float,
-        nullable=False
-    )
-    feel_explanation = Column(
-        String,
-        nullable=True
-    )
-    flavor_rating = Column(
-        Float,
-        nullable=False
-    )
-    flavor_explanation = Column(
-        String,
-        nullable=True
-    )
-    chew_rating = Column(
-        Float,
-        nullable=False
-    )
-    chew_explanation = Column(
-        String,
-        nullable=True
-    )
-    effects_rating = Column(
-        Float,
-        nullable=False
-    )
-    effects_explanation = Column(
-        String,
-        nullable=True
-    )
-    date_posted = Column(
-        Date,
-        default=func.now()
-    )
+    connoisseur = Column(String, nullable=False, index=True)
+    appearance_rating = Column(Float, nullable=False)
+    appearance_explanation = Column(String, nullable=True)
+    feel_rating = Column(Float, nullable=False)
+    feel_explanation = Column(String, nullable=True)
+    flavor_rating = Column(Float, nullable=False)
+    flavor_explanation = Column(String, nullable=True)
+    chew_rating = Column(Float, nullable=False)
+    chew_explanation = Column(String, nullable=True)
+    effects_rating = Column(Float, nullable=False)
+    effects_explanation = Column(String, nullable=True)
+    date_posted = Column(Date, default=func.now())

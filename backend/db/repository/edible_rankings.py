@@ -7,37 +7,18 @@ Created on Mon Oct 30 21:10:27 2023
 """
 
 from sqlalchemy.orm import Session
-from schemas.edible_rankings import CreateMysteryEdibleRanking
-from db.models.edible_rankings import MysteryEdibleRanking
-from schemas.edible_rankings import CreateVividEdibleRanking
-from db.models.edible_rankings import Vivid_Edible_Ranking
-from schemas.edible_rankings import CreateVibeEdibleRanking
-from db.models.edible_rankings import Vibe_Edible_Ranking
+from db.models.edible_rankings import Edible_Ranking, Vibe_Edible_Ranking
+from schemas.edible_rankings import CreateEdibleRanking, CreateVibeEdibleRanking
 from core.config import settings
 
 
 @settings.retry_db
-def create_mystery_edible_ranking(edible_ranking: CreateMysteryEdibleRanking, db: Session):
+def create_edible_ranking(edible_ranking: CreateEdibleRanking, db: Session):
     ranking_data_dict = edible_ranking.dict()
-    created_edible_ranking = MysteryEdibleRanking(**ranking_data_dict)
+    created_edible_ranking = Edible_Ranking(**ranking_data_dict)
     try:
         db.add(created_edible_ranking)
-    except:
-        db.rollback()
-    else:
-        db.commit()
-        db.refresh(created_edible_ranking)
-    finally:
-        return created_edible_ranking
-
-
-@settings.retry_db
-def create_vivid_edible_ranking(edible_ranking: CreateVividEdibleRanking, db: Session):
-    ranking_data_dict = edible_ranking.dict()
-    created_edible_ranking = Vivid_Edible_Ranking(**ranking_data_dict)
-    try:
-        db.add(created_edible_ranking)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()
@@ -52,7 +33,7 @@ def create_vibe_edible_ranking(edible_ranking: CreateVibeEdibleRanking, db: Sess
     created_edible_ranking = Vibe_Edible_Ranking(**ranking_data_dict)
     try:
         db.add(created_edible_ranking)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()

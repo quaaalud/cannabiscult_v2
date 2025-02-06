@@ -45,7 +45,6 @@ window.addEventListener('DOMContentLoaded', function() {
   var cultivatorSelect = document.getElementById('cultivator_selected');
   var strainSelect = document.getElementById('strain_selected');
   var reviewForm = document.getElementById('review-form');
-  
   function getFormAction() {
     switch (productTypeSelect.value.toLowerCase()) {
       case 'pre-roll':
@@ -58,32 +57,26 @@ window.addEventListener('DOMContentLoaded', function() {
         return '/get-review';
     }
   }
-  
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
-
   function fetchAndPopulateSelect(url, selectElement, callback) {
       fetch(url)
           .then(response => response.json())
           .then(data => {
               selectElement.innerHTML = '';
-  
               // Sort the data array alphabetically
               data.sort((a, b) => a.localeCompare(b));
-  
               data.forEach(item => {
                   var option = document.createElement('option');
                   option.value = item;
                   option.text = capitalizeFirstLetter(item);
                   selectElement.add(option);
               });
-  
               if (callback) callback();
           })
           .catch(error => console.error('Error:', error));
   }
-
   function updateCultivatorOptions() {
     var selectedProductType = capitalizeFirstLetter(productTypeSelect.value);
     var url = '/search/cultivators/' + selectedProductType;
@@ -97,10 +90,8 @@ window.addEventListener('DOMContentLoaded', function() {
     var url = '/search/strains/' + selectedProductType + '/' + selectedCultivator;
     fetchAndPopulateSelect(url, strainSelect);
   }
-
   productTypeSelect.addEventListener('change', updateCultivatorOptions);
   cultivatorSelect.addEventListener('change', updateStrainOptions);
-
   fetchAndPopulateSelect('/search/product-types', productTypeSelect, function() {
     reviewForm.action = getFormAction();
     updateCultivatorOptions();

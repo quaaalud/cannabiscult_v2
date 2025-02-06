@@ -14,8 +14,8 @@ OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
 
 
 class ConcentrateRankingBase(BaseModel):
-    cultivator: OptionalStr(strict=True) = Field(..., description="Name of the cultivator")
-    strain: OptionalStr(strict=True) = Field(..., description="Name of the strain")
+    cultivator: str = Field(..., description="Name of the cultivator")
+    strain: str = Field(..., description="Name of the strain")
     color_rating: confloat(gt=0, lt=10.1) = Field(..., description="Color rating, range 0-10")
     consistency_rating: confloat(gt=0, lt=10.1) = Field(
         ..., description="Consistency rating, range 0-10"
@@ -32,25 +32,25 @@ class ConcentrateRankingBase(BaseModel):
     color_explanation: Optional[str] = Field(
         None, max_length=500, description="Explanation for the color rating"
     )
-    consistency_explanation: Optional[str] = Field(
+    consistency_explanation: OptionalStr = Field(
         None, max_length=500, description="Explanation for the consistency rating"
     )
-    flavor_explanation: Optional[str] = Field(
+    flavor_explanation: OptionalStr = Field(
         None, max_length=500, description="Explanation for the flavor rating"
     )
-    smell_explanation: Optional[str] = Field(
+    smell_explanation: OptionalStr = Field(
         None, max_length=500, description="Explanation for the smell rating"
     )
-    harshness_explanation: Optional[str] = Field(
+    harshness_explanation: OptionalStr = Field(
         None, max_length=500, description="Explanation for the harshness rating"
     )
-    residuals_explanation: Optional[str] = Field(
+    residuals_explanation: OptionalStr = Field(
         None, max_length=500, description="Explanation for the residuals rating"
     )
-    effects_explanation: Optional[str] = Field(
+    effects_explanation: OptionalStr = Field(
         None, max_length=500, description="Explanation for the effects rating"
     )
-    pack_code: Optional[str] = Field(
+    pack_code: OptionalStr = Field(
         None, max_length=99, description="Pack code of the concentrate, if provided"
     )
 
@@ -61,6 +61,8 @@ class ConcentrateRankingBase(BaseModel):
     class Config:
         from_attributes = True
         populate_by_name = True
+        strip_whitespace = True
+        exclude_unset = True
 
 
 class CreateConcentrateRanking(ConcentrateRankingBase):

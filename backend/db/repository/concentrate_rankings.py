@@ -10,19 +10,15 @@ from typing import List
 import json
 from sqlalchemy.orm import Session
 from schemas.concentrate_rankings import (
-    CreateHiddenConcentrateRanking,
     CreateConcentrateRanking,
-    HiddenConcentrateRanking,
 )
 from db.models.concentrate_rankings import (
-    Hidden_Concentrate_Ranking,
     Vibe_Concentrate_Ranking,
     Concentrate_Ranking,
 )
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from pathlib import Path
 import plotly.express as px
 from core.config import settings
 
@@ -33,7 +29,7 @@ async def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sess
     created_ranking = Concentrate_Ranking(**ranking_data_dict)
     try:
         db.add(created_ranking)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()
@@ -42,7 +38,7 @@ async def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sess
 
 
 @settings.retry_db
-async def update_or_create_concentrate(ranking: CreateConcentrateRanking, db: Session):
+async def update_or_create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
     existing_ranking = (
         db.query(Concentrate_Ranking)
         .filter(
@@ -61,7 +57,7 @@ async def update_or_create_concentrate(ranking: CreateConcentrateRanking, db: Se
             db.commit()
             db.refresh(existing_ranking)
             return {"ranking_submitted": True}
-        except:
+        except Exception:
             db.rollback()
             raise
     else:
@@ -71,27 +67,12 @@ async def update_or_create_concentrate(ranking: CreateConcentrateRanking, db: Se
 
 
 @settings.retry_db
-def create_hidden_concentrate_ranking(hidden_ranking: CreateConcentrateRanking, db: Session):
-    ranking_data_dict = hidden_ranking.dict()
-    created_ranking = Concentrate_Ranking(**ranking_data_dict)
-    try:
-        db.add(created_ranking)
-    except:
-        db.rollback()
-    else:
-        db.commit()
-        db.refresh(created_ranking)
-    finally:
-        return created_ranking
-
-
-@settings.retry_db
 def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
     ranking_data_dict = ranking.dict()
     created_ranking = Vibe_Concentrate_Ranking(**ranking_data_dict)
     try:
         db.add(created_ranking)
-    except:
+    except Exception:
         db.rollback()
     else:
         db.commit()
@@ -100,25 +81,13 @@ def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sessi
         return created_ranking
 
 
-@settings.retry_db
-def return_all_hidden_concentrate_rankings(db: Session):
-    try:
-        rankings = db.query(Hidden_Concentrate_Ranking).all()
-        return [HiddenConcentrateRanking.from_orm(ranking) for ranking in rankings]
-    except:
-        print("No concentrate ranking results returned")
-        pass
-
-
 class ConcentrateMysteryVotes:
-
     strains_dict = {
         "CP1": "Fruit Gusherz - Vivid",
         "CP2": "Papaya - Local",
         "CP3": "Mississippi Nights - Vibe",
     }
-
-    def __init__(self, rankings: List[HiddenConcentrateRanking]):
+    def __init__(self, rankings: List[CreateConcentrateRanking]):
         self.raw_data = self.import_data(rankings)
         self.all_ratings_over_time = self._average_ratings_over_time(self.raw_data)
         self.votes_by_user = self._group_ratings_by_user_and_strain(self.raw_data)
@@ -126,7 +95,7 @@ class ConcentrateMysteryVotes:
         self.voters_favorite_strains = self.find_favorite_strains(self.votes_by_user)
 
     @classmethod
-    def import_data(cls, rankings: List[HiddenConcentrateRanking]) -> pd.DataFrame:
+    def import_data(cls, rankings: List[CreateConcentrateRanking]) -> pd.DataFrame:
         data = [
             {
                 "strain": ranking.strain,

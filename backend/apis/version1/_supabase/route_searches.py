@@ -24,7 +24,7 @@ from db.models.concentrates import Concentrate
 from db.models.edibles import Edible, VibeEdible
 from db.models.pre_rolls import Pre_Roll, Pre_Roll_Ranking
 from db.models.concentrate_rankings import Concentrate_Ranking
-from db.models.edible_rankings import MysteryEdibleRanking, Vibe_Edible_Ranking
+from db.models.edible_rankings import Edible_Ranking, Vibe_Edible_Ranking
 from db.models.calendar_events import CalendarEvent, CalendarEventQuery
 from db.repository.search_class import (
     search_strain,

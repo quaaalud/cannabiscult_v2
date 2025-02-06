@@ -291,13 +291,13 @@ async function submitForm(formState) {
     if (response.ok) {
       const data = await response.json();
       if (formState.cultivator === "Connoisseur" || formState.cultivator === "Cultivar") {
-        const connoisseurEmail = formState.connoisseur; // Save the email value
+        const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
         window.location.href = "/success/connoisseur_rosin_division";
         
       } else {
-        const connoisseurEmail = formState.connoisseur; // Save the email value
+        const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
         window.location.href = "/success";

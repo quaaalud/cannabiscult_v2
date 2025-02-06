@@ -22,23 +22,7 @@ class EdibleRankingBase(BaseModel):
     effects_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
 
 
-class CreateMysteryEdibleRanking(EdibleRankingBase):
-    voter_email: EmailStr = Field(...)
-
-    class Config:
-        from_attributes = True
-
-
-class CreateVividEdibleRanking(EdibleRankingBase):
-    vivid_edible_id: int = Field(...)
-    connoisseur: EmailStr = Field(...)
-    cultivator: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=199)
-
-    class Config:
-        from_attributes = True
-
-
-class GetVibeEdibleRanking(BaseModel):
+class GetEdibleRanking(BaseModel):
     vibe_edible_id: int = Field(...)
     connoisseur: EmailStr = Field(...)
     cultivator: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=199)
@@ -60,7 +44,7 @@ class GetVibeEdibleRanking(BaseModel):
         from_attributes = True
 
 
-class CreateVibeEdibleRanking(BaseModel):
+class CreateEdibleRanking(BaseModel):
     vibe_edible_id: int = Field(...)
     connoisseur: EmailStr = Field(...)
     cultivator: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=199)
@@ -80,3 +64,11 @@ class CreateVibeEdibleRanking(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class GetVibeEdibleRanking(GetEdibleRanking):
+    pass
+
+
+class CreateVibeEdibleRanking(CreateEdibleRanking):
+    pass

@@ -2,27 +2,17 @@
 
 import base64
 import traceback
-import datetime
 from pathlib import Path
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List, Union
 from db.base import (
     Flower,
     Flower_Description,
-    FlowerReview,
     Flower_Ranking,
-    Hidden_Flower_Ranking,
-    FlowerVoting,
-    MysteryFlowerReview,
 )
 from schemas.flowers import (
-    CreateHiddenFlowerRanking,
     CreateFlowerRanking,
-    FlowerVoteCreate,
-    CreateMysteryFlowerReview,
     FlowerReviewResponse,
-    FlowerErrorResponse
 )
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage, get_image_from_results
 from core.config import settings
@@ -200,26 +190,6 @@ def get_hidden_flower_strains(db: Session) -> List[Optional[Dict[str, Union[int,
         raise e
 
 
-def get_all_strains(db: Session) -> List[str]:
-    all_strains = db.query(FlowerReview.strain).all()
-    return sorted(set([result[0] for result in all_strains]))
-
-
-def get_all_strains_for_cultivator(cultivator_selected: str, db: Session) -> List[str]:
-    all_strains = db.query(FlowerReview.strain).filter(FlowerReview.cultivator == cultivator_selected).all()
-    return sorted([result[0] for result in all_strains])
-
-
-def get_all_cultivators(db: Session) -> List[str]:
-    all_cultivators = db.query(FlowerReview.cultivator).all()
-    return sorted(set([result[0] for result in all_cultivators]))
-
-
-def get_all_cultivators_for_strain(strain_selected: str, db: Session) -> List[str]:
-    all_cultivators = db.query(FlowerReview.cultivator).filter(FlowerReview.strain == strain_selected).all()
-    return sorted(set([result[0] for result in all_cultivators]))
-
-
 def get_review_data_and_path(db: Session, cultivator_select: str, strain_select: str) -> FlowerReviewResponse:
     review = (
         db.query(Flower_Ranking)
@@ -252,106 +222,12 @@ def get_review_data_and_path(db: Session, cultivator_select: str, strain_select:
         return {"strain": strain_select, "message": "Review not found"}
 
 
-def get_review_data_and_path_from_id(db: Session, id_selected: int) -> FlowerReviewResponse:
-    review = db.query(FlowerReview).filter(FlowerReview.id == id_selected).first()
-    if review:
-        results_bytes = get_image_from_results(str(Path(review.card_path)))
-        return {
-            "id": review.id,
-            "strain": review.strain,
-            "cultivator": review.cultivator,
-            "overall": review.overall,
-            "structure": get_average_of_list(review.structure),
-            "nose": get_average_of_list(review.nose),
-            "flavor": get_average_of_list(review.flavor),
-            "effects": get_average_of_list(review.effects),
-            "vote_count": review.vote_count,
-            "card_path": results_bytes,
-            "url_path": return_image_url_from_supa_storage(str(Path(review.card_path))),
-        }
-    else:
-        return {"review_id": id_selected, "message": "Review not found"}
-
-
-def append_votes_to_arrays(
-    cultivator_select: str,
-    strain_select: str,
-    structure_value: int,
-    nose_value: int,
-    flavor_value: int,
-    effects_value: int,
-    db: Session,
-) -> Union[FlowerReviewResponse, FlowerErrorResponse]:
-    review = (
-        db.query(FlowerReview)
-        .filter((FlowerReview.strain == strain_select) & (FlowerReview.cultivator == cultivator_select))
-        .first()
-    )
-    if review:
-        review.structure = func.array_append(FlowerReview.structure, structure_value)
-        review.nose = func.array_append(FlowerReview.nose, nose_value)
-        review.flavor = func.array_append(FlowerReview.flavor, flavor_value)
-        review.effects = func.array_append(FlowerReview.effects, effects_value)
-        review.vote_count = FlowerReview.vote_count + 1
-        try:
-            db.flush()
-            db.commit()
-            db.refresh(review)
-            return FlowerReviewResponse(
-                strain=review.strain,
-                cultivator=review.cultivator,
-                overall=(get_average_of_list(review.structure)
-                         + get_average_of_list(review.nose)
-                         + get_average_of_list(review.flavor)
-                         + get_average_of_list(review.effects)) / 4,
-                structure=get_average_of_list(review.structure),
-                nose=get_average_of_list(review.nose),
-                flavor=get_average_of_list(review.flavor),
-                effects=get_average_of_list(review.effects),
-                vote_count=review.vote_count,
-                card_path=get_image_from_results(str(Path(review.card_path))),
-            )
-        except Exception as e:
-            db.rollback()
-            print(f"Error: {e}")
-            return {"strain": strain_select, "message": "Failed to append values"}
-    else:
-        return {"strain": strain_select, "message": "Review not found"}
-
-
 def return_selected_review(strain_selected: str, cultivator_selected: str, db: Session) -> FlowerReviewResponse:
     return get_review_data_and_path(
         db,
         cultivator_selected,
         strain_selected,
     )
-
-
-def return_selected_review_by_id(selected_id: str, db: Session) -> FlowerReviewResponse:
-    return get_review_data_and_path_from_id(db, selected_id)
-
-
-def add_new_votes_to_flower_values(
-    cultivator_select: str,
-    strain_select: str,
-    structure_vote: int,
-    nose_vote: int,
-    flavor_vote: int,
-    effects_vote: int,
-    db: Session,
-) -> Union[FlowerReviewResponse, FlowerErrorResponse]:
-    try:
-        return append_votes_to_arrays(
-            cultivator_select,
-            strain_select,
-            structure_vote,
-            nose_vote,
-            flavor_vote,
-            effects_vote,
-            db,
-        )
-    except Exception as e:
-        raise e
 
 
 @settings.retry_db
@@ -392,91 +268,3 @@ def update_or_create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Sessi
             raise
     else:
         return create_flower_ranking(ranking_dict, db)
-
-
-@settings.retry_db
-def create_hidden_flower_ranking(ranking_dict: CreateHiddenFlowerRanking, db: Session) -> CreateHiddenFlowerRanking:
-    ranking_data_dict = ranking_dict.dict()
-    created_ranking = Hidden_Flower_Ranking(**ranking_data_dict)
-    try:
-        db.add(created_ranking)
-    except Exception:
-        db.rollback()
-    else:
-        db.commit()
-        db.refresh(created_ranking)
-    finally:
-        return created_ranking
-
-
-def add_new_flower_vote(flower_vote: FlowerVoteCreate, db: Session) -> FlowerVoteCreate:
-    flower_vote = FlowerVoting(
-        created_at=settings.date_handler(datetime.datetime.now()),
-        cultivator_selected=str(flower_vote.cultivator_selected),
-        strain_selected=str(flower_vote.strain_selected),
-        structure_vote=float(flower_vote.structure_vote),
-        structure_explanation=str(flower_vote.structure_explanation),
-        nose_vote=float(flower_vote.nose_vote),
-        nose_explanation=str(flower_vote.nose_explanation),
-        flavor_vote=float(flower_vote.flavor_vote),
-        flavor_explanation=str(flower_vote.flavor_explanation),
-        effects_vote=float(flower_vote.effects_vote),
-        effects_explanation=str(flower_vote.effects_explanation),
-        user_email=str(flower_vote.user_email),
-    )
-    try:
-        db.add(flower_vote)
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        raise e
-    else:
-        db.refresh(flower_vote)
-        return flower_vote
-
-
-def update_or_add_flower_vote(flower_vote: FlowerVoteCreate, db: Session) -> FlowerVoteCreate:
-    existing_vote = (
-        db.query(FlowerVoting)
-        .filter(
-            FlowerVoting.cultivator_selected == flower_vote.cultivator_selected,
-            FlowerVoting.strain_selected == flower_vote.strain_selected,
-            FlowerVoting.user_email == flower_vote.user_email,
-        )
-        .first()
-    )
-    if existing_vote:
-        # Update existing record
-        existing_vote.structure_vote = float(flower_vote.structure_vote)
-        existing_vote.structure_explanation = str(flower_vote.structure_explanation)
-        existing_vote.nose_vote = float(flower_vote.nose_vote)
-        existing_vote.nose_explanation = str(flower_vote.nose_explanation)
-        existing_vote.flavor_vote = float(flower_vote.flavor_vote)
-        existing_vote.flavor_explanation = str(flower_vote.flavor_explanation)
-        existing_vote.effects_vote = float(flower_vote.effects_vote)
-        existing_vote.effects_explanation = str(flower_vote.effects_explanation)
-        existing_vote.created_at = settings.date_handler(datetime.datetime.now())
-        try:
-            db.commit()
-            db.refresh(existing_vote)
-            return existing_vote
-        except Exception as e:
-            db.rollback()
-            raise e
-    else:
-        return add_new_flower_vote(flower_vote, db)
-
-
-def create_mystery_flower_review(mystery_flower_review: CreateMysteryFlowerReview, db: Session) -> CreateMysteryFlowerReview:
-    review_data_dict = mystery_flower_review.dict()
-    created_mystery_review = MysteryFlowerReview(**review_data_dict)
-    try:
-        db.add(created_mystery_review)
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        raise e
-    else:
-        db.refresh(created_mystery_review)
-    finally:
-        return created_mystery_review

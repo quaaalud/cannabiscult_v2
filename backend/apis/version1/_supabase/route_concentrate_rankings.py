@@ -13,18 +13,15 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from db.session import get_db
 from db.models.concentrate_rankings import (
-    Hidden_Concentrate_Ranking,
     Vibe_Concentrate_Ranking,
     Concentrate_Ranking,
 )
 from schemas.concentrate_rankings import (
-    CreateHiddenConcentrateRanking,
     CreateConcentrateRanking,
 )
 from db.repository.concentrate_rankings import (
-    update_or_create_concentrate,
+    update_or_create_concentrate_ranking,
     create_vibe_concentrate_ranking,
-    create_concentrate_ranking,
 )
 from db.repository.concentrates import get_concentrate_and_description
 
@@ -35,17 +32,7 @@ router = APIRouter()
 async def submit_concentrate_ranking(
     concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Concentrate_Ranking:
-    return await update_or_create_concentrate(ranking=concentrate_ranking, db=db)
-
-
-@router.post("/submit-hidden-concentrate-ranking", response_model=None)
-async def submit_mystery_concentrate_ranking(
-    concentrate_ranking: CreateHiddenConcentrateRanking, db: Session = Depends(get_db)
-) -> Hidden_Concentrate_Ranking:
-    submitted_ranking = await update_or_create_concentrate(
-        ranking=concentrate_ranking, db=db
-    )
-    return submitted_ranking
+    return await update_or_create_concentrate_ranking(ranking=concentrate_ranking, db=db)
 
 
 @router.post("/submit-vibe-concentrate-ranking", response_model=None)
@@ -53,7 +40,7 @@ async def submit_vibe_concentrate_ranking(
     ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Vibe_Concentrate_Ranking:
     create_vibe_concentrate_ranking(ranking=ranking, db=db)
-    submitted_ranking = await create_concentrate_ranking(ranking=ranking, db=db)
+    submitted_ranking = await update_or_create_concentrate_ranking(ranking=ranking, db=db)
     return submitted_ranking
 
 

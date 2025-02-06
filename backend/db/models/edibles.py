@@ -29,30 +29,7 @@ class Edible(Base):
         Boolean,
         default=False,
     )
-    product_type = Column(Text, default="concentrate")
-
-
-class MysteryEdible(Base):
-    __table_args__ = {"schema": "public"}
-
-    mystery_edible_id = Column(
-        BigInteger, primary_key=True, index=True, autoincrement="auto", nullable=False
-    )
-    cultivator = Column(String, nullable=False)
-    strain = Column(String, nullable=False)
-    card_path = Column(String, nullable=True)
-    product_type = Column(Text, default="concentrate")
-
-
-class VividEdible(Base):
-    __table_args__ = {"schema": "public"}
-
-    vivid_edible_id = Column(
-        BigInteger, primary_key=True, index=True, autoincrement="auto", nullable=False
-    )
-    strain = Column(String, nullable=False)
-    card_path = Column(String, nullable=True)
-    product_type = Column(Text, default="concentrate")
+    product_type = Column(Text, default="edible")
 
 
 class VibeEdible(Base):
@@ -64,4 +41,4 @@ class VibeEdible(Base):
     strain = Column(String, nullable=False)
     card_path = Column(String, nullable=True)
     cultivator = Column(String, server_default="Vibe", nullable=True)
-    product_type = Column(Text, default="concentrate")
+    product_type = Column(Text, default="edible")

@@ -7,14 +7,12 @@ Created on Sun Jan 21 12:53:04 2024
 """
 
 from pydantic import BaseModel, Field, EmailStr, validator
-from typing import Optional, List, Annotated
-
-OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
+from typing import Optional, List
 
 
 class PreRollSchema(BaseModel):
-    cultivator: OptionalStr(strict=True) = Field(..., description="Name of the cultivator")
-    strain: OptionalStr(strict=True) = Field(..., description="Name of the strain")
+    cultivator: str = Field(..., description="Name of the cultivator")
+    strain: str = Field(..., description="Name of the strain")
     card_path: Optional[str] = Field(None, description="Path to the pre-roll's image card")
     voting_open: bool = Field(True, description="Flag to indicate if voting is open")
     pre_roll_id: int = Field(..., description="Unique identifier for the pre-roll")

@@ -10,17 +10,15 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from typing import Dict, List, Any
 from db.session import get_db
-from db.repository.edibles import get_edible_data_and_path
-from db.repository.edibles import get_vivd_edible_data_by_strain
-from db.repository.edibles import get_vibe_edible_data_by_strain
-from db.models.edibles import MysteryEdible
+from db.repository.edibles import get_edible_data_and_path, get_vibe_edible_data_by_strain
+from db.models.edibles import Edible
 
 router = APIRouter()
 
 
 @router.post("/get-all-mystery-edibles", response_model=List[str])
 async def get_all_mystery_edibles(db: Session = Depends(get_db)) -> List[str]:
-    all_strains = db.query(MysteryEdible.strain).all()
+    all_strains = db.query(Edible.strain).all()
     return sorted(set([result[0] for result in all_strains]))
 
 
@@ -41,16 +39,6 @@ async def post_return_selected_mystery_edible(
     return get_edible_data_and_path(
         db,
         strain_select=strain_selected,
-    )
-
-
-@router.get("/get-vivid-edible", response_model=Dict[str, Any])
-async def query_vivd_edible_data_by_strain(
-    edible_strain: str = Query(None, alias="edible_strain"), db: Session = Depends(get_db)
-) -> Dict[str, Any]:
-    return get_vivd_edible_data_by_strain(
-        db,
-        edible_strain=edible_strain,
     )
 
 
