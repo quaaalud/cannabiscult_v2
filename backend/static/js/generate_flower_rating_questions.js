@@ -240,13 +240,13 @@ async function submitForm(formState) {
         const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success/connoisseur_flower_pack_november";
+        window.location.href = "/success/connoisseur_flower_pack_tournament_finals";
 
       } else {
         const connoisseurEmail = formState.connoisseur;
         formState = {};
         formState.connoisseur = connoisseurEmail;
-        window.location.href = "/success";
+        window.location.reload();
       }
     } else {
       console.log("Submission failed:", response.status, response.statusText);
