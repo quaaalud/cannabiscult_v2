@@ -32,7 +32,6 @@ async def submit_strain(
         model = edibles.Edible
     else:
         raise HTTPException(status_code=400, detail="Invalid product type")
-
     existing_strain = (
         db.query(model)
         .filter(model.strain == submission.strain, model.cultivator == submission.cultivator)
@@ -114,6 +113,7 @@ async def add_description_to_db(
     strain_category: str = "cult_pack"
 ):
     description_model = None
+    fk_column_name = None
     if product_type == "flowerSubmission":
         description_model = flowers.Flower_Description
         fk_column_name = "flower_id"
@@ -126,22 +126,40 @@ async def add_description_to_db(
     elif product_type == "edibleSubmission":
         description_model = edibles.Edible_Description
         fk_column_name = "edible_id"
-    fk_kwargs = {fk_column_name: product_id}
-    new_description = description_model(
-        **fk_kwargs,
-        description=description,
-        effects=effects,
-        cultivar_email=cultivar_email,
-        lineage=lineage,
-        terpenes_list=parse_terpenes(terpenes_list),
-        strain_category=strain_category
+    if not description_model or not fk_column_name:
+        raise ValueError(f"Invalid product_type: {product_type}")
+    existing_description = (
+        db.query(description_model)
+        .filter(
+            getattr(description_model, fk_column_name) == product_id,
+            description_model.cultivar_email == cultivar_email
+        )
+        .first()
     )
-    try:
+    if existing_description:
+        existing_description.description = description
+        existing_description.effects = effects
+        existing_description.lineage = lineage
+        existing_description.terpenes_list = parse_terpenes(terpenes_list)
+        existing_description.strain_category = strain_category
+    else:
+        # Create a new description
+        fk_kwargs = {fk_column_name: product_id}
+        new_description = description_model(
+            **fk_kwargs,
+            description=description,
+            effects=effects,
+            cultivar_email=cultivar_email,
+            lineage=lineage,
+            terpenes_list=parse_terpenes(terpenes_list),
+            strain_category=strain_category
+        )
         db.add(new_description)
+    try:
+        db.commit()
+        db.refresh(existing_description if existing_description else new_description)
+        return existing_description if existing_description else new_description
     except Exception as e:
+        db.rollback()
         print(f"Error: {e}\n\n")
         return None
-    else:
-        db.commit()
-        db.refresh(new_description)
-    return new_description
