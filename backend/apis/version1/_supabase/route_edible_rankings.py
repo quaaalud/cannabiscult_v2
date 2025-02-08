@@ -9,9 +9,9 @@ Created on Mon Oct 30 21:23:18 2023
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from db.session import get_db
-from schemas.edible_rankings import CreateEdibleRanking, CreateVibeEdibleRanking
-from db.repository.edible_rankings import create_edible_ranking, create_vibe_edible_ranking
-from db.models.edible_rankings import Edible_Ranking, Vibe_Edible_Ranking
+from schemas.edibles import CreateEdibleRanking, CreateVibeEdibleRanking
+from db.repository.edibles import create_edible_ranking, create_vibe_edible_ranking
+from db.base import Edible_Ranking, Vibe_Edible_Ranking
 
 
 router = APIRouter()

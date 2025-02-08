@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 
+import traceback
 from pathlib import Path
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List
-from db.models.concentrates import Concentrate, Concentrate_Description
+from db.base import Concentrate, Concentrate_Description
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
-import traceback
+from core.config import settings
+from schemas.concentrates import (
+    CreateConcentrateRanking,
+)
+from db.base import (
+    Vibe_Concentrate_Ranking,
+    Concentrate_Ranking,
+)
 
 
 def get_concentrate_data_and_path(db: Session, strain: str) -> Optional[Dict[str, Any]]:
@@ -105,3 +113,61 @@ async def get_concentrate_and_description(
         traceback.print_exc()
         print(f"Error fetching concentrate data and description: {e}")
         return None
+
+
+@settings.retry_db
+async def create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
+    ranking_data_dict = ranking.dict()
+    created_ranking = Concentrate_Ranking(**ranking_data_dict)
+    try:
+        db.add(created_ranking)
+    except Exception:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(created_ranking)
+    return created_ranking
+
+
+@settings.retry_db
+async def update_or_create_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
+    existing_ranking = (
+        db.query(Concentrate_Ranking)
+        .filter(
+            Concentrate_Ranking.cultivator == ranking.cultivator,
+            Concentrate_Ranking.strain == ranking.strain,
+            Concentrate_Ranking.connoisseur == ranking.connoisseur,
+        )
+        .first()
+    )
+
+    if existing_ranking:
+        for key, value in ranking.dict().items():
+            if value is not None:
+                setattr(existing_ranking, key, value)
+        try:
+            db.commit()
+            db.refresh(existing_ranking)
+            return {"ranking_submitted": True}
+        except Exception:
+            db.rollback()
+            raise
+    else:
+        await create_concentrate_ranking(ranking, db)
+
+    return {"pre_roll_ranking": True}
+
+
+@settings.retry_db
+def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Session):
+    ranking_data_dict = ranking.dict()
+    created_ranking = Vibe_Concentrate_Ranking(**ranking_data_dict)
+    try:
+        db.add(created_ranking)
+    except Exception:
+        db.rollback()
+    else:
+        db.commit()
+        db.refresh(created_ranking)
+    finally:
+        return created_ranking

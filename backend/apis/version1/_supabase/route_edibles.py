@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from typing import Dict, List, Any
 from db.session import get_db
 from db.repository.edibles import get_edible_data_and_path, get_vibe_edible_data_by_strain
-from db.models.edibles import Edible
+from db.base import Edible, Edible_Description
 
 router = APIRouter()
 

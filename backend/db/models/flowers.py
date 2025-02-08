@@ -5,7 +5,6 @@ Created on Sun Nov  5 17:09:03 2023
 
 @author: dale
 """
-import enum
 from sqlalchemy import (
     Column,
     String,
@@ -21,15 +20,7 @@ from sqlalchemy import (
     Float,
     func,
 )
-from db.base_class import Base
-
-
-class StrainCategory(str, enum.Enum):
-    indica = "indica"
-    indica_dominant_hyrbrid = "indica_dominant_hyrbrid"
-    hybrid = "hybrid"
-    sativa_dominant_hyrbrid = "sativa_dominant_hyrbrid"
-    sativa = "sativa"
+from db.base_class import Base, StrainCategory
 
 
 class Flower(Base):
@@ -65,7 +56,7 @@ class Flower_Description(Base):
     strain_category = Column(
         Enum(StrainCategory, name="strain_category"),
         nullable=False,
-        server_default="hybrid",
+        server_default="cult_pack",
     )
 
     __table_args__ = (

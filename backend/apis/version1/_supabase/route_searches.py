@@ -15,24 +15,27 @@ from uuid import uuid4
 from db.session import get_db
 from typing import List, Optional, Any, Dict, Union
 from schemas.flowers import GetFlowerRanking
-from schemas.concentrate_rankings import GetConcentrateRanking
+from schemas.concentrates import GetConcentrateRanking
 from schemas.pre_rolls import PreRollRankingSchema
-from schemas.edible_rankings import GetVibeEdibleRanking
-from schemas.search_class import SearchResultItem, StrainCultivator, RatingModel
-from db.base import Flower, Flower_Ranking
-from db.models.concentrates import Concentrate
-from db.models.edibles import Edible, VibeEdible
-from db.models.pre_rolls import Pre_Roll, Pre_Roll_Ranking
-from db.models.concentrate_rankings import Concentrate_Ranking
-from db.models.edible_rankings import Edible_Ranking, Vibe_Edible_Ranking
-from db.models.calendar_events import CalendarEvent, CalendarEventQuery
+from schemas.edibles import GetVibeEdibleRanking
+from db.base import (
+    Flower,
+    Flower_Ranking,
+    Concentrate,
+    Edible,
+    VibeEdible,
+    Pre_Roll,
+    Pre_Roll_Ranking,
+    Concentrate_Ranking,
+    Vibe_Edible_Ranking,
+    CalendarEventQuery,
+)
 from db.repository.search_class import (
     search_strain,
     get_all_product_types,
     get_cultivators_by_product_type,
     get_strains_by_cultivator,
     get_random_cultivator,
-    get_random_strain,
     aggregate_ratings_by_strain,
     get_all_card_paths,
     generate_signed_urls,
@@ -44,7 +47,8 @@ from db.repository.search_class import (
     serialize_graph,
 )
 from schemas.search_class import (
-    RatingModel,
+    SearchResultItem,
+    StrainCultivator,
     FlowerTerpTableSchema,
     ConcentrateTerpTableSchema,
     EdibleTerpTableSchema,
@@ -92,19 +96,14 @@ def convert_to_schema(product_type: str, data: List[dict]):
 
 def model_to_dict(model_instance):
     """Converts an SQLAlchemy model instance to a dictionary."""
-    return {
-        column.name: getattr(model_instance, column.name)
-        for column in model_instance.__table__.columns
-    }
+    return {column.name: getattr(model_instance, column.name) for column in model_instance.__table__.columns}
 
 
 def decode_email(encoded_email: str) -> str:
     return base64.b64decode(encoded_email).decode("utf-8")
 
 
-async def gather_user_ratings_by_product_type(
-    user_email: str, db: Session
-) -> Dict[str, List[Any]]:
+async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> Dict[str, List[Any]]:
     user_ratings = {}
 
     for product_type, models in product_type_to_ranking_model.items():
@@ -138,20 +137,14 @@ async def get_my_ratings(user_email: str, db: Session = Depends(get_db)):
 
 
 @router.post("/check-existence/{product_type}")
-async def check_existence(
-    product_type: str, entry: StrainCultivator, db: Session = Depends(get_db)
-):
+async def check_existence(product_type: str, entry: StrainCultivator, db: Session = Depends(get_db)):
     models = product_type_to_model.get(product_type)
     if not models:
         raise HTTPException(status_code=404, detail="Product type not found")
 
     for model in models:
         exists = (
-            db.query(model)
-            .filter(
-                model.strain.ilike(entry.strain), model.cultivator.ilike(entry.cultivator)
-            )
-            .first()
+            db.query(model).filter(model.strain.ilike(entry.strain), model.cultivator.ilike(entry.cultivator)).first()
             is not None
         )
 
@@ -161,12 +154,8 @@ async def check_existence(
     return {"exists": False}
 
 
-@router.get(
-    "/all/{search_term}", response_model=List[SearchResultItem]
-)
-async def get_search_matches(
-    search_term: str, with_images_flag: bool = False, db: Session = Depends(get_db)
-):
+@router.get("/all/{search_term}", response_model=List[SearchResultItem])
+async def get_search_matches(search_term: str, with_images_flag: bool = False, db: Session = Depends(get_db)):
     if not search_term or len(search_term) < 3:
         return []
     results = await search_strain(db, search_term, with_images_flag)
@@ -186,9 +175,7 @@ async def get_product_types(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get(
-    "/cultivators/{product_type}", response_model=List[Any], include_in_schema=False
-)
+@router.get("/cultivators/{product_type}", response_model=List[Any], include_in_schema=False)
 async def get_cultivators(
     product_type: str,
     product_type_dict=product_type_to_model,
@@ -272,14 +259,10 @@ async def run_aggregation_task(task_id, db, model_dict):
 
 
 @router.get("/get_aggregated_strain_ratings")
-async def get_aggregated_strain_ratings(
-    background_tasks: BackgroundTasks, db: Session = Depends(get_db)
-):
+async def get_aggregated_strain_ratings(background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     task_id = str(uuid4())
     tasks[task_id] = {"status": "running"}
-    background_tasks.add_task(
-        run_aggregation_task, task_id, db, product_type_to_ranking_model
-    )
+    background_tasks.add_task(run_aggregation_task, task_id, db, product_type_to_ranking_model)
     return {"message": "Task started", "task_id": task_id}
 
 
@@ -307,9 +290,7 @@ async def get_all_image_urls_route(limit=10, db: Session = Depends(get_db)):
         # Fetch data using the synchronous function
         product_data = get_all_card_paths(db, limit)
         # Asynchronously generate and stream URLs
-        return StreamingResponse(
-            generate_signed_urls(product_data), media_type="application/json"
-        )
+        return StreamingResponse(generate_signed_urls(product_data), media_type="application/json")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -324,9 +305,7 @@ async def get_all_events_route(db: Session = Depends(get_db)):
 
 
 @router.post("/add-calendar-event/", status_code=201)
-async def add_calendar_event(
-    event_data: CalendarEventQuery, db: Session = Depends(get_db)
-):
+async def add_calendar_event(event_data: CalendarEventQuery, db: Session = Depends(get_db)):
     try:
         success = await add_new_calendar_event(db, event_data.dict())
         if not success:
@@ -342,9 +321,7 @@ async def add_calendar_event(
 
 
 @router.get("/strains/{product_type}", response_model=List)
-async def get_list_of_strains_for_terp_profile(
-    product_type: str, db: Session = Depends(get_db)
-):
+async def get_list_of_strains_for_terp_profile(product_type: str, db: Session = Depends(get_db)):
     try:
         strains_list = get_all_strains_by_product_type(db, product_type)
         if strains_list is None:
@@ -363,9 +340,7 @@ async def get_list_of_strains_for_terp_profile(
         PreRollTerpTableSchema,
     ],
 )
-async def get_product_terp_profile(
-    product_type: str, product_id: int, db: Session = Depends(get_db)
-):
+async def get_product_terp_profile(product_type: str, product_id: int, db: Session = Depends(get_db)):
     try:
         profile = get_terp_profile_by_type(db, product_type, product_id)
         if profile is None:

@@ -18,10 +18,11 @@ from sqlalchemy import (
     String,
     Date,
     event,
+    Enum,
     func,
 )
 from sqlalchemy.dialects.postgresql import ARRAY
-from db.base_class import Base
+from db.base_class import Base, StrainCategory
 
 
 class Pre_Roll(Base):
@@ -69,8 +70,10 @@ class Pre_Roll_Description(Base):
         nullable=False,
         default="aaron.childs@thesocialoutfitus.com",
     )
-    unused1 = Column(
-        Text, nullable=False, default="Coming Soon", server_default="Coming Soon"
+    strain_category = Column(
+        Enum(StrainCategory, name="strain_category"),
+        nullable=False,
+        server_default="cult_pack",
     )
     unused2 = Column(
         Text, nullable=False, default="Coming Soon", server_default="Coming Soon"

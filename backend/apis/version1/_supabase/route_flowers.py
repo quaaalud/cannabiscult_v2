@@ -12,8 +12,6 @@ from sqlalchemy.orm import Session
 from typing import Dict, Any, List, Union
 from db.session import get_supa_db, get_db
 from db.base import Flower_Ranking, Flower
-from db._supabase.connect_to_storage import get_image_from_results
-from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 from schemas.flowers import (
     FlowersBase,
     GetFlowerWithDescription,

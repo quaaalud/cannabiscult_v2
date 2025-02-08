@@ -6,22 +6,14 @@ Created on Sun Nov  5 16:47:38 2023
 @author: dale
 """
 
-from pydantic import BaseModel, confloat, EmailStr, Field, validator, StringConstraints
+from pydantic import BaseModel, EmailStr, Field, StringConstraints
 from typing import List, Optional, Annotated
-import enum
+from schemas.product_types import StrainCategoryEnum
 
 
 StrainType = Annotated[str, Annotated[str, StringConstraints(min_length=1, max_length=500)]]
 RatingType = Annotated[float, Field(gt=0, lt=10.1)]
 OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
-
-
-class StrainCategoryEnum(str, enum.Enum):
-    INDICA = "indica"
-    INDICA_HYBRID = "indica_dominant_hybrid"
-    HYBRID = "hybrid"
-    SATICA_HYBRID = "sativa_dominant_hybrid"
-    SATIVA = "sativa"
 
 
 class FlowersBase(BaseModel):

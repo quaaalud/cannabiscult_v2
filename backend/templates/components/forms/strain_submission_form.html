@@ -70,6 +70,21 @@
                   </div>
                 </div>
               </div>
+              <div class="row mb-4 align-items-center justify-content-center">
+                <div class="col-5 col-xl-4 col-xxl-3">
+                  <label class="form-label" for="strainCategorySubmission">Strain Category</label>
+                </div>
+                <div class="col-7 col-xl-8 col-xxl-9">
+                  <select id="strainCategorySubmission" class="form-outline w-100 form-control" data-mdb-select-init>
+                    <option value="indica" class="form-control">Indica</option>
+                    <option value="indica_dominant_hybrid" class="form-control">Indica Dominant Hybrid</option>
+                    <option value="hybrid" selected>Hybrid</option>
+                    <option value="sativa_dominant_hybrid" class="form-control">Sativa Dominant Hybrid</option>
+                    <option value="sativa" class="form-control">Sativa</option>
+                    <option value="cult_pack" class="form-control">Cult Pack</option>
+                  </select>
+                </div>
+              </div>
               <div class="col-12 mb-3 pb-2">
                 <select class="form-outline w-100" data-mdb-select-init data-mdb-placeholder="Select One or Multiple Terpenes" multiple id="terpenesSubmission">
                   <option value="alpha_bergamotene">Alpha Bergamotene</option>
@@ -227,6 +242,7 @@ async function submitStrainForm(event) {
 
     const strainValue = document.getElementById("strainSubmission").value;
     const cultivatorValue = document.getElementById("cultivatorSubmission").value;
+    const strainCategoryValue = document.getElementById("strainCategorySubmission").value;
     const emailAddressValue = document.getElementById("emailAddress").value.toLowerCase();
     const descriptionValue = document.getElementById("strainDescription").value;
     const effectsValue = document.getElementById("effectsSubmission").value;
@@ -249,6 +265,7 @@ async function submitStrainForm(event) {
     if (!productTypeValue) missingFields.push('Product Type');
     if (!strainValue) missingFields.push('Strain Name');
     if (!cultivatorValue) missingFields.push('Cultivator');
+    if (!strainCategoryValue) missingFields.push('Strain Category');
     if (!descriptionValue) missingFields.push('Description');
     if (!effectsValue) missingFields.push('Effects');
     if (!emailAddressValue) missingFields.push('Email Address');
@@ -259,7 +276,6 @@ async function submitStrainForm(event) {
         // Update modal body with missing fields
         modalBody.innerHTML = `<p>Please complete the following fields:</p><ul>${missingFields.map(field => `<li>${field}</li>`).join('')}</ul>`;
         
-        // Trigger the modal
         const missingInfoModal = new bootstrap.Modal(document.getElementById('missingInfoModal'));
         missingInfoModal.show();
     } else {
@@ -277,8 +293,8 @@ async function submitStrainForm(event) {
       formData.append('product_type', productTypeValue);
       formData.append('lineage', lineageFormSubmission);
       formData.append('terpenes_list', selectedTerpenes);
+      formData.append('strain_category', strainCategoryValue);
       
-      // Submit the form data
       const root = window.location.origin;
       const url = new URL('/submit/submit_strain/', root);
   
@@ -314,7 +330,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         toggleButton.textContent = "Show Strain Submission Form";
       }
     });
-    const lineageList = []; // Array to hold the values for form submission
+    const lineageList = [];
     window.lineageList = lineageList;
     document.getElementById('addLineage').addEventListener('click', function() {
         createChip();
@@ -322,7 +338,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
     document.getElementById('lineageInput').addEventListener('keypress', function(event) {
         if (event.key === "Enter") {
-            event.preventDefault(); // Prevent the form from being submitted
+            event.preventDefault();
             createChip();
         }
     });
@@ -335,11 +351,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const value = input.value.trim();
     
         if (value) {
-          // Create the chip element
           const chipContainer = document.createElement('div');
           chipContainer.className = 'col-6';
   
-          // Create the chip element
           const chip = document.createElement('div');
           chip.className = 'chip chip-outline btn-outline-dark';
           chip.setAttribute('data-mdb-chip-init', '');
@@ -348,27 +362,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
           chip.id = value;
           chip.value = value;
   
-          // Add close icon
           const closeIcon = document.createElement('i');
           closeIcon.className = 'close fas fa-times';
           closeIcon.addEventListener('click', function() {
             chipContainer.remove(); // Remove the entire column on close
             const index = window.lineageList.indexOf(value);
             if (index > -1) {
-              window.lineageList.splice(index, 1); // Remove value from array
+              window.lineageList.splice(index, 1);
             }
           });
   
           chip.appendChild(closeIcon);
           chipContainer.appendChild(chip);
-  
-          // Append the column to the chips container
           document.getElementById('lineageChipsContainer').appendChild(chipContainer);
-  
-          // Add the value to the array for form submission
           window.lineageList.push(value);
-  
-          // Clear the input
           input.value = '';
         }
     }

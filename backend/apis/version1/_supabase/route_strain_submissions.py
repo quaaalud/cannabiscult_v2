@@ -10,6 +10,7 @@ from fastapi import APIRouter, Form, HTTPException, Depends, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 from db.session import get_db
+from schemas.product_types import ProductSubmission
 from db.models import concentrates, edibles, flowers, pre_rolls
 
 
@@ -18,33 +19,23 @@ router = APIRouter()
 
 @router.post("/submit_strain/")
 async def submit_strain(
-    background_tasks: BackgroundTasks,
-    product_type: str = Form(...),
-    strain: str = Form(...),
-    cultivator: str = Form(...),
-    cultivar_email: str = Form(...),
-    description: str = Form("Coming Soon!"),
-    effects: str = Form("Coming Soon!"),
-    lineage: str = Form("Coming Soon!"),
-    terpenes_list: List[str] = Form(["Coming", "Soon!"]),
+    submission: ProductSubmission = Depends(ProductSubmission.as_form),
     db: Session = Depends(get_db),
 ):
-    # Determine the table/model to use based on product_type
-    model = None
-    if product_type == "flowerSubmission":
+    if submission.product_type == "flowerSubmission":
         model = flowers.Flower
-    elif product_type == "concentrateSubmission":
+    elif submission.product_type == "concentrateSubmission":
         model = concentrates.Concentrate
-    elif product_type == "pre_rollSubmission":
+    elif submission.product_type == "pre_rollSubmission":
         model = pre_rolls.Pre_Roll
-    elif product_type == "edibleSubmission":
+    elif submission.product_type == "edibleSubmission":
         model = edibles.Edible
     else:
         raise HTTPException(status_code=400, detail="Invalid product type")
 
     existing_strain = (
         db.query(model)
-        .filter(model.strain == strain.title(), model.cultivator == cultivator.title())
+        .filter(model.strain == submission.strain, model.cultivator == submission.cultivator)
         .first()
     )
     if existing_strain:
@@ -53,17 +44,13 @@ async def submit_strain(
         card_path = "reviews/Connoisseur_Pack/CP_strains.png"
         voting_open = True
         is_mystery = False
-
-        # Create a new instance of the model with the form data
         new_submission = model(
-            strain=strain.title(),
-            cultivator=cultivator.title(),
+            strain=submission.strain.title(),
+            cultivator=submission.cultivator.title(),
             card_path=card_path,
             voting_open=voting_open,
             is_mystery=is_mystery,
         )
-
-        # Add the new submission to the database
         try:
             db.add(new_submission)
         except Exception as e:
@@ -72,27 +59,24 @@ async def submit_strain(
         else:
             db.commit()
             db.refresh(new_submission)
-
-    product_type_id = getattr(new_submission, f"{product_type[:-10]}_id")
-
-    background_tasks.add_task(
-        add_description_to_db,
+    product_type_id = getattr(new_submission, f"{submission.product_type[:-10]}_id")
+    await add_description_to_db(
         db,
-        product_type,
+        submission.product_type,
         product_type_id,
-        description,
-        effects,
-        cultivar_email,
-        lineage,
-        terpenes_list,
+        submission.description,
+        submission.effects,
+        submission.cultivar_email,
+        submission.lineage,
+        submission.terpenes_list,
+        submission.strain_category.value
     )
-
     return {
         "message": "Submission successful",
         "product_type_id": product_type_id,
         "submission_strain": new_submission.strain,
         "submission_cultivator": new_submission.cultivator,
-        "cultivar_email": cultivar_email,
+        "cultivar_email": submission.cultivar_email,
     }
 
 
@@ -118,7 +102,7 @@ def parse_terpenes(terpenes_array: List[str]) -> list:
     return processed_terpenes
 
 
-def add_description_to_db(
+async def add_description_to_db(
     db: Session,
     product_type: str,
     product_id: int,
@@ -127,6 +111,7 @@ def add_description_to_db(
     cultivar_email: str,
     lineage: str = "Coming Soon",
     terpenes_list: List[str] = ["Coming Soon"],
+    strain_category: str = "cult_pack"
 ):
     description_model = None
     if product_type == "flowerSubmission":
@@ -149,6 +134,7 @@ def add_description_to_db(
         cultivar_email=cultivar_email,
         lineage=lineage,
         terpenes_list=parse_terpenes(terpenes_list),
+        strain_category=strain_category
     )
     try:
         db.add(new_description)

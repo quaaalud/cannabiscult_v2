@@ -10,7 +10,6 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Body, Path
 from sqlalchemy.orm import Session
 from typing import Dict, Any, Optional, List
 from db.session import get_db
-from db.models import pre_rolls as pre_rolls_models
 from db.repository import pre_rolls as pre_rolls_repo
 from schemas import pre_rolls as pre_rolls_schemas
 

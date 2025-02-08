@@ -405,19 +405,6 @@ async def handle_pre_roll_review_post(
     return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
 
 
-@general_pages_router.get("/pre-roll-get-review-form", response_class=HTMLResponse)
-async def handle_pre_roll_review_post_from_form(
-    request: Request,
-    *,
-    strain: str = Query(None, alias="strain_selected"),
-    cultivator: str = Query(None, alias="cultivator_selected"),
-    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com"),
-    product_type_selected: str = Query("pre-roll", alias="product_type_selected"),  # No alias needed
-    db: Session = Depends(get_db),
-):
-    return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
-
-
 @general_pages_router.get("/vibe-hash-hole", response_class=HTMLResponse)
 async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
     cultivator = "Vibe"
