@@ -8,6 +8,7 @@ Created on Sun Jan 21 12:53:04 2024
 
 from pydantic import BaseModel, Field, EmailStr, validator
 from typing import Optional, List
+from schemas.product_types import StrainCategoryEnum, StrainType
 
 
 class PreRollSchema(BaseModel):
@@ -40,7 +41,9 @@ class PreRollDescriptionSchema(BaseModel):
     cultivar_email: str = Field(
         "aaron.childs@thesocialoutfitus.com", description="Email of the Connoisseur"
     )
-    unused1: str = Field("Coming Soon", description="Placeholder field")
+    strain_category: StrainCategoryEnum = Field(
+        StrainCategoryEnum.cult_pack, description="The category for the flower strain. ex: indica, hybrid, etc."
+    )
     unused2: str = Field("Coming Soon", description="Another placeholder field")
 
     class Config:
@@ -55,8 +58,8 @@ class PreRollDescriptionSchema(BaseModel):
 
 
 class PreRollRankingSchema(BaseModel):
-    cultivator: str = Field(..., description="Name of the cultivator")
-    strain: str = Field(..., description="Name of the strain")
+    cultivator: StrainType = Field(..., description="Name of the cultivator")
+    strain: StrainType = Field(..., description="Name of the strain")
     connoisseur: EmailStr = Field(..., description="Email address of the connoisseur")
     roll_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the roll quality")
     airflow_rating: Optional[float] = Field(

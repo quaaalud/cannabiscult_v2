@@ -2,6 +2,7 @@
 
 import traceback
 from pathlib import Path
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List
 from db.base import Concentrate, Concentrate_Description
@@ -34,9 +35,7 @@ async def get_concentrate_by_strain_and_cultivator(
     db: Session, strain: str, cultivator: str
 ) -> Optional[Dict[str, Any]]:
     concentrate = (
-        db.query(Concentrate)
-        .filter((Concentrate.strain == strain), (Concentrate.cultivator == cultivator))
-        .first()
+        db.query(Concentrate).filter((Concentrate.strain == strain), (Concentrate.cultivator == cultivator)).first()
     )
     if concentrate:
         return {
@@ -74,19 +73,15 @@ async def get_concentrate_and_description(
         )
         if cultivator:
             query = query.filter(Concentrate.cultivator == cultivator)
-
         query = query.filter(Concentrate.strain == strain)
         concentrate_data = query.first()
-
         if not concentrate_data:
             query = db.query(Concentrate, Concentrate_Description).join(
                 Concentrate_Description,
                 Concentrate.concentrate_id == Concentrate_Description.concentrate_id,
             )
-
             if cultivator:
                 query = query.filter(Concentrate.cultivator == cultivator)
-
             query = query.filter(Concentrate.strain == strain)
             concentrate_data = query.first()
         if concentrate_data:
@@ -106,13 +101,46 @@ async def get_concentrate_and_description(
                 "cultivar": description.cultivar_email,
             }
             return concentrate_info
-
         return None
-
     except Exception as e:
         traceback.print_exc()
         print(f"Error fetching concentrate data and description: {e}")
         return None
+
+
+async def get_concentrate_rankings_by_id(db: Session, concentrate_id: int):
+    avg_ratings = (
+        db.query(
+            func.avg(Concentrate_Ranking.color_rating),
+            func.avg(Concentrate_Ranking.consistency_rating),
+            func.avg(Concentrate_Ranking.smell_rating),
+            func.avg(Concentrate_Ranking.flavor_rating),
+            func.avg(Concentrate_Ranking.effects_rating),
+            func.avg(Concentrate_Ranking.harshness_rating),
+            func.avg(Concentrate_Ranking.residuals_rating),
+        )
+        .filter(Concentrate_Ranking.concentrate_id == concentrate_id)
+        .first()
+    )
+    if not avg_ratings or any(rating is None for rating in avg_ratings):
+        return {"strain": "no match found", "message": "Concentrate not found or incomplete data"}
+    ratings_dict = {
+        "concentrate_id": concentrate_id,
+        "color_rating": round(avg_ratings[0], 2) if avg_ratings[0] is not None else None,
+        "consistency_rating": (round(avg_ratings[1], 2) if avg_ratings[1] is not None else None),
+        "smell_rating": round(avg_ratings[2], 2) if avg_ratings[2] is not None else None,
+        "flavor_rating": round(avg_ratings[3], 2) if avg_ratings[3] is not None else None,
+        "effects_rating": (round(avg_ratings[4], 2) if avg_ratings[4] is not None else None),
+        "harshness_rating": (round(avg_ratings[5], 2) if avg_ratings[5] is not None else None),
+        "residuals_rating": (round(avg_ratings[6], 2) if avg_ratings[6] is not None else None),
+    }
+    ratings_values = list(filter(None, avg_ratings))
+    if ratings_values:
+        overall_score = sum(ratings_values) / len(ratings_values)
+        ratings_dict["overall_score"] = round(overall_score, 2)
+    else:
+        ratings_dict["overall_score"] = None
+    return ratings_dict
 
 
 @settings.retry_db
@@ -140,7 +168,6 @@ async def update_or_create_concentrate_ranking(ranking: CreateConcentrateRanking
         )
         .first()
     )
-
     if existing_ranking:
         for key, value in ranking.dict().items():
             if value is not None:
@@ -154,7 +181,6 @@ async def update_or_create_concentrate_ranking(ranking: CreateConcentrateRanking
             raise
     else:
         await create_concentrate_ranking(ranking, db)
-
     return {"pre_roll_ranking": True}
 
 

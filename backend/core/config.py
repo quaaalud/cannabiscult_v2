@@ -8,6 +8,8 @@ Created on Sun Mar  5 21:17:34 2023
 
 import os
 import datetime
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from tenacity import retry, wait_exponential, stop_after_attempt, retry_if_exception_type
@@ -48,8 +50,16 @@ class Settings:
     ALGO: str = os.getenv("ALGO")
     PRIMARY_BUCKET: str = os.getenv("POSTGRES_DB")
 
+    core_dir = Path(__file__).parents[0]
+    backend_dir = Path(__file__).parents[1]
+    main_dir = Path(__file__).parents[2]
+    apis_dir = backend_dir / "apis"
+    version_dir = apis_dir / "version1"
+    supa_dir = version_dir / "_supabase"
+
     def __init__(self):
         self.retry_db = self.set_retry()
+        self._set_project_paths()
 
     @staticmethod
     def date_handler(obj):
@@ -57,6 +67,26 @@ class Settings:
             return obj.isoformat()
         else:
             raise TypeError("Type %s not serializable" % type(obj))
+
+    @classmethod
+    def _set_project_paths(cls):
+        if str(cls.main_dir) not in sys.path:
+            sys.path.append(str(cls.main_dir))
+
+        if str(cls.backend_dir) not in sys.path:
+            sys.path.append(str(cls.backend_dir))
+
+        if str(cls.core_dir) not in sys.path:
+            sys.path.append(str(cls.core_dir))
+
+        if str(cls.apis_dir) not in sys.path:
+            sys.path.append(str(cls.apis_dir))
+
+        if str(cls.version_dir) not in sys.path:
+            sys.path.append(str(cls.version_dir))
+
+        if str(cls.supa_dir) not in sys.path:
+            sys.path.append(str(cls.supa_dir))
 
     @staticmethod
     # Retry configuration enhanced for more exceptions

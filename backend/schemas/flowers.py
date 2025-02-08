@@ -8,10 +8,9 @@ Created on Sun Nov  5 16:47:38 2023
 
 from pydantic import BaseModel, EmailStr, Field, StringConstraints
 from typing import List, Optional, Annotated
-from schemas.product_types import StrainCategoryEnum
+from schemas.product_types import StrainCategoryEnum, StrainType
 
 
-StrainType = Annotated[str, Annotated[str, StringConstraints(min_length=1, max_length=500)]]
 RatingType = Annotated[float, Field(gt=0, lt=10.1)]
 OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
 
@@ -46,7 +45,7 @@ class FlowerDescriptionBase(BaseModel):
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the flower")
     cultivar_email: EmailStr = Field(..., description="Email of the cultivar")
     strain_category: StrainCategoryEnum = Field(
-        StrainCategoryEnum.HYBRID, description="The category for the flower strain. ex: indica, hybrid, etc."
+        StrainCategoryEnum.cult_pack, description="The category for the flower strain. ex: indica, hybrid, etc."
     )
 
     class Config:
@@ -82,7 +81,7 @@ class GetFlowerWithDescription(BaseModel):
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the flower")
     cultivar: EmailStr = Field(..., description="Email of the cultivar")
     strain_category: StrainCategoryEnum = Field(
-        StrainCategoryEnum.HYBRID, description="The category for the flower strain. ex: indica, hybrid, etc."
+        StrainCategoryEnum.cult_pack, description="The category for the flower strain. ex: indica, hybrid, etc."
     )
 
     class Config:
@@ -163,12 +162,3 @@ class FlowerRankingValuesSchema(BaseModel):
         from_attributes = True
         populate_by_name = True
         exclude_unset = True
-
-
-class FlowerErrorResponse(BaseModel):
-    strain: StrainType
-    message: str
-
-    class Config:
-        from_attributes = True
-        populate_by_name = True

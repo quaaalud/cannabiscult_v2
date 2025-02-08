@@ -309,28 +309,24 @@
   }
   async function fetchAndUpdateConcentrateRatings() {
     const concentrateId = "{{ concentrate_id }}";
-    const endpoint = "/concentrate_ranking/get_concentrate_ratings_by_id/" + concentrateId;
+    const endpoint = "/concentrates/get_concentrate_ratings_by_id/" + concentrateId;
     try {
       const response = await fetch(endpoint);
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const ratingsData = await response.json();
-      
-      if (!ratingsData.error) {
-          const formatRating = (rating) => {
-            return rating !== null ? parseFloat(rating).toFixed(2) : '?';
-          };
-          document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
-          document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
-          document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
-          document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
-          document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
-          document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
-          document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
-        } else {
-          console.error('Error fetching data:', ratingsData.error);
-        }
+      if (ratingsData.message) { return; };
+        const formatRating = (rating) => {
+          return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+        };
+        document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
+        document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
+        document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
+        document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
+        document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
+        document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
+        document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
       } catch (error) {
         console.error('Error:', error);
       }

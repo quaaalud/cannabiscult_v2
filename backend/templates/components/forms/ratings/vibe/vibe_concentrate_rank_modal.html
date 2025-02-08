@@ -2,7 +2,7 @@
 <div class="modal fade w-100" id="vibeConcentrateRankingsModal" tabindex="-1" aria-labelledby="vibeConcentrateRankingsModalLabel" aria-hidden="true" style="min-width:100%">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content overflow-auto">
-      <form method="POST" action="/submit-vibe-concentrate-ranking" id="vidid-concentrate-ranking-form" name="submit-vidid-concentrate-form">
+      <form method="POST" action="/concentrates/submit-vibe-concentrate-ranking" id="vidid-concentrate-ranking-form" name="submit-vibe-concentrate-form">
         <div class="container text-center pt-1 pb-1">
           <div class="row align-content-center justify-content-center pt-4">
               <u><h5 class="modal-title fs-3" id="modalTitle">Question</h5></u>
@@ -612,8 +612,7 @@
         } else {
           throw new Error('Concentrate ID not found');
         }
-        // Submitting the updated form data
-        const response = await fetch('/concentrate_ranking/submit-vibe-concentrate-ranking', {
+        const response = await fetch('/concentrates/submit-vibe-concentrate-ranking', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

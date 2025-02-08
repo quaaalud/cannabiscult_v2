@@ -17,10 +17,10 @@ from schemas.flowers import (
     GetFlowerWithDescription,
     CreateFlowerRanking,
     FlowerReviewResponse,
-    FlowerErrorResponse,
     GetFlowerRanking,
     FlowerRankingValuesSchema,
 )
+from schemas.product_types import RatingsErrorResponse
 from db.repository.flowers import (
     get_flower_and_description,
     get_flower_and_description_by_id,
@@ -174,7 +174,7 @@ async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
 
 
 @router.get(
-    "/get_strain_ratings_by_id/{flower_id}/", response_model=Union[FlowerRankingValuesSchema, FlowerErrorResponse]
+    "/get_strain_ratings_by_id/{flower_id}/", response_model=Union[FlowerRankingValuesSchema, RatingsErrorResponse]
 )
 async def get_strain_ratings_by_id(flower_id: int, db: Session = Depends(get_supa_db)):
     avg_ratings = (
@@ -190,7 +190,7 @@ async def get_strain_ratings_by_id(flower_id: int, db: Session = Depends(get_sup
         .first()
     )
     if not avg_ratings or any(rating is None for rating in avg_ratings):
-        return {"strain": "no match found", "error": "Flower not found or incomplete data for rankings."}
+        return {"strain": "no match found", "message": "Flower not found or incomplete data for rankings."}
     return {
         "flower_ranking_id": int(flower_id),
         "overall_score": round(sum(avg_ratings) / 6, 2),

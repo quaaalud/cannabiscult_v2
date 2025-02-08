@@ -8,8 +8,28 @@ Created on Sun Nov  5 16:47:38 2023
 
 import enum
 from fastapi import Form
-from pydantic import BaseModel, Json, Field, EmailStr, field_validator
-from typing import Optional, Annotated, List
+from pydantic import BaseModel, Json, Field, EmailStr, field_validator, StringConstraints
+from typing import Optional, Annotated, List, Any
+
+StrainType = Annotated[str, Annotated[str, StringConstraints(min_length=1, max_length=500)]]
+
+
+class StrainCategoryEnum(str, enum.Enum):
+    indica = "indica"
+    indica_dominant_hybrid = "indica_dominant_hybrid"  # fixed spelling
+    hybrid = "hybrid"
+    sativa_dominant_hybrid = "sativa_dominant_hybrid"  # fixed spelling
+    sativa = "sativa"
+    cult_pack = "cult_pack"
+
+
+class RatingsErrorResponse(BaseModel):
+    strain: StrainType
+    message: str
+
+    class Config:
+        from_attributes = True
+        populate_by_name = True
 
 
 class ProductTypes(BaseModel):
@@ -23,15 +43,6 @@ class ProductTypes(BaseModel):
         strip_whitespace = True
 
 
-class StrainCategoryEnum(str, enum.Enum):
-    INDICA = "indica"
-    INDICA_HYBRID = "indica_dominant_hybrid"
-    HYBRID = "hybrid"
-    SATICA_HYBRID = "sativa_dominant_hybrid"
-    SATIVA = "sativa"
-    CULT_PACK = "cult_pack"
-
-
 class ProductSubmission(ProductTypes):
     strain: Annotated[str, Field(min_length=1, max_length=100, description="Name of the strain")]
     cultivator: Annotated[str, Field(min_length=1, max_length=100, description="Name of the cultivator")]
@@ -42,7 +53,7 @@ class ProductSubmission(ProductTypes):
     effects: Annotated[str, Field(max_length=500, description="Effects details for the product")] = "Coming Soon!"
     lineage: Annotated[str, Field(max_length=500, description="Lineage or ancestry information")] = "Coming Soon!"
     terpenes_list: List[Annotated[str, Field(max_length=50, description="Name of a terpene")]] = ["Coming", "Soon!"]
-    strain_category: StrainCategoryEnum = Field(StrainCategoryEnum.HYBRID, description="Category of the strain")
+    strain_category: StrainCategoryEnum = Field(StrainCategoryEnum.cult_pack, description="Category of the strain")
 
     @field_validator("strain", "cultivator", mode="before")
     @classmethod
@@ -58,6 +69,28 @@ class ProductSubmission(ProductTypes):
             return info.default
         return v.strip()
 
+    @field_validator("strain_category", mode="before")
+    @classmethod
+    def convert_strain_category(cls, v: Any) -> StrainCategoryEnum:
+        """
+        This validator ensures that the strain_category field will be converted to a
+        StrainCategoryEnum member even if a raw string is provided.
+        """
+        if isinstance(v, str):
+            try:
+                return StrainCategoryEnum(v)
+            except ValueError:
+                # Optional: try a case-insensitive match if needed
+                v_lower = v.lower()
+                for member in StrainCategoryEnum:
+                    if member.value.lower() == v_lower:
+                        return member
+                raise ValueError(f"Invalid strain_category: {v}")
+        elif isinstance(v, StrainCategoryEnum):
+            return v
+        else:
+            raise ValueError(f"Invalid type for strain_category: {type(v)}")
+
     @classmethod
     def as_form(
         cls,
@@ -69,7 +102,7 @@ class ProductSubmission(ProductTypes):
         effects: str = Form("Coming Soon!"),
         lineage: str = Form("Coming Soon!"),
         terpenes_list: List[str] = Form(["Coming", "Soon!"]),
-        strain_category: StrainCategoryEnum = Form(StrainCategoryEnum.HYBRID),
+        strain_category: StrainCategoryEnum = Form(StrainCategoryEnum.cult_pack),
         extra_data: Optional[str] = Form(None),
     ) -> "ProductSubmission":
         return cls(

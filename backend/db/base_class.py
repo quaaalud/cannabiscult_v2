@@ -23,8 +23,8 @@ class Base:
 
 class StrainCategory(str, enum.Enum):
     indica = "indica"
-    indica_dominant_hyrbrid = "indica_dominant_hyrbrid"
+    indica_dominant_hybrid = "indica_dominant_hyrbrid"
     hybrid = "hybrid"
-    sativa_dominant_hyrbrid = "sativa_dominant_hyrbrid"
+    sativa_dominant_hybrid = "sativa_dominant_hyrbrid"
     sativa = "sativa"
     cult_pack = "cult_pack"

@@ -6,7 +6,7 @@ Created on Sun Feb  4 10:16:42 2024
 @author: dale
 """
 
-from fastapi import APIRouter, Form, HTTPException, Depends, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List
 from db.session import get_db
@@ -45,8 +45,8 @@ async def submit_strain(
         voting_open = True
         is_mystery = False
         new_submission = model(
-            strain=submission.strain.title(),
-            cultivator=submission.cultivator.title(),
+            strain=submission.strain.strip(),
+            cultivator=submission.cultivator.strip(),
             card_path=card_path,
             voting_open=voting_open,
             is_mystery=is_mystery,

@@ -16,7 +16,7 @@
 $(document).ready(function() {
   async function fetchconcentrateData() {
     try {
-      const response = await fetch('/concentrate_ranking/get_top_rated_concentrate_strains');
+      const response = await fetch('/concentrates/get_top_rated_concentrate_strains');
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
