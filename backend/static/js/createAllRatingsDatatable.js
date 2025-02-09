@@ -18,13 +18,11 @@ class AllRatingsDatatable {
     }
     async fetchAllRatings() {
         try {
-            // Start the aggregation task
             const startResponse = await fetch(`/search/get_aggregated_strain_ratings`);
             if (!startResponse.ok) {
                 throw new Error('Failed to start ratings aggregation');
             }
             const startData = await startResponse.json();
-
             if (startData && startData.task_id) {
                 return await this.waitForTaskCompletion(startData.task_id);
             } else {
@@ -35,15 +33,14 @@ class AllRatingsDatatable {
             throw error;
         }
     }
-    // Asynchronous function to fetch image URL
     async fetchImageUrl(productType, strain, cultivator) {
         const cacheKey = `${productType}-${strain}-${cultivator}`;
         const cachedData = localStorage.getItem(cacheKey);
         if (cachedData) {
             const { url, timestamp } = JSON.parse(cachedData);
-            const age = (Date.now() - timestamp) / 1000 / 60; // Convert to minutes
+            const age = (Date.now() - timestamp) / 1000 / 60;
             if (age < 30) {
-                return url; // Return cached URL if it's less than 30 minutes old
+                return url;
             }
         }
         try {
@@ -87,8 +84,26 @@ class AllRatingsDatatable {
                     clearInterval(intervalId);
                     reject(error);
                 }
-            }, 5000); // Poll every 5 seconds
+            }, 5000);
         });
+    }
+    getReviewLink(productType, strain, cultivator) {
+        const formattedType = productType.toLowerCase();
+        let formAction;
+        switch (formattedType) {
+            case 'pre-roll':
+                formAction = '/pre-roll-get-review-form';
+                break;
+            case 'concentrate':
+                formAction = '/concentrate-get-review';
+                break;
+            case 'edible':
+                formAction = '/edible-get-review';
+                break;
+            default:
+                formAction = '/get-review';
+        }
+        return `${formAction}?strain_selected=${encodeURIComponent(strain)}&cultivator_selected=${encodeURIComponent(cultivator)}`;
     }
     groupRatingsByProductType(ratings) {
         return ratings.reduce((acc, rating) => {
@@ -139,13 +154,11 @@ class AllRatingsDatatable {
             accordionContainer.appendChild(accordionItem);
         }
     }
-    // Method to add a tab for each product type's table
     async addProductTableTab(productType, tabList, tabContent, ratings) {
-        // Create the ProductTable tab
         const productTableTab = document.createElement('li');
         productTableTab.className = 'nav-item';
         const productTableLink = document.createElement('a');
-        productTableLink.className = 'nav-link active text-dark'; // Active by default
+        productTableLink.className = 'nav-link active text-dark';
         productTableLink.id = `productTable-tab-${productType}`;
         productTableLink.dataset.bsToggle = 'tab';
         productTableLink.href = `#productTable-${productType}`;
@@ -155,12 +168,10 @@ class AllRatingsDatatable {
         productTableLink.innerText = `${productType} Table`;
         productTableTab.appendChild(productTableLink);
       
-        // Append the ProductTable tab to the tab list
         tabList.appendChild(productTableTab);
     
-        // Create the content for the ProductTable tab
         const productTableContent = document.createElement('div');
-        productTableContent.className = 'tab-pane fade show active'; // Active by default
+        productTableContent.className = 'tab-pane fade show active';
         productTableContent.id = `productTable-${productType}`;
         productTableContent.role = 'tabpanel';
         productTableContent.ariaLabelledby = `productTable-tab-${productType}`;
@@ -181,13 +192,11 @@ class AllRatingsDatatable {
         `;
         container.innerHTML = searchContainerHTML;
     
-        // Define columns based on ratings keys
         let columns = [
           { label: 'Strain', width: 150},
           { label: 'Cultivator', width: 150 }
         ];
 
-        // Add rating columns dynamically
         Object.keys(ratings[0]).filter(key => key.endsWith('_rating')).forEach(key => {
           const columnValues = ratings.map(rating => parseFloat(rating[key]));
           columns.push({
@@ -196,22 +205,21 @@ class AllRatingsDatatable {
           });
         });
         columns.unshift({
-          label: '', // No label for image column
-          width: 125, // Adjust width to fit the image
+          label: '',
+          width: 125,
         });
     
-        // Prepare rows data
         let rows = await Promise.all(ratings.map(async rating => {
           return Promise.all(columns.map(async col => {
             let key = col.label.toLowerCase().replace(/ /g, '_') + '_rating';
             if (col.label === '') {
               try {
-                const imgUrl = await this.fetchImageUrl(productType, rating.strain, rating.cultivator); // Fetch image URL asynchronously
+                const imgUrl = await this.fetchImageUrl(productType, rating.strain, rating.cultivator);
                 return `
                   <div id="lightbox${rating.strain}" class="lightbox" data-mdb-zoom-level="0.25" data-mdb-lightbox-init>
                     <img 
                       src="${imgUrl}"
-                      alt="${rating.strain}"
+                      alt="${rating.strain} by ${rating.cultivator}"
                       style="width: 40px; max-height: 40px"
                       class="rounded-circle"
                       data-mdb-img="${imgUrl}"
@@ -221,11 +229,10 @@ class AllRatingsDatatable {
                 `;
               } catch (error) {
                 console.error('Failed to load image URL:', error);
-                // Handle error or fallback image
                 return `
                   <div id="lightbox${rating.strain}" class="lightbox">
                     <img 
-                      src="path/to/fallback/image.png"  // Provide a valid fallback image path
+                      src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.webp
                       alt="Fallback Image"
                       style="width: 40px; max-height: 40px"
                       class="rounded-circle"
@@ -233,21 +240,25 @@ class AllRatingsDatatable {
                   </div>
                 `;
               }
+            } else if (col.label === 'Strain') {
+            const reviewUrl = this.getReviewLink(productType, rating.strain, rating.cultivator);
+                return `
+                    <a href="${reviewUrl}" target="_blank" class="text-decoration-none text-dark">
+                        ${rating.strain}
+                    </a>
+                `;
             } else {
-              return rating[key] || rating[col.label.toLowerCase()] || '-'; // Ensure fallback to '-' if no data
+                return rating[key] || rating[col.label.toLowerCase()] || '-';
             }
           }));
         }));
-        // Create a table container
         const tableContainer = document.createElement('div');
         tableContainer.id = `datatable${productType}`;
         container.appendChild(tableContainer);
         
         productTableContent.appendChild(container);
-        // Append the ProductTable content to the tab content container
         tabContent.appendChild(productTableContent);
         document.getElementById(`body${productType}`).appendChild(tabContent);
-        // Initialize MDB DataTable with dynamic columns and rows
         var datatableInstance = new mdb.Datatable(document.getElementById(`datatable${productType}`), {
             columns: columns,
             rows: rows,
@@ -258,17 +269,15 @@ class AllRatingsDatatable {
               pagination: true,
             }
         });
-        // Attach search functionality
         document.getElementById(`datatable-search-input-${productType}`).addEventListener('input', function (e) {
             datatableInstance.search(e.target.value);
         });
         this.initializeLightboxes();
     }
     initializeLightboxes() {
-        // Select all elements whose IDs start with 'lightbox'
         const lightboxes = document.querySelectorAll('[id^="lightbox"]');
         lightboxes.forEach(lightbox => {
-            mdb.Lightbox.getOrCreateInstance(lightbox); // Initialize the MDB Lightbox instance
+            mdb.Lightbox.getOrCreateInstance(lightbox);
         });
     }
     async populateImages(productType, ratings) {
@@ -285,32 +294,25 @@ class AllRatingsDatatable {
             let instance = mdb.Lightbox.getOrCreateInstance(lightbox);
         });
     }
-    // Method to create data tables for ratings
     createTableForProductType(productType, ratings) {
         if (ratings.length === 0) return;
     
-        // Main container for the product type
         const productTypeContainer = document.createElement('div');
         productTypeContainer.className = 'product-type-container col-12 col-md-9 col-lg-6 mx-auto py-3';
     
-        // Tab list for the product type
         const tabList = document.createElement('ul');
         tabList.className = 'nav nav-tabs nav-fill px-3';
         tabList.id = `tabList-${productType}`;
         tabList.role = 'tablist';
     
-        // Tab content container for the product type
         const tabContent = document.createElement('div');
         tabContent.className = 'tab-content';
         tabContent.id = `tabContent-${productType}`;
     
-        // Append the tab list and tab content container to the main container
         productTypeContainer.appendChild(tabList);
         productTypeContainer.appendChild(tabContent);
     
-        // Append the main container to the accordian-container
         document.getElementById(`body${productType}`).appendChild(productTypeContainer);
-        // Add the ProductTable tab and content
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
@@ -318,8 +320,6 @@ class AllRatingsDatatable {
           this.createTerpProfileTab(productType, tabList, tabContent);
         }
         this.initializeLightboxes();
-        // Optionally, add more tabs for charts related to the DataTable here
-        // For example, addChartTab(productType, tabList, tabContent, 'Chart1', createChart1);
     }
     
     createChartTab(productType, tabList, tabContent, ratings) {
@@ -344,14 +344,12 @@ class AllRatingsDatatable {
         chartContent.role = 'tabpanel';
         chartContent.ariaLabelledby = `chart-tab-${productType}`;
     
-        // Create the canvas element for the chart
         const chartCanvas = document.createElement('canvas');
         chartCanvas.id = `chart-canvas-${productType}`;
         chartContent.appendChild(chartCanvas);
     
         tabContent.appendChild(chartContent);
     
-        // Initialize the dropdown for strain-cultivator combinations
         const dropdown = this.createDropdown(productType, ratings, chartCanvas);
         chartContent.insertBefore(dropdown, chartCanvas);
     }
@@ -364,7 +362,6 @@ class AllRatingsDatatable {
         selectElement.className = 'form-select';
         selectElement.id = `chart-dropdown-${productType}`;
     
-        // Default dropdown option
         const defaultOption = document.createElement('option');
         defaultOption.selected = true;
         defaultOption.disabled = true;
@@ -372,7 +369,6 @@ class AllRatingsDatatable {
         defaultOption.textContent = 'Select a Strain';
         selectElement.appendChild(defaultOption);
     
-        // Populate dropdown options
         ratings.forEach(rating => {
             const option = document.createElement('option');
             option.value = `${rating.cultivator}-${rating.strain}`;
@@ -382,7 +378,6 @@ class AllRatingsDatatable {
     
         selectContainer.appendChild(selectElement);
     
-        // Event listener for dropdown selection
         selectElement.addEventListener('change', (event) => {
             const selectedCombination = event.target.value;
             this.updateChartForCombination(productType, selectedCombination, ratings, chartCanvas);
@@ -417,12 +412,10 @@ class AllRatingsDatatable {
             }
         });
     
-        // Clear previous chart if it exists
         if (chartCanvas.chartInstance) {
             chartCanvas.chartInstance.dispose();
         }
     
-        // Chart.js polar area chart configuration
         const polarAreaChartData = {
             type: 'polarArea',
             data: {
@@ -430,7 +423,7 @@ class AllRatingsDatatable {
                 datasets: [{
                     label: `${selectedCultivator} - ${selectedStrain}`,
                     data: data,
-                    backgroundColor: backgroundColors.slice(0, labels.length), // Match color count to label count
+                    backgroundColor: backgroundColors.slice(0, labels.length),
                     borderWidth: 1
                 }]
             },
@@ -439,7 +432,7 @@ class AllRatingsDatatable {
                     r: {
                         beginAtZero: true,
                         ticks: {
-                            precision: 0 // No decimal places
+                            precision: 0
                         }
                     }
                 },
@@ -448,7 +441,6 @@ class AllRatingsDatatable {
             }
         };
     
-        // Instantiate the polar area chart
         chartCanvas.chartInstance = new mdb.Chart(chartCanvas, polarAreaChartData);
     }
 
@@ -474,14 +466,12 @@ class AllRatingsDatatable {
         overallScoreContent.role = 'tabpanel';
         overallScoreContent.ariaLabelledby = `overall-score-tab-${productType}`;
     
-        // Create the canvas element for the overall score chart
         const overallScoreCanvas = document.createElement('canvas');
         overallScoreCanvas.id = `overall-score-canvas-${productType}`;
         overallScoreContent.appendChild(overallScoreCanvas);
     
         tabContent.appendChild(overallScoreContent);
     
-        // After creating the tab and canvas, calculate scores and create the chart
         this.createOverallScoreChart(productType, ratings, overallScoreCanvas);
     }
 
@@ -494,7 +484,6 @@ class AllRatingsDatatable {
             'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
             'rgba(66, 133, 244, 0.2)'
         ];
-        // Calculate overall scores for each strain
         ratings.forEach(rating => {
             const scoreValues = Object.keys(rating)
                 .filter(key => key.endsWith('_rating'))
@@ -507,7 +496,6 @@ class AllRatingsDatatable {
             tooltips.push(`${rating.cultivator} - ${rating.strain}: ${overallScore.toFixed(2)}`);
         });
     
-        // Bar chart configuration
         const dataBarCustomTooltip = {
             type: 'bar',
             data: {
@@ -515,14 +503,13 @@ class AllRatingsDatatable {
                 datasets: [{
                     label: `${productType} Rankings`,
                     data: data,
-                    backgroundColor: data.map((_, i) => backgroundColors[i % backgroundColors.length]), // Cycle through the color array
+                    backgroundColor: data.map((_, i) => backgroundColors[i % backgroundColors.length]),
                     borderColor: 'rgba(54, 162, 235, 1)',
                     borderWidth: 1
                 }]
             },
         };
     
-        // Options with custom tooltip
         const optionsBarCustomTooltip = {
             options: {
                 plugins: {
@@ -534,24 +521,20 @@ class AllRatingsDatatable {
                         }
                     }
                 },
-                indexAxis: 'y', // This makes the bar chart horizontal
+                indexAxis: 'y',
                 scales: {
                     x: {
-                        stacked: true, // Optional: for stacked bar chart
-                        // Configure your x-axis options here
+                        stacked: true,
                     },
                     y: {
-                        // Configure your y-axis options here
-                        stacked: true, // Optional: for stacked bar chart
+                        stacked: true,
                     }
                 },
             }
         };
     
-        // Create the bar chart with custom tooltips
         new mdb.Chart(chartCanvas, dataBarCustomTooltip, optionsBarCustomTooltip);
     }
-    // Helper method to format column labels nicely
     formatLabel(key) {
         if (key === 'strain') return 'Strain';
         if (key === 'cultivator') return 'Cultivator';
@@ -582,7 +565,6 @@ class AllRatingsDatatable {
         terpProfileContent.role = 'tabpanel';
         terpProfileContent.ariaLabelledby = `terp-profile-tab-${productType}`;
     
-        // Create dropdown and chart canvas
         const dropdown = this.createTerpDropdown(productType);
         const canvasContainer = document.createElement('div');
         canvasContainer.className = "col-12 col-sm-10 col-md-8 col-lg-6 mx-auto"
@@ -593,7 +575,6 @@ class AllRatingsDatatable {
         canvasContainer.appendChild(canvas);
         terpProfileContent.appendChild(canvasContainer);
         tabContent.appendChild(terpProfileContent);
-        // Add event listener to dropdown to update chart on change
         dropdown.addEventListener('change', async (event) => {
             const productId = event.target.value;
             this.createPolarChart(productType, productId, canvas);
@@ -607,7 +588,6 @@ class AllRatingsDatatable {
         this.populateStrainDropdown(productType, dropdown);
         return dropdown;
     }
-    
     populateStrainDropdown(productType, dropdown) {
         const defaultOption = document.createElement('option');
         defaultOption.textContent = "Select a strain to see terps";
@@ -626,7 +606,6 @@ class AllRatingsDatatable {
             console.error('Error populating strains:', error);
         });
     }
-    
     async fetchStrains(productType) {
         const response = await fetch(`/search/strains/${productType.toLowerCase()}`);
         if (!response.ok) throw new Error('Failed to fetch strains');
@@ -642,14 +621,13 @@ class AllRatingsDatatable {
             return await response.json();
         } catch (error) {
             console.error('Error fetching terpene profile:', error);
-            return null; // Return null or handle the error as you see fit
+            return null;
         }
     }
     async extractTerpeneData(terpeneProfile) {
         const labels = [];
         const values = [];
 
-        // Assuming terpeneProfile has a consistent structure with keys for terpenes
         const excludeKeys = new Set(["flower_id", "concentrate_id", "product_type", "cultivator", "strain", "card_path", "is_mystery", "voting_open"]);
         for (const [key, value] of Object.entries(terpeneProfile)) {
             if (!excludeKeys.has(key) && parseFloat(value) > 0) {
@@ -661,20 +639,16 @@ class AllRatingsDatatable {
     }
     
     async createPolarChart(productType, productId, canvas) {
-        // Clear existing chart instance if it exists by calling dispose()
         if (canvas.chartInstance) {
-            canvas.chartInstance.dispose();  // Use dispose() if supported by your chart library
+            canvas.chartInstance.dispose();
         }
     
-        // Fetch the terpene data
         const terpeneData = await this.fetchTerpeneProfile(productType, productId);
         if (!terpeneData) {
             console.error('No data available to create the chart.');
             return;
         }
-        // Extract data for the chart
         const data = await this.extractTerpeneData(terpeneData);
-        // Create a new chart instance and store it in the canvas object
         canvas.chartInstance = new mdb.Chart(canvas, {
             type: 'polarArea',
             data: {
@@ -703,7 +677,6 @@ class AllRatingsDatatable {
 
 }
 
-// Wait for the DOM to be fully loaded and for the Supabase client to be ready
 $(document).ready(function() {
-  new AllRatingsDatatable(); // Create a new instance of the RatingsDatatable class
+  new AllRatingsDatatable();
 });

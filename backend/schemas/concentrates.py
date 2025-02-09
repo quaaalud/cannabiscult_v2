@@ -139,11 +139,12 @@ class GetConcentrateWithDescription(BaseModel):
 class ConcentrateRankingValuesSchema(BaseModel):
     concentrate_ranking_id: int
     overall_score: float = Field(..., gt=0, lt=10.1)
-    appearance_rating: float = Field(..., gt=0, lt=10.1)
-    freshness_rating: float = Field(..., gt=0, lt=10.1)
+    color_rating: float = Field(..., gt=0, lt=10.1)
+    consistency_rating: float = Field(..., gt=0, lt=10.1)
     smell_rating: float = Field(..., gt=0, lt=10.1)
     flavor_rating: float = Field(..., gt=0, lt=10.1)
     harshness_rating: float = Field(..., gt=0, lt=10.1)
+    residuals_rating: float = Field(..., gt=0, lt=10.1)
     effects_rating: float = Field(..., gt=0, lt=10.1)
 
     class Config:

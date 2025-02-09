@@ -127,7 +127,7 @@ async def get_concentrate_rankings_by_id(db: Session, concentrate_id: int):
     if not avg_ratings or any(rating is None for rating in avg_ratings):
         return {"strain": "no match found", "message": "Concentrate not found or incomplete data"}
     ratings_dict = {
-        "concentrate_id": concentrate_id,
+        "concentrate_ranking_id": concentrate_id,
         "color_rating": round(avg_ratings[0], 2) if avg_ratings[0] is not None else None,
         "consistency_rating": (round(avg_ratings[1], 2) if avg_ratings[1] is not None else None),
         "smell_rating": round(avg_ratings[2], 2) if avg_ratings[2] is not None else None,
