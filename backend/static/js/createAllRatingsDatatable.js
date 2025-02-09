@@ -241,10 +241,17 @@ class AllRatingsDatatable {
                 `;
               }
             } else if (col.label === 'Strain') {
-            const reviewUrl = this.getReviewLink(productType, rating.strain, rating.cultivator);
+                const reviewUrl = this.getReviewLink(productType, rating.strain, rating.cultivator);
                 return `
                     <a href="${reviewUrl}" target="_blank" class="text-decoration-none text-dark">
                         ${rating.strain}
+                    </a>
+                `;
+            } else if (col.label === 'Cultivator') {
+                const reviewUrl = this.getReviewLink(productType, rating.strain, rating.cultivator);
+                return `
+                    <a href="${reviewUrl}" target="_blank" class="text-decoration-none text-dark">
+                        ${rating.cultivator}
                     </a>
                 `;
             } else {
