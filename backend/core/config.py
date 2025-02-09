@@ -9,6 +9,10 @@ Created on Sun Mar  5 21:17:34 2023
 import os
 import datetime
 import sys
+import jwt
+from fastapi import Request, HTTPException
+from uuid import uuid4
+from fastapi import Request
 from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -20,9 +24,90 @@ from sqlalchemy.exc import (
     InterfaceError,
 )
 import socket
-
+from posthog import Posthog
 
 load_dotenv()
+
+
+class PosthogMonitoring:
+    _posthog_client: Posthog = None
+
+    def __init__(self):
+        self.posthog = self._return_posthog_client()
+
+    @classmethod
+    def _return_posthog_client(cls):
+        if not cls._posthog_client:
+            cls._posthog_client = Posthog(
+                project_api_key=os.getenv("POSTHOG_KEY"),
+                host="https://us.i.posthog.com",
+                enable_exception_autocapture=True,
+                disable_geoip=False,
+            )
+        return cls._posthog_client
+
+    @staticmethod
+    def extract_initial_url(request: Request) -> str:
+        forwarded_proto = request.headers.get("x-forwarded-proto")
+        forwarded_host = request.headers.get("x-forwarded-host")
+        if forwarded_proto and forwarded_host:
+            scheme = forwarded_proto.split(",")[0].strip()
+            host = forwarded_host.split(",")[0].strip()
+            path = request.url.path
+            query = request.url.query
+            url = f"{scheme}://{host}{path}"
+            if query:
+                url += f"?{query}"
+            return url
+        else:
+            return str(request.url)
+
+    @staticmethod
+    def get_supabase_user_id(request: Request, settings) -> str:
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            raise HTTPException(status_code=401, detail="Missing Authorization header")
+        parts = auth_header.split()
+        if len(parts) != 2 or parts[0].lower() != "bearer":
+            raise HTTPException(status_code=401, detail="Invalid Authorization header format")
+        token = parts[1]
+        try:
+            unverified_header = jwt.get_unverified_header(token)
+            alg = unverified_header.get("alg")
+            if alg == "HS256":
+                key = settings.SUPA_JWT
+            elif alg == "RS256":
+                key = settings.SUPA_PUBLIC_KEY
+            else:
+                return str(uuid4())
+            payload = jwt.decode(token, key=key, algorithms=[alg])
+            user_id = payload.get("sub")
+            if not user_id:
+                return str(uuid4())
+            return user_id
+        except jwt.PyJWTError:
+            return str(uuid4())
+
+    @classmethod
+    def capture_event_background(
+        cls,
+        event_name: str,
+        request: Request,
+        settings,
+        **kwargs,
+    ):
+        user_id = cls.get_supabase_user_id(request, settings)
+        properties = {
+            "url": str(request.url),
+            "user_id": user_id,
+            **kwargs,
+        }
+        print(properties)
+        settings.monitoring.posthog.capture(
+            user_id=user_id,
+            event=event_name,
+            properties=properties
+        )
 
 
 class Settings:
@@ -57,9 +142,12 @@ class Settings:
     version_dir = apis_dir / "version1"
     supa_dir = version_dir / "_supabase"
 
+    monitoring: Posthog = None
+
     def __init__(self):
         self.retry_db = self.set_retry()
         self._set_project_paths()
+        self.posthog = self._return_posthog_monitoring_client()
 
     @staticmethod
     def date_handler(obj):
@@ -89,7 +177,6 @@ class Settings:
             sys.path.append(str(cls.supa_dir))
 
     @staticmethod
-    # Retry configuration enhanced for more exceptions
     def set_retry():
         return retry(
             wait=wait_exponential(multiplier=1, min=4, max=10),
@@ -105,6 +192,12 @@ class Settings:
                 )
             ),
         )
+
+    @classmethod
+    def _return_posthog_monitoring_client(cls):
+        if not cls.monitoring:
+            cls.monitoring = PosthogMonitoring()
+        return cls.monitoring.posthog
 
 
 class Config(BaseModel):

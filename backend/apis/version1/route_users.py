@@ -7,7 +7,7 @@ Created on Fri Mar 10 21:12:40 2023
 """
 
 from uuid import UUID
-from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException
+from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException, Request
 from typing import Dict, Any, List, Union, Optional
 from sqlalchemy.orm import Session
 from schemas.users import (
@@ -36,25 +36,38 @@ from db.repository.users import (
     add_strain_notes_to_list,
     delete_strain_from_list,
 )
+from core.config import settings
 from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
 router = APIRouter()
 
 
-def background_create_user(user_details: UserCreate, db: Session):
-    create_new_user(user=user_details, db=db)
+def background_create_user(user_details: UserCreate, initial_url: str, db: Session):
+    created_user = create_new_user(user=user_details, db=db)
+    user_id = created_user.auth_id or created_user.id
+    settings.monitoring.posthog.capture(
+        user_id=user_id,
+        event="register-submit",
+        properties={
+            '$set': {
+                'name': created_user.name,
+                'username': created_user.username,
+                'email': created_user.email,
+            },
+            '$set_once': {
+                'initial_url': initial_url
+            }
+        }
+    )
 
 
 @router.post("/create_user", response_model=Dict[str, ShowUser])
-def submit_create_new_user_route(user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
-    background_tasks.add_task(background_create_user, user, db)
-    return {"created_user": user}
-
-
-@router.post("/", response_model=Dict[str, ShowUser])
-def create_user(user: UserCreate, db: Session = Depends(get_db)):
-    user = create_new_user(user=user, db=db)
+def submit_create_new_user_route(
+    user: UserCreate, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)
+):
+    initial_url = settings.monitoring.extract_initial_url(request)
+    background_tasks.add_task(background_create_user, user, initial_url, db)
     return {"created_user": user}
 
 
@@ -124,9 +137,7 @@ async def return_username_by_email(user_email: EncodedUserEmailSchema, db: Sessi
 
 
 @router.post("/super_user_status", response_model=Dict[str, Any])
-async def return_is_superuser_status(
-    user_id: UserIdSchema, db: Session = Depends(get_db)
-):
+async def return_is_superuser_status(user_id: UserIdSchema, db: Session = Depends(get_db)):
     user = await get_user_by_user_id(user_id.user_id, db)
     if user:
         return {"supuser_status": user.is_superuser}

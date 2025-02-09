@@ -224,7 +224,7 @@ class SupabaseClient {
             },
           })
           if (error) throw error;
-          return true;
+          return data ? data.user : null;
       } catch (error) {
         console.error('Error in registerUser:', error.message);
         throw new Error('Registration failed.');

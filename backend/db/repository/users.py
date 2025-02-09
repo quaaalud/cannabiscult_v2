@@ -6,6 +6,7 @@ Created on Fri Mar 10 21:13:37 2023
 @author: dale
 """
 
+
 import base64
 from uuid import UUID
 from supabase import Client
@@ -66,25 +67,34 @@ def add_user_to_supabase(user: UserCreate, _auth: Client):
 
 @settings.retry_db
 def create_new_user(user: UserCreate, db: Session):
-    user = User(
-        username=user.username,
-        email=user.email,
-        name=user.name,
-        phone=user.phone,
-        zip_code=user.zip_code,
-        password=user.password,
-        agree_tos=True,
-        can_vote=True,
-        is_superuser=False,
-    )
     try:
+        existing_user = db.query(User).filter(User.email == user.email).first()
+        if existing_user:
+            existing_user.username = user.username
+            existing_user.name = user.name
+            if user.auth_id:
+                existing_user.auth_id = user.auth_id
+            db.commit()
+            db.refresh(existing_user)
+            return existing_user
+        user = User(
+            username=user.username,
+            email=user.email,
+            name=user.name,
+            phone=user.phone,
+            zip_code=user.zip_code,
+            password=user.password,
+            agree_tos=True,
+            can_vote=True,
+            is_superuser=False,
+            auth_id=user.auth_id,
+        )
         db.add(user)
         db.commit()
-        db.refresh(user)
-    except Exception:
-        db.rollback()
-    finally:
         return user
+    except Exception as e:
+        db.rollback()
+        raise e
 
 
 @settings.retry_db

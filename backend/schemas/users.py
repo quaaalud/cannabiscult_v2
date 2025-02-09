@@ -21,6 +21,7 @@ class UserCreate(BaseModel):
     agree_tos: bool = Field(False, description="Agreement to terms of service")
     can_vote: bool = Field(False, description="Eligibility to vote")
     is_superuser: bool = Field(False, description="Admin status")
+    auth_id: Optional[str] = Field(None, description="Optional auth_id value for the user.")
 
     class Config:
         from_attributes = True

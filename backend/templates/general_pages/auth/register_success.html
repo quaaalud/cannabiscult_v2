@@ -5,7 +5,6 @@
 {% endblock %} 
 
 {% block head %}
-  <meta http-equiv="refresh" content="5; url=/voting-home">
   <meta 
     property="og:image" 
     content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
@@ -51,27 +50,23 @@
 {% endblock %}
 {% block content %}
 <main class="container-fluid pt-3 pb-5">
-  <section class="container align-content-center pt-5 pb-5">
+  <section class="align-content-center pt-5 pb-5">
     <div class="text-center pt-5 pb-5">
-      <span>
-        <h1>Your registration was successful!</h1>
-        <h2>{{ username }}, check your email now to confirm your account.</h2>
-      </span>
-      <span>
-        <h3>
-          The email should be there already, check your spam if you do not see it in your main inbox.
-        </h3>
-        <h4>
-          Add @cannabiscult.co to your address book so you do not miss an update!
-        </h4>
-      </span>
+      <h1 class="text-success flex-shrink-1">Your are Registered!<br><span class="h3 text-dark">Check your email to confirm your account.</span></h1>
+      <div class="col-12 col-sm-11 col-md-9 col-lg-8 col-xl-7 col-xxl-6 mx-auto">
+        <h4 class="pt-3">Add <a href="mailto:members@cannabiscult.co" class="text-info">members@cannabiscult.co</a> to your address book so you do not miss an update! The email should be there already, check your spam if you do not see it in your main inbox.</h4>
+      </div>
     </div>
   </section>
   <section class="container align-content-center">
     <div class="container mb-5">
       <div class="pb-5">
-        <div class="container-fluid text-center" style="padding:2em">
-          <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp">
+        <div class="container-fluid text-center">
+          <div class="row align-items-center">
+            <div class="col-12 col-md-10 col-xl-6 mx-auto">
+              <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp">
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,13 +1,13 @@
 <section class="row mx-auto">
   <div class="col-12 col-lg-9 col-xl-7 mx-auto">
-    <button id="toggleFormButton" class="btn btn-secondary btn-lg w-100">Show Strain Submission Form</button>
+    <button id="toggleFormButton" class="btn btn-secondary btn-lg w-100">Show 'Add a Strain' Form</button>
   </div>
   <div class="container justify-content-center" id="strainSubmissionContainerRow" style="display: none;">
     <div class="col-12 col-lg-9 col-xl-7 mx-auto pt-3">
       <div class="card">
         <div class="card-body p-2 p-md-5">
           <div class="card-body p-4 p-md-5">
-            <h3 class="mb-4 pb-2">Submissions Form</h3>
+            <h3 class="mb-4 pb-2">Add a Strain</h3>
             <form action="#" id="strainSubmissionForm">
               <div class="row">
                 <div class="col-12 mb-4">
@@ -441,10 +441,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     toggleButton.addEventListener('click', function() {
       if (formContainer.style.display === "none") {
         formContainer.style.display = "block";
-        toggleButton.textContent = "Hide Strain Submission Form";
+        toggleButton.textContent = "Hide 'Add a Strain' Form";
       } else {
         formContainer.style.display = "none";
-        toggleButton.textContent = "Show Strain Submission Form";
+        toggleButton.textContent = "Show 'Add a Strain' Form";
       }
     });
     

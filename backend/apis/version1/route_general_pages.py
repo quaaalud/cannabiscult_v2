@@ -7,8 +7,7 @@ Created on Sun Mar  5 21:10:59 2023
 
 
 from pathlib import Path
-from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException
-
+from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException, BackgroundTasks
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
@@ -21,7 +20,7 @@ from db.repository import pre_rolls
 from db.repository.concentrates import get_concentrate_data_and_path
 from schemas.mystery_voters import MysteryVoterCreate
 from schemas.subscribers import SubscriberCreate
-from schemas.users import UserCreate, UserLogin
+from schemas.users import UserLogin
 from version1._supabase.route_flowers import get_flower_and_description
 from version1._supabase import route_concentrates
 from version1._supabase.route_mystery_voters import (
@@ -30,8 +29,6 @@ from version1._supabase.route_mystery_voters import (
 )
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
-    create_user,
-    create_supa_user,
     login_supa_user,
     get_current_users_email,
     async_get_current_users_email,
@@ -58,8 +55,15 @@ async def get_config_obj():
 
 
 @general_pages_router.get("/", response_class=HTMLResponse)
-async def home(request: Request):
+async def home(request: Request, background_tasks: BackgroundTasks):
     user_is_logged_in = await async_get_current_users_email() is not None
+    background_tasks.add_task(
+        settings.monitoring.capture_event_background,
+        "landing_page_loaded",
+        request,
+        settings,
+        user_is_logged_in=user_is_logged_in,
+    )
     return templates.TemplateResponse(
         str(Path("general_pages", "homepage.html")),
         {
@@ -135,54 +139,6 @@ async def submit_login_form(
         )
 
 
-@general_pages_router.post("/register", response_class=HTMLResponse)
-async def submit_register_form(
-    request: Request,
-    register_email: str = Form(...),
-    register_password: str = Form(...),
-    register_repeat_password: str = Form(...),
-    register_name: str = Form(...),
-    register_username: str = Form(...),
-    register_zip_code: str = Form(...),
-    register_phone: str = Form(...),
-    db: Session = Depends(get_db),
-):
-    response_dict = (
-        {
-            "request": request,
-            "username": register_name,
-        },
-    )
-    if register_password != register_repeat_password:
-        return templates.TemplateResponse(str(Path("general_pages", "auth", "submit-failed.html")), response_dict)
-    try:
-        user = UserCreate(
-            email=str(register_email.lower()),
-            password=register_password,
-            name=register_name,
-            username=register_username,
-            phone=register_phone,
-            zip_code=register_zip_code,
-            agree_tos=True,
-            can_vote=False,
-            is_superuser=False,
-        )
-        create_user(user=user, db=db)
-        create_supa_user(user=user)
-        existing_voter = get_voter_info_by_email(register_email.lower(), db)
-        if not existing_voter:
-            voter = MysteryVoterCreate(
-                email=register_email.lower(),
-                name=register_name,
-                zip_code=register_zip_code,
-                phone=register_phone,
-            )
-            create_mystery_voter(voter=voter, db=db)
-        return templates.TemplateResponse(str(Path("general_pages", "auth", "register_success.html")), response_dict)
-    except Exception:
-        return templates.TemplateResponse(str(Path("general_pages", "auth", "submit-failed.html")), response_dict)
-
-
 @general_pages_router.post("/logout-submit", response_class=HTMLResponse)
 async def submit_user_logout(request: Request, db: Session = Depends(get_db)):
     user = get_current_users_email()
@@ -199,6 +155,16 @@ async def submit_user_logout(request: Request, db: Session = Depends(get_db)):
                 "user_is_logged_in": user is not None,
             },
         )
+
+
+@general_pages_router.get("/register_success", response_class=HTMLResponse)
+async def registration_success_transition_page(request: Request):
+    return templates.TemplateResponse(
+        str(Path("general_pages", "auth", "register_success.html")),
+        {
+            "request": request,
+        },
+    )
 
 
 @general_pages_router.post("/submit-new-password", response_class=HTMLResponse)

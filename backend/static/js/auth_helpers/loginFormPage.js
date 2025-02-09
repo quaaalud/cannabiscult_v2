@@ -36,9 +36,12 @@ async function submitRegistrationForm() {
     try {
         if (window.supabaseClient.checkUserStatus() === true) {
           alert('You are already registered. Login or use the Password Reset if needed.');
-          return;
+          userDetails.auth_id = window.supabaseClient.getCurrentUserId();
+        } else {
+          const user = await window.supabaseClient.registerUser(userDetails);
+          alert('Registration successful. Check your email to confirm your registration details.');
+          userDetails.auth_id = user.id;
         }
-        const user = await window.supabaseClient.registerUser(userDetails);
         await fetch('/users/create_user', {
             method: 'POST',
             headers: {
@@ -46,8 +49,8 @@ async function submitRegistrationForm() {
             },
             body: JSON.stringify(userDetails),
         });
-        alert('Registration successful. Check your email to confirm your registration details.');
         registerForm.reset(); 
+        window.location.href = "https://cannabiscult.co/register_success/"
     } catch (error) {
         alert('Registration failed. Please try again');
     }
