@@ -7,9 +7,8 @@ Created on Fri Mar 10 20:48:11 2023
 """
 
 from db.base_class import Base
-from db.models.users import User
+from db.models.users import User, UserStrainList, MysteryVoter
 from db.models.subscribers import Subscriber
-from db.models.mystery_voters import MysteryVoter
 from db.models.calendar_events import CalendarEvent, CalendarEventQuery
 from db.models.pre_rolls import *
 from db.models.edibles import Edible, VibeEdible, Vibe_Edible_Ranking, Edible_Ranking, Edible_Description

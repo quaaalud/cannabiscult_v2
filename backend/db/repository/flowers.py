@@ -3,12 +3,14 @@
 import base64
 import traceback
 from pathlib import Path
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List, Union
 from db.base import (
     Flower,
     Flower_Description,
     Flower_Ranking,
+    User,
 )
 from schemas.flowers import (
     CreateFlowerRanking,
@@ -268,3 +270,56 @@ def update_or_create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Sessi
             raise
     else:
         return create_flower_ranking(ranking_dict, db)
+
+
+async def return_average_flower_ratings(db: Session) -> List:
+    return (
+        db.query(
+            Flower_Ranking.strain,
+            Flower_Ranking.cultivator,
+            Flower_Description.flower_id,
+            Flower_Description.description_id,
+            Flower_Description.description.label("description_text"),
+            Flower_Description.effects,
+            Flower_Description.lineage,
+            Flower_Description.terpenes_list,
+            Flower_Description.strain_category,
+            Flower_Description.cultivar_email.label("cultivar"),
+            User.username,
+            Flower.voting_open,
+            Flower.is_mystery,
+            Flower.product_type,
+            Flower.card_path,
+            func.avg(Flower_Ranking.appearance_rating).label("appearance_rating"),
+            func.avg(Flower_Ranking.smell_rating).label("smell_rating"),
+            func.avg(Flower_Ranking.flavor_rating).label("flavor_rating"),
+            func.avg(Flower_Ranking.effects_rating).label("effects_rating"),
+            func.avg(Flower_Ranking.harshness_rating).label("harshness_rating"),
+            func.avg(Flower_Ranking.freshness_rating).label("freshness_rating"),
+        )
+        .join(Flower_Description, Flower_Ranking.flower_id == Flower_Description.flower_id)
+        .join(User, User.email == Flower_Description.cultivar_email)
+        .join(Flower, Flower.flower_id == Flower_Description.flower_id)
+        .filter(
+            Flower_Ranking.cultivator != "Connoisseur",
+            ~Flower_Ranking.strain.ilike("%Test%"),
+        )
+        .group_by(
+            Flower_Ranking.strain,
+            Flower_Ranking.cultivator,
+            Flower_Description.flower_id,
+            Flower_Description.description_id,
+            Flower_Description.description,
+            Flower_Description.effects,
+            Flower_Description.lineage,
+            Flower_Description.terpenes_list,
+            Flower_Description.strain_category,
+            Flower_Description.cultivar_email,
+            User.username,
+            Flower.voting_open,
+            Flower.is_mystery,
+            Flower.product_type,
+            Flower.card_path,
+        )
+        .all()
+    )

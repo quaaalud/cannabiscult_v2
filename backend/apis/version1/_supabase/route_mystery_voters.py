@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from db.session import get_db
 from schemas.mystery_voters import MysteryVoterCreate, ShowMysteryVoter
 from db.repository.mystery_voters import create_new_voter
-from db.models.mystery_voters import MysteryVoter
+from db.base import MysteryVoter
 
 
 router = APIRouter()

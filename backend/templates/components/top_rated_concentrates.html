@@ -14,6 +14,13 @@
 {% block scripts %}
 <script>
 $(document).ready(function() {
+  function formatEnumValue(enumString) {
+    if (!enumString) return "";
+    return enumString
+      .split("_")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
+  }
   async function fetchconcentrateData() {
     try {
       const response = await fetch('/concentrates/get_top_rated_concentrate_strains');
@@ -27,32 +34,11 @@ $(document).ready(function() {
       console.error('Error fetching concentrate data:', error);
     }
   }
-  function encodeEmail(email) {
-      return btoa(email);
-  }
   async function updateconcentrateData(data) {
     const container = document.getElementById('concentrateContainer');
     let htmlContent = '';
-    let username
     for (const concentrate of data) {
-      const encodedEmail = encodeEmail(concentrate["cultivar"])
-      try {
-        const response = await fetch('/users/get_username', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email: encodedEmail })
-        });
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        const usernameJson = await response.json();
-        username = usernameJson["username"];
-      } catch (error) {
-          console.error('Fetch error:', error);
-          username = "Cannabis Cult";
-      }
+      const username = concentrate["username"]
       const strain = concentrate["strain"];
       const cultivator = concentrate["cultivator"];
       const score = concentrate["overall_score"];
@@ -60,6 +46,8 @@ $(document).ready(function() {
       const description_text = concentrate["description_text"];
       const effects = concentrate["effects"];
       const lineage = concentrate["lineage"];
+      const strainCategory = concentrate["strain_category"] || "cult_pack"
+      let formattedStrainCategory = strainCategory !== "cult_pack" ? formatEnumValue(strainCategory) : null;
       htmlContent += `
       <div class="container-fluid col-12 col-sm-11 mx-auto">
         <div class="row my-auto">
@@ -81,6 +69,7 @@ $(document).ready(function() {
                   <i class="fas fa-cannabis me-2" aria-controls="#picker-editor"></i>
                 </div>
                 <p class="fs-4 text-dark">${score} <span class="fs-5">Overall</span></p>
+                ${formattedStrainCategory ? `<p class="fs-6 text-light">${formattedStrainCategory}</p>` : ''}
               </div>
               <div class="col-12 col-sm-6 col-md-7 mx-auto my-auto pt-lg-3">
                 <div class="vstack gap-0">

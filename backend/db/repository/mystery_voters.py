@@ -10,9 +10,8 @@ from sqlalchemy.orm import Session
 from typing import Union
 from core.config import settings
 from schemas.mystery_voters import MysteryVoterCreate
-from db.models.mystery_voters import MysteryVoter, StrainGuess
+from db.base import MysteryVoter
 import datetime
-import json
 
 
 def date_handler(obj):
@@ -49,31 +48,3 @@ def create_new_voter(voter: MysteryVoterCreate, db: Session) -> Union[MysteryVot
         print(e)
         db.rollback()
         return None
-
-
-@settings.retry_db
-def add_strain_guess(db: Session, guess_data: dict, user_email: str):
-    """
-    Adds a new strain guess to the database.
-
-    :param db: SQLAlchemy Session object
-    :param guess_data: Dictionary containing strain guesses
-    :param user_email: Email of the user making the guess
-    """
-    try:
-        # Convert guess data to JSON format
-        strain_guesses_json = json.dumps(guess_data)
-
-        # Create a new StrainGuess object
-        new_guess = StrainGuess(strain_guesses=strain_guesses_json, email=user_email)
-
-        # Add the new object to the session and commit
-        db.add(new_guess)
-        db.commit()
-        db.refresh(new_guess)
-
-        return new_guess
-
-    except Exception as e:
-        db.rollback()
-        raise e

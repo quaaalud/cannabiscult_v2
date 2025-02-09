@@ -6,6 +6,8 @@ Created on Fri Mar 10 20:51:36 2023
 @author: dale
 """
 
+from uuid import UUID
+from typing import Optional, Union
 from pydantic import BaseModel, EmailStr, Field, validator
 
 
@@ -39,8 +41,14 @@ class UserLogin(BaseModel):
 
 
 class ShowUser(BaseModel):
-    username: str = Field(..., description="User's username")
-    can_vote: bool = Field(..., description="Indicates if the user can vote")
+    username: str = Field(..., description="User's username.")
+    can_vote: bool = Field(..., description="Indicates if the user can vote.")
+    is_superuser: bool = Field(False, description="Indicates superuser status.")
+    auth_id: Optional[str] = Field("", description="Optional auth_id value for the user.")
+
+    @validator("auth_id", pre=True)
+    def convert_uuid_to_str_if_needed(cls, v):
+        return str(v)
 
     class Config:
         from_attributes = True
@@ -54,6 +62,22 @@ class LoggedInUser(BaseModel):
     email: EmailStr = Field(..., description="User's email address")
     can_vote: bool = Field(..., description="Indicates if the user can vote")
     role: str = Field(..., description="User's role in the system")
+
+    class Config:
+        from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
+
+
+class UserIdSchema(BaseModel):
+    user_id: Union[UUID, str] = Field(..., description="User's email address for validations")
+
+    @validator("user_id", pre=True)
+    def check_not_empty(cls, v):
+        if isinstance(v, UUID):
+            v
+        return UUID(v)
 
     class Config:
         from_attributes = True

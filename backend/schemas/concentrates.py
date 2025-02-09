@@ -124,6 +124,7 @@ class GetConcentrateWithDescription(BaseModel):
     )
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the concentrate")
     cultivar: EmailStr = Field(..., description="Email of the cultivar")
+    username: Optional[str] = Field("", description="Username of the cultivar")
     strain_category: StrainCategoryEnum = Field(
         StrainCategoryEnum.cult_pack, description="The category for the concentrate strain. ex: indica, hybrid, etc."
     )

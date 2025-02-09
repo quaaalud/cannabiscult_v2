@@ -7,6 +7,7 @@ Created on Fri Mar 10 21:13:37 2023
 """
 
 import base64
+from uuid import UUID
 from supabase import Client
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -19,12 +20,12 @@ from schemas.users import (
     UserStrainListRemove,
     AddUserStrainListNotes,
 )
-from db.models.users import User, UserStrainList
+from db.base import User, UserStrainList
 from core.config import settings
 
 
 def decode_email(encoded_email: str) -> str:
-    return base64.b64decode(encoded_email).decode('utf-8')
+    return base64.b64decode(encoded_email).decode("utf-8")
 
 
 @settings.retry_db
@@ -78,13 +79,24 @@ def create_new_user(user: UserCreate, db: Session):
     )
     try:
         db.add(user)
-    except Exception:
-        db.rollback()
-    else:
         db.commit()
         db.refresh(user)
+    except Exception:
+        db.rollback()
     finally:
         return user
+
+
+@settings.retry_db
+async def get_user_by_user_id(user_id: UUID, db: Session) -> Union[str, None]:
+    try:
+        if not isinstance(user_id, UUID):
+            user_id = UUID(user_id)
+        user = db.query(User).filter(User.auth_id == user_id).first()
+        return user
+    except Exception:
+        db.rollback()
+        return None
 
 
 @settings.retry_db
@@ -160,9 +172,7 @@ async def get_strain_list_by_email(user_email: str, db: Session):
     try:
         return [
             UserStrainListSchema.from_orm(strain_list_item)
-            for strain_list_item in db.query(UserStrainList)
-            .filter(UserStrainList.email == user_email)
-            .all()
+            for strain_list_item in db.query(UserStrainList).filter(UserStrainList.email == user_email).all()
         ]
     except SQLAlchemyError:
         db.rollback()
@@ -174,9 +184,7 @@ async def update_strain_review_status(
     strain_id: Union[str, int], strain_list_update: UserStrainListUpdate, db: Session
 ):
     try:
-        strain = (
-            db.query(UserStrainList).filter(UserStrainList.id == int(strain_id)).first()
-        )
+        strain = db.query(UserStrainList).filter(UserStrainList.id == int(strain_id)).first()
         strain.to_review = strain_list_update.to_review
         db.commit()
         db.refresh(strain)

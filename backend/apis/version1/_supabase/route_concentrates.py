@@ -6,6 +6,7 @@ Created on Mon Sep  4 17:26:25 2023
 @author: dale
 """
 
+from pathlib import Path
 from fastapi import APIRouter
 from datetime import datetime, timedelta
 from sqlalchemy import func
@@ -21,6 +22,7 @@ from db.repository.concentrates import (
     update_or_create_concentrate_ranking,
     create_vibe_concentrate_ranking,
     get_concentrate_rankings_by_id,
+    return_average_concentrate_ratings,
 )
 from db.base import (
     Vibe_Concentrate_Ranking,
@@ -32,6 +34,7 @@ from schemas.concentrates import (
     ConcentrateRankingValuesSchema,
 )
 from schemas.product_types import RatingsErrorResponse
+from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 router = APIRouter()
 
@@ -107,81 +110,65 @@ async def submit_vibe_concentrate_ranking(
 
 @router.get("/get_top_concentrate_strains", response_model=List[Dict[str, Any]])
 async def get_top_concentrate_strains(db: Session = Depends(get_db)):
-    avg_ratings = (
-        db.query(
-            Concentrate_Ranking.strain,
-            Concentrate_Ranking.cultivator,
-            func.avg(Concentrate_Ranking.color_rating),
-            func.avg(Concentrate_Ranking.consistency_rating),
-            func.avg(Concentrate_Ranking.smell_rating),
-            func.avg(Concentrate_Ranking.flavor_rating),
-            func.avg(Concentrate_Ranking.effects_rating),
-            func.avg(Concentrate_Ranking.harshness_rating),
-            func.avg(Concentrate_Ranking.residuals_rating),
-        )
-        .filter(Concentrate_Ranking.cultivator != "Cultivar")
-        .filter(Concentrate_Ranking.strain.ilike("%Test%") == False)
-        .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
-        .all()
-    )
+    avg_ratings = await return_average_concentrate_ratings(db)
     scored_strains = []
     for strain in avg_ratings:
-        overall_score = sum(filter(None, strain[2:])) / 7
-        scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
-    scored_strains.sort(key=lambda x: x[2], reverse=True)
-    top_strains = scored_strains[:3]
-    return_strains = []
-    for strain_dict in top_strains:
-        try:
-            concentrate_data = await get_concentrate_and_description(
-                db, strain=strain_dict[0], cultivator=strain_dict[1]
-            )
-            concentrate_data["overall_score"] = strain_dict[2]
-            return_strains.append(concentrate_data)
-        except Exception:
-            pass
-
+        overall_score = sum(filter(None, strain[-7:])) / 7 if strain[-7:] else 0
+        strain_data = {
+            "strain": strain.strain,
+            "cultivator": strain.cultivator,
+            "flower_id": strain.concentrate_id,
+            "description_id": strain.description_id,
+            "description_text": strain.description_text,
+            "effects": strain.effects,
+            "lineage": strain.lineage,
+            "terpenes_list": strain.terpenes_list,
+            "strain_category": strain.strain_category,
+            "cultivar": strain.cultivar,
+            "username": strain.username,
+            "voting_open": strain.voting_open,
+            "is_mystery": strain.is_mystery,
+            "product_type": strain.product_type,
+            "overall_score": round(overall_score, 2),
+            "url_path": strain.card_path,
+        }
+        scored_strains.append(strain_data)
+    scored_strains.sort(key=lambda x: x["overall_score"], reverse=True)
+    return_strains = scored_strains[:3]
+    for strain in return_strains:
+        strain["url_path"] = return_image_url_from_supa_storage(str(Path(strain["url_path"])))
     return return_strains
 
 
 @router.get("/get_top_rated_concentrate_strains", response_model=list[Any])
-async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n: int = 6):
-    avg_ratings = (
-        db.query(
-            Concentrate_Ranking.strain,
-            Concentrate_Ranking.cultivator,
-            func.avg(Concentrate_Ranking.color_rating),
-            func.avg(Concentrate_Ranking.consistency_rating),
-            func.avg(Concentrate_Ranking.smell_rating),
-            func.avg(Concentrate_Ranking.flavor_rating),
-            func.avg(Concentrate_Ranking.effects_rating),
-            func.avg(Concentrate_Ranking.harshness_rating),
-            func.avg(Concentrate_Ranking.residuals_rating),
-        )
-        .filter(Concentrate_Ranking.date_posted >= (datetime.now() - timedelta(days=30)))
-        .filter(Concentrate_Ranking.cultivator != "Cultivar")
-        .filter(Concentrate_Ranking.strain.ilike("%Test%") == False)
-        .group_by(Concentrate_Ranking.strain, Concentrate_Ranking.cultivator)
-        .all()
-    )
+async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n: int = 5):
+    avg_ratings = await return_average_concentrate_ratings(db)
     scored_strains = []
     for strain in avg_ratings:
-        overall_score = sum(filter(None, strain[2:])) / 7
-        scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
-    top_strains = sorted(scored_strains, key=lambda x: x[2], reverse=True)[:top_n]
-    return_strains = []
-    for strain, cultivator, score in top_strains:
-        try:
-            concentrate_data = await get_concentrate_and_description(db, strain=strain, cultivator=cultivator)
-            concentrate_data["overall_score"] = score
-            for key, val in concentrate_data.items():
-                try:
-                    concentrate_data[key] = round(val, 2)
-                except Exception:
-                    pass
-            return_strains.append(concentrate_data)
-        except Exception:
-            pass
+        overall_score = sum(filter(None, strain[-7:])) / 7 if strain[-7:] else 0
+        strain_data = {
+            "strain": strain.strain,
+            "cultivator": strain.cultivator,
+            "flower_id": strain.concentrate_id,
+            "description_id": strain.description_id,
+            "description_text": strain.description_text,
+            "effects": strain.effects,
+            "lineage": strain.lineage,
+            "terpenes_list": strain.terpenes_list,
+            "strain_category": strain.strain_category,
+            "cultivar": strain.cultivar,
+            "username": strain.username,
+            "voting_open": strain.voting_open,
+            "is_mystery": strain.is_mystery,
+            "product_type": strain.product_type,
+            "overall_score": round(overall_score, 2),
+            "url_path": strain.card_path,
+        }
+        scored_strains.append(strain_data)
+    scored_strains.sort(key=lambda x: x["overall_score"], reverse=True)
+    return_strains = scored_strains[:top_n]
+    for strain in return_strains:
+        strain["url_path"] = return_image_url_from_supa_storage(str(Path(strain["url_path"])))
     return return_strains
 
 

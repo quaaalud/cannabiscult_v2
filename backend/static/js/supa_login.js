@@ -143,11 +143,9 @@ class SupabaseClient {
         return !!this.currentUser;
     }
     validateFormData(data) {
-        // Password validation
         if (data.password !== data.confirmPassword || !this.validatePassword(data.password)) {
-          return false; // Either passwords do not match or password validation failed
+          return false;
         }
-        // Email sanitization
         data.email = this.validateAndSanitizeEmail(data.email);
         data.name = this.sanitizeString(data.name);
         data.username = this.sanitizeString(data.username);
@@ -170,21 +168,20 @@ class SupabaseClient {
         const hasNumberOrSpecial = /[0-9!@#$%^&*]/.test(password); // At least one number or standard special character
 
         if (!hasMinLength || !hasUpper || !hasLower || !hasNumberOrSpecial) {
-            return false; // Password does not meet the criteria
+            return false;
         }
-        return true; // Password is valid
+        return true;
     }
     sanitizeString(str) {
         if (typeof str !== 'string') {
             return '';
         }
-        return str.trim().replace(/<[^>]*>?/gm, ''); // Basic HTML tag stripping
+        return str.trim().replace(/<[^>]*>?/gm, '');
     }
     
     sanitizeInputString(input) {
       return input.replace(/[^a-zA-Z0-9 ]/g, '');
     }
-    
      async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
@@ -196,7 +193,6 @@ class SupabaseClient {
             throw error;
         }
     }
-
     async updateLastLogin(userId) {
         try {
             const { error } = await this.supabase
@@ -210,7 +206,6 @@ class SupabaseClient {
             throw error;
         }
     }
-
     async registerUser(userDetails) {
       if (!this.validateFormData(userDetails)) {
         throw new Error('Invalid user data.');
@@ -229,7 +224,6 @@ class SupabaseClient {
             },
           })
           if (error) throw error;
-
           return true;
       } catch (error) {
         console.error('Error in registerUser:', error.message);
@@ -251,21 +245,17 @@ class SupabaseClient {
     }
     async checkSuperuserStatus() {
       try {
-          // Retrieve the user object
-          
           const { data: { user } } = await this.supabase.auth.getUser();
-          
           if (user === null) {
               return false;
           }
-          if (user && user.email) {
-              // Construct the URL for the FastAPI endpoint
+          if (user && user.id) {
               const response = await fetch('/users/super_user_status', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ email: this.encodeEmail(user.email) })
+                body: JSON.stringify({ user_id: user.id })
               });
               if (!response.ok) {
                   throw new Error(`HTTP error! status: ${response.status}`);
@@ -283,15 +273,32 @@ class SupabaseClient {
           return false;
       }
     }
-
+    getUserIdFromToken() {
+        try {
+            const tokenKey = Object.keys(window.localStorage).find(key => key.endsWith('-auth-token'));
+            if (!tokenKey) {
+                return null;
+            }
+            const tokenString = window.localStorage.getItem(tokenKey);
+            if (!tokenString) {
+                return null;
+            }
+            const tokenObj = JSON.parse(tokenString);
+            return tokenObj && tokenObj.user && tokenObj.user.id ? tokenObj.user.id : null;
+        } catch (error) {
+            console.error('Error retrieving user id from token:', error);
+            return null;
+        }
+    }
     async checkUserStatus() {
+      const userId = this.getUserIdFromToken();
+      if (!userId) { return; };
       try {
-          const response = await fetch('/users/get_username', {
-            method: 'POST',
+          const response = await fetch(`/users/get_user_by_id?user_id=${userId}`, {
+            method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email: this.encodeEmail(user.email) })
           });
           if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -305,7 +312,6 @@ class SupabaseClient {
           return false;
       }
     }
-
     async sendResetPassword(email) {
         try {
             email = this.validateAndSanitizeEmail(email);
@@ -316,7 +322,6 @@ class SupabaseClient {
             throw error;
         }
     }
-
     async updateUserPassword(newPassword) {
         try {
             const { error } = await this.supabase.auth.updateUser({ password: newPassword });
@@ -326,10 +331,8 @@ class SupabaseClient {
             throw error;
         }
     }
-
     async addLogoutLink() {
       const navlinks = document.getElementById('navLinksList');
-      // Check if the 'footerLinks' element exists
       if (navlinks == null) {
         return;
       }
@@ -347,7 +350,6 @@ class SupabaseClient {
           window.dispatchEvent(new CustomEvent('userAuthChange'));
       }
     }
-    
     async addLoginLink() {
         const navBar = document.querySelector('.navbar-nav');
         if (!document.getElementById('loginLink')) {
@@ -362,22 +364,19 @@ class SupabaseClient {
             navBar.appendChild(loginListItem);
         }
     }
-    
     async addStrainSubmissionsLink() {
         const navLinksList = document.getElementById('navLinksList');
-    
         if (!navLinksList.querySelector('#myRankingsLink')) {
             const linkItem = document.createElement('li');
             const link = document.createElement('a');
             link.id = 'myRankingsLink';
             link.href = '/home';
             link.textContent = 'My Rankings';
-            link.className = 'nav-link'; // Add any additional classes as per your CSS framework
+            link.className = 'nav-link';
             navLinksList.appendChild(linkItem);
             linkItem.appendChild(link);
         }
     }
-
     async removeLogoutLink() {
         const logoutLink = document.getElementById('logoutLink');
         if (logoutLink) {
@@ -385,21 +384,18 @@ class SupabaseClient {
         }
         removeStrainSubmissionLink();
     }
-    
     async removeStrainSubmissionLink() {
         const submissionLink = document.getElementById('myRankingsLink');
         if (submissionLink) {
             submissionLink.parentNode.remove();
         }
     }
-
     async removeloginLink() {
         const loginLink = document.getElementById('loginLink');
         if (loginLink) {
             loginLink.parentNode.remove();
         }
     }
-
     async getPublicUrlfromBucket(filePath) {
         try {
             const { data, error } = await this.supabase.storage.from('cc_public').getPublicUrl(filePath);
@@ -410,7 +406,6 @@ class SupabaseClient {
             throw error;
         }
     }
-
     async getCurrentUserEmail() {
       const { data: { user }, error } = await this.supabase.auth.getUser();
       if (error || !user) {
@@ -419,21 +414,25 @@ class SupabaseClient {
         return user.email;
       }
     }
-
+    async getCurrentUserId() {
+      const { data: { user }, error } = await this.supabase.auth.getUser();
+      if (error || !user) {
+        return;
+      } else {
+        return user.id;
+      }
+    }
     async checkUserAuthentication() {
         try {
             const { data: { user }, error } = await this.supabase.auth.getUser();
-
             if (!user) {
                 const urlParams = new URLSearchParams(window.location.search);
                 const resetTokenType = urlParams.get('type');
                 if (resetTokenType === 'recovery') {
-                  console.log('Recovery mode is active.');
-                  return
+                  return;
                 }
-                console.log('No user logged in. Redirecting to login page.');
                 window.location.href = '/login';
-                return; // Stop execution if there's no user
+                return;
             } else {
               return user.email;
             }
@@ -443,7 +442,6 @@ class SupabaseClient {
                 return;
             }
         } catch (error) {
-            console.error('An error occurred while checking user authentication:', error);
             alert('An unexpected error occurred. Please try again.');
             window.location.href = '/login';
             return;
@@ -451,14 +449,12 @@ class SupabaseClient {
     }
     async fetchImageUrls(productType, productId) {
       const fullUrl = `/images/${productType}/${productId}`;
-    
       try {
         const response = await fetch(fullUrl);
         if (!response.ok) {
           throw new Error(`Server error! Status: ${response.status}`);
         }
         const imageUrls = await response.json();
-
         return imageUrls;
       } catch (error) {
         console.error('Fetch error:', error);
@@ -469,22 +465,19 @@ class SupabaseClient {
       const carouselIndicators = document.querySelector('.carousel-indicators');
       const carouselInner = document.querySelector('.carousel-inner');
     
-      // Start adding new items from index 0 for image URLs, but account for existing carousel item
       imageUrls.forEach((url, index) => {
-        const slideIndex = index + 1; // Adjust index for carousel items (starting from 1)
+        const slideIndex = index + 1;
     
-        // Add new indicator only for additional images
         const newIndicator = document.createElement('button');
         newIndicator.setAttribute('type', 'button');
         newIndicator.setAttribute('data-mdb-target', '#carouselImages');
         newIndicator.setAttribute('data-mdb-slide-to', slideIndex.toString());
         newIndicator.setAttribute('aria-label', `Slide ${slideIndex + 1}`);
-        if (index === 0) { // Make the first additional image indicator active if it's the only image
+        if (index === 0) {
           newIndicator.classList.add('active');
         }
         carouselIndicators.appendChild(newIndicator);
     
-        // Add new carousel item
         const newItem = document.createElement('div');
         newItem.className = 'carousel-item'
         newItem.setAttribute('data-mdb-interval', '10000');

@@ -6,12 +6,13 @@ Created on Mon Sep  4 17:26:25 2023
 @author: dale
 """
 
+from pathlib import Path
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Dict, Any, List, Union
 from db.session import get_supa_db, get_db
-from db.base import Flower_Ranking, Flower
+from db.base import Flower_Ranking
 from schemas.flowers import (
     FlowersBase,
     GetFlowerWithDescription,
@@ -27,7 +28,9 @@ from db.repository.flowers import (
     get_review_data_and_path,
     get_flower_data_and_path,
     update_or_create_flower_ranking,
+    return_average_flower_ratings,
 )
+from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 router = APIRouter()
 
@@ -71,103 +74,68 @@ async def submit_flower_ranking(ranking: CreateFlowerRanking, db: Session = Depe
 
 @router.get("/get_top_flower_strains", response_model=List[GetFlowerWithDescription])
 async def get_top_strains(db: Session = Depends(get_supa_db)):
-    avg_ratings = (
-        db.query(
-            Flower.strain,
-            Flower.cultivator,
-            Flower.flower_id,
-            Flower_Ranking.flower_ranking_id,
-            func.avg(Flower_Ranking.appearance_rating),
-            func.avg(Flower_Ranking.smell_rating),
-            func.avg(Flower_Ranking.flavor_rating),
-            func.avg(Flower_Ranking.effects_rating),
-            func.avg(Flower_Ranking.harshness_rating),
-            func.avg(Flower_Ranking.freshness_rating),
-        )
-        .filter(
-            Flower_Ranking.cultivator != "Connoisseur",
-            Flower_Ranking.strain.ilike("%Test%") == False,
-            Flower_Ranking.flower_ranking_id == Flower.flower_id,
-        )
-        .group_by(
-            Flower.strain,
-            Flower.cultivator,
-        )
-        .all()
-    )
+    avg_ratings = await return_average_flower_ratings(db)
     scored_strains = []
     for strain in avg_ratings:
-        overall_score = sum(filter(None, strain[4:])) / 6
-        scored_strains.append((strain[0], strain[1], round(overall_score, 2)))
-    scored_strains.sort(key=lambda x: x[2], reverse=True)
-    top_strains = scored_strains[:3]
-    return_strains = []
-    for strain_dict in top_strains:
-        try:
-            flower_data = await get_flower_and_description(
-                db,
-                strain=strain_dict[0],
-                cultivar_email="aaron.childs@thesocialoutfitus.com",
-                cultivator=strain_dict[1],
-            )
-            if flower_data:
-                flower_data["overall_score"] = strain_dict[2]
-                return_strains.append(flower_data)
-        except Exception as e:
-            raise e
-    return return_strains
+        overall_score = sum(filter(None, strain[-6:])) / 6 if strain[-6:] else 0
+        strain_data = {
+            "strain": strain.strain,
+            "cultivator": strain.cultivator,
+            "flower_id": strain.flower_id,
+            "description_id": strain.description_id,
+            "description_text": strain.description_text,
+            "effects": strain.effects,
+            "lineage": strain.lineage,
+            "terpenes_list": strain.terpenes_list,
+            "strain_category": strain.strain_category,
+            "cultivar": strain.cultivar,
+            "username": strain.username,
+            "voting_open": strain.voting_open,
+            "is_mystery": strain.is_mystery,
+            "product_type": strain.product_type,
+            "overall_score": round(overall_score, 2),
+            "url_path": strain.card_path,
+        }
+        scored_strains.append(strain_data)
+    scored_strains.sort(key=lambda x: x["overall_score"], reverse=True)
+    return_strains = scored_strains[:3]
+    for strain in return_strains:
+        strain["url_path"] = return_image_url_from_supa_storage(str(Path(strain["url_path"])))
+    return scored_strains[:3]
 
 
 @router.get("/get_top_rated_flower_strains", response_model=List)
-async def get_top_flower_strains(db: Session = Depends(get_supa_db)):
+async def get_top_flower_strains(
+    strains_count: int = Query(5, alias="strain_count"), db: Session = Depends(get_supa_db)
+):
     try:
-        avg_ratings = (
-            db.query(
-                Flower_Ranking.strain,
-                Flower_Ranking.cultivator,
-                func.avg(Flower_Ranking.appearance_rating).label("appearance_rating"),
-                func.avg(Flower_Ranking.smell_rating).label("smell_rating"),
-                func.avg(Flower_Ranking.flavor_rating).label("flavor_rating"),
-                func.avg(Flower_Ranking.effects_rating).label("effects_rating"),
-                func.avg(Flower_Ranking.harshness_rating).label("harshness_rating"),
-                func.avg(Flower_Ranking.freshness_rating).label("freshness_rating"),
-            )
-            .filter(
-                Flower_Ranking.cultivator != "Connoisseur",
-                ~Flower_Ranking.strain.ilike("%Test%"),
-            )
-            .group_by(
-                Flower_Ranking.strain,
-                Flower_Ranking.cultivator
-            )
-            .all()
-        )
+        avg_ratings = await return_average_flower_ratings(db)
         scored_strains = []
         for strain in avg_ratings:
-            ratings = [
-                strain.appearance_rating,
-                strain.smell_rating,
-                strain.flavor_rating,
-                strain.effects_rating,
-                strain.harshness_rating,
-                strain.freshness_rating,
-            ]
-            valid_ratings = [r for r in ratings if r is not None]
-            overall_score = sum(valid_ratings) / len(valid_ratings) if valid_ratings else 0
-            scored_strains.append((strain.strain, strain.cultivator, round(overall_score, 2)))
-        scored_strains.sort(key=lambda x: x[2], reverse=True)
-        top_strains = scored_strains[:6]
-        return_strains = []
-        for strain_dict in top_strains:
-            flower_data = await get_flower_and_description(
-                db,
-                strain=strain_dict[0],
-                cultivator=strain_dict[1],
-                cultivar_email="aaron.childs@thesocialoutfitus.com",
-            )
-            if flower_data:
-                flower_data["overall_score"] = strain_dict[2]
-                return_strains.append(flower_data)
+            overall_score = sum(filter(None, strain[-6:])) / 6 if strain[-6:] else 0
+            strain_data = {
+                "strain": strain.strain,
+                "cultivator": strain.cultivator,
+                "flower_id": strain.flower_id,
+                "description_id": strain.description_id,
+                "description_text": strain.description_text,
+                "effects": strain.effects,
+                "lineage": strain.lineage,
+                "terpenes_list": strain.terpenes_list,
+                "strain_category": strain.strain_category,
+                "cultivar": strain.cultivar,
+                "username": strain.username,
+                "voting_open": strain.voting_open,
+                "is_mystery": strain.is_mystery,
+                "product_type": strain.product_type,
+                "overall_score": round(overall_score, 2),
+                "url_path": strain.card_path,
+            }
+            scored_strains.append(strain_data)
+        scored_strains.sort(key=lambda x: x["overall_score"], reverse=True)
+        return_strains = scored_strains[:strains_count]
+        for strain in return_strains:
+            strain["url_path"] = return_image_url_from_supa_storage(str(Path(strain["url_path"])))
         return return_strains
     except Exception as e:
         raise e

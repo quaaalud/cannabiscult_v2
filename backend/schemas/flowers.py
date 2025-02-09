@@ -69,17 +69,18 @@ class GetFlowerWithDescription(BaseModel):
     product_type: str = Field("flower", description="Type of the product, default is 'flower'")
 
     description_id: int = Field(..., description="Unique identifier for the flower description")
-    description_text: Annotated[str, StringConstraints(max_length=500)] = Field(
+    description_text: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Description of the flower, max 1500 characters"
     )
-    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+    effects: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Effects of the flower, max 1500 characters"
     )
-    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+    lineage: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Lineage of the flower, max 1500 characters"
     )
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the flower")
-    cultivar: EmailStr = Field(..., description="Email of the cultivar")
+    cultivar: Optional[EmailStr] = Field(None, description="Email of the cultivar")
+    username: Optional[str] = Field("", description="Username of the cultivar")
     strain_category: StrainCategoryEnum = Field(
         StrainCategoryEnum.cult_pack, description="The category for the flower strain. ex: indica, hybrid, etc."
     )

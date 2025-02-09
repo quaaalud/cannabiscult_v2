@@ -5,13 +5,15 @@ from pathlib import Path
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List
-from db.base import Concentrate, Concentrate_Description
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 from core.config import settings
 from schemas.concentrates import (
     CreateConcentrateRanking,
 )
 from db.base import (
+    Concentrate,
+    Concentrate_Description,
+    User,
     Vibe_Concentrate_Ranking,
     Concentrate_Ranking,
 )
@@ -197,3 +199,57 @@ def create_vibe_concentrate_ranking(ranking: CreateConcentrateRanking, db: Sessi
         db.refresh(created_ranking)
     finally:
         return created_ranking
+
+
+async def return_average_concentrate_ratings(db: Session) -> List:
+    return (
+        db.query(
+            Concentrate_Ranking.strain,
+            Concentrate_Ranking.cultivator,
+            Concentrate_Description.concentrate_id,
+            Concentrate_Description.description_id,
+            Concentrate_Description.description.label("description_text"),
+            Concentrate_Description.effects,
+            Concentrate_Description.lineage,
+            Concentrate_Description.terpenes_list,
+            Concentrate_Description.strain_category,
+            Concentrate_Description.cultivar_email.label("cultivar"),
+            User.username,
+            Concentrate.voting_open,
+            Concentrate.is_mystery,
+            Concentrate.product_type,
+            Concentrate.card_path,
+            func.avg(Concentrate_Ranking.color_rating).label("color_rating"),
+            func.avg(Concentrate_Ranking.consistency_rating).label("consistency_rating"),
+            func.avg(Concentrate_Ranking.smell_rating).label("smell_rating"),
+            func.avg(Concentrate_Ranking.flavor_rating).label("flavor_rating"),
+            func.avg(Concentrate_Ranking.harshness_rating).label("harshness_rating"),
+            func.avg(Concentrate_Ranking.residuals_rating).label("residuals_rating"),
+            func.avg(Concentrate_Ranking.effects_rating).label("effects_rating"),
+        )
+        .join(Concentrate_Description, Concentrate_Ranking.concentrate_id == Concentrate_Description.concentrate_id)
+        .join(User, User.email == Concentrate_Description.cultivar_email)
+        .join(Concentrate, Concentrate.concentrate_id == Concentrate_Description.concentrate_id)
+        .filter(
+            Concentrate_Ranking.cultivator != "Connoisseur",
+            ~Concentrate_Ranking.strain.ilike("%Test%"),
+        )
+        .group_by(
+            Concentrate_Ranking.strain,
+            Concentrate_Ranking.cultivator,
+            Concentrate_Description.concentrate_id,
+            Concentrate_Description.description_id,
+            Concentrate_Description.description,
+            Concentrate_Description.effects,
+            Concentrate_Description.lineage,
+            Concentrate_Description.terpenes_list,
+            Concentrate_Description.strain_category,
+            Concentrate_Description.cultivar_email,
+            User.username,
+            Concentrate.voting_open,
+            Concentrate.is_mystery,
+            Concentrate.product_type,
+            Concentrate.card_path,
+        )
+        .all()
+    )
