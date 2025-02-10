@@ -244,7 +244,7 @@ async function submitForm(formState) {
   ];
   convertToIntegers(formState, integerKeys);
   try {
-    const response = await fetch('/prerolls/update_or_create_pre_roll_ranking', {
+    const response = await fetch('/prerolls/ranking', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

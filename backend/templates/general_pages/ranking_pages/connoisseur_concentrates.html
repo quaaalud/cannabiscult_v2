@@ -311,12 +311,12 @@
     const concentrateId = "{{ concentrate_id }}";
     const endpoint = "/concentrates/get_concentrate_ratings_by_id/" + concentrateId;
     try {
-      const response = await fetch(endpoint);
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const ratingsData = await response.json();
-      if (ratingsData.message) { return; };
+        const response = await fetch(endpoint);
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const ratingsData = await response.json();
+        if (ratingsData.message) { return; };
         const formatRating = (rating) => {
           return rating !== null ? parseFloat(rating).toFixed(2) : '?';
         };

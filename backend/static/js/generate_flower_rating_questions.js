@@ -227,7 +227,7 @@ async function submitForm(formState) {
   formState.flower_id = parseInt(flowerId);
 
   try {
-    const response = await fetch('/flower_ranking/submit-flower-ranking', {
+    const response = await fetch('/flowers/ranking', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

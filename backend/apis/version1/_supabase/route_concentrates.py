@@ -92,7 +92,7 @@ async def query_concentrate_description_by_strain(
         raise HTTPException(status_code=404, detail="Concentrate or description not found")
 
 
-@router.post("/submit-concentrate-ranking", response_model=None)
+@router.post("/ranking", response_model=None)
 async def submit_concentrate_ranking(
     concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Concentrate_Ranking:

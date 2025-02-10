@@ -92,7 +92,7 @@ async def query_pre_roll_and_description(
         )
 
 
-@router.post("/update_or_create_pre_roll_ranking", response_model=Any)
+@router.post("/ranking", response_model=Any)
 async def update_or_create_pre_roll_ranking_route(
     ranking_data: pre_rolls_schemas.PreRollRankingSchema = Body(...), db: Session = Depends(get_db)
 ):

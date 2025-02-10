@@ -281,7 +281,7 @@ async function submitForm(formState) {
   formState.concentrate_id = parseInt(concentrateId);
 
   try {
-    const response = await fetch('/concentrates/submit-concentrate-ranking', {
+    const response = await fetch('/concentrates/ranking', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
