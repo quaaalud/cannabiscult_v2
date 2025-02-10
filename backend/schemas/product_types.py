@@ -47,11 +47,11 @@ class ProductSubmission(ProductTypes):
     strain: Annotated[str, Field(min_length=1, max_length=100, description="Name of the strain")]
     cultivator: Annotated[str, Field(min_length=1, max_length=100, description="Name of the cultivator")]
     cultivar_email: EmailStr = Field(..., description="Email address of the cultivar")
-    description: Annotated[str, Field(max_length=500, description="Detailed description for the product")] = (
+    description: Annotated[str, Field(max_length=1500, description="Detailed description for the product")] = (
         "Coming Soon!"
     )
-    effects: Annotated[str, Field(max_length=500, description="Effects details for the product")] = "Coming Soon!"
-    lineage: Annotated[str, Field(max_length=500, description="Lineage or ancestry information")] = "Coming Soon!"
+    effects: Annotated[str, Field(max_length=1500, description="Effects details for the product")] = "Coming Soon!"
+    lineage: Annotated[str, Field(max_length=1500, description="Lineage or ancestry information")] = "Coming Soon!"
     terpenes_list: List[Annotated[str, Field(max_length=50, description="Name of a terpene")]] = ["Coming", "Soon!"]
     strain_category: StrainCategoryEnum = Field(StrainCategoryEnum.cult_pack, description="Category of the strain")
 

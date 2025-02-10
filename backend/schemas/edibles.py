@@ -12,9 +12,9 @@ from schemas.product_types import StrainCategoryEnum, StrainType
 
 
 class EdiblesBase(BaseModel):
-    cultivator: Annotated[str, StringConstraints(max_length=500)] = Field(..., description="Name of the cultivator")
-    strain: Annotated[str, StringConstraints(max_length=500)] = Field(..., description="Name of the strain")
-    card_path: Annotated[str, StringConstraints(max_length=500)] = Field(
+    cultivator: Annotated[str, StringConstraints(max_length=1500)] = Field(..., description="Name of the cultivator")
+    strain: Annotated[str, StringConstraints(max_length=1500)] = Field(..., description="Name of the strain")
+    card_path: Annotated[str, StringConstraints(max_length=1500)] = Field(
         ..., description="Path to the edible's image card"
     )
     product_type: str = Field("edible", description="The category for the flower strain. ex: indica, hybrid, etc.")
@@ -55,10 +55,10 @@ class EdibleRankingBase(BaseModel):
     flavor_rating: confloat = Field(..., gt=0, lt=10.1)
     aftertaste_rating: confloat = Field(..., gt=0, lt=10.1)
     effects_rating: confloat = Field(..., gt=0, lt=10.1)
-    appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    aftertaste_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    effects_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
+    appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    aftertaste_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    effects_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
 
 
 class GetEdibleRanking(BaseModel):
@@ -73,11 +73,11 @@ class GetEdibleRanking(BaseModel):
     feel_rating: confloat = Field(..., gt=0, lt=10.1)
     chew_rating: confloat = Field(..., gt=0, lt=10.1)
     effects_rating: confloat = Field(..., gt=0, lt=10.1)
-    appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    feel_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    chew_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    effects_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
+    appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    feel_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    chew_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    effects_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
 
     class Config:
         from_attributes = True
@@ -88,18 +88,18 @@ class CreateEdibleRanking(BaseModel):
     connoisseur: EmailStr = Field(...)
     cultivator: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=199)
     strain: Annotated[str, StringConstraints(max_length=500)] = Field(..., max_length=200)
-    flavor: Annotated[str, StringConstraints(max_length=500)] = Field(..., max_length=200)
+    flavor: Annotated[str, StringConstraints(max_length=1500)] = Field(..., max_length=200)
 
     appearance_rating: confloat = Field(..., gt=0, lt=10.1)
     flavor_rating: confloat = Field(..., gt=0, lt=10.1)
     feel_rating: confloat = Field(..., gt=0, lt=10.1)
     chew_rating: confloat = Field(..., gt=0, lt=10.1)
     effects_rating: confloat = Field(..., gt=0, lt=10.1)
-    appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    feel_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    chew_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
-    effects_explanation: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=500)
+    appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    feel_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    chew_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    effects_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
 
     class Config:
         from_attributes = True
@@ -115,13 +115,13 @@ class CreateVibeEdibleRanking(CreateEdibleRanking):
 
 class EdibleDescriptionBase(BaseModel):
     edible_id: int = Field(None, description="Unique identifier for the edible")
-    description: Annotated[str, StringConstraints(max_length=500)] = Field(
+    description: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Description of the edible, max 1500 characters"
     )
-    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+    effects: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Effects of the edible, max 1500 characters"
     )
-    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+    lineage: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Lineage of the edible, max 1500 characters"
     )
     cultivar_email: EmailStr = Field(..., description="Email of the cultivar")
@@ -150,13 +150,13 @@ class GetEdibleWithDescription(BaseModel):
     product_type: str = Field("edible", description="Type of the product, default is 'edible'")
 
     description_id: int = Field(..., description="Unique identifier for the edible description")
-    description_text: Annotated[str, StringConstraints(max_length=500)] = Field(
+    description_text: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Description of the edible, max 1500 characters"
     )
-    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+    effects: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Effects of the edible, max 1500 characters"
     )
-    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+    lineage: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Lineage of the flower, max 1500 characters"
     )
     cultivar: EmailStr = Field(..., description="Email of the cultivar")

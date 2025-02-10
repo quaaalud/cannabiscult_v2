@@ -12,7 +12,7 @@ from schemas.product_types import StrainCategoryEnum, StrainType
 
 
 RatingType = Annotated[float, Field(gt=0, lt=10.1)]
-OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
+OptionalStr = Annotated[Optional[str], Field(None, max_length=1500)]
 
 
 class FlowersBase(BaseModel):
@@ -33,13 +33,13 @@ class FlowersBase(BaseModel):
 
 class FlowerDescriptionBase(BaseModel):
     flower_id: int = Field(None, description="Unique identifier for the flower")
-    description: Annotated[str, StringConstraints(max_length=500)] = Field(
+    description: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Description of the flower, max 1500 characters"
     )
-    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+    effects: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Effects of the flower, max 1500 characters"
     )
-    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+    lineage: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Lineage of the flower, max 1500 characters"
     )
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the flower")
@@ -100,12 +100,12 @@ class FlowerRankingBase(BaseModel):
     flavor_rating: float = Field(..., gt=0, lt=10.1)
     harshness_rating: float = Field(..., gt=0, lt=10.1)
     effects_rating: float = Field(..., gt=0, lt=10.1)
-    appearance_explanation: Optional[str] = Field(None, max_length=500)
-    freshness_explanation: Optional[str] = Field(None, max_length=500)
-    flavor_explanation: Optional[str] = Field(None, max_length=500)
-    smell_explanation: Optional[str] = Field(None, max_length=500)
-    harshness_explanation: Optional[str] = Field(None, max_length=500)
-    effects_explanation: Optional[str] = Field(None, max_length=500)
+    appearance_explanation: Optional[str] = Field(None, max_length=1500)
+    freshness_explanation: Optional[str] = Field(None, max_length=1500)
+    flavor_explanation: Optional[str] = Field(None, max_length=1500)
+    smell_explanation: Optional[str] = Field(None, max_length=1500)
+    harshness_explanation: Optional[str] = Field(None, max_length=1500)
+    effects_explanation: Optional[str] = Field(None, max_length=1500)
 
     pack_code: Optional[str] = Field(None, max_length=99)
     flower_id: int = Field(...)

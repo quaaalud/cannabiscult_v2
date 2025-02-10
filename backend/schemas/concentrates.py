@@ -11,7 +11,7 @@ from typing import Optional, Union, Annotated, List
 from schemas.product_types import StrainCategoryEnum, StrainType
 
 
-OptionalStr = Annotated[Optional[str], Field(None, max_length=500)]
+OptionalStr = Annotated[Optional[str], Field(None, max_length=1500)]
 
 
 class ConcentratesBase(BaseModel):
@@ -58,19 +58,19 @@ class ConcentrateRankingBase(BaseModel):
     harshness_rating: confloat(gt=0, lt=10.1) = Field(..., description="Harshness rating, range 0-10")
     residuals_rating: confloat(gt=0, lt=10.1) = Field(..., description="Residuals rating, range 0-10")
     effects_rating: confloat(gt=0, lt=10.1) = Field(..., description="Effects rating, range 0-10")
-    color_explanation: Optional[str] = Field(None, max_length=500, description="Explanation for the color rating")
+    color_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the color rating")
     consistency_explanation: OptionalStr = Field(
-        None, max_length=500, description="Explanation for the consistency rating"
+        None, max_length=1500, description="Explanation for the consistency rating"
     )
-    flavor_explanation: OptionalStr = Field(None, max_length=500, description="Explanation for the flavor rating")
-    smell_explanation: OptionalStr = Field(None, max_length=500, description="Explanation for the smell rating")
+    flavor_explanation: OptionalStr = Field(None, max_length=1500, description="Explanation for the flavor rating")
+    smell_explanation: OptionalStr = Field(None, max_length=1500, description="Explanation for the smell rating")
     harshness_explanation: OptionalStr = Field(
-        None, max_length=500, description="Explanation for the harshness rating"
+        None, max_length=1500, description="Explanation for the harshness rating"
     )
     residuals_explanation: OptionalStr = Field(
-        None, max_length=500, description="Explanation for the residuals rating"
+        None, max_length=1500, description="Explanation for the residuals rating"
     )
-    effects_explanation: OptionalStr = Field(None, max_length=500, description="Explanation for the effects rating")
+    effects_explanation: OptionalStr = Field(None, max_length=1500, description="Explanation for the effects rating")
     pack_code: OptionalStr = Field(None, max_length=99, description="Pack code of the concentrate, if provided")
 
     @validator("pack_code", pre=True, always=True)
@@ -113,13 +113,13 @@ class GetConcentrateWithDescription(BaseModel):
     product_type: str = Field("concentrate", description="Type of the product, default is 'concentrate'")
 
     description_id: int = Field(..., description="Unique identifier for the concentrate description")
-    description_text: Annotated[str, StringConstraints(max_length=500)] = Field(
+    description_text: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Description of the concentrate, max 1500 characters"
     )
-    effects: Annotated[str, StringConstraints(max_length=500)] = Field(
+    effects: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Effects of the concentrate, max 1500 characters"
     )
-    lineage: Annotated[str, StringConstraints(max_length=500)] = Field(
+    lineage: Annotated[str, StringConstraints(max_length=1500)] = Field(
         "Coming Soon", description="Lineage of the concentrate, max 1500 characters"
     )
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the concentrate")

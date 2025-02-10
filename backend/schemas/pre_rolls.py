@@ -83,25 +83,25 @@ class PreRollRankingSchema(BaseModel):
     )
 
     roll_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for the roll rating"
+        None, max_length=1500, description="Explanation for the roll rating"
     )
     airflow_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for the airflow rating"
+        None, max_length=1500, description="Explanation for the airflow rating"
     )
     ease_to_light_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for ease of lighting pre-roll rating"
+        None, max_length=1500, description="Explanation for ease of lighting pre-roll rating"
     )
     flavor_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for the flavor rating"
+        None, max_length=1500, description="Explanation for the flavor rating"
     )
     tightness_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for the tightness of the roll rating"
+        None, max_length=1500, description="Explanation for the tightness of the roll rating"
     )
     burn_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for the burn rating"
+        None, max_length=1500, description="Explanation for the burn rating"
     )
     effects_explanation: Optional[str] = Field(
-        None, max_length=500, description="Explanation for the effects rating"
+        None, max_length=1500, description="Explanation for the effects rating"
     )
     purchase_bool: Optional[bool] = Field(True, description="Would you buy product again?")
     pack_code: Optional[str] = Field(
