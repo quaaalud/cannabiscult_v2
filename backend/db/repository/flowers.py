@@ -3,7 +3,7 @@
 import base64
 import traceback
 from pathlib import Path
-from sqlalchemy import func
+from sqlalchemy import func, not_
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List, Union
 from db.base import (
@@ -301,8 +301,8 @@ async def return_average_flower_ratings(db: Session) -> List:
         .join(User, User.email == Flower_Description.cultivar_email)
         .join(Flower, Flower.flower_id == Flower_Description.flower_id)
         .filter(
-            Flower_Ranking.cultivator != "Connoisseur",
-            ~Flower_Ranking.strain.ilike("%Test%"),
+            not_(Flower_Ranking.cultivator == "Connoisseur"),
+            not_(Flower_Ranking.strain.ilike("%Test%")),
         )
         .group_by(
             Flower_Ranking.strain,

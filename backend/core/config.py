@@ -102,7 +102,6 @@ class PosthogMonitoring:
             "user_id": user_id,
             **kwargs,
         }
-        print(properties)
         settings.monitoring.posthog.capture(
             user_id=user_id,
             event=event_name,
