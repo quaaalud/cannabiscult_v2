@@ -7,7 +7,10 @@ Created on Fri Mar 10 21:12:40 2023
 """
 
 from uuid import UUID
-from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException, Request
+from pathlib import Path
+from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException, Request, Form
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
 from typing import Dict, Any, List, Union, Optional
 from sqlalchemy.orm import Session
 from schemas.users import (
@@ -29,7 +32,7 @@ from db.repository.users import (
     create_new_user,
     get_user_by_user_id,
     get_user_by_email,
-    get_user_and_update_password,
+    update_user_password_in_db,
     add_strain_to_list,
     get_strain_list_by_email,
     update_strain_review_status,
@@ -41,6 +44,14 @@ from db._supabase.connect_to_auth import SupaAuth
 from gotrue.errors import AuthApiError
 
 router = APIRouter()
+
+
+templates_dir = Path(
+    Path(__file__).parents[2],
+    "templates",
+)
+
+templates = Jinja2Templates(directory=str(templates_dir))
 
 
 def background_create_user(user_details: UserCreate, initial_url: str, db: Session):
@@ -87,15 +98,14 @@ def login_supa_user(user: UserLogin) -> SupaAuth:
 
 @router.post("/update_password", response_model=Dict[str, ShowUser])
 def update_user_password(
-    user_email: str,
-    username: str,
-    new_password: str,
-    repeated_password: str,
+    request: Request,
+    user_email: str = Form(...),
+    new_password: str = Form(...),
+    repeated_password: str = Form(...),
     db: Session = Depends(get_db),
 ):
-    user = get_user_and_update_password(
+    user = update_user_password_in_db(
         user_email=user_email,
-        username=username,
         new_password=new_password,
         repeated_password=repeated_password,
         db=db,

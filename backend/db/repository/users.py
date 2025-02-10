@@ -121,23 +121,18 @@ async def get_user_by_email(user_email: str, db: Session) -> User:
 
 
 @settings.retry_db
-def get_user_and_update_password(
-    user_email: str, username: str, new_password: str, repeated_password: str, db: Session
+def update_user_password_in_db(
+    user_email: str, new_password: str, repeated_password: str, db: Session
 ) -> User:
-    if new_password == repeated_password:
+    if new_password.strip() == repeated_password.strip():
         try:
-            user = get_user_by_email(user_email, db)
-            if user.username == username:
-                user.password = new_password
-            else:
-                raise SQLAlchemyError
-        except SQLAlchemyError:
-            db.rollback()
-        else:
+            user = db.query(User).filter(User.email == user_email.lower().strip()).first()
+            user.password = new_password
             db.commit()
             db.refresh(user)
-        finally:
             return user
+        except SQLAlchemyError:
+            db.rollback()
     else:
         return None
 

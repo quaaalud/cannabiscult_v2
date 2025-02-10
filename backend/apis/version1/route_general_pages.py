@@ -11,7 +11,6 @@ from fastapi import APIRouter, Request, Form, Depends, Query, HTTPException, Bac
 from fastapi.responses import RedirectResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from gotrue.errors import AuthApiError
 from typing import Optional, Dict
 from db.session import get_db
 from core.config import settings, Config
@@ -29,11 +28,8 @@ from version1._supabase.route_mystery_voters import (
 )
 from route_subscribers import create_subscriber, remove_subscriber
 from route_users import (
-    login_supa_user,
     get_current_users_email,
     async_get_current_users_email,
-    update_user_password,
-    logout_current_user,
 )
 
 
@@ -85,6 +81,18 @@ async def voting_home(request: Request):
     )
 
 
+@general_pages_router.get("/search", response_class=HTMLResponse)
+async def search_page_route(request: Request):
+    user_is_logged_in = await async_get_current_users_email() is not None
+    return templates.TemplateResponse(
+        str(Path("general_pages", "search.html")),
+        {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        },
+    )
+
+
 @general_pages_router.get("/home", response_class=HTMLResponse)
 async def user_home(request: Request):
     user_is_logged_in = await async_get_current_users_email() is not None
@@ -109,54 +117,6 @@ async def forgot_password_landing_page(request: Request):
     )
 
 
-@general_pages_router.post("/login-submit", response_class=HTMLResponse)
-async def submit_login_form(
-    request: Request,
-    login_email: str = Form(...),
-    login_password: str = Form(...),
-):
-    user = UserLogin(
-        email=login_email.lower(),
-        password=login_password,
-    )
-    try:
-        user = login_supa_user(user=user)
-        return templates.TemplateResponse(
-            str(Path("general_pages", "auth", "login_success.html")),
-            {
-                "request": request,
-                "username": login_email.lower(),
-                "user": user,
-            },
-        )
-    except AuthApiError:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "auth", "submit-failed.html")),
-            {
-                "request": request,
-                "username": login_email.lower(),
-            },
-        )
-
-
-@general_pages_router.post("/logout-submit", response_class=HTMLResponse)
-async def submit_user_logout(request: Request, db: Session = Depends(get_db)):
-    user = get_current_users_email()
-    try:
-        if user:
-            logout_current_user()
-    except AuthApiError:
-        pass
-    finally:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "auth", "logout_success.html")),
-            {
-                "request": request,
-                "user_is_logged_in": user is not None,
-            },
-        )
-
-
 @general_pages_router.get("/register_success", response_class=HTMLResponse)
 async def registration_success_transition_page(request: Request):
     return templates.TemplateResponse(
@@ -165,42 +125,6 @@ async def registration_success_transition_page(request: Request):
             "request": request,
         },
     )
-
-
-@general_pages_router.post("/submit-new-password", response_class=HTMLResponse)
-async def submit_new_password_form(
-    request: Request,
-    user_email: str = Form(...),
-    username: str = Form(...),
-    new_password: str = Form(...),
-    repeated_password: str = Form(...),
-    db: Session = Depends(get_db),
-):
-    user_is_logged_in = get_current_users_email() is not None
-    try:
-        user = update_user_password(
-            user_email=user_email.lower(),
-            username=username,
-            new_password=new_password,
-            repeated_password=repeated_password,
-            db=db,
-        )
-        return templates.TemplateResponse(
-            str(Path("general_pages", "auth", "register_success.html")),
-            {
-                "request": request,
-                "username": user_email.lower(),
-                "can_vote_status": user.can_vote,
-            },
-        )
-    except Exception:
-        return templates.TemplateResponse(
-            str(Path("general_pages", "auth", "submit-failed.html")),
-            {
-                "request": request,
-                "user_is_logged_in": user_is_logged_in,
-            },
-        )
 
 
 @general_pages_router.post("/submit", response_class=HTMLResponse)
@@ -291,7 +215,7 @@ async def process_flower_request(
         )
     except Exception:
         return templates.TemplateResponse(
-            str(Path("general_pages", "voting-home.html")),
+            str(Path("general_pages", "search.html")),
             {
                 "request": request,
             },
