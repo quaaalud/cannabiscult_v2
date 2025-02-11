@@ -10,7 +10,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from typing import Dict, Any, List, Union
+from typing import Dict, Any, List, Union, Optional
 from db.session import get_supa_db, get_db
 from db.base import Flower_Ranking
 from schemas.flowers import (
@@ -25,6 +25,7 @@ from schemas.product_types import RatingsErrorResponse
 from db.repository.flowers import (
     get_flower_and_description,
     get_flower_and_description_by_id,
+    return_all_available_descriptions_from_strain_id,
     get_review_data_and_path,
     get_flower_data_and_path,
     update_or_create_flower_ranking,
@@ -59,6 +60,14 @@ async def query_flower_description_by_strain(
         return flower_data
     else:
         raise HTTPException(status_code=404, detail="Flower or description not found")
+
+
+@router.get("/all_descriptions", response_model=List[Optional[Dict[str, Any]]])
+async def return_all_available_descriptions_from_strain_id_route(
+    flower_id: int, db: Session = Depends(get_db)
+) -> List[Optional[Dict[str, Any]]]:
+    all_descriptions = await return_all_available_descriptions_from_strain_id(db, int(flower_id))
+    return all_descriptions
 
 
 @router.get("/get_flower_from_strain_and_cultivator", response_model=FlowerReviewResponse)

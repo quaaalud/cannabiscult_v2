@@ -8,11 +8,9 @@ Created on Mon Sep  4 17:26:25 2023
 
 from pathlib import Path
 from fastapi import APIRouter
-from datetime import datetime, timedelta
-from sqlalchemy import func
 from sqlalchemy.orm import Session
 from fastapi import Depends, Query, HTTPException
-from typing import List, Dict, Any, Union
+from typing import List, Dict, Any, Union, Optional
 from db.session import get_db
 from db.repository.concentrates import (
     get_concentrate_and_description,
@@ -23,6 +21,7 @@ from db.repository.concentrates import (
     create_vibe_concentrate_ranking,
     get_concentrate_rankings_by_id,
     return_average_concentrate_ratings,
+    return_all_available_descriptions_from_strain_id,
 )
 from db.base import (
     Vibe_Concentrate_Ranking,
@@ -90,6 +89,14 @@ async def query_concentrate_description_by_strain(
         return concentrate_data
     else:
         raise HTTPException(status_code=404, detail="Concentrate or description not found")
+
+
+@router.get("/all_descriptions", response_model=List[Optional[Dict[str, Any]]])
+async def return_all_available_descriptions_from_strain_id_route(
+    concentrate_id: int, db: Session = Depends(get_db)
+) -> List[Optional[Dict[str, Any]]]:
+    all_descriptions = await return_all_available_descriptions_from_strain_id(db, int(concentrate_id))
+    return all_descriptions
 
 
 @router.post("/ranking", response_model=None)

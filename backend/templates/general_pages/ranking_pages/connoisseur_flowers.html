@@ -66,7 +66,7 @@
 {% block content %}
 {% include "components/auth/login_register_modal.html" %}
 <main class="container pt-5">
-    <section draggable="false" class="container pt-3" data-v-271253ee="">
+    <section draggable="false" class="container pt-3">
       <section class="mb-10">
         <div class="row mx-auto">
           <h1 class="fw-bold mb-5 text-center">Cultivar Flower Ratings</h1>
@@ -96,6 +96,12 @@
               </button>
             </div>
             <div class="d-flex flex-column justify-content-evenly pt-5">
+              <div class="mb-4">
+                <label for="descriptionSelect" class="form-label fw-bold">Select Cultivar Description</label>
+                <select class="form-select" id="descriptionSelect" data-mdb-select-init>
+                  <option value="" disabled selected>Loading descriptions...</option>
+                </select>
+              </div>
               <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong btn-purple">
@@ -130,7 +136,7 @@
                 </div>
                 <div class="flex-grow-1 ms-4">
                   <p class="fw-bold mb-1">Lineage</p>
-                  <p id="lineage-text" class="text-muted mb-0">
+                  <p id="lineage_text" class="text-muted mb-0">
                     {% if is_mystery %}So our cultivators know what you think.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}
                   </p>
                 </div>
@@ -255,7 +261,8 @@
 <script type="module">
   import createLineageChart from "{{ url_for('static', path='js/getLineageChart.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
-    var isMystery = {{ is_mystery | tojson | safe }};
+    const flowerId = {{ flower_id }};
+    const isMystery = {{ is_mystery | tojson | safe }};
     if (isMystery) { 
       return
     } else {
@@ -263,8 +270,9 @@
         const dataValues = terpenesList.map(() => 1);
         initTerpeneChart(terpenesList, dataValues);
       }
+      await fetchDescriptions(flowerId);
       try {
-          fetchAndUpdateStrainRatings();
+          fetchAndUpdateStrainRatings(flowerId);
           populateLineageChartIfExists();
       } catch (error) {
           return;
@@ -281,9 +289,8 @@
       lineageChart.renderLineageChart();
     }
   }
-  function fetchAndUpdateStrainRatings() {
-    var flowerId = {{ flower_id }};
-    var endpoint = "/flowers/get_strain_ratings_by_id/" + flowerId;
+  function fetchAndUpdateStrainRatings(flowerId) {
+    let endpoint = "/flowers/get_strain_ratings_by_id/" + flowerId;
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {
@@ -323,6 +330,58 @@
     ];
     return colors.slice(0, count);
   }
+  async function fetchDescriptions(flowerId) {
+        if (!flowerId) {
+            console.error("Flower ID not found!");
+            return;
+        }
+        try {
+            const response = await fetch(`/flowers/all_descriptions?flower_id=${flowerId}`);
+            if (!response.ok) throw new Error("Failed to fetch descriptions");
+            const descriptions = await response.json();
+            populateDescriptionSelect(descriptions);
+        } catch (error) {
+            console.error("Error fetching flower descriptions:", error);
+        }
+    }
+    function populateDescriptionSelect(descriptions) {
+        const selectElement = document.getElementById("descriptionSelect");
+        selectElement.innerHTML = "";
+        descriptions.forEach((desc) => {
+            const option = document.createElement("option");
+            option.value = desc.description_id;
+            option.textContent = `${desc.username}`;
+            selectElement.appendChild(option);
+        });
+        const selectInstance = mdb.Select.getInstance(selectElement);
+        if (selectInstance) {
+            selectInstance.update();
+        }
+        selectElement.addEventListener("change", function () {
+            const selectedDescription = descriptions.find(d => d.description_id == this.value);
+            if (selectedDescription) {
+                updateDisplayedDescription(selectedDescription);
+            }
+        });
+        if (descriptions.length > 0) {
+            selectElement.value = descriptions[0].description_id;
+            updateDisplayedDescription(descriptions[0]);
+        }
+    }
+    function updateDisplayedDescription(description) {
+        document.getElementById("description_text").textContent = description.description_text || "Coming Soon";
+        document.getElementById("effects_text").textContent = description.effects || "Coming Soon";
+        document.getElementById("lineage_text").textContent = description.lineage || "Coming Soon";
+
+        const terpeneDiv = document.getElementById("terpene_text");
+        terpeneDiv.innerHTML = ""; // Clear previous content
+
+        if (description.terpenes_list && description.terpenes_list.length) {
+            terpeneDiv.innerHTML = `<ul>${description.terpenes_list.map(t => `<li>${t}</li>`).join("")}</ul>`;
+        } else {
+            terpeneDiv.innerHTML = "<p>Coming Soon</p>";
+        }
+    }
 </script>
 <script type="module">
   import SocialSharing from "{{ url_for('static', path='js/socialSharing.js') }}";

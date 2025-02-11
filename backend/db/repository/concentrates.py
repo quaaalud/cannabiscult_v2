@@ -110,6 +110,54 @@ async def get_concentrate_and_description(
         return None
 
 
+async def get_concentrate_and_description_by_id(
+    db: Session,
+    concentrate_id: int,
+    cultivar_email: str = "aaron.childs@thesocialoutfitus.com",
+) -> Optional[Dict[Any, Any]]:
+    try:
+        query = (
+            db.query(Concentrate, Concentrate_Description)
+            .join(
+                Concentrate_Description,
+                Concentrate.concentrate_id == Concentrate_Description.concentrate_id,
+                Concentrate.concentrate_id == concentrate_id,
+            )
+            .filter(Concentrate_Description.cultivar_email == cultivar_email)
+        )
+        concentrate_data = query.first()
+        if not concentrate_data:
+            query = db.query(Concentrate, Concentrate_Description).join(
+                Concentrate_Description,
+                Concentrate.concentrate_id == Concentrate_Description.concentrate_id,
+                Concentrate.concentrate_id == concentrate_id,
+                Concentrate_Description.concentrate_id == concentrate_id,
+            )
+            concentrate_data = query.first()
+        if concentrate_data:
+            concentrate, description = concentrate_data
+            concentrate_info = {
+                "concentrate_id": concentrate.concentrate_id,
+                "cultivator": concentrate.cultivator,
+                "strain": concentrate.strain,
+                "url_path": return_image_url_from_supa_storage(str(Path(concentrate.card_path))),
+                "voting_open": concentrate.voting_open,
+                "is_mystery": concentrate.is_mystery,
+                "description_id": description.description_id,
+                "description_text": description.description,
+                "effects": description.effects,
+                "lineage": description.lineage,
+                "terpenes_list": description.terpenes_list,
+                "cultivar": description.cultivar_email,
+            }
+            return concentrate_info
+        return None
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching concentrate data and description: {e}")
+        return None
+
+
 async def get_concentrate_rankings_by_id(db: Session, concentrate_id: int):
     avg_ratings = (
         db.query(
@@ -253,3 +301,35 @@ async def return_average_concentrate_ratings(db: Session) -> List:
         )
         .all()
     )
+
+
+async def return_all_available_descriptions_from_strain_id(db: Session, concentrate_id: int) -> List[Dict[str, Any]]:
+    try:
+        query = (
+            db.query(
+                Concentrate_Description,
+                User.username
+            )
+            .join(User, Concentrate_Description.cultivar_email == User.email)
+            .filter(Concentrate_Description.concentrate_id == concentrate_id)
+            .all()
+        )
+        if not query:
+            return []
+        descriptions = []
+        for description, username in query:
+            descriptions.append({
+                "concentrate_id": concentrate_id,
+                "description_id": description.description_id,
+                "description_text": description.description,
+                "effects": description.effects,
+                "lineage": description.lineage,
+                "terpenes_list": description.terpenes_list,
+                "username": username,
+                "strain_category": description.strain_category if description.strain_category else "cult_pack",
+            })
+        return descriptions
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching all descriptions for flower_id {concentrate_id}: {e}")
+        return []

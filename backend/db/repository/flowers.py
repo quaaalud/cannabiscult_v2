@@ -323,3 +323,35 @@ async def return_average_flower_ratings(db: Session) -> List:
         )
         .all()
     )
+
+
+async def return_all_available_descriptions_from_strain_id(db: Session, flower_id: int) -> List[Dict[str, Any]]:
+    try:
+        query = (
+            db.query(
+                Flower_Description,
+                User.username
+            )
+            .join(User, Flower_Description.cultivar_email == User.email)
+            .filter(Flower_Description.flower_id == flower_id)
+            .all()
+        )
+        if not query:
+            return []
+        descriptions = []
+        for description, username in query:
+            descriptions.append({
+                "flower_id": flower_id,
+                "description_id": description.description_id,
+                "description_text": description.description,
+                "effects": description.effects,
+                "lineage": description.lineage,
+                "terpenes_list": description.terpenes_list,
+                "username": username,
+                "strain_category": description.strain_category if description.strain_category else "cult_pack",
+            })
+        return descriptions
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching all descriptions for flower_id {flower_id}: {e}")
+        return []

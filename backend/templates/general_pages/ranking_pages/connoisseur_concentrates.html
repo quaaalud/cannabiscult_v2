@@ -96,6 +96,12 @@
               </button>
             </div>
             <div class="d-flex flex-column justify-content-evenly pt-5">
+              <div class="mb-4">
+                <label for="descriptionSelect" class="form-label fw-bold">Select Cultivar Description</label>
+                <select class="form-select" id="descriptionSelect" data-mdb-select-init>
+                  <option value="" disabled selected>Loading descriptions...</option>
+                </select>
+              </div>
               <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
                   <div class="p-3 rounded-4 shadow-2-strong btn-purple">
@@ -117,7 +123,7 @@
               </div>
               <div class="flex-grow-1 ms-4">
                 <p class="fw-bold mb-1">Lineage</p>
-                <p id="lineage-text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
+                <p id="lineage_text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
               </div>
             </div>
             <div class="d-flex align-items-start mb-5">
@@ -242,12 +248,14 @@
 <script type="module">
   import createLineageChart from "{{ url_for('static', path='js/getLineageChart.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
-    var isMystery = "{{ is_mystery }}";
+    const concentrateId = "{{ concentrate_id }}";
+    const isMystery = "{{ is_mystery }}";
     if (isMystery === "True") {
       return;
     } else {
       await fetchAndUpdatConcentrateDescription();
-      await fetchAndUpdateConcentrateRatings();
+      await fetchAndUpdateConcentrateRatings(concentrateId);
+      await fetchDescriptions(concentrateId);
       try {
           populateLineageChartIfExists();
       } catch (error) {
@@ -255,6 +263,13 @@
       }
     }
   });
+  function formatEnumValue(enumString) {
+    if (!enumString) return "";
+    return enumString
+      .split("_")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
+  }
   function initTerpeneChart(labels, dataValues) {
     const ctx = document.getElementById('terpeneChart').getContext('2d');
     new Chart(ctx, {
@@ -278,10 +293,9 @@
     return colors.slice(0, count);
   }
   async function fetchAndUpdatConcentrateDescription() {
-    var cultivator = "{{ cultivator }}";
-    var strain = "{{ strain }}";
-    var endpoint = "/concentrates/get_concentrate_description?&strain=" + encodeURIComponent(strain) + "&cultivator=" + encodeURIComponent(cultivator);
-
+    const cultivator = "{{ cultivator }}";
+    const strain = "{{ strain }}";
+    const endpoint = "/concentrates/get_concentrate_description?&strain=" + encodeURIComponent(strain) + "&cultivator=" + encodeURIComponent(cultivator);
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {
@@ -307,8 +321,7 @@
       lineageChart.renderLineageChart();
     }
   }
-  async function fetchAndUpdateConcentrateRatings() {
-    const concentrateId = "{{ concentrate_id }}";
+  async function fetchAndUpdateConcentrateRatings(concentrateId) {
     const endpoint = "/concentrates/get_concentrate_ratings_by_id/" + concentrateId;
     try {
         const response = await fetch(endpoint);
@@ -331,6 +344,56 @@
         console.error('Error:', error);
       }
   }
+  async function fetchDescriptions(concentrateId) {
+        if (!concentrateId) {
+            console.error("Concentrate ID not found!");
+            return;
+        }
+        try {
+            const response = await fetch(`/concentrates/all_descriptions?concentrate_id=${concentrateId}`);
+            if (!response.ok) throw new Error("Failed to fetch descriptions");
+            const descriptions = await response.json();
+            populateDescriptionSelect(descriptions);
+        } catch (error) {
+            console.error("Error fetching concentrate descriptions:", error);
+        }
+    }
+    function populateDescriptionSelect(descriptions) {
+        const selectElement = document.getElementById("descriptionSelect");
+        selectElement.innerHTML = "";
+        descriptions.forEach((desc) => {
+            const option = document.createElement("option");
+            option.value = desc.description_id;
+            option.textContent = `${desc.username}`;
+            selectElement.appendChild(option);
+        });
+        const selectInstance = mdb.Select.getInstance(selectElement);
+        if (selectInstance) {
+            selectInstance.update();
+        }
+        selectElement.addEventListener("change", function () {
+            const selectedDescription = descriptions.find(d => d.description_id == this.value);
+            if (selectedDescription) {
+                updateDisplayedDescription(selectedDescription);
+            }
+        });
+        if (descriptions.length > 0) {
+            selectElement.value = descriptions[0].description_id;
+            updateDisplayedDescription(descriptions[0]);
+        }
+    }
+    function updateDisplayedDescription(description) {
+        document.getElementById("description_text").textContent = description.description_text || "Coming Soon";
+        document.getElementById("effects_text").textContent = description.effects || "Coming Soon";
+        document.getElementById("lineage_text").textContent = description.lineage || "Coming Soon";
+        const terpeneDiv = document.getElementById("terpene_text");
+        terpeneDiv.innerHTML = "";
+        if (description.terpenes_list && description.terpenes_list.length) {
+            terpeneDiv.innerHTML = `<ul>${description.terpenes_list.map(t => `<li>${t}</li>`).join("")}</ul>`;
+        } else {
+            terpeneDiv.innerHTML = "<p>Coming Soon</p>";
+        }
+    }
 </script>
 <script type="module">
   import SocialSharing from "{{ url_for('static', path='js/socialSharing.js') }}";

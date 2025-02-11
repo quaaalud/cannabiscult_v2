@@ -269,7 +269,7 @@ async function loadQuestion() {
 function convertToIntegers(formState, integerKeys) {
     integerKeys.forEach(key => {
         if (formState.hasOwnProperty(key) && formState[key] !== null && formState[key] !== '') {
-            formState[key] = parseInt(formState[key], 10); // 10 is the radix parameter for base-10 (decimal) numbers
+            formState[key] = parseInt(formState[key], 10);
         }
     });
 }
