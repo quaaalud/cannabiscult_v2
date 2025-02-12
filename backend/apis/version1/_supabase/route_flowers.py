@@ -32,6 +32,7 @@ from db.repository.flowers import (
     return_average_flower_ratings,
 )
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
+from core.config import settings
 
 router = APIRouter()
 
@@ -75,7 +76,7 @@ async def return_selected_review(strain_selected: str, cultivator_selected: str,
     return get_review_data_and_path(db, cultivator_selected, strain_selected)
 
 
-@router.post("/ranking", response_model=GetFlowerRanking)
+@router.post("/ranking", response_model=GetFlowerRanking, dependencies=[Depends(settings.jwt_auth_dependency)])
 async def submit_flower_ranking(ranking: CreateFlowerRanking, db: Session = Depends(get_db)) -> Flower_Ranking:
     submitted_ranking = update_or_create_flower_ranking(ranking_dict=ranking, db=db)
     return submitted_ranking

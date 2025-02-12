@@ -10,9 +10,9 @@ import os
 import datetime
 import sys
 import jwt
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, status
+from jwt import ExpiredSignatureError, InvalidTokenError
 from uuid import uuid4
-from fastapi import Request
 from pathlib import Path
 from dotenv import load_dotenv
 from pydantic import BaseModel
@@ -102,16 +102,12 @@ class PosthogMonitoring:
             "user_id": user_id,
             **kwargs,
         }
-        settings.monitoring.posthog.capture(
-            user_id=user_id,
-            event=event_name,
-            properties=properties
-        )
+        settings.monitoring.posthog.capture(user_id=user_id, event=event_name, properties=properties)
 
 
 class Settings:
     PROJECT_NAME: str = "Cannabis Cult"
-    PROJECT_VERSION: str = "2.0.0"
+    PROJECT_VERSION: str = "2.1.0"
     POSTGRES_USER: str = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD")
     POSTGRES_SERVER: str = os.getenv("POSTGRES_SERVER")
@@ -159,19 +155,14 @@ class Settings:
     def _set_project_paths(cls):
         if str(cls.main_dir) not in sys.path:
             sys.path.append(str(cls.main_dir))
-
         if str(cls.backend_dir) not in sys.path:
             sys.path.append(str(cls.backend_dir))
-
         if str(cls.core_dir) not in sys.path:
             sys.path.append(str(cls.core_dir))
-
         if str(cls.apis_dir) not in sys.path:
             sys.path.append(str(cls.apis_dir))
-
         if str(cls.version_dir) not in sys.path:
             sys.path.append(str(cls.version_dir))
-
         if str(cls.supa_dir) not in sys.path:
             sys.path.append(str(cls.supa_dir))
 
@@ -197,6 +188,26 @@ class Settings:
         if not cls.monitoring:
             cls.monitoring = PosthogMonitoring()
         return cls.monitoring.posthog
+
+    @classmethod
+    def jwt_auth_dependency(cls, request: Request):
+        token = None
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer"):
+            token = auth_header.split("Bearer ")[1].strip()
+        if not token:
+            token = request.cookies.get("my-access-token")
+        if not token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Missing or invalid Authorization header"
+            )
+        try:
+            payload = jwt.decode(token, cls.SUPA_JWT, algorithms=["HS256"], audience="authenticated")
+            return payload
+        except ExpiredSignatureError:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
+        except InvalidTokenError:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 
 class Config(BaseModel):

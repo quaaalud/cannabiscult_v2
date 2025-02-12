@@ -354,9 +354,6 @@
             selectElement.appendChild(option);
         });
         const selectInstance = mdb.Select.getInstance(selectElement);
-        if (selectInstance) {
-            selectInstance.update();
-        }
         selectElement.addEventListener("change", function () {
             const selectedDescription = descriptions.find(d => d.description_id == this.value);
             if (selectedDescription) {

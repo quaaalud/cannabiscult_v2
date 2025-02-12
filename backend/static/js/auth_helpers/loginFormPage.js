@@ -1,3 +1,19 @@
+function checkFormValidity(formElement) {
+    let isFormValid = true;
+    const fields = formElement.querySelectorAll("input, select, textarea");
+    fields.forEach((field) => {
+        if (field.disabled) return;
+        field.classList.remove("is-valid", "is-invalid");
+        if (!field.checkValidity()) {
+            field.classList.add("is-invalid");
+            isFormValid = false;
+        } else {
+            field.classList.add("is-valid");
+        }
+    });
+    return isFormValid;
+}
+
 async function handleLoginFormSubmission() {
     const loginForm = document.getElementById('log-in');
     if (!loginForm) {
@@ -22,15 +38,54 @@ async function submitRegistrationForm() {
   const registerForm = document.getElementById('sign-up');
   registerForm.addEventListener('submit', async function(event) {
     event.preventDefault();
-    const formData = new FormData(registerForm);
+    if (!checkFormValidity(registerForm)) {
+      return;
+    }
+    const emailField = document.getElementById('register_email');
+    const usernameField = document.getElementById('register_username');
+    const nameField = document.getElementById('register_name');
+    const zipCodeField = document.getElementById('register_zip_code');
+    const phoneField = document.getElementById('register_phone');
+    const passwordField = document.getElementById('register_password');
+    const confirmPasswordField = document.getElementById('register_repeat_password');
+    
+    const email = window.validator.trim(emailField.value);
+    const username = window.validator.trim(usernameField.value);
+    const name = window.validator.trim(nameField.value);
+    const zip_code = window.validator.trim(zipCodeField.value);
+    const phone = window.validator.trim(phoneField.value);
+    const password = passwordField.value;
+    const confirmPassword = confirmPasswordField.value;
+    
+    if (!window.validator.isEmail(email)) {
+      alert("Please enter a valid email address.");
+      emailField.focus();
+      return;
+    }
+    if (!window.validator.isStrongPassword(password, { 
+          minLength: 6, 
+          minLowercase: 1, 
+          minUppercase: 1, 
+          minNumbers: 1, 
+          minSymbols: 0 
+        })) {
+      alert("Password must be at least 6 characters long and include at least one uppercase letter, one lowercase letter, and one number.");
+      passwordField.focus();
+      return;
+    }
+    if (password !== confirmPassword) {
+      alert("Passwords do not match.");
+      confirmPasswordField.focus();
+      return;
+    }
     const userDetails = {
-        email: formData.get('register_email'),
-        password: formData.get('register_password'),
-        confirmPassword: formData.get('register_repeat_password'),
-        username: formData.get('register_username'),
-        name: formData.get('register_name'),
-        zip_code: formData.get('register_zip_code'),
-        phone: formData.get('register_phone'),
+        email,
+        password,
+        confirmPassword,
+        username,
+        name,
+        zip_code,
+        phone,
         type: "user"
     };
     try {
@@ -53,6 +108,7 @@ async function submitRegistrationForm() {
         window.location.href = "https://cannabiscult.co/register_success/"
     } catch (error) {
         alert('Registration failed. Please try again');
+        window.location.reload();
     }
   });
 }

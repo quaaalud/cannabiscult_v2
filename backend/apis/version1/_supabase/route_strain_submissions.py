@@ -12,12 +12,13 @@ from typing import List
 from db.session import get_db
 from schemas.product_types import ProductSubmission
 from db.models import concentrates, edibles, flowers, pre_rolls
+from core.config import settings
 
 
 router = APIRouter()
 
 
-@router.post("/submit_strain/")
+@router.post("/submit_strain/", dependencies=[Depends(settings.jwt_auth_dependency)])
 async def submit_strain(
     submission: ProductSubmission = Depends(ProductSubmission.as_form),
     db: Session = Depends(get_db),

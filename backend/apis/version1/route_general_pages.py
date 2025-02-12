@@ -127,36 +127,6 @@ async def registration_success_transition_page(request: Request):
     )
 
 
-@general_pages_router.post("/submit", response_class=HTMLResponse)
-async def submit_subscriber_form(
-    request: Request,
-    name: str = Form(...),
-    email: str = Form(...),
-    phone: str = Form(...),
-    zip_code: str = Form(...),
-    db: Session = Depends(get_db),
-):
-
-    subscriber_data = SubscriberCreate(
-        email=email.lower(),
-        name=name,
-        zip_code=zip_code,
-        phone=phone,
-    )
-    create_subscriber(subscriber=subscriber_data, db=db)
-
-    return templates.TemplateResponse(
-        str(Path("general_pages", "auth", "success.html")),
-        {
-            "request": request,
-            "name": name,
-            "email": email.lower(),
-            "phone": phone,
-            "zip_code": zip_code,
-        },
-    )
-
-
 @general_pages_router.get("/privacy-policy", response_class=HTMLResponse)
 async def privacy_policy(request: Request):
     user_is_logged_in = get_current_users_email() is not None

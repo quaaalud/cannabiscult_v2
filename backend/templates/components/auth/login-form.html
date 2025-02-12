@@ -12,6 +12,9 @@
             <label for="user-email" class="form-label">Email address</label>
             <input type="email" class="form-control" id="user-email" aria-describedby="emailHelp">
             <div id="emailHelp" class="form-text">We'll send a password reset link to this email.</div>
+            <div class="invalid-feedback">
+              Please enter a valid email address.
+            </div>
           </div>
           <button type="submit" class="btn btn-primary" id="forgotPasswordSendButton">Send Link</button>
         </form>
@@ -89,57 +92,78 @@
                     <div class="row g-3 align-items-center">
                       <div class="col-12 col-md-6">
                         <div class="form-outline">
-                          <input type="text" id="register_username" name="register_username" class="form-control" />
+                          <input type="text" id="register_username" name="register_username" class="form-control" required/>
                           <label class="form-label" for="register_username">Username</label>
+                          <div class="invalid-feedback">
+                            Please enter a username for your ratings.
+                          </div>
                         </div>
                       </div>
                       <!-- Name input -->
                       <div class="col-12 col-md-6">
                         <div class="form-outline">
-                          <input type="text" id="register_name" name="register_name" class="form-control" />
+                          <input type="text" id="register_name" name="register_name" class="form-control" required/>
                           <label class="form-label" for="register_name">Name</label>
+                          <div class="invalid-feedback">
+                            Please enter your name for your ratings.
+                          </div>
                         </div>
                       </div>
                       <!-- Email input -->
                       <div class="col-12">
                         <div class="form-outline">
-                          <input type="email" id="register_email" name="register_email" class="form-control" />
+                          <input type="email" id="register_email" name="register_email" class="form-control" required/>
                           <label class="form-label" for="register_email">Email</label>
+                          <div class="invalid-feedback">
+                            Please enter a valid email for your ratings.
+                          </div>
                         </div>
                       </div>
                       <!-- Zip Code input -->
                       <div class="col-12 col-md-6">
                         <div class="form-outline">
-                          <input type="text" id="register_zip_code" name="register_zip_code" class="form-control" />
+                          <input type="text" id="register_zip_code" name="register_zip_code" class="form-control"  required/>
                           <label class="form-label" for="register_zip_code">Zip Code</label>
+                          <div class="invalid-feedback">
+                            Please enter a valid zip code.
+                          </div>
                         </div>
                       </div>
                       <!-- Phone input -->
                       <div class="col-12 col-md-6">
                         <div class="form-outline">
-                          <input type="text" id="register_phone" name="register_phone" class="form-control" />
+                          <input type="text" id="register_phone" name="register_phone" class="form-control" required/>
                           <label class="form-label" for="register_phone">Phone</label>
+                          <div class="invalid-feedback">
+                            Please enter a phone number for your ratings.
+                          </div>
                         </div>
                       </div>
                       <!-- Password input -->
                       <div class="col-12 col-md-6">
                         <div class="form-outline">
-                          <input type="password" id="register_password" name="register_password" class="form-control" />
+                          <input type="password" id="register_password" name="register_password" class="form-control" required/>
                           <label class="form-label" for="register_password">Password</label>
+                          <div class="invalid-feedback">
+                            Must be at least 6 digits containing one uppercase, lowercase, and number character.
+                          </div>
                         </div>
                       </div>
                       <div class="col-12 col-md-6">
                       <!-- Repeat Password input -->
                         <div class="form-outline">
-                          <input type="password" id="register_repeat_password" name="register_repeat_password" class="form-control" />
+                          <input type="password" id="register_repeat_password" name="register_repeat_password" class="form-control" required/>
                           <label class="form-label" for="register_repeat_password">Repeat password</label>
+                          <div class="invalid-feedback">
+                            Must be at least 6 digits containing one uppercase, lowercase, and number character and match.
+                          </div>
                         </div>
                       </div>
                       <div class="col-12 mx-auto pt-3">
                         <!-- Checkbox -->
                         <div class="form-check d-flex justify-content-start pb-4">
                           <input class="form-check-input" type="checkbox" value="" id="register_check" name="register_check" checked
-                            aria-describedby="registerCheckHelpText" />
+                            aria-describedby="registerCheckHelpText" required/>
                           <label class="form-check-label text-start" for="register_check">
                               By subscribing, you agree to the Cannabis Cult
                               <a href="/terms-of-use" style="color:#301934" target="_blank" rel="noopener noreferrer"> User Agreement</a> and 

@@ -10,6 +10,7 @@ class SupabaseClient {
     constructor() {
         this.supabase = null;
         this.currentUser = null;
+        this.session = null;
     }
 
     async loadScript(src) {
@@ -62,6 +63,7 @@ class SupabaseClient {
                     window.dispatchEvent(new CustomEvent('userAuthChange'));
                     if (session && session.user) {
                         this.currentUser = session.user;
+                        this.session = session;
                     }
                     break;
                 case 'SIGNED_IN':
@@ -98,6 +100,7 @@ class SupabaseClient {
         window.dispatchEvent(new CustomEvent('userAuthChange'));
       }
       this.currentUser = session.user;
+      this.session = session;
       try {
         this.removeloginLink();
         this.setAuthCookies(session, true);
@@ -178,15 +181,18 @@ class SupabaseClient {
         }
         return str.trim().replace(/<[^>]*>?/gm, '');
     }
-    
     sanitizeInputString(input) {
       return input.replace(/[^a-zA-Z0-9 ]/g, '');
     }
-     async signInWithEmail(email, password) {
+    getAccessToken() {
+        return this.session ? this.session.access_token : null;
+    }
+    async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
             const { user, session, error } = await this.supabase.auth.signInWithPassword({ email, password }, { redirectTo: 'https://cannabiscult.co/home' });
             if (error) throw error;
+            this.session = session;
             return { user, session };
         } catch (error) {
             console.error("Error in signInWithEmail:", error.message);
