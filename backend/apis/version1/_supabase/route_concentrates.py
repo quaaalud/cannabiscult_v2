@@ -34,6 +34,8 @@ from schemas.concentrates import (
 )
 from schemas.product_types import RatingsErrorResponse
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
+from core.config import settings
+
 
 router = APIRouter()
 
@@ -99,7 +101,7 @@ async def return_all_available_descriptions_from_strain_id_route(
     return all_descriptions
 
 
-@router.post("/ranking", response_model=None)
+@router.post("/ranking", response_model=None, dependencies=[Depends(settings.jwt_auth_dependency)])
 async def submit_concentrate_ranking(
     concentrate_ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Concentrate_Ranking:

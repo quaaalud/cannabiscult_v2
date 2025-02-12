@@ -114,9 +114,9 @@ class UserStrainListSubmit(BaseModel):
         default=True, description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
-    strain_notes: str = Field("None", description="User's strain notes")
+    strain_notes: str = Field("N/A", description="User's strain notes")
 
-    @validator("*", pre=True)
+    @validator("product_type", "strain", "cultivator", "to_review", pre=True)
     def check_not_empty(cls, v):
         if v == "":
             raise ValueError("Field must not be empty")
@@ -222,7 +222,7 @@ class AddUserStrainListNotes(BaseModel):
         ..., description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
-    strain_notes: str = Field(..., description="User's strain notes")
+    strain_notes: str = Field("N/A", description="User's strain notes")
 
     class Config:
         from_attributes = True

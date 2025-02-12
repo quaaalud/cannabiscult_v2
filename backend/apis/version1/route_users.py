@@ -61,15 +61,13 @@ def background_create_user(user_details: UserCreate, initial_url: str, db: Sessi
         user_id=user_id,
         event="register-submit",
         properties={
-            '$set': {
-                'name': created_user.name,
-                'username': created_user.username,
-                'email': created_user.email,
+            "$set": {
+                "name": created_user.name,
+                "username": created_user.username,
+                "email": created_user.email,
             },
-            '$set_once': {
-                'initial_url': initial_url
-            }
-        }
+            "$set_once": {"initial_url": initial_url},
+        },
     )
 
 
@@ -96,7 +94,9 @@ def login_supa_user(user: UserLogin) -> SupaAuth:
     return {"logged_in_user": logged_in_user}
 
 
-@router.post("/update_password", response_model=Dict[str, ShowUser])
+@router.post(
+    "/update_password", response_model=Dict[str, ShowUser], dependencies=[Depends(settings.jwt_auth_dependency)]
+)
 def update_user_password(
     request: Request,
     user_email: str = Form(...),
@@ -158,6 +158,7 @@ async def return_is_superuser_status(user_id: UserIdSchema, db: Session = Depend
     "/add_strain_to_list",
     response_model=UserStrainListSchema,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(settings.jwt_auth_dependency)],
 )
 async def add_strain_to_user_list(
     strain_data: UserStrainListCreate,
@@ -169,7 +170,9 @@ async def add_strain_to_user_list(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.post("/my_strains/", response_model=List[UserStrainListSchema])
+@router.post(
+    "/my_strains/", response_model=List[UserStrainListSchema], dependencies=[Depends(settings.jwt_auth_dependency)]
+)
 async def get_strains_by_email(user_email_schema: UserEmailSchema, db: Session = Depends(get_db)):
     try:
         strains = await get_strain_list_by_email(user_email_schema.email, db)
@@ -180,7 +183,11 @@ async def get_strains_by_email(user_email_schema: UserEmailSchema, db: Session =
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.patch("/update_strain_list/{strain_id}", response_model=UserStrainListSubmit)
+@router.patch(
+    "/update_strain_list/{strain_id}",
+    response_model=UserStrainListSubmit,
+    dependencies=[Depends(settings.jwt_auth_dependency)],
+)
 async def update_strain_status(
     strain_id: Union[str, int],
     update_data: UserStrainListUpdate,
@@ -195,7 +202,9 @@ async def update_strain_status(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.patch("/update_strain_notes/", response_model=UserStrainListSubmit)
+@router.patch(
+    "/update_strain_notes/", response_model=UserStrainListSubmit, dependencies=[Depends(settings.jwt_auth_dependency)]
+)
 async def update_strain_notes(strain_notes: AddUserStrainListNotes, db: Session = Depends(get_db)):
     try:
         updated_strain = await add_strain_notes_to_list(strain_notes, db)
@@ -206,7 +215,11 @@ async def update_strain_notes(strain_notes: AddUserStrainListNotes, db: Session 
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.delete("/delete_strain_from_list/", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    "/delete_strain_from_list/",
+    status_code=status.HTTP_204_NO_CONTENT,
+    dependencies=[Depends(settings.jwt_auth_dependency)],
+)
 async def delete_strain_from_strain_list(strain_to_remove: UserStrainListCreate, db: Session = Depends(get_db)):
     try:
         await delete_strain_from_list(strain_to_remove, db)

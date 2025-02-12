@@ -54,8 +54,9 @@ from schemas.search_class import (
     EdibleTerpTableSchema,
     PreRollTerpTableSchema,
 )
+from core.config import settings
 
-tasks = {}  # Dictionary to store task status and results
+tasks = {}
 
 router = APIRouter()
 
@@ -78,7 +79,6 @@ product_type_to_ranking_model = {
 }
 
 
-# Function to convert the raw data into Pydantic models
 def convert_to_schema(product_type: str, data: List[dict]):
     schema_map = {
         "Flower": GetFlowerRanking,
@@ -105,18 +105,11 @@ def decode_email(encoded_email: str) -> str:
 
 async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> Dict[str, List[Any]]:
     user_ratings = {}
-
     for product_type, models in product_type_to_ranking_model.items():
         user_ratings[product_type] = []
-
         for model in models:
-            # Query the database for ratings by the user for the current product type
             ratings = db.query(model).filter(model.connoisseur.ilike(user_email)).all()
-
-            # Convert the result into a list of dictionaries
             ratings_list = [model_to_dict(rating) for rating in ratings]
-
-            # Append the ratings to the product type key in the user_ratings dictionary
             user_ratings[product_type].extend(ratings_list)
     for product_type, data in user_ratings.items():
         user_ratings[product_type] = convert_to_schema(product_type, data)
@@ -124,7 +117,7 @@ async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> D
     return user_ratings
 
 
-@router.get("/get_my_ratings", response_model=Dict[str, List[Any]])
+@router.get("/get_my_ratings", response_model=Dict[str, List[Any]], dependencies=[Depends(settings.jwt_auth_dependency)])
 async def get_my_ratings(user_email: str, db: Session = Depends(get_db)):
     if not user_email:
         raise HTTPException(status_code=400, detail="User email is required")
@@ -141,16 +134,13 @@ async def check_existence(product_type: str, entry: StrainCultivator, db: Sessio
     models = product_type_to_model.get(product_type)
     if not models:
         raise HTTPException(status_code=404, detail="Product type not found")
-
     for model in models:
         exists = (
             db.query(model).filter(model.strain.ilike(entry.strain), model.cultivator.ilike(entry.cultivator)).first()
             is not None
         )
-
         if exists:
             return {"exists": True}
-
     return {"exists": False}
 
 
@@ -304,7 +294,7 @@ async def get_all_events_route(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.post("/add-calendar-event/", status_code=201)
+@router.post("/add-calendar-event/", status_code=201, dependencies=[Depends(settings.jwt_auth_dependency)])
 async def add_calendar_event(event_data: CalendarEventQuery, db: Session = Depends(get_db)):
     try:
         success = await add_new_calendar_event(db, event_data.dict())
