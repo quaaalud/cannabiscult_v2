@@ -248,20 +248,20 @@
 <script type="module">
   import createLineageChart from "{{ url_for('static', path='js/getLineageChart.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
-    const concentrateId = "{{ concentrate_id }}";
-    const isMystery = "{{ is_mystery }}";
-    if (isMystery === "True") {
-      return;
-    } else {
-      await fetchAndUpdatConcentrateDescription();
-      await fetchAndUpdateConcentrateRatings(concentrateId);
-      await fetchDescriptions(concentrateId);
-      try {
-          populateLineageChartIfExists();
-      } catch (error) {
+      const concentrateId = "{{ concentrate_id }}";
+      const isMystery = "{{ is_mystery }}";
+      if (isMystery === "True") {
           return;
+      } else {
+          await fetchAndUpdatConcentrateDescription();
+          await fetchAndUpdateConcentrateRatings(concentrateId);
+          await fetchDescriptions(concentrateId);
+          try {
+              populateLineageChartIfExists();
+          } catch (error) {
+              return;
+          }
       }
-    }
   });
   function formatEnumValue(enumString) {
     if (!enumString) return "";
