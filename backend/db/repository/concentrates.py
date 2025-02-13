@@ -325,7 +325,7 @@ async def return_all_available_descriptions_from_strain_id(db: Session, concentr
                 "effects": description.effects,
                 "lineage": description.lineage,
                 "terpenes_list": description.terpenes_list,
-                "username": username,
+                "username": username or "Cultivar",
                 "strain_category": description.strain_category if description.strain_category else "cult_pack",
             })
         return descriptions
