@@ -7,7 +7,7 @@ Created on Fri Dec 22 20:12:30 2023
 """
 
 from pydantic import BaseModel, Field, HttpUrl
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 
 class SearchResultItem(BaseModel):
@@ -152,3 +152,55 @@ class PreRollTerpTableSchema(CombinedTerpProfileBaseSchema):
 
 class EdibleTerpTableSchema(CombinedTerpProfileBaseSchema):
     edible_id: int
+
+
+class ProductResultSchema(BaseModel):
+    cultivator: str
+    strain: str
+    card_path: Optional[str]
+    voting_open: bool
+    product_type: str
+    is_mystery: bool
+    product_id: int
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
+
+
+class DescriptionResultSchema(BaseModel):
+    description_id: int
+    product_id: int
+    description: Optional[str]
+    effects: Optional[str]
+    lineage: Optional[str]
+    terpenes_list: Optional[List[str]]
+    strain_category: Optional[str]
+    username: Optional[str]
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
+
+
+class TerpProfileResultSchema(BaseModel):
+    description_id: int
+    product_id: int
+    terp_values: Dict[str, float]
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
+        extra = "allow"
+
+
+class ProductWithTerpProfileSchema(BaseModel):
+    product: ProductResultSchema
+    description: DescriptionResultSchema
+    terp_profile: TerpProfileResultSchema

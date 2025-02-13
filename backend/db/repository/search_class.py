@@ -21,26 +21,72 @@ from schemas.search_class import (
     ConcentrateTerpTableSchema,
     EdibleTerpTableSchema,
     PreRollTerpTableSchema,
+    ProductResultSchema,
+    DescriptionResultSchema,
+    TerpProfileResultSchema,
+    ProductWithTerpProfileSchema
 )
 from core.config import settings
-from db.models.flowers import Flower
-from db.models.concentrates import Concentrate
-from db.models.edibles import Edible, VibeEdible
-from db.models.pre_rolls import Pre_Roll
-from db.models.product_types import (
+from db.base import (
+    Flower,
+    Flower_Description,
+    Concentrate,
+    Concentrate_Description,
+    Edible,
+    VibeEdible,
+    Edible_Description,
+    Pre_Roll,
+    Pre_Roll_Description,
+    TerpProfile,
     Product_Types,
     FlowerTerpTable,
     ConcentrateTerpTable,
     EdibleTerpTable,
     PreRollTerpTable,
     Current_Lineages,
-)
-from db.models.calendar_events import (
     CalendarEvent,
     CalendarEventQuery,
     SimpleProductSchema,
+    User,
 )
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
+
+
+PRODUCT_TABLE_MAPPINGS = {
+    "flower": {"product": Flower, "description": Flower_Description, "schema": FlowerTerpTableSchema},
+    "concentrate": {
+        "product": Concentrate,
+        "description": Concentrate_Description,
+        "schema": ConcentrateTerpTableSchema,
+    },
+    "edible": {"product": Edible, "description": Edible_Description, "schema": EdibleTerpTableSchema},
+    "pre_roll": {"product": Pre_Roll, "description": Pre_Roll_Description, "schema": PreRollTerpTableSchema},
+    "vibeedible": {"product": VibeEdible, "description": Edible_Description, "schema": EdibleTerpTableSchema},
+}
+
+PRODUCT_TERP_TABLE_MAPPINGS = {
+    "flower": FlowerTerpTable,
+    "concentrate": ConcentrateTerpTable,
+    "pre_roll": PreRollTerpTable,
+    "edible": EdibleTerpTable,
+}
+
+
+def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) -> Union[
+    FlowerTerpTableSchema,
+    ConcentrateTerpTableSchema,
+    EdibleTerpTableSchema,
+    PreRollTerpTableSchema,
+]:
+    model_dict = PRODUCT_TABLE_MAPPINGS.get(product_type.lower())
+    model, schema = model_dict.get("product", None), model_dict.get("schema", None)
+    if not model or not schema:
+        raise ValueError("Invalid product type provided")
+    primary_key = [key.name for key in inspect(model).primary_key][0]
+    data = db.query(model).filter(getattr(model, primary_key) == product_id).first()
+    if data is None:
+        return None
+    return schema.from_orm(data)
 
 
 async def get_data_by_strain(
@@ -51,8 +97,6 @@ async def get_data_by_strain(
     try:
         result = db.execute(
             select(model)
-            .filter(model.cultivator != "Cultivar")
-            .filter(model.cultivator != "Connoisseur")
             .filter(
                 or_(
                     model.cultivator.ilike(f"%{strain}%"),
@@ -61,9 +105,9 @@ async def get_data_by_strain(
             )
             .filter(
                 and_(
-                    model.strain.ilike("%Test%") == False,
-                    model.cultivator.ilike("%Cultivar%") == False,
-                    model.cultivator.ilike("%Connoisseur%") == False,
+                    not_(model.strain.ilike("%Test%")),
+                    not_(model.cultivator.ilike("%Cultivar%")),
+                    not_(model.cultivator.ilike("%Connoisseur%")),
                 )
             )
         )
@@ -124,8 +168,7 @@ def get_cultivators_by_product_type(db: Session, model: Type[Base]) -> List[str]
     try:
         result = db.execute(
             select(model.cultivator)
-            .filter(model.cultivator != "Cultivar")
-            .filter(model.cultivator != "Connoisseur")
+            .filter(and_(model.cultivator != "Cultivar", model.cultivator != "Connoisseur"))
             .distinct()
         )
         cultivators = result.scalars().all()
@@ -136,32 +179,24 @@ def get_cultivators_by_product_type(db: Session, model: Type[Base]) -> List[str]
         return []
 
 
-def get_strains_by_cultivator(
-    db: Session, model: Type[Base], cultivator: str
-) -> Optional[List[str]]:
+def get_strains_by_cultivator(db: Session, model: Type[Base], cultivator: str) -> Optional[List[str]]:
     try:
         result = db.execute(
             select(model.strain)
             .where(model.cultivator == cultivator)
-            .filter(model.cultivator != "Cultivar")
-            .filter(model.cultivator != "Connoisseur")
-            .filter(model.strain.ilike("%Test%") == False)
+            .filter(model.cultivator.notin(["Connoisseur", "Cultivar"]), not_(model.strain.ilike("%Test%")))
         )
         strains = result.scalars().all()
         return [strain for strain in strains if "test" not in strain.lower()]
     except Exception as e:
         traceback.print_exc()
-        print(
-            f"Error fetching strains for {model.__name__} & cultivator {cultivator}: {e}"
-        )
+        print(f"Error fetching strains for {model.__name__} & cultivator {cultivator}: {e}")
         return None
 
 
 def get_random_cultivator(db: Session, model: Type[Base]) -> str:
     try:
-        result = db.execute(
-            select(model.cultivator).distinct().order_by(func.random()).limit(1)
-        )
+        result = db.execute(select(model.cultivator).distinct().order_by(func.random()).limit(1))
         random_cultivator = result.scalar_one()
         return random_cultivator
     except Exception as e:
@@ -172,9 +207,7 @@ def get_random_cultivator(db: Session, model: Type[Base]) -> str:
 
 def get_random_strain(db: Session, model: Type[Base]) -> str:
     try:
-        result = db.execute(
-            select(model.strain).distinct().order_by(func.random()).limit(1)
-        )
+        result = db.execute(select(model.strain).distinct().order_by(func.random()).limit(1))
         random_strain = result.scalar_one()
         return random_strain
     except Exception as e:
@@ -188,36 +221,28 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
     all_ratings = []
     for product_type, models in model_dict.items():
         for model in models:
-            # Get all column names from the model, focusing on those ending with "_rating"
             columns = [c.name for c in inspect(model).c]
             rating_columns = [col for col in columns if col.endswith("_rating")]
-            # Build dynamic selection of columns for aggregation, excluding None values
             selection = [model.strain, model.cultivator] + [
-                func.avg(func.nullif(getattr(model, col), None)).label(col)
-                for col in rating_columns
+                func.avg(func.nullif(getattr(model, col), None)).label(col) for col in rating_columns
             ]
-            # Execute query to aggregate ratings, applying the specified filters
             query = (
                 db.query(*selection)
                 .filter(
-                    model.cultivator != "Cultivar",
-                    model.cultivator != "Connoisseur",
-                    not_(
-                        model.strain.ilike("%Test%")
-                    ),  # Excluding strains that contain 'Test'
-                    or_(*[getattr(model, col) != None for col in rating_columns]),
+                    not_(model.cultivator.ilike("%Cultivar")),
+                    not_(model.cultivator.ilike("Connoisseur")),
+                    not_(model.strain.ilike("%Test%")),
+                    or_(*[getattr(model, col) is not None for col in rating_columns]),
                 )
                 .group_by(model.strain, model.cultivator)
             )
             ratings = query.all()
-            # Convert and accumulate results
             for rating in ratings:
                 rating_data = {
                     "product_type": product_type,
                     "strain": rating.strain,
                     "cultivator": rating.cultivator,
                 }
-                # Compute the overall average rating
                 sum_ratings = 0
                 count_ratings = 0
                 for col in rating_columns:
@@ -227,7 +252,6 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
                         rating_data[col] = rounded_rating
                         sum_ratings += rounded_rating
                         count_ratings += 1
-                # Calculate the 'cult_rating'
                 if count_ratings > 0:
                     rating_data["cult_rating"] = round(sum_ratings / count_ratings, 2)
                 else:
@@ -238,28 +262,23 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
 
 def get_all_card_paths(db: Session, limit=10) -> List[dict]:
     # Prepare select statements for each product type
-    select_flower = select(
-        Flower.cultivator, Flower.strain, Flower.card_path, Flower.product_type
-    ).filter(Flower.strain.notilike("%Test%"), Flower.cultivator != "Connoisseur")
+    select_flower = select(Flower.cultivator, Flower.strain, Flower.card_path, Flower.product_type).filter(
+        Flower.strain.notilike("%Test%"), Flower.cultivator != "Connoisseur"
+    )
     select_concentrate = select(
         Concentrate.cultivator,
         Concentrate.strain,
         Concentrate.card_path,
         Concentrate.product_type,
-    ).filter(
-        Concentrate.strain.notilike("%Test%"), Concentrate.cultivator != "Connoisseur"
+    ).filter(Concentrate.strain.notilike("%Test%"), Concentrate.cultivator != "Connoisseur")
+    select_pre_roll = select(Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path, Pre_Roll.product_type).filter(
+        Pre_Roll.strain.notilike("%Test%"), Pre_Roll.cultivator != "Connoisseur"
     )
-    select_pre_roll = select(
-        Pre_Roll.cultivator, Pre_Roll.strain, Pre_Roll.card_path, Pre_Roll.product_type
-    ).filter(Pre_Roll.strain.notilike("%Test%"), Pre_Roll.cultivator != "Connoisseur")
-    select_edible = select(
-        Edible.cultivator, Edible.strain, Edible.card_path, Edible.product_type
-    ).filter(Edible.strain.notilike("%Test%"), Edible.cultivator != "Connoisseur")
-
+    select_edible = select(Edible.cultivator, Edible.strain, Edible.card_path, Edible.product_type).filter(
+        Edible.strain.notilike("%Test%"), Edible.cultivator != "Connoisseur"
+    )
     # Combine queries using UNION ALL with limit and offset
-    combined_query = union_all(
-        select_flower, select_concentrate, select_pre_roll, select_edible
-    )
+    combined_query = union_all(select_flower, select_concentrate, select_pre_roll, select_edible)
     # Create a subquery for counting
     subquery = combined_query.alias("subquery")
     total_rows = db.execute(select(func.count()).select_from(subquery)).scalar()
@@ -319,17 +338,13 @@ async def add_new_calendar_event(db: Session, event_data: dict) -> bool:
     try:
         existing_event = (
             db.execute(
-                select(CalendarEvent).filter_by(
-                    summary=event_data["summary"], start_date=event_data["start_date"]
-                )
+                select(CalendarEvent).filter_by(summary=event_data["summary"], start_date=event_data["start_date"])
             )
             .scalars()
             .first()
         )
         if existing_event:
-            return await update_calendar_event(
-                db, event_data["summary"], event_data["start_date"], event_data
-            )
+            return await update_calendar_event(db, event_data["summary"], event_data["start_date"], event_data)
         new_event = CalendarEvent(**event_data)
         db.add(new_event)
     except SQLAlchemyError as e:
@@ -342,21 +357,12 @@ async def add_new_calendar_event(db: Session, event_data: dict) -> bool:
     return True
 
 
-async def update_calendar_event(
-    db: Session, summary: str, start_date: str, new_data: dict
-) -> bool:
+async def update_calendar_event(db: Session, summary: str, start_date: str, new_data: dict) -> bool:
     try:
-        event = (
-            db.execute(
-                select(CalendarEvent).filter_by(summary=summary, start_date=start_date)
-            )
-            .scalars()
-            .first()
-        )
+        event = db.execute(select(CalendarEvent).filter_by(summary=summary, start_date=start_date)).scalars().first()
         if not event:
             print("No matching event found for update.")
             return False
-        # Update fields that are not None in new_data
         for key, value in new_data.items():
             if value is not None:
                 setattr(event, key, value)
@@ -369,29 +375,20 @@ async def update_calendar_event(
         return False
 
 
-async def get_card_path_by_details(
-    db: Session, product_type: str, strain: str, cultivator: str
-) -> Optional[str]:
-    # Map product types to their respective model classes
-    model_mapping = {
-        "Flower": Flower,
-        "Concentrate": Concentrate,
-        "Edible": Edible,
-        "Pre_Roll": Pre_Roll,
-        "VibeEdible": VibeEdible,
-    }
-    # Fetch the correct model based on product_type
-    model = model_mapping.get(product_type)
-    if model is None:
+async def get_card_path_by_details(db: Session, product_type: str, strain: str, cultivator: str) -> Optional[str]:
+    model_mapping = PRODUCT_TABLE_MAPPINGS.get(product_type.lower())
+    if not model_mapping:
         return None
-
+    model = model_mapping.get("product", None)
+    if not model:
+        return None
     try:
         result = db.execute(
             select(model.card_path)
             .where(
                 model.strain == strain,
                 model.cultivator == cultivator,
-                model.strain.ilike("%Test%") == False,
+                not_(model.strain.ilike("%Test%")),
             )
             .limit(1)
         ).scalar_one()
@@ -401,60 +398,18 @@ async def get_card_path_by_details(
         return None
 
 
-def get_all_strains_by_product_type(
-    db: Session, product_type: str
-) -> List[Dict[str, any]]:
-    # Mapping of product types to models
-    product_mapping = {
-        "flower": FlowerTerpTable,
-        "concentrate": ConcentrateTerpTable,
-        "pre_roll": PreRollTerpTable,
-        "edible": EdibleTerpTable,
-    }
-    model = product_mapping.get(product_type.lower())
-    if not model:
+def get_all_strains_by_product_type(db: Session, product_type: str) -> List[Dict[str, any]]:
+    model_mapping = PRODUCT_TABLE_MAPPINGS.get(product_type.lower())
+    model = model_mapping.get("product", None)
+    if not model_mapping or not model:
         raise ValueError("Invalid product type provided")
     try:
-        # Fetch all strains and their primary keys
         primary_key = [key.name for key in inspect(model).primary_key][0]
-        data = (
-            db.query(getattr(model, primary_key), model.strain, model.cultivator)
-            .order_by(model.strain)
-            .all()
-        )
-        return [
-            {"product_id": item[0], "strain": item[1], "cultivator": item[2]}
-            for item in data
-        ]
+        data = db.query(getattr(model, primary_key), model.strain, model.cultivator).order_by(model.strain).all()
+        return [{"product_id": item[0], "strain": item[1], "cultivator": item[2]} for item in data]
     except Exception as e:
         print(f"Error fetching strains for {product_type}: {e}")
         return []
-
-
-def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) -> Union[
-    FlowerTerpTableSchema,
-    ConcentrateTerpTableSchema,
-    EdibleTerpTableSchema,
-    PreRollTerpTableSchema,
-]:
-    # Mapping of product types to models and schemas
-    product_mapping = {
-        "flower": (FlowerTerpTable, FlowerTerpTableSchema),
-        "concentrate": (ConcentrateTerpTable, ConcentrateTerpTableSchema),
-        "pre_roll": (PreRollTerpTable, PreRollTerpTableSchema),
-        "edible": (EdibleTerpTable, EdibleTerpTableSchema),
-    }
-    model, schema = product_mapping.get(product_type.lower(), (None, None))
-    if not model:
-        raise ValueError("Invalid product type provided")
-    # Dynamically fetch the primary key column name from the model
-    primary_key = [key.name for key in inspect(model).primary_key][0]
-    # Fetch the data from the database
-    data = db.query(model).filter(getattr(model, primary_key) == product_id).first()
-    if data is None:
-        return None
-    # Serialize data using the corresponding Pydantic schema
-    return schema.from_orm(data)
 
 
 def build_strains_family_tree_graph(db: Session):
@@ -481,3 +436,57 @@ def serialize_graph(graph):
     nodes = [{"id": node} for node in graph.nodes()]
     edges = [{"source": edge[0], "target": edge[1]} for edge in graph.edges()]
     return {"nodes": nodes, "edges": edges}
+
+
+async def get_product_with_terp_profile(db: Session, product_id: int, product_type: str, description_id: int = None):
+    if product_type not in PRODUCT_TABLE_MAPPINGS:
+        raise ValueError(f"Invalid product type: {product_type}")
+    product_mapping = PRODUCT_TABLE_MAPPINGS[product_type]
+    product_table = product_mapping["product"]
+    description_table = product_mapping["description"]
+    query = (
+        db.query(product_table, description_table, User.username)
+        .outerjoin(
+            description_table,
+            product_table.__table__.c[product_table.__table__.primary_key.columns.keys()[0]]
+            == description_table.__table__.c[product_table.__table__.primary_key.columns[0].name],
+        )
+        .outerjoin(User, description_table.cultivar_email == User.email)
+        .filter(product_table.__table__.c[product_table.__table__.primary_key.columns.keys()[0]] == product_id)
+    )
+    if description_id:
+        query = query.filter(description_table.description_id == description_id)
+    product_data = query.first()
+    if not product_data:
+        return None
+    product, description, username = product_data
+    if not description_id:
+        description_id = description.description_id
+    terp_profile = (
+        db.query(TerpProfile)
+        .filter_by(product_type=product_type, product_id=product_id, description_id=description_id)
+        .first()
+    )
+    product_dict = {col.name: getattr(product, col.name) for col in product.__table__.columns}
+    description_dict = (
+        {col.name: getattr(description, col.name) for col in description.__table__.columns} if description else {}
+    )
+    description_dict["username"] = username
+    terp_profile_dict = (
+        {col.name: getattr(terp_profile, col.name) for col in TerpProfile.__table__.columns} if terp_profile else {}
+    )
+    terp_profile_dict = {k: v for k, v in terp_profile_dict.items() if isinstance(v, (int, float)) and v != 0}
+    product_dict["product_id"] = product_id
+    description_dict["product_id"] = product_id
+    product_result = ProductResultSchema(**product_dict)
+    description_result = DescriptionResultSchema(**description_dict)
+    terp_result = TerpProfileResultSchema(
+        description_id=description_id,
+        product_id=product_id,
+        terp_values=terp_profile_dict,
+    )
+    return ProductWithTerpProfileSchema(
+        product=product_result,
+        description=description_result,
+        terp_profile=terp_result,
+    )

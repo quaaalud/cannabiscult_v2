@@ -6,9 +6,12 @@ Created on Sun Nov  5 17:09:03 2023
 @author: dale
 """
 
-from sqlalchemy import Column, String, Integer, Float, BigInteger
+from sqlalchemy import Column, String, Integer, Float, BigInteger, Double, Text, CheckConstraint
 from sqlalchemy.dialects.postgresql import JSONB
 from db.base_class import Base
+
+
+ALLOWED_PRODUCT_TYPES = ("flower", "concentrate", "edible", "pre_roll")
 
 
 class Product_Types(Base):
@@ -19,70 +22,75 @@ class Product_Types(Base):
 
 
 class Terp_Table(Base):
-    __tablename__ = 'terp_table'
-    flower_id = Column(Integer, primary_key=True, nullable=True)
-    concentrate_id = Column(Integer, primary_key=True, nullable=True)
-    pre_roll_id = Column(Integer, primary_key=True, nullable=True)
-    edible_id = Column(Integer, primary_key=True, nullable=True)
-    product_type = Column(String, nullable=True)
+    __tablename__ = "terp_table"
+    __table_args__ = {"schema": "public"}
 
-    alpha_bergamotene = Column(Float, nullable=True)
-    alpha_beta_cis_ocimene = Column(Float, nullable=True)
-    alpha_beta_pinene = Column(Float, nullable=True)
-    alpha_beta_thujene = Column(Float, nullable=True)
-    alpha_bisabolene = Column(Float, nullable=True)
-    alpha_bisabolol = Column(Float, nullable=True)
-    alpha_cedrene = Column(Float, nullable=True)
-    alpha_fenchene = Column(Float, nullable=True)
-    alpha_humulene = Column(Float, nullable=True)
-    alpha_humulene_epoxide_i = Column(Float, nullable=True)
-    alpha_phellandrene = Column(Float, nullable=True)
-    alpha_pinene = Column(Float, nullable=True)
-    alpha_terpinene = Column(Float, nullable=True)
-    alpha_terpineol = Column(Float, nullable=True)
-    alpha_terpinolene = Column(Float, nullable=True)
-    alpha_thujene = Column(Float, nullable=True)
-    alpha_zingiberene = Column(Float, nullable=True)
-    beta_asarone = Column(Float, nullable=True)
-    beta_bisabolene = Column(Float, nullable=True)
-    beta_caryophyllene = Column(Float, nullable=True)
-    beta_caryophyllene_oxide = Column(Float, nullable=True)
-    beta_farnesene = Column(Float, nullable=True)
-    beta_myrcene = Column(Float, nullable=True)
-    beta_ocimene = Column(Float, nullable=True)
-    beta_pinene = Column(Float, nullable=True)
-    beta_selinene = Column(Float, nullable=True)
-    beta_terpinene = Column(Float, nullable=True)
-    camphene = Column(Float, nullable=True)
-    caryophyllene = Column(Float, nullable=True)
-    caryophyllene_oxide = Column(Float, nullable=True)
-    cis_nerolidol = Column(Float, nullable=True)
-    cis_beta_ocimene = Column(Float, nullable=True)
-    delta_3_carene = Column(Float, nullable=True)
-    delta_limonene = Column(Float, nullable=True)
-    eucalyptol = Column(Float, nullable=True)
-    gamma_terpinene = Column(Float, nullable=True)
-    geraniol = Column(Float, nullable=True)
-    guaiol = Column(Float, nullable=True)
-    isoborneol = Column(Float, nullable=True)
-    isopulegol = Column(Float, nullable=True)
-    limonene = Column(Float, nullable=True)
-    linalool = Column(Float, nullable=True)
-    myrcene = Column(Float, nullable=True)
-    nerolidol = Column(Float, nullable=True)
-    ocimene = Column(Float, nullable=True)
-    p_cymene = Column(Float, nullable=True)
-    para_cymene = Column(Float, nullable=True)
-    phellandrene = Column(Float, nullable=True)
-    terpineol = Column(Float, nullable=True)
-    terpinolene = Column(Float, nullable=True)
-    trans_nerolidol = Column(Float, nullable=True)
-    trans_ocimene = Column(Float, nullable=True)
-    y_terpinene = Column(Float, nullable=True)
+    terp_flower_id = Column(BigInteger, primary_key=True, nullable=False, default=0)
+    terp_concentrate_id = Column(BigInteger, primary_key=True, nullable=False, default=0)
+    terp_pre_roll_id = Column(BigInteger, primary_key=True, nullable=False, default=0)
+    terp_edible_id = Column(BigInteger, primary_key=True, nullable=False, default=0)
+
+    strain_type = Column(Text, nullable=True)
+
+    alpha_bergamotene = Column(Double, nullable=True, default=0)
+    alpha_beta_cis_ocimene = Column(Double, nullable=True, default=0)
+    alpha_beta_pinene = Column(Double, nullable=True, default=0)
+    alpha_beta_thujene = Column(Double, nullable=True, default=0)
+    alpha_bisabolene = Column(Double, nullable=True, default=0)
+    alpha_bisabolol = Column(Double, nullable=True, default=0)
+    alpha_cedrene = Column(Double, nullable=True, default=0)
+    alpha_fenchene = Column(Double, nullable=True, default=0)
+    alpha_humulene = Column(Double, nullable=True, default=0)
+    alpha_humulene_epoxide_i = Column(Double, nullable=True, default=0)
+    alpha_phellandrene = Column(Double, nullable=True, default=0)
+    alpha_pinene = Column(Double, nullable=True, default=0)
+    alpha_terpinene = Column(Double, nullable=True, default=0)
+    alpha_terpineol = Column(Double, nullable=True, default=0)
+    alpha_terpinolene = Column(Double, nullable=True, default=0)
+    alpha_thujene = Column(Double, nullable=True, default=0)
+    alpha_zingiberene = Column(Double, nullable=True, default=0)
+    beta_asarone = Column(Double, nullable=True, default=0)
+    beta_bisabolene = Column(Double, nullable=True, default=0)
+    beta_caryophyllene_oxide = Column(Double, nullable=True, default=0)
+    beta_farnesene = Column(Double, nullable=True, default=0)
+    beta_myrcene = Column(Double, nullable=True, default=0)
+    beta_ocimene = Column(Double, nullable=True, default=0)
+    beta_pinene = Column(Double, nullable=True, default=0)
+    beta_selinene = Column(Double, nullable=True, default=0)
+    beta_terpinene = Column(Double, nullable=True, default=0)
+    camphene = Column(Double, nullable=True, default=0)
+    caryophyllene = Column(Double, nullable=True, default=0)
+    caryophyllene_oxide = Column(Double, nullable=True, default=0)
+    cis_nerolidol = Column(Double, nullable=True, default=0)
+    cis_beta_ocimene = Column(Double, nullable=True, default=0)
+    delta_3_carene = Column(Double, nullable=True, default=0)
+    delta_limonene = Column(Double, nullable=True, default=0)
+    eucalyptol = Column(Double, nullable=True, default=0)
+    gamma_terpinene = Column(Double, nullable=True, default=0)
+    geraniol = Column(Double, nullable=True, default=0)
+    guaiol = Column(Double, nullable=True, default=0)
+    isoborneol = Column(Double, nullable=True, default=0)
+    isopulegol = Column(Double, nullable=True, default=0)
+    limonene = Column(Double, nullable=True, default=0)
+    linalool = Column(Double, nullable=True, default=0)
+    myrcene = Column(Double, nullable=True, default=0)
+    nerolidol = Column(Double, nullable=True, default=0)
+    ocimene = Column(Double, nullable=True, default=0)
+    p_cymene = Column(Double, nullable=True, default=0)
+    para_cymene = Column(Double, nullable=True, default=0)
+    phellandrene = Column(Double, nullable=True, default=0)
+    terpineol = Column(Double, nullable=True, default=0)
+    terpinolene = Column(Double, nullable=True, default=0)
+    trans_nerolidol = Column(Double, nullable=True, default=0)
+    trans_ocimene = Column(Double, nullable=True, default=0)
+    y_terpinene = Column(Double, nullable=True, default=0)
+    beta_caryophyllene = Column(Double, nullable=True, default=0)
+    humulene = Column(Double, nullable=True, default=0)
+    nerolidol_2 = Column(Double, nullable=True, default=0)
 
 
 class FlowerTerpTable(Base):
-    __tablename__ = 'combined_flower_terp'
+    __tablename__ = "combined_flower_terp"
     flower_id = Column(Integer, primary_key=True, nullable=True)
     product_type = Column(String, nullable=True)
     strain_type = Column(String, nullable=True)
@@ -148,7 +156,7 @@ class FlowerTerpTable(Base):
 
 
 class ConcentrateTerpTable(Base):
-    __tablename__ = 'combined_concentrate_terp'
+    __tablename__ = "combined_concentrate_terp"
     concentrate_id = Column(Integer, primary_key=True, nullable=True)
     product_type = Column(String, nullable=True)
     strain_type = Column(String, nullable=True)
@@ -214,7 +222,7 @@ class ConcentrateTerpTable(Base):
 
 
 class EdibleTerpTable(Base):
-    __tablename__ = 'combined_edible_terp'
+    __tablename__ = "combined_edible_terp"
     edible_id = Column(Integer, primary_key=True, nullable=True)
     product_type = Column(String, nullable=True)
     strain_type = Column(String, nullable=True)
@@ -280,7 +288,7 @@ class EdibleTerpTable(Base):
 
 
 class PreRollTerpTable(Base):
-    __tablename__ = 'combined_pre_roll_terp'
+    __tablename__ = "combined_pre_roll_terp"
     pre_roll_id = Column(Integer, primary_key=True, nullable=True)
     strain_type = Column(String, nullable=True)
     strain_type = Column(String, nullable=True)
@@ -346,9 +354,78 @@ class PreRollTerpTable(Base):
 
 
 class Current_Lineages(Base):
-    __tablename__ = 'current_lineages'
+    __tablename__ = "current_lineages"
 
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     strain = Column(String)
     cultivator = Column(String)
     lineage = Column(String)
+
+
+class TerpProfile(Base):
+    __tablename__ = "terp_profiles"
+    __table_args__ = {"schema": "public"}
+
+    description_id = Column(BigInteger, nullable=False, primary_key=True)
+    product_type = Column(
+        String,
+        CheckConstraint(f"product_type IN {ALLOWED_PRODUCT_TYPES}", name="valid_product_type"),
+        primary_key=True,
+    )
+    product_id = Column(BigInteger, primary_key=True)
+
+    alpha_bergamotene = Column(Double, nullable=True, default=0)
+    alpha_beta_cis_ocimene = Column(Double, nullable=True, default=0)
+    alpha_beta_pinene = Column(Double, nullable=True, default=0)
+    alpha_beta_thujene = Column(Double, nullable=True, default=0)
+    alpha_bisabolene = Column(Double, nullable=True, default=0)
+    alpha_bisabolol = Column(Double, nullable=True, default=0)
+    alpha_cedrene = Column(Double, nullable=True, default=0)
+    alpha_fenchene = Column(Double, nullable=True, default=0)
+    alpha_humulene = Column(Double, nullable=True, default=0)
+    alpha_humulene_epoxide_i = Column(Double, nullable=True, default=0)
+    alpha_phellandrene = Column(Double, nullable=True, default=0)
+    alpha_pinene = Column(Double, nullable=True, default=0)
+    alpha_terpinene = Column(Double, nullable=True, default=0)
+    alpha_terpineol = Column(Double, nullable=True, default=0)
+    alpha_terpinolene = Column(Double, nullable=True, default=0)
+    alpha_thujene = Column(Double, nullable=True, default=0)
+    alpha_zingiberene = Column(Double, nullable=True, default=0)
+    beta_asarone = Column(Double, nullable=True, default=0)
+    beta_bisabolene = Column(Double, nullable=True, default=0)
+    beta_caryophyllene_oxide = Column(Double, nullable=True, default=0)
+    beta_farnesene = Column(Double, nullable=True, default=0)
+    beta_myrcene = Column(Double, nullable=True, default=0)
+    beta_ocimene = Column(Double, nullable=True, default=0)
+    beta_pinene = Column(Double, nullable=True, default=0)
+    beta_selinene = Column(Double, nullable=True, default=0)
+    beta_terpinene = Column(Double, nullable=True, default=0)
+    camphene = Column(Double, nullable=True, default=0)
+    caryophyllene = Column(Double, nullable=True, default=0)
+    caryophyllene_oxide = Column(Double, nullable=True, default=0)
+    cis_nerolidol = Column(Double, nullable=True, default=0)
+    cis_beta_ocimene = Column(Double, nullable=True, default=0)
+    delta_3_carene = Column(Double, nullable=True, default=0)
+    delta_limonene = Column(Double, nullable=True, default=0)
+    eucalyptol = Column(Double, nullable=True, default=0)
+    gamma_terpinene = Column(Double, nullable=True, default=0)
+    geraniol = Column(Double, nullable=True, default=0)
+    guaiol = Column(Double, nullable=True, default=0)
+    isoborneol = Column(Double, nullable=True, default=0)
+    isopulegol = Column(Double, nullable=True, default=0)
+    limonene = Column(Double, nullable=True, default=0)
+    linalool = Column(Double, nullable=True, default=0)
+    myrcene = Column(Double, nullable=True, default=0)
+    nerolidol = Column(Double, nullable=True, default=0)
+    ocimene = Column(Double, nullable=True, default=0)
+    p_cymene = Column(Double, nullable=True, default=0)
+    para_cymene = Column(Double, nullable=True, default=0)
+    phellandrene = Column(Double, nullable=True, default=0)
+    terpineol = Column(Double, nullable=True, default=0)
+    terpinolene = Column(Double, nullable=True, default=0)
+    trans_nerolidol = Column(Double, nullable=True, default=0)
+    trans_ocimene = Column(Double, nullable=True, default=0)
+    y_terpinene = Column(Double, nullable=True, default=0)
+    beta_caryophyllene = Column(Double, nullable=True, default=0)
+    humulene = Column(Double, nullable=True, default=0)
+    nerolidol_2 = Column(Double, nullable=True, default=0)

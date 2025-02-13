@@ -8,7 +8,7 @@ Created on Fri Dec 22 20:27:46 2023
 
 import base64
 import random
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy.orm import Session
 from uuid import uuid4
@@ -44,6 +44,7 @@ from db.repository.search_class import (
     get_all_strains_by_product_type,
     get_terp_profile_by_type,
     build_strains_family_tree_graph,
+    get_product_with_terp_profile,
     serialize_graph,
 )
 from schemas.search_class import (
@@ -53,6 +54,7 @@ from schemas.search_class import (
     ConcentrateTerpTableSchema,
     EdibleTerpTableSchema,
     PreRollTerpTableSchema,
+    ProductWithTerpProfileSchema,
 )
 from core.config import settings
 
@@ -117,7 +119,9 @@ async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> D
     return user_ratings
 
 
-@router.get("/get_my_ratings", response_model=Dict[str, List[Any]], dependencies=[Depends(settings.jwt_auth_dependency)])
+@router.get(
+    "/get_my_ratings", response_model=Dict[str, List[Any]], dependencies=[Depends(settings.jwt_auth_dependency)]
+)
 async def get_my_ratings(user_email: str, db: Session = Depends(get_db)):
     if not user_email:
         raise HTTPException(status_code=400, detail="User email is required")
@@ -348,3 +352,14 @@ def get_family_tree(db: Session = Depends(get_db)):
         return serialized_graph
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/terps/description", response_model=Union[ProductWithTerpProfileSchema, Dict[str, str]])
+async def get_product_with_terp_profile_route(
+    product_id: int = Query(None),
+    product_type: str = Query(None),
+    description_id: Optional[int] = Query(None),
+    db: Session = Depends(get_db),
+):
+    terp_dict = await get_product_with_terp_profile(db, product_id, product_type, description_id)
+    return terp_dict or {"message": "No Terp Profile Found"}
