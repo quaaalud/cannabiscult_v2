@@ -310,7 +310,7 @@ async def return_all_available_descriptions_from_strain_id(db: Session, concentr
                 Concentrate_Description,
                 User.username
             )
-            .join(User, Concentrate_Description.cultivar_email == User.email)
+            .outerjoin(User, Concentrate_Description.cultivar_email == User.email)
             .filter(Concentrate_Description.concentrate_id == concentrate_id)
             .all()
         )

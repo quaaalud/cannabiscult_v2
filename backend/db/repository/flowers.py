@@ -332,7 +332,7 @@ async def return_all_available_descriptions_from_strain_id(db: Session, flower_i
                 Flower_Description,
                 User.username
             )
-            .join(User, Flower_Description.cultivar_email == User.email)
+            .outerjoin(User, Flower_Description.cultivar_email == User.email)
             .filter(Flower_Description.flower_id == flower_id)
             .all()
         )
