@@ -454,7 +454,7 @@ class SupabaseClient {
         }
     }
     async fetchImageUrls(productType, productId) {
-      const fullUrl = `/images/${productType}/${productId}`;
+      const fullUrl = `/images/${productType}/${productId}/`;
       try {
         const response = await fetch(fullUrl);
         if (!response.ok) {

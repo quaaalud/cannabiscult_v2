@@ -184,7 +184,7 @@ def get_strains_by_cultivator(db: Session, model: Type[Base], cultivator: str) -
         result = db.execute(
             select(model.strain)
             .where(model.cultivator == cultivator)
-            .filter(model.cultivator.notin(["Connoisseur", "Cultivar"]), not_(model.strain.ilike("%Test%")))
+            .filter(model.cultivator.not_in(["Connoisseur", "Cultivar"]), not_(model.strain.ilike("%Test%")))
         )
         strains = result.scalars().all()
         return [strain for strain in strains if "test" not in strain.lower()]

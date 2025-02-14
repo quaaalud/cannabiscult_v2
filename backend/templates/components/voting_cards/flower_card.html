@@ -1,6 +1,6 @@
 <section class="container text-center" id="mystery-voting">
-  <div class="col-12 col-sm-12 col-md-10 col-lg-12 mx-auto">
-    <div class="row g-0 justify-content-center my-auto" id="vote-interface">
+  <div class="col-12 col-sm-12 col-md-10 col-lg-12 mx-auto h-100">
+    <div class="row g-0 justify-content-center my-auto h-100" id="vote-interface">
       <div class="container text-center d-flex g-0 align-items-center" id="vote-template">
         <div class="row mx-auto my-auto">
           <div class="container mb-5 text-center mx-auto col-md-10 col-lg-12 col-xl-11">
@@ -13,14 +13,19 @@
                   <h3 class="card-subtitle mb-2">
                     <u>{{ cultivator }}</u>
                   </h3>
-                  <div class="container col-11 col-xl-10 pt-2" id="imageContainer">
+                  <div class="row my-auto mx-auto justify-content-center">
+                    <div class="col-xs-11 col-10 mx-auto">
+                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#FlowerRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
+                        <i class="fas fa-arrow-right pe-2 d-none d-sm-inline"></i> <strong><span class="flex-shrink-0">Start Review</span></strong>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="container col-11 col-xl-10 pt-3" id="imageContainer">
                     <div id="carouselImages" class="carousel slide carousel-fade" data-mdb-ride="carousel" data-mdb-carousel-init>
-                      <!-- Indicators -->
                       <div class="carousel-indicators">
                         <button type="button" data-mdb-target="#carouselImages" data-mdb-slide-to="0" class="active" aria-current="true" aria-label="{{ strain }} 1"></button>
                       </div>
                       <div class="carousel-inner rounded-5 shadow-4-strong">
-                        <!-- Single item -->
                         <div class="carousel-item active">
                           <img 
                             src="{{ url_path }}"
@@ -35,29 +40,12 @@
                   </div>
                 </div>
                 <a data-bs-target="#FlowerRankingsDisplay"></a>
-                <div class="container card-body pt-2">
-                  <div class="row my-auto mx-auto justify-content-center">
-                    <div class="col-xs-11 col-10 mx-auto">
-                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#FlowerRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
-                        <i class="fas fa-arrow-right pe-2 d-none d-sm-inline"></i> <strong><span class="flex-shrink-0">Start Review</span></strong>
-                      </button>
-                    </div>
+                <div class="container card-body">
+                  <div class="col-10 col-sm-9 mx-auto">
+                    <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
+                      <strong><span class="flex-shrink-0">+ My List</span></strong>
+                    </button>
                   </div>
-                  <div class="row mx-auto justify-content-center">
-                    <div class="col-7 mx-auto py-3">
-                      <img 
-                        src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
-                        class="img-fluid rounded-5" 
-                        alt="Cannabis Cult Circle Logo"
-                        style="max-height:125px"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-10 col-sm-9 mx-auto">
-                  <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
-                    <strong><span class="flex-shrink-0">+ My List</span></strong>
-                  </button>
                 </div>
               </div>
             </div>
@@ -125,7 +113,7 @@ async function fetchUserStrains(email) {
     return await response.json();
   } catch (error) {
     console.error('Error fetching strains:', error);
-    return [];  // Return empty array on failure to avoid further errors
+    return [];
   }
 }
 async function addStrainToMyList(email, strain, cultivator, type) {
@@ -138,11 +126,9 @@ async function addStrainToMyList(email, strain, cultivator, type) {
       },
       body: JSON.stringify(data)
     });
-
     if (!response.ok) {
       throw new Error('Failed to add strain to list');
     }
-
     const result = await response.json();
     console.log('Added to list successfully:', result);
     alert('Strain added to your list successfully!');
@@ -169,7 +155,7 @@ async function removeStrainFromList(email, strain, cultivator, type) {
       body: JSON.stringify(data)
     });
 
-    if (response.status === 204) {  // Check for the correct status code for no content
+    if (response.status === 204) {
       console.log('Strain removed successfully');
       alert('Strain removed from your list successfully!');
       initializeButtonState(email, strain, cultivator, type, document.getElementById('addToListBtn'));

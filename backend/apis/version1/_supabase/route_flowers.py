@@ -164,7 +164,7 @@ async def get_strain_ratings_by_id(flower_id: int, db: Session = Depends(get_sup
             func.avg(Flower_Ranking.harshness_rating),
             func.avg(Flower_Ranking.freshness_rating),
         )
-        .filter(Flower_Ranking.flower_id == flower_id)
+        .filter(Flower_Ranking.flower_id == int(flower_id))
         .first()
     )
     if not avg_ratings or any(rating is None for rating in avg_ratings):

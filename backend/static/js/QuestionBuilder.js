@@ -208,7 +208,7 @@ class QuestionBuilder {
         content: `
           <div class="container px-4 py-3">
             <div class="row px-4 py-2 py-lg-3">
-              <input type="text" class="form-control" id="${key}" name="${key}" placeholder="${example}" aria-labelledby="${key}_label">
+              <input type="text" class="form-control" id="${key}" name="${key}" placeholder="Let us know your thoughts!" aria-labelledby="${key}_label">
               <label class="form-label pt-2" for="${key}" id="${key}_label">${example}</label>
             </div>
           </div>`,

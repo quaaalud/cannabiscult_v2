@@ -13,20 +13,26 @@
                   <h3 class="card-subtitle mb-2">
                     <u>{{ cultivator }}</u>
                   </h3>
+                  <div class="row my-auto mx-auto justify-content-center">
+                    <div class="col-xs-11 col-10 mx-auto">
+                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#PreRollRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
+                        <i class="fas fa-arrow-right pe-2"></i> <strong>Start Review</strong>
+                      </button>
+                    </div>
+                  </div>
                   <div class="container col-11 col-xl-10 pt-2" id="imageContainer">
                     <div id="carouselImages" class="carousel slide carousel-fade" data-mdb-ride="carousel" data-mdb-carousel-init>
-                      <!-- Indicators -->
                       <div class="carousel-indicators">
                         <button type="button" data-mdb-target="#carouselImages" data-mdb-slide-to="0" class="active" aria-current="true" aria-label="{{ strain }} 1"></button>
                       </div>
                       <div class="carousel-inner rounded-5 shadow-4-strong">
-                        <!-- Single item -->
                         <div class="carousel-item active">
                           <img 
                             src="{{ url_path }}"
                             class="img-fluid rounded-5" 
                             alt="Conniosseur {{ strain }} Cultivar Review Card"
                             id="reviewImage"
+                            class="d-block w-100"
                           />
                         </div>
                       </div>
@@ -35,28 +41,11 @@
                 </div>
                 <a data-bs-target="#PreRollRankingsDisplay"></a>
                 <div class="container card-body pt-2">
-                  <div class="row my-auto mx-auto justify-content-center">
-                    <div class="col-xs-11 col-10 mx-auto">
-                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#PreRollRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
-                        <i class="fas fa-arrow-right pe-2"></i> <strong>Start Review</strong>
-                      </button>
-                    </div>
+                  <div class="col-9 mx-auto">
+                    <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
+                      <strong>Add to My List</strong>
+                    </button>
                   </div>
-                  <div class="row mx-auto justify-content-center">
-                    <div class="col-7 mx-auto py-3">
-                      <img 
-                        src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
-                        class="img-fluid rounded-5" 
-                        alt="Cannabis Cult Circle Logo"
-                        style="max-height:125px"
-                      />
-                    </div>
-                  </div>
-                </div>
-                <div class="col-9 mx-auto">
-                  <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
-                    <strong>Add to My List</strong>
-                  </button>
                 </div>
               </div>
             </div>
@@ -198,7 +187,12 @@ window.addEventListener('supabaseClientReady', async function() {
   }
   const strainValue = "{{ strain }}";
   const userEmail = await window.supabaseClient.getCurrentUserEmail();
+  if (!userEmail) {
+    return;
+  }
   await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
+  const emailInput = document.getElementById('connoisseur');
+  emailInput.value = userEmail;
 });
 </script>
 <script type="module" src="{{ url_for('static', path='js/generate_preroll_rating_questions.js') }}" async></script>

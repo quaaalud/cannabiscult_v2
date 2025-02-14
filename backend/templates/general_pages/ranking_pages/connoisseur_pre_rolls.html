@@ -75,9 +75,14 @@
           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
             <div class="container">
               {% include "components/voting_cards/preroll_card.html" %}
+              <div class="container d-flex align-items-center justify-content-center text-center">
+                <div class="lineage-container">
+                  <div id="lineageChart" class="mx-auto"></div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 my-auto{% endif %} pt-lg-1 mx-auto">
+          <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 {% endif %} pt-lg-4 mx-auto">
             <div class="d-flex flex-column justify-content-between pt-lg-5">
               <div class="d-flex align-items-start mb-5">
                 <div class="flex-shrink-0">
@@ -194,20 +199,15 @@
       </section>
     </section>
   </div>
-  <div class="container py-5">
-    <div class="row mx-auto">
-      <div class="col-12 col-lg-9 mx-auto">
-        {% include "components/flower_review_selector.html" %}
-      </div>
-    </div>
+  <div class="container align-items-center justify-items-center pt-5">
+    {% include "components/homepage_elements/homepage_features.html" %}
   </div>
-  <section class="container py-5">
-    <div class="row mx-auto">
-      <div class="col-auto mx-auto">
-        <img class="img-fluid" src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"/>
-      </div>
+  <div class="container py-3 bg-transparent">
+    <div class="text-muted text-center">
+      <p class="fs-3">More Cult Reviews</p>
     </div>
-  </section>
+    {% include "components/voting_cards/simple_product_card.html" %}
+  </div>
 </main>
 <style> 
   hr.divider-vertical { 
@@ -221,28 +221,45 @@
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    var isMystery = {{ is_mystery | tojson | safe }};
-    if (isMystery) { 
-      return
-    } else {
-      if (terpenesList && terpenesList.length > 0) {
-        const dataValues = terpenesList.map(() => 1);
-        initTerpeneChart(terpenesList, dataValues);
-      }
-      fetchAndUpdateStrainRatings();
-    }
-  });
+<script type="module">
+  import initTerpeneChart from "{{ url_for('static', path='js/utils/generateTerpeneChart.js') }}";
+  import createLineageChart from "{{ url_for('static', path='js/utils/getLineageChart.js') }}";
   
-  function fetchAndUpdateStrainRatings() {
+  function populateLineageChartIfExists(lineageStr, strain, cultivator, urlPath) {
+      const lineage = lineageStr.trim();
+      if (!lineage || lineage.toLowerCase() === 'none' || lineage.toLowerCase() === 'null') {
+          return;
+      }
+      if (cultivator && strain && urlPath) {
+          const lineageChart = new createLineageChart(lineage, strain, cultivator, urlPath);
+          lineageChart.renderLineageChart();
+      }
+  }
+  document.addEventListener('DOMContentLoaded', function() {
     var pre_rollId = {{ pre_roll_id }};
-    var endpoint = "/prerolls/get_pre_roll_rating_by_id/" + parseInt(pre_rollId);
-
+    const strain = `{{ strain }}`;
+    const cultivator = `{{ cultivator }}`;
+    const urlPath = `{{ url_path }}`;
+    const lineageStr = `{{ lineage }}`;
+    const isMystery = {{ is_mystery | tojson | safe }};
+    if (terpenesList && terpenesList.length > 0) {
+      const dataValues = terpenesList.map(() => 1);
+      initTerpeneChart(terpenesList, dataValues);
+    }
+    if (isMystery) {
+        return;
+    }
+    populateLineageChartIfExists(lineageStr, strain, cultivator, urlPath)
+    fetchAndUpdateStrainRatings(pre_rollId);
+  });
+  function fetchAndUpdateStrainRatings(pre_rollId) {
+    var endpoint = `/prerolls/get_pre_roll_rating_by_id/${parseInt(pre_rollId)}`;
     fetch(endpoint)
     .then(response => response.json())
     .then(data => {
+      
         if (!data.message) {
+            console.log(data);
             document.getElementById('flavor_rating_value').innerText = data.flavor_rating.toFixed(2);
             document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
             document.getElementById('effects_rating_value').innerText = data.effects_rating.toFixed(2);
@@ -255,29 +272,6 @@
         }
     })
     .catch(error => console.error('Error:', error));
-  }
-
-  function initTerpeneChart(labels, dataValues) {
-    const ctx = document.getElementById('terpeneChart').getContext('2d');
-    new Chart(ctx, {
-      type: 'pie',
-      data: {
-        labels: labels,
-        datasets: [{
-          label: 'Terpenes',
-          data: dataValues,
-          backgroundColor: generateColors(labels.length),
-        }]
-      }
-    });
-  }
-  function generateColors(count) {
-    const colors = [
-      'rgba(63, 81, 181, 0.5)', 'rgba(77, 182, 172, 0.5)', 'rgba(66, 133, 244, 0.5)',
-      'rgba(156, 39, 176, 0.5)', 'rgba(233, 30, 99, 0.5)', 'rgba(66, 73, 244, 0.4)',
-      'rgba(66, 133, 244, 0.2)'
-    ];
-    return colors.slice(0, count);
   }
 </script>
 {% endblock %}
