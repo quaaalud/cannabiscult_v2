@@ -221,3 +221,52 @@ export class SimpleTypewriter {
     this.typeCharacter();
   }
 }
+
+
+export async function updateLandingPageButton() {
+    const cultButton = document.getElementById('cultSignUpButton');
+    if (!cultButton) { return };
+    let wasLoggedIn = null;
+    let cultSignUpTypewriter = null;
+    function checkAuthAndUpdateButton() {
+        const isLoggedIn = window.supabaseClient.isUserLoggedIn();
+        if (wasLoggedIn === isLoggedIn) {
+            return;
+        }
+        wasLoggedIn = isLoggedIn;
+        if (cultSignUpTypewriter?.isAnimating) {
+            cultSignUpTypewriter.stop();
+        }
+        const textSpan = document.getElementById('cultSignUpButtonText');
+        if (textSpan) {
+           textSpan.textContent = '';
+        }
+        let buttonText = [
+            'Join the Cult Today!',
+            'Start Reviewing Strains',
+            'Receive Pack Drop Updates'
+        ];
+        let linkHref = 'https://cannabiscult.co/login';
+        if (isLoggedIn) {
+            buttonText = [
+                'See Your Ratings',
+                'Compare With Other Connoisseurs',
+                'Add Strains to Your List'
+            ];
+            linkHref = '/home';
+        }
+        cultButton.href = linkHref;
+        cultSignUpTypewriter = new SimpleTypewriter({
+            targetId: 'cultSignUpButtonText',
+            phrases: buttonText,
+            typingSpeed: 100,
+            pauseDuration: 1500,
+            backspace: true,
+            respectReducedMotion: false
+        });
+        cultSignUpTypewriter.start();
+    }
+    window.addEventListener('userAuthChange', () => {
+        checkAuthAndUpdateButton();
+    });
+}
