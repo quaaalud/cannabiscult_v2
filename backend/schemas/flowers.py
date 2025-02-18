@@ -123,30 +123,35 @@ class CreateFlowerRanking(FlowerRankingBase):
     connoisseur: EmailStr = Field(..., description="Email address of the connoisseur")
 
 
-class CreateHiddenFlowerRanking(CreateFlowerRanking):
-    pass
-
-
 class GetFlowerRanking(CreateFlowerRanking):
+    strain: str
+    cultivator: str
+    method_of_consumption: str = Field(..., description="Method of Connsumption for the reviewed strain.")
+    connoisseur: Optional[EmailStr] = Field(
+        "cultmember@cannabiscult.co", description="Email address of the connoisseur"
+    )
+    username: Optional[str] = Field("Cult Member", description="User name for the connoisseur")
+    appearance_rating: float = Field(..., gt=0, lt=10.1)
+    freshness_rating: float = Field(..., gt=0, lt=10.1)
+    smell_rating: float = Field(..., gt=0, lt=10.1)
+    flavor_rating: float = Field(..., gt=0, lt=10.1)
+    harshness_rating: float = Field(..., gt=0, lt=10.1)
+    effects_rating: float = Field(..., gt=0, lt=10.1)
+    appearance_explanation: Optional[str] = Field(None, max_length=1500)
+    freshness_explanation: Optional[str] = Field(None, max_length=1500)
+    flavor_explanation: Optional[str] = Field(None, max_length=1500)
+    smell_explanation: Optional[str] = Field(None, max_length=1500)
+    harshness_explanation: Optional[str] = Field(None, max_length=1500)
+    effects_explanation: Optional[str] = Field(None, max_length=1500)
+
+    pack_code: Optional[str] = Field(None, max_length=99)
+    flower_id: int = Field(...)
+
     class Config:
         from_attributes = True
+        strip_whitespace = True
         populate_by_name = True
-
-
-class FlowerReviewResponse(BaseModel):
-    id: int
-    strain: StrainType
-    cultivator: StrainType
-    overall: RatingType
-    structure: RatingType
-    nose: RatingType
-    flavor: RatingType
-    effects: RatingType
-    card_path: bytes
-
-    class Config:
-        from_attributes = True
-        populate_by_name = True
+        exclude_unset = True
 
 
 class FlowerRankingValuesSchema(BaseModel):

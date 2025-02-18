@@ -38,9 +38,7 @@ class PreRollDescriptionSchema(BaseModel):
     effects: str = Field("Coming Soon", description="Effects of the pre-roll")
     lineage: str = Field("Coming Soon", description="Lineage of the pre-roll")
     terpenes_list: Optional[List[str]] = Field(None, description="List of terpenes in the pre-roll")
-    cultivar_email: str = Field(
-        "aaron.childs@thesocialoutfitus.com", description="Email of the Connoisseur"
-    )
+    cultivar_email: str = Field("aaron.childs@thesocialoutfitus.com", description="Email of the Connoisseur")
     strain_category: StrainCategoryEnum = Field(
         StrainCategoryEnum.cult_pack, description="The category for the flower strain. ex: indica, hybrid, etc."
     )
@@ -62,51 +60,77 @@ class PreRollRankingSchema(BaseModel):
     strain: StrainType = Field(..., description="Name of the strain")
     connoisseur: EmailStr = Field(..., description="Email address of the connoisseur")
     roll_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the roll quality")
-    airflow_rating: Optional[float] = Field(
-        None, gt=0, lt=10.1, description="Rating for airflow quality"
-    )
+    airflow_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for airflow quality")
     ease_to_light_rating: Optional[float] = Field(
         None, gt=0, lt=10.1, description="Rating for ease of lighting pre-roll"
     )
     flavor_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the flavor")
-    tightness_rating: Optional[float] = Field(
-        None, gt=0, lt=10.1, description="Rating for tightness of the roll"
-    )
-    burn_rating: Optional[float] = Field(
-        None, gt=0, lt=10.1, description="Rating for the burn quality"
-    )
-    effects_rating: Optional[float] = Field(
-        None, gt=0, lt=10.1, description="Rating for the effects"
-    )
+    tightness_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for tightness of the roll")
+    burn_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the burn quality")
+    effects_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the effects")
     overall_score: Optional[float] = Field(
         None, gt=0, lt=10.1, description="Overall score calculated from the ratings"
     )
 
-    roll_explanation: Optional[str] = Field(
-        None, max_length=1500, description="Explanation for the roll rating"
-    )
-    airflow_explanation: Optional[str] = Field(
-        None, max_length=1500, description="Explanation for the airflow rating"
-    )
+    roll_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the roll rating")
+    airflow_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the airflow rating")
     ease_to_light_explanation: Optional[str] = Field(
         None, max_length=1500, description="Explanation for ease of lighting pre-roll rating"
     )
-    flavor_explanation: Optional[str] = Field(
-        None, max_length=1500, description="Explanation for the flavor rating"
-    )
+    flavor_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the flavor rating")
     tightness_explanation: Optional[str] = Field(
         None, max_length=1500, description="Explanation for the tightness of the roll rating"
     )
-    burn_explanation: Optional[str] = Field(
-        None, max_length=1500, description="Explanation for the burn rating"
-    )
-    effects_explanation: Optional[str] = Field(
-        None, max_length=1500, description="Explanation for the effects rating"
-    )
+    burn_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the burn rating")
+    effects_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the effects rating")
     purchase_bool: Optional[bool] = Field(True, description="Would you buy product again?")
-    pack_code: Optional[str] = Field(
-        None, max_length=99, description="Pack code of the pre-roll, if provided"
+    pack_code: Optional[str] = Field(None, max_length=99, description="Pack code of the pre-roll, if provided")
+    pre_roll_id: int = Field(..., description="ID of the associated pre-roll")
+
+    @validator("cultivator", "strain", pre=True, always=True)
+    def verify_string_and_capitalize_name(cls, v):
+        return v.title() if isinstance(v, str) else "None Submitted"
+
+    class Config:
+        from_attributes = True
+        exclude_unset = True
+        populate_by_name = True
+        strip_whitespace = True
+
+
+class GetPreRollRanking(PreRollRankingSchema):
+    cultivator: StrainType = Field(..., description="Name of the cultivator")
+    strain: StrainType = Field(..., description="Name of the strain")
+    connoisseur: Optional[EmailStr] = Field(
+        "cultmember@cannabiscult.co", description="Email address of the connoisseur"
     )
+    username: Optional[str] = Field("Cult Member", description="User name for the connoisseur")
+    roll_rating: float = Field(None, gt=0, lt=10.1, description="Rating for the roll quality")
+    airflow_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for airflow quality")
+    ease_to_light_rating: Optional[float] = Field(
+        None, gt=0, lt=10.1, description="Rating for ease of lighting pre-roll"
+    )
+    flavor_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the flavor")
+    tightness_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for tightness of the roll")
+    burn_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the burn quality")
+    effects_rating: Optional[float] = Field(None, gt=0, lt=10.1, description="Rating for the effects")
+    overall_score: Optional[float] = Field(
+        None, gt=0, lt=10.1, description="Overall score calculated from the ratings"
+    )
+
+    roll_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the roll rating")
+    airflow_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the airflow rating")
+    ease_to_light_explanation: Optional[str] = Field(
+        None, max_length=1500, description="Explanation for ease of lighting pre-roll rating"
+    )
+    flavor_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the flavor rating")
+    tightness_explanation: Optional[str] = Field(
+        None, max_length=1500, description="Explanation for the tightness of the roll rating"
+    )
+    burn_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the burn rating")
+    effects_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the effects rating")
+    purchase_bool: Optional[bool] = Field(True, description="Would you buy product again?")
+    pack_code: Optional[str] = Field(None, max_length=99, description="Pack code of the pre-roll, if provided")
     pre_roll_id: int = Field(..., description="ID of the associated pre-roll")
 
     @validator("cultivator", "strain", pre=True, always=True)

@@ -14,10 +14,8 @@ from typing import Dict, Any, List, Union, Optional
 from db.session import get_supa_db, get_db
 from db.base import Flower_Ranking
 from schemas.flowers import (
-    FlowersBase,
     GetFlowerWithDescription,
     CreateFlowerRanking,
-    FlowerReviewResponse,
     GetFlowerRanking,
     FlowerRankingValuesSchema,
 )
@@ -26,8 +24,6 @@ from db.repository.flowers import (
     get_flower_and_description,
     get_flower_and_description_by_id,
     return_all_available_descriptions_from_strain_id,
-    get_review_data_and_path,
-    get_flower_data_and_path,
     update_or_create_flower_ranking,
     return_average_flower_ratings,
 )
@@ -35,13 +31,6 @@ from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 from core.config import settings
 
 router = APIRouter()
-
-
-@router.get("/", response_model=FlowersBase)
-async def query_flower_by_strain(
-    strain: str = Query(None, alias="strain"), db: Session = Depends(get_db)
-) -> Dict[str, Any]:
-    return get_flower_data_and_path(db, strain)
 
 
 @router.get("/description", response_model=GetFlowerWithDescription)
@@ -69,11 +58,6 @@ async def return_all_available_descriptions_from_strain_id_route(
 ) -> List[Optional[Dict[str, Any]]]:
     all_descriptions = await return_all_available_descriptions_from_strain_id(db, int(flower_id))
     return all_descriptions
-
-
-@router.get("/get_flower_from_strain_and_cultivator", response_model=FlowerReviewResponse)
-async def return_selected_review(strain_selected: str, cultivator_selected: str, db: Session = Depends(get_supa_db)):
-    return get_review_data_and_path(db, cultivator_selected, strain_selected)
 
 
 @router.post("/ranking", response_model=GetFlowerRanking, dependencies=[Depends(settings.jwt_auth_dependency)])

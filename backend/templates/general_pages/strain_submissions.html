@@ -120,8 +120,11 @@
       {% include "components/users/my_ratings.html" %}
     </div>
   </section>
-  <div class="col-12 py-5">
-    {% include "components/flower_review_selector.html" %}
+  <div class="container py-3 bg-transparent" style="max-height:950px; overflow-y:scroll">
+      <div class="text-muted text-center">
+          <p class="fs-3">Cult Strain Reviews</p>
+      </div>
+      {% include "components/voting_cards/simple_product_card.html" %}
   </div>
 </main>
 {% include "components/auth/add_new_voter_modal.html" %}

@@ -1,30 +1,30 @@
 {% extends "shared/base.html" %}
 
 {% block title %} 
-  <title>Cultivar Review {{ strain }} - Cannabis Cult</title>
+  <title>{{ strain }} by {{ cultivator }} - Cannabis Cult Review Page</title>
 {% endblock %} 
 
 {% block head %}
 <meta 
-  content="Cannabis Cult {{ strain }} Cultivar Rating Page." 
+  content="Concentrate Profile and Reviews for {{ strain }} by {{ cultivator }} Cultivar on CannabisCult.co." 
   name="description"
 />
 <meta 
   name="keywords"
-  content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
+  content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews, {{ strain }}, {{ cultivator }}, {{ strain }} by {{ cultivator }}"
 />
 <meta 
   property="og:image" 
   content="{% if url_path %}{{ url_path }}{% else %}https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp{% endif %}"
-  alt="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Card"
+  alt="Cannabis Cult {{ strain }} by {{ cultivator }} Concentrate Profile Image"
 />
 <meta 
   property="og:description" 
-  content="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Page." 
+  content="Concentrate Profile and Reviews for {{ strain }} by {{ cultivator }} Cultivar on CannabisCult.co." 
 />
 <meta 
   property="og:title" 
-  content="Cannabis Cult {% if strain %}{{ strain }} {% endif %}Cultivar Connoisseur Rating"
+  content="Cannabis Cult Concentrate Profile Review for {{ strain }} by {{ cultivator }}."
 />
 <meta 
   name="twitter:card" 
@@ -40,11 +40,11 @@
 />
 <meta 
   property="twitter:title" 
-  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Rating." 
+  content="Cannabis Cult Concentrate Profile for {{ strain }} by {{ cultivator }}." 
 />
 <meta 
   property="twitter:description" 
-  content="{{ strain }} Cultivar Review Page on CannabisCult.co" 
+  content="Concentrate Profile and Reviews for {{ strain }} by {{ cultivator }} Cultivar on CannabisCult.co." 
 />
 <meta 
   property="twitter:image" 
@@ -52,11 +52,11 @@
 />
 <meta 
   property="twitter:image:alt"
-  content="Cannabis Cult Cultivar Review Card for {{ strain }} Concentrate"
+  content="Cannabis Cult Concentrate Profile for {{ strain }} by {{ cultivator }}"
 />
 <link 
   rel="canonical" 
-  href="https://cannabiscult.co/connoisseur-concentrates{% if strain %}/get-concentrate?{{ strain }}{% endif %}"
+  href="https://cannabiscult.co/concentrate-get-review?strain_selected={{ strain }}&cultivator_selected={{ cultivator }}"
 />
   {% include "components/auth/login_register_modal.html" %}
 {% endblock %}
@@ -66,167 +66,167 @@
 
 {% block content %}
 <main class="container pt-5">
-    <section draggable="false" class="container pt-3" data-v-271253ee="">
-      <section class="mb-10">
-        <div class="row mx-auto">
-          <h1 class="fw-bold mb-5 text-center">Cultivar Concentrate Ratings</h1>
+  <section class="container pt-3">
+    <section class="mb-10">
+      <div class="row mx-auto">
+        <h1 class="fw-bold mb-5 text-center">Cultivar Concentrate Ratings</h1>
+      </div>
+      <div class="row gx-lg-5 align-items-start d-flex">
+        <div class="col-lg-6 col-12 mb-5 mb-lg-0">
+          <div class="container">
+            {% include "components/voting_cards/concentrate_card.html" %}
+            <div class="container d-flex align-items-center justify-content-center text-center">
+              <div class="lineage-container">
+                <div id="lineageChart" class="mx-auto"></div>
+              </div>
+            </div>
         </div>
-        <div class="row gx-lg-5 align-items-start d-flex">
-          <div class="col-lg-6 col-12 mb-5 mb-lg-0">
-            <div class="container">
-              {% include "components/voting_cards/concentrate_card.html" %}
-              <div class="container d-flex align-items-center justify-content-center text-center">
-                <div class="lineage-container">
-                  <div id="lineageChart" class="mx-auto"></div>
-                </div>
-              </div>
+      </div>
+      <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 {% endif %} pt-lg-4 mx-auto">
+        <div class="row flex-shrink-0 justify-content-evenly text-center pt-0 pt-md-3 pb-5">
+          <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareTwitter" data-mdb-ripple-init>
+            <i class="fab fa-twitter"></i>
+          </button>
+          <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareFacebook" data-mdb-ripple-init>
+            <i class="fab fa-facebook-f"></i>
+          </button>
+          <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareReddit" data-mdb-ripple-init>
+            <i class="fab fa-reddit-alien"></i>
+          </button>
+          <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareEmail" data-mdb-ripple-init>
+            <i class="fa fa-envelope"></i>
+          </button>
+          <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareText" data-mdb-ripple-init>
+            <i class="fa fa-comment"></i>
+          </button>
+        </div>
+        <div class="d-flex flex-column justify-content-evenly">
+          <div class="mb-4">
+            <label for="descriptionSelect" class="form-label fw-bold">Select Cultivar Description</label>
+            <select class="form-select" id="descriptionSelect" data-mdb-select-init>
+              <option value="" disabled selected>Loading descriptions...</option>
+            </select>
           </div>
-            </div>
-          <div class="col-lg-6 col-12 mb-4 mb-lg-0 {% if not is_mystery %}h-100 {% endif %} pt-lg-4 mx-auto">
-            <div class="row flex-shrink-0 justify-content-evenly text-center pt-0 pt-md-3 pb-5">
-              <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareTwitter" data-mdb-ripple-init>
-                <i class="fab fa-twitter"></i>
-              </button>
-              <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareFacebook" data-mdb-ripple-init>
-                <i class="fab fa-facebook-f"></i>
-              </button>
-              <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareReddit" data-mdb-ripple-init>
-                <i class="fab fa-reddit-alien"></i>
-              </button>
-              <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareEmail" data-mdb-ripple-init>
-                <i class="fa fa-envelope"></i>
-              </button>
-              <button class="btn btn-outline-info btn-floating shadow-5-strong" id="shareText" data-mdb-ripple-init>
-                <i class="fa fa-comment"></i>
-              </button>
-            </div>
-            <div class="d-flex flex-column justify-content-evenly">
-              <div class="mb-4">
-                <label for="descriptionSelect" class="form-label fw-bold">Select Cultivar Description</label>
-                <select class="form-select" id="descriptionSelect" data-mdb-select-init>
-                  <option value="" disabled selected>Loading descriptions...</option>
-                </select>
-              </div>
-              <div class="d-flex align-items-start mb-5">
-                <div class="flex-shrink-0">
-                  <div class="p-3 rounded-4 shadow-2-strong btn-purple">
-                    <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
-                  </div>
-                </div>
-                <div class="flex-grow-1 ms-4">
-                <p class="fw-bold mb-1">Description</p>
-                <p id="description_text" class="text-muted mb-0">
-                  {% if is_mystery %}We cannot tell you about the mystery strains.{% elif description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}
-                </p>
+          <div class="d-flex align-items-start mb-5">
+            <div class="flex-shrink-0">
+              <div class="p-3 rounded-4 shadow-2-strong btn-purple">
+                <i class="fas fa-comments fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
               </div>
             </div>
-            <div class="d-flex align-items-start mb-5">
-              <div class="flex-shrink-0">
-                <div class="p-3 rounded-4 shadow-2-strong btn-purple">
-                  <i class="fas fa-timeline fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-4">
-                <p class="fw-bold mb-1">Lineage</p>
-                <p id="lineage_text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
-              </div>
+            <div class="flex-grow-1 ms-4">
+            <p class="fw-bold mb-1">Description</p>
+            <p id="description_text" class="text-muted mb-0">
+              {% if is_mystery %}We cannot tell you about the mystery strains.{% elif description_text %}{{ description_text }}{% else %}Coming Soon{% endif %}
+            </p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start mb-5">
+          <div class="flex-shrink-0">
+            <div class="p-3 rounded-4 shadow-2-strong btn-purple">
+              <i class="fas fa-timeline fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
             </div>
-            <div class="d-flex align-items-start mb-5">
-              <div class="flex-shrink-0">
-                <div class="p-3 rounded-4 shadow-2-strong btn-purple">
-                  <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-4">
-                <p class="fw-bold mb-1">Effects<br></p>
-                <p id="effects_text" class="text-muted mb-0">{% if is_mystery %}So our cultivators know what you think.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
-              </div>
+          </div>
+          <div class="flex-grow-1 ms-4">
+            <p class="fw-bold mb-1">Lineage</p>
+            <p id="lineage_text" class="text-muted mb-0">{% if is_mystery %}But be sure to submit your ratings.{% elif lineage %}{{ lineage }}{% else %}Coming Soon{% endif %}</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start mb-5">
+          <div class="flex-shrink-0">
+            <div class="p-3 rounded-4 shadow-2-strong btn-purple">
+              <i class="fa-solid fa-user-gear fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
             </div>
-            <div class="d-flex align-items-start">
-              <div class="flex-shrink-0">
-                <div class="p-3 rounded-4 shadow-2-strong btn-purple">
-                  <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
-                </div>
-              </div>
-              <div class="flex-grow-1 ms-4">
-                <p class="fw-bold mb-1">Terpenes</p>
-                  <div id="terpene_text" class="text-muted mb-0">
-                {% if is_mystery %}
-                  <p>And you will see all the results soon!</p>
+          </div>
+          <div class="flex-grow-1 ms-4">
+            <p class="fw-bold mb-1">Effects<br></p>
+            <p id="effects_text" class="text-muted mb-0">{% if is_mystery %}So our cultivators know what you think.{% elif effects %}{{ effects }}{% else %}Coming Soon{% endif %}</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start">
+          <div class="flex-shrink-0">
+            <div class="p-3 rounded-4 shadow-2-strong btn-purple">
+              <i class="fas fa-chart-pie fa-lg text-white fa-fw" aria-controls="#picker-editor"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-4">
+            <p class="fw-bold mb-1">Terpenes</p>
+              <div id="terpene_text" class="text-muted mb-0">
+            {% if is_mystery %}
+              <p>And you will see all the results soon!</p>
+            {% else %}
+              <script>
+                var terpenesList = {{ terpenes_list | tojson }};
+              </script>
+                {% if terpenes_list %}
+                  <canvas id="terpeneChart"></canvas>
                 {% else %}
-                  <script>
-                    var terpenesList = {{ terpenes_list | tojson }};
-                  </script>
-                    {% if terpenes_list %}
-                      <canvas id="terpeneChart"></canvas>
-                    {% else %}
-                      <p>Coming Soon</p>
-                    {% endif %}
-                  {% endif %}
-                </div>
-              </div>
+                  <p>Coming Soon</p>
+                {% endif %}
+              {% endif %}
             </div>
           </div>
         </div>
       </div>
-    </section>
-  </section>
-  <section draggable="false" class="container" data-v-271253ee="">
-    <section class="mb-10 text-center">
-      <div class="row gx-lg-5">
-        <div class="col-4 mb-4">
-          <h2 id="flavor_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
-          <h5 class="text-muted mb-3">Flavor</h5>
-        </div>
-        <div class="col-4 mb-4">
-          <h2 id="overall_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
-          <h5 class="text-muted mb-3">Overall</h5>
-        </div>
-        <div class="col-4 mb-4">
-          <h2 id="effects_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
-          <h5 class="text-muted mb-3">Effects</h5>
-        </div>
-      </div>
-    </section>
-  </section>
-  <section draggable="false" class="container navy-color-parent" data-v-271253ee="">
-    <section class="mb-10 text-center">
-      <div class="row">
-        <div class="col-lg-3 col-6 mb-5 mb-md-5 mb-lg-0 position-relative">
-          <i class="fas fa-eye fa-3x  mb-4" aria-controls="#picker-editor"></i>
-          <h5 id="color_rating_value" class="text-info fw-bold mb-3">?</h5>
-          <h6 class="fw-normal mb-0">Appearance<br></h6>
-          <hr class="divider-vertical">
-        </div>
-        <div class="col-lg-3 col-6 mb-5 mb-md-5 mb-lg-0 position-relative">
-          <i class="fas fa-cannabis fa-3x  mb-4" aria-controls="#picker-editor"></i>
-          <h5 id="smell_rating_value" class="text-info fw-bold mb-3">?</h5>
-          <h6 class="fw-normal mb-0">Aroma</h6>
-          <hr class="divider-vertical d-none d-lg-block">
-        </div>
-        <div class="col-lg-3 col-6 mb-5 mb-md-0 position-relative">
-          <i class="fas fa-fill-drip fa-3x  mb-4" aria-controls="#picker-editor"></i>
-          <h5 id="consistency_rating_value" class="text-info fw-bold mb-3">?</h5>
-          <h6 class="fw-normal mb-0">Consistency</h6>
-          <hr class="divider-vertical">
-        </div>
-        <div class="col-lg-3 col-6 mb-5 mb-md-0 position-relative">
-          <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
-          <h5 id="harshness_rating_value" class="text-info fw-bold mb-3">?</h5>
-          <h6 class="fw-normal mb-0">Smoothness</h6>
-        </div>
-      </div>
-    </section>
-  </section>
-  <div class="container align-items-center justify-items-center pt-5">
-    {% include "components/homepage_elements/homepage_features.html" %}
-  </div>
-  <div class="container py-3 bg-transparent">
-    <div class="text-muted text-center">
-      <p class="fs-3">More Cult Reviews</p>
     </div>
-    {% include "components/voting_cards/simple_product_card.html" %}
   </div>
+</section>
+</section>
+<section draggable="false" class="container" data-v-271253ee="">
+  <section class="mb-10 text-center">
+    <div class="row gx-lg-5">
+      <div class="col-4 mb-4">
+        <h2 id="flavor_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
+        <h5 class="text-muted mb-3">Flavor</h5>
+      </div>
+      <div class="col-4 mb-4">
+        <h2 id="overall_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
+        <h5 class="text-muted mb-3">Overall</h5>
+      </div>
+      <div class="col-4 mb-4">
+        <h2 id="effects_rating_value" class="fw-bold display-5 text-info mb-3">?</h2>
+        <h5 class="text-muted mb-3">Effects</h5>
+      </div>
+    </div>
+  </section>
+</section>
+<section draggable="false" class="container navy-color-parent" data-v-271253ee="">
+  <section class="mb-10 text-center">
+    <div class="row">
+      <div class="col-lg-3 col-6 mb-5 mb-md-5 mb-lg-0 position-relative">
+        <i class="fas fa-eye fa-3x  mb-4" aria-controls="#picker-editor"></i>
+        <h5 id="color_rating_value" class="text-info fw-bold mb-3">?</h5>
+        <h6 class="fw-normal mb-0">Appearance<br></h6>
+        <hr class="divider-vertical">
+      </div>
+      <div class="col-lg-3 col-6 mb-5 mb-md-5 mb-lg-0 position-relative">
+        <i class="fas fa-cannabis fa-3x  mb-4" aria-controls="#picker-editor"></i>
+        <h5 id="smell_rating_value" class="text-info fw-bold mb-3">?</h5>
+        <h6 class="fw-normal mb-0">Aroma</h6>
+        <hr class="divider-vertical d-none d-lg-block">
+      </div>
+      <div class="col-lg-3 col-6 mb-5 mb-md-0 position-relative">
+        <i class="fas fa-fill-drip fa-3x  mb-4" aria-controls="#picker-editor"></i>
+        <h5 id="consistency_rating_value" class="text-info fw-bold mb-3">?</h5>
+        <h6 class="fw-normal mb-0">Consistency</h6>
+        <hr class="divider-vertical">
+      </div>
+      <div class="col-lg-3 col-6 mb-5 mb-md-0 position-relative">
+        <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
+        <h5 id="harshness_rating_value" class="text-info fw-bold mb-3">?</h5>
+        <h6 class="fw-normal mb-0">Smoothness</h6>
+      </div>
+    </div>
+  </section>
+</section>
+<div class="container align-items-center justify-items-center pt-5">
+  {% include "components/homepage_elements/homepage_features.html" %}
+</div>
+<div class="container py-3 bg-transparent">
+  <div class="text-muted text-center">
+    <p class="fs-3">More Cult Reviews</p>
+  </div>
+  {% include "components/voting_cards/simple_product_card.html" %}
+</div>
 </main>
 <style> 
   hr.divider-vertical { 
@@ -241,63 +241,26 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
-  import populateDescriptionSelect from "{{ url_for('static', path='js/utils/descriptionSelect.js') }}";
+  import { 
+      populateDescriptionSelect, fetchConcentrateDescriptions, fetchAndUpdateConcentrateRankings 
+  } from "{{ url_for('static', path='js/utils/descriptionSelect.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
       const concentrateId = "{{ concentrate_id }}";
       const strain = `{{ strain }}`;
       const cultivator = `{{ cultivator }}`;
       const urlPath = `{{ url_path }}`;
       const isMystery = {{ is_mystery | tojson | safe }};
-      if (isMystery) {
-          return;
-      }
-      await fetchDescriptions(concentrateId, strain, cultivator, urlPath);
-      await fetchAndUpdateConcentrateRatings(concentrateId);
+      if (isMystery) { return; }
+      await fetchConcentrateDescriptions(concentrateId, strain, cultivator, urlPath);
+      await fetchAndUpdateConcentrateRankings(concentrateId);
   });
   function formatEnumValue(enumString) {
-    if (!enumString) return "";
-    return enumString
-      .split("_")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
+      if (!enumString) return "";
+      return enumString
+        .split("_")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
   }
-  async function fetchAndUpdateConcentrateRatings(concentrateId) {
-    const endpoint = `/concentrates/get_concentrate_ratings_by_id/${concentrateId}`;
-    try {
-        const response = await fetch(endpoint);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const ratingsData = await response.json();
-        if (ratingsData.message) { return; };
-        const formatRating = (rating) => {
-          return rating !== null ? parseFloat(rating).toFixed(2) : '?';
-        };
-        document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
-        document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
-        document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
-        document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
-        document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
-        document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
-        document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
-      } catch (error) {
-        console.error('Error:', error);
-      }
-  }
-  async function fetchDescriptions(concentrateId, strain, cultivator, urlPath) {
-        if (!concentrateId) {
-            console.error("Concentrate ID not found!");
-            return;
-        }
-        try {
-            const response = await fetch(`/concentrates/all_descriptions?concentrate_id=${concentrateId}`);
-            if (!response.ok) throw new Error("Failed to fetch descriptions");
-            const descriptions = await response.json();
-            populateDescriptionSelect(descriptions, strain, cultivator, urlPath);
-        } catch (error) {
-            console.error("Error fetching concentrate descriptions:", error);
-        }
-    }
 </script>
 <script type="module">
   import SocialSharing from "{{ url_for('static', path='js/socialSharing.js') }}";

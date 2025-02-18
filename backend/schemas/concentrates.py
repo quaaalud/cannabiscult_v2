@@ -88,19 +88,48 @@ class CreateConcentrateRanking(ConcentrateRankingBase):
     connoisseur: EmailStr = Field(..., description="Email of the connoisseur")
     concentrate_id: Union[int, str] = Field(..., description="Unique identifier for the concentrate")
 
-
-class GetConcentrateRanking(CreateConcentrateRanking):
     class Config:
         from_attributes = True
         populate_by_name = True
+        strip_whitespace = True
+        exclude_unset = True
 
 
-class CreateHiddenConcentrateRanking(CreateConcentrateRanking):
-    pass
+class GetConcentrateRanking(BaseModel):
+    cultivator: str = Field(..., description="Name of the cultivator")
+    strain: str = Field(..., description="Name of the strain")
+    concentrate_id: Union[int, str] = Field(..., description="Unique identifier for the concentrate")
+    connoisseur: Optional[EmailStr] = Field(
+        "cultmember@cannabiscult.co", description="Email address of the connoisseur"
+    )
+    username: Optional[str] = Field("Cult Member", description="User name for the connoisseur")
+    color_rating: confloat(gt=0, lt=10.1) = Field(..., description="Color rating, range 0-10")
+    consistency_rating: confloat(gt=0, lt=10.1) = Field(..., description="Consistency rating, range 0-10")
+    smell_rating: confloat(gt=0, lt=10.1) = Field(..., description="Smell rating, range 0-10")
+    flavor_rating: confloat(gt=0, lt=10.1) = Field(..., description="Flavor rating, range 0-10")
+    harshness_rating: confloat(gt=0, lt=10.1) = Field(..., description="Harshness rating, range 0-10")
+    residuals_rating: confloat(gt=0, lt=10.1) = Field(..., description="Residuals rating, range 0-10")
+    effects_rating: confloat(gt=0, lt=10.1) = Field(..., description="Effects rating, range 0-10")
+    color_explanation: Optional[str] = Field(None, max_length=1500, description="Explanation for the color rating")
+    consistency_explanation: OptionalStr = Field(
+        None, max_length=1500, description="Explanation for the consistency rating"
+    )
+    flavor_explanation: OptionalStr = Field(None, max_length=1500, description="Explanation for the flavor rating")
+    smell_explanation: OptionalStr = Field(None, max_length=1500, description="Explanation for the smell rating")
+    harshness_explanation: OptionalStr = Field(
+        None, max_length=1500, description="Explanation for the harshness rating"
+    )
+    residuals_explanation: OptionalStr = Field(
+        None, max_length=1500, description="Explanation for the residuals rating"
+    )
+    effects_explanation: OptionalStr = Field(None, max_length=1500, description="Explanation for the effects rating")
+    pack_code: OptionalStr = Field(None, max_length=99, description="Pack code of the concentrate, if provided")
 
-
-class HiddenConcentrateRanking(CreateHiddenConcentrateRanking):
-    pass
+    class Config:
+        from_attributes = True
+        populate_by_name = True
+        strip_whitespace = True
+        exclude_unset = True
 
 
 class GetConcentrateWithDescription(BaseModel):

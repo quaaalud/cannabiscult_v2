@@ -14,7 +14,7 @@ from sqlalchemy import inspect, func, or_, and_, not_, union_all
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
-from db.base import Base
+from core.config import settings
 from schemas.search_class import (
     RatingModel,
     FlowerTerpTableSchema,
@@ -26,17 +26,20 @@ from schemas.search_class import (
     TerpProfileResultSchema,
     ProductWithTerpProfileSchema
 )
-from core.config import settings
 from db.base import (
+    Base,
     Flower,
     Flower_Description,
+    Flower_Ranking,
     Concentrate,
     Concentrate_Description,
+    Concentrate_Ranking,
     Edible,
     VibeEdible,
     Edible_Description,
     Pre_Roll,
     Pre_Roll_Description,
+    Pre_Roll_Ranking,
     TerpProfile,
     Product_Types,
     FlowerTerpTable,
@@ -49,6 +52,9 @@ from db.base import (
     SimpleProductSchema,
     User,
 )
+from schemas.flowers import GetFlowerRanking
+from schemas.concentrates import GetConcentrateRanking
+from schemas.pre_rolls import GetPreRollRanking
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
@@ -70,6 +76,70 @@ PRODUCT_TERP_TABLE_MAPPINGS = {
     "pre_roll": PreRollTerpTable,
     "edible": EdibleTerpTable,
 }
+
+RANKING_LOOKUP = {
+    "flower": (
+        Flower_Ranking,
+        "flower_id",
+        "connoisseur",
+        GetFlowerRanking,
+    ),
+    "concentrate": (
+        Concentrate_Ranking,
+        "concentrate_id",
+        "connoisseur",
+        GetConcentrateRanking,
+    ),
+    "pre_roll": (
+        Pre_Roll_Ranking,
+        "pre_roll_id",
+        "connoisseur",
+        GetPreRollRanking,
+    ),
+}
+
+
+async def get_user_ranking_for_product(
+    db: Session,
+    product_type: str,
+    user_email: str,
+    product_id: Optional[int] = None,
+    strain: Optional[str] = None,
+    cultivator: Optional[str] = None,
+) -> Optional[
+    Union[
+        GetFlowerRanking,
+        GetConcentrateRanking,
+        GetPreRollRanking,
+    ]
+]:
+    lookup = RANKING_LOOKUP.get(product_type.lower())
+    if not lookup:
+        return None
+    RankingModel, id_field_name, email_field_name, RankingSchema = lookup
+    query = (
+        db.query(RankingModel, User.username)
+        .outerjoin(User, getattr(RankingModel, email_field_name) == User.email)
+        .filter(getattr(RankingModel, email_field_name).ilike(user_email))
+    )
+    if product_id is not None and hasattr(RankingModel, id_field_name):
+        query = query.filter(getattr(RankingModel, id_field_name) == product_id)
+    elif strain and cultivator:
+        query = query.filter(
+            RankingModel.strain.ilike(strain),
+            RankingModel.cultivator.ilike(cultivator),
+        )
+    else:
+        return None
+    result = query.first()
+    if not result:
+        return None
+    ranking_record, username = result
+    schema_obj = RankingSchema.from_orm(ranking_record)
+    schema_dict = schema_obj.dict()
+    schema_dict["username"] = username or "Cult Member"
+    schema_dict[email_field_name] = "cultmember@cannabiscult.co"
+    return RankingSchema(**schema_dict)
 
 
 def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) -> Union[

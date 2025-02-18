@@ -118,7 +118,7 @@ async def submit_vibe_concentrate_ranking(
 
 
 @router.get("/get_top_concentrate_strains", response_model=List[Dict[str, Any]])
-async def get_top_concentrate_strains(db: Session = Depends(get_db)):
+async def get_top_concentrate_strains_route(db: Session = Depends(get_db)):
     avg_ratings = await return_average_concentrate_ratings(db)
     scored_strains = []
     for strain in avg_ratings:
@@ -150,7 +150,7 @@ async def get_top_concentrate_strains(db: Session = Depends(get_db)):
 
 
 @router.get("/get_top_rated_concentrate_strains", response_model=list[Any])
-async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n: int = 5):
+async def get_top_rated_concentrate_strains_route(db: Session = Depends(get_db), top_n: int = 5):
     avg_ratings = await return_average_concentrate_ratings(db)
     scored_strains = []
     for strain in avg_ratings:
@@ -185,6 +185,6 @@ async def get_top_rated_concentrate_strains(db: Session = Depends(get_db), top_n
     "/get_concentrate_ratings_by_id/{concentrate_id}",
     response_model=Union[ConcentrateRankingValuesSchema, RatingsErrorResponse],
 )
-async def get_concentrate_ratings_by_id(concentrate_id: int, db: Session = Depends(get_db)):
+async def get_concentrate_rankings_by_id_route(concentrate_id: int, db: Session = Depends(get_db)):
     ratings_dict = await get_concentrate_rankings_by_id(db, concentrate_id)
     return ratings_dict

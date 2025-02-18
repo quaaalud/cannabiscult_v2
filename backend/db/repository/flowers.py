@@ -6,6 +6,7 @@ from pathlib import Path
 from sqlalchemy import func, not_
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List, Union
+from core.config import settings
 from db.base import (
     Flower,
     Flower_Description,
@@ -14,10 +15,8 @@ from db.base import (
 )
 from schemas.flowers import (
     CreateFlowerRanking,
-    FlowerReviewResponse,
 )
-from db._supabase.connect_to_storage import return_image_url_from_supa_storage, get_image_from_results
-from core.config import settings
+from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
 def convert_img_bytes_for_html(img_bytes):
@@ -170,66 +169,6 @@ def get_flower_and_description_by_id(
         traceback.print_exc()
         print(f"Error fetching flower data and description: {e}")
         return None
-
-
-def get_flower_strains(db: Session) -> Optional[List[str]]:
-    try:
-        flower_list = db.query(Flower).all()
-        if flower_list:
-            return [flower.strain for flower in flower_list]
-    except Exception as e:
-        traceback.print_exc()
-        raise e
-
-
-def get_hidden_flower_strains(db: Session) -> List[Optional[Dict[str, Union[int, str, bool]]]]:
-    try:
-        flower_list = db.query(Flower).filter((Flower.is_mystery == True)).all()
-        if flower_list:
-            return [get_flower_data_and_path(db, flower.strain, "connoisseur") for flower in flower_list]
-    except Exception as e:
-        traceback.print_exc()
-        raise e
-
-
-def get_review_data_and_path(db: Session, cultivator_select: str, strain_select: str) -> FlowerReviewResponse:
-    review = (
-        db.query(Flower_Ranking)
-        .filter((Flower_Ranking.cultivator == cultivator_select) & (Flower_Ranking.strain == strain_select))
-        .all()
-    )
-    if review:
-        img_path = str(Path(review.card_path))
-        results_bytes = get_image_from_results(img_path)
-        struct_avg = get_average_of_list(review.structure)
-        nose_avg = get_average_of_list(review.nose)
-        flavor_avg = get_average_of_list(review.flavor)
-        effects_avg = get_average_of_list(review.effects)
-        total_avg = get_average_of_list([struct_avg, nose_avg, flavor_avg, effects_avg])
-        return {
-            "id": review.id,
-            "strain": review.strain,
-            "cultivator": review.cultivator,
-            "overall": total_avg,
-            "structure": struct_avg,
-            "nose": nose_avg,
-            "flavor": flavor_avg,
-            "effects": effects_avg,
-            "vote_count": review.vote_count,
-            "card_path": results_bytes,
-            "terpene_list": review.terpene_list,
-            "url_path": return_image_url_from_supa_storage(img_path),
-        }
-    else:
-        return {"strain": strain_select, "message": "Review not found"}
-
-
-def return_selected_review(strain_selected: str, cultivator_selected: str, db: Session) -> FlowerReviewResponse:
-    return get_review_data_and_path(
-        db,
-        cultivator_selected,
-        strain_selected,
-    )
 
 
 @settings.retry_db

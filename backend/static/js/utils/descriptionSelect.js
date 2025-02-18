@@ -27,7 +27,7 @@ function populateLineageChartIfExists(lineageStr, strain, cultivator, urlPath) {
         lineageChart.renderLineageChart();
     }
 }
-export default function populateDescriptionSelect(descriptions, strain, cultivator, urlPath) {
+export function populateDescriptionSelect(descriptions, strain, cultivator, urlPath) {
     const selectElement = document.getElementById("descriptionSelect");
     selectElement.innerHTML = "";
     descriptions.forEach((desc) => {
@@ -46,5 +46,82 @@ export default function populateDescriptionSelect(descriptions, strain, cultivat
     if (descriptions.length > 0) {
         selectElement.value = descriptions[0].description_id;
         updateDisplayedDescription(descriptions[0], strain, cultivator, urlPath);
+    }
+}
+
+async function fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath) {
+    if (!flowerId) {
+        console.error("Flower ID not found!");
+        return;
+    }
+    try {
+        const response = await fetch(`/flowers/all_descriptions?flower_id=${flowerId}`);
+        if (!response.ok) throw new Error("Failed to fetch descriptions");
+        const descriptions = await response.json();
+        populateDescriptionSelect(descriptions, strain, cultivator, urlPath);
+    } catch (error) {
+        console.error("Error fetching flower descriptions:", error);
+    }
+}
+
+function fetchAndUpdateFlowerRankings(flowerId) {
+    let endpoint = `/flowers/get_strain_ratings_by_id/${flowerId}/`;
+    fetch(endpoint)
+    .then(response => response.json())
+    .then(data => {
+        if (!data.message) {
+            const formatRating = (rating) => {
+                return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+            };
+            document.getElementById('flavor_rating_value').innerText = formatRating(data.flavor_rating);
+            document.getElementById('overall_rating_value').innerText = formatRating(data.overall_score);
+            document.getElementById('effects_rating_value').innerText = formatRating(data.effects_rating);
+            document.getElementById('appearance_rating_value').innerText = formatRating(data.appearance_rating);
+            document.getElementById('smell_rating_value').innerText = formatRating(data.smell_rating);
+            document.getElementById('harshess_rating_value').innerText = formatRating(data.harshness_rating);
+            document.getElementById('freshness_rating_value').innerText = formatRating(data.freshness_rating);
+        } else {
+            console.error('Error fetching data:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+export async function fetchConcentrateDescriptions(concentrateId, strain, cultivator, urlPath) {
+    if (!concentrateId) {
+        console.error("Concentrate ID not found!");
+        return;
+    }
+    try {
+        const response = await fetch(`/concentrates/all_descriptions?concentrate_id=${concentrateId}`);
+        if (!response.ok) throw new Error("Failed to fetch descriptions");
+        const descriptions = await response.json();
+        populateDescriptionSelect(descriptions, strain, cultivator, urlPath);
+    } catch (error) {
+        console.error("Error fetching concentrate descriptions:", error);
+    }
+}
+
+export async function fetchAndUpdateConcentrateRankings(concentrateId) {
+  const endpoint = `/concentrates/get_concentrate_ratings_by_id/${concentrateId}`;
+  try {
+      const response = await fetch(endpoint);
+      if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const ratingsData = await response.json();
+      if (ratingsData.message) { return; };
+      const formatRating = (rating) => {
+          return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+      };
+      document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
+      document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
+      document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
+      document.getElementById('harshness_rating_value').textContent = formatRating(ratingsData.harshness_rating);
+      document.getElementById('color_rating_value').textContent = formatRating(ratingsData.color_rating);
+      document.getElementById('smell_rating_value').textContent = formatRating(ratingsData.smell_rating);
+      document.getElementById('consistency_rating_value').textContent = formatRating(ratingsData.consistency_rating);
+    } catch (error) {
+      console.error('Error:', error);
     }
 }

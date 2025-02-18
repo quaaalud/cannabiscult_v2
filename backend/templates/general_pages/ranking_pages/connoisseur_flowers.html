@@ -245,52 +245,20 @@
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
-  import populateDescriptionSelect from "{{ url_for('static', path='js/utils/descriptionSelect.js') }}";
+  import { 
+    populateDescriptionSelect, fetchFlowerDescriptions, fetchAndUpdateFlowerRankings
+  } from "{{ url_for('static', path='js/utils/descriptionSelect.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
       const flowerId = {{ flower_id }};
       const strain = `{{ strain }}`;
       const cultivator = `{{ cultivator }}`;
       const urlPath = `{{ url_path }}`;
       const isMystery = {{ is_mystery | tojson | safe }};
-      if (isMystery) {
-          return;
-      }
-      await fetchDescriptions(flowerId, strain, cultivator, urlPath);
-      fetchAndUpdateStrainRatings(flowerId);
+      if (isMystery) { return; };
+      await fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath);
+      fetchAndUpdateFlowerRankings(flowerId);
   });
-  function fetchAndUpdateStrainRatings(flowerId) {
-      let endpoint = `/flowers/get_strain_ratings_by_id/${flowerId}/`;
-      fetch(endpoint)
-      .then(response => response.json())
-      .then(data => {
-          if (!data.message) {
-              document.getElementById('flavor_rating_value').innerText = data.flavor_rating?.toFixed(2) || "?";
-              document.getElementById('overall_rating_value').innerText = data.overall_score.toFixed(2);
-              document.getElementById('effects_rating_value').innerText = data.effects_rating.toFixed(2);
-              document.getElementById('appearance_rating_value').innerText = data.appearance_rating.toFixed(2);
-              document.getElementById('smell_rating_value').innerText = data.smell_rating.toFixed(2);
-              document.getElementById('harshess_rating_value').innerText = data.harshness_rating.toFixed(2);
-              document.getElementById('freshness_rating_value').innerText = data.freshness_rating.toFixed(2);
-          } else {
-              console.error('Error fetching data:', data.error);
-          }
-      })
-      .catch(error => console.error('Error:', error));
-  }
-  async function fetchDescriptions(flowerId, strain, cultivator, urlPath) {
-        if (!flowerId) {
-            console.error("Flower ID not found!");
-            return;
-        }
-        try {
-            const response = await fetch(`/flowers/all_descriptions?flower_id=${flowerId}`);
-            if (!response.ok) throw new Error("Failed to fetch descriptions");
-            const descriptions = await response.json();
-            populateDescriptionSelect(descriptions, strain, cultivator, urlPath);
-        } catch (error) {
-            console.error("Error fetching flower descriptions:", error);
-        }
-    }
+  
 </script>
 <script type="module">
   import SocialSharing from "{{ url_for('static', path='js/socialSharing.js') }}";

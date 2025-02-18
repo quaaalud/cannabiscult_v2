@@ -16,7 +16,7 @@ from db.session import get_db
 from typing import List, Optional, Any, Dict, Union
 from schemas.flowers import GetFlowerRanking
 from schemas.concentrates import GetConcentrateRanking
-from schemas.pre_rolls import PreRollRankingSchema
+from schemas.pre_rolls import GetPreRollRanking
 from schemas.edibles import GetVibeEdibleRanking
 from db.base import (
     Flower,
@@ -29,6 +29,7 @@ from db.base import (
     Concentrate_Ranking,
     Vibe_Edible_Ranking,
     CalendarEventQuery,
+    User,
 )
 from db.repository.search_class import (
     search_strain,
@@ -46,6 +47,7 @@ from db.repository.search_class import (
     build_strains_family_tree_graph,
     get_product_with_terp_profile,
     serialize_graph,
+    get_user_ranking_for_product,
 )
 from schemas.search_class import (
     SearchResultItem,
@@ -86,13 +88,11 @@ def convert_to_schema(product_type: str, data: List[dict]):
         "Flower": GetFlowerRanking,
         "Concentrate": GetConcentrateRanking,
         "Edible": GetVibeEdibleRanking,
-        "Pre-Roll": PreRollRankingSchema,
+        "Pre-Roll": GetPreRollRanking,
     }
-
     schema_class = schema_map.get(product_type)
     if not schema_class:
         raise ValueError(f"Unsupported product type: {product_type}")
-
     return [schema_class(**item) for item in data]
 
 
@@ -110,12 +110,21 @@ async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> D
     for product_type, models in product_type_to_ranking_model.items():
         user_ratings[product_type] = []
         for model in models:
-            ratings = db.query(model).filter(model.connoisseur.ilike(user_email)).all()
-            ratings_list = [model_to_dict(rating) for rating in ratings]
+            ratings = (
+                db.query(model, User.username)
+                  .outerjoin(User, model.connoisseur == User.email)
+                  .filter(model.connoisseur.ilike(user_email))
+                  .all()
+            )
+            ratings_list = []
+            for ranking_record, username in ratings:
+                record_dict = model_to_dict(ranking_record)
+                record_dict["username"] = username or "Cult Member"
+                record_dict["connoisseur"] = "cultmember@cannabiscult.co"
+                ratings_list.append(record_dict)
             user_ratings[product_type].extend(ratings_list)
     for product_type, data in user_ratings.items():
         user_ratings[product_type] = convert_to_schema(product_type, data)
-
     return user_ratings
 
 
@@ -363,3 +372,16 @@ async def get_product_with_terp_profile_route(
 ):
     terp_dict = await get_product_with_terp_profile(db, product_id, product_type, description_id)
     return terp_dict or {"message": "No Terp Profile Found"}
+
+
+@router.get("/my_rankings")
+async def get_user_ranking_for_product_route(
+    product_type: str = Query(None),
+    user_email: str = Query(None, alias="connoisseur"),
+    product_id: Optional[int] = Query(None),
+    strain: Optional[str] = Query(None),
+    cultivator: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    user_ranking = await get_user_ranking_for_product(db, product_type, user_email, product_id, strain, cultivator)
+    return user_ranking
