@@ -84,7 +84,7 @@
                                           } else if (item.type === 'Edible') {
                                               link = `/edible-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
                                           } else if (item.type === 'Pre_Roll') {
-                                              link = `/pre-roll-get-review?strain=${item.strain.replace(/ /g, '+')}&cultivator=${item.cultivator.replace(/ /g, '+')}`;
+                                              link = `/pre-roll-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
                                           }
                                           listItem.innerHTML = `<a href="${link}" style="text-decoration: none; color: inherit;">${item.strain} by ${item.cultivator}</a>`;
                                           resultList.appendChild(listItem);

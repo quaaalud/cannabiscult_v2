@@ -18,15 +18,13 @@ from db.repository.edibles import get_vibe_edible_data_by_strain
 from db.repository import pre_rolls
 from db.repository.concentrates import get_concentrate_data_and_path
 from schemas.mystery_voters import MysteryVoterCreate
-from schemas.subscribers import SubscriberCreate
-from schemas.users import UserLogin
 from version1._supabase.route_flowers import get_flower_and_description
 from version1._supabase import route_concentrates
 from version1._supabase.route_mystery_voters import (
     get_voter_info_by_email,
     create_mystery_voter,
 )
-from route_subscribers import create_subscriber, remove_subscriber
+from route_subscribers import remove_subscriber
 from route_users import (
     get_current_users_email,
     async_get_current_users_email,
@@ -51,7 +49,7 @@ async def get_config_obj():
 
 
 @general_pages_router.get("/", response_class=HTMLResponse)
-async def home(request: Request, background_tasks: BackgroundTasks):
+async def home(request: Request, background_tasks: BackgroundTasks = BackgroundTasks()):
     user_is_logged_in = await async_get_current_users_email() is not None
     background_tasks.add_task(
         settings.monitoring.capture_event_background,
@@ -219,11 +217,13 @@ async def handle_flower_review_post(
 
 
 # Pre-Roll Review and Voting Pages
-async def process_pre_roll_request(request: Request, strain: str, cultivator: str, cultivar_email: str, db: Session):
+async def process_pre_roll_request(
+    request: Request, strain_selected: str, cultivator_selected: str, cultivar_email: str, db: Session
+):
     try:
         user_is_logged_in = get_current_users_email() is not None
         review_dict = await pre_rolls.get_pre_roll_and_description(
-            db=db, strain=strain, cultivar_email=cultivar_email, cultivator=cultivator
+            db=db, strain=strain_selected, cultivar_email=cultivar_email, cultivator=cultivator_selected
         )
         request_dict = {
             "request": request,
@@ -241,23 +241,23 @@ async def process_pre_roll_request(request: Request, strain: str, cultivator: st
 async def handle_pre_roll_review_get(
     request: Request,
     *,
-    strain: str = Form(None),
-    cultivator: str = Form(None),
+    strain_selected: str = Form(None),
+    cultivator_selected: str = Form(None),
     cultivar_email: str = Form("aaron.childs@thesocialoutfitus.com"),
     product_type_selected_selected: str = Form("pre-roll"),
     db: Session = Depends(get_db),
 ):
-    return await process_pre_roll_request(request, strain, cultivator, db)
+    return await process_pre_roll_request(request, strain_selected, cultivator_selected, db)
 
 
 @general_pages_router.get("/pre-roll-get-review", response_class=HTMLResponse)
 async def handle_pre_roll_review_post(
     request: Request,
     *,
-    strain: str = Query(None),
-    cultivator: str = Query(None),
+    strain: str = Query(None, alias="strain_selected"),
+    cultivator: str = Query(None, alias="cultivator_selected"),
     cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com"),
-    product_type_selected: str = Query("pre-roll"),  # No alias needed
+    product_type_selected: str = Query("pre-roll"),
     db: Session = Depends(get_db),
 ):
     return await process_pre_roll_request(request, strain, cultivator, cultivar_email, db)
