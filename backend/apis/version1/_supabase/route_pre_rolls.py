@@ -167,3 +167,11 @@ async def get_pre_roll_ratings_by_id_path_route(
             status_code=404,
             detail="Pre-roll ratings not found or incomplete data for the specified ID",
         )
+
+
+@router.get("/all_descriptions", response_model=List[Optional[Dict[str, Any]]])
+async def return_all_available_descriptions_from_strain_id_route(
+    preroll_id: int, db: Session = Depends(get_db)
+) -> List[Optional[Dict[str, Any]]]:
+    all_descriptions = await pre_rolls_repo.return_all_available_descriptions_from_preroll_id(db, int(preroll_id))
+    return all_descriptions

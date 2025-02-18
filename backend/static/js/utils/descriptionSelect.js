@@ -1,6 +1,10 @@
 import initTerpeneChart from "./generateTerpeneChart.js";
 import createLineageChart from "./getLineageChart.js";
 
+const formatRating = (rating) => {
+    return rating !== null ? parseFloat(rating).toFixed(2) : '?';
+};
+
 function updateDisplayedDescription(description, strain, cultivator, urlPath) {
     document.getElementById("description_text").textContent = description.description_text || "Coming Soon";
     document.getElementById("effects_text").textContent = description.effects || "Coming Soon";
@@ -111,9 +115,6 @@ export async function fetchAndUpdateConcentrateRankings(concentrateId) {
       }
       const ratingsData = await response.json();
       if (ratingsData.message) { return; };
-      const formatRating = (rating) => {
-          return rating !== null ? parseFloat(rating).toFixed(2) : '?';
-      };
       document.getElementById('flavor_rating_value').textContent = formatRating(ratingsData.flavor_rating);
       document.getElementById('overall_rating_value').textContent = formatRating(ratingsData.overall_score);
       document.getElementById('effects_rating_value').textContent = formatRating(ratingsData.effects_rating);
@@ -124,4 +125,41 @@ export async function fetchAndUpdateConcentrateRankings(concentrateId) {
     } catch (error) {
       console.error('Error:', error);
     }
+}
+
+
+export async function fetchPreRollDescriptions(preRollId, strain, cultivator, urlPath) {
+    if (!preRollId) {
+        console.error("Pre-Roll ID not found!");
+        return;
+    }
+    try {
+        const response = await fetch(`/prerolls/all_descriptions?preroll_id=${preRollId}`);
+        if (!response.ok) throw new Error("Failed to fetch descriptions");
+        const descriptions = await response.json();
+        populateDescriptionSelect(descriptions, strain, cultivator, urlPath);
+    } catch (error) {
+        console.error("Error fetching pre-roll descriptions:", error);
+    }
+}
+
+
+export async function fetchAndUpdatePreRollStrainRankings(pre_rollId) {
+  var endpoint = `/prerolls/get_pre_roll_rating_by_id/${parseInt(pre_rollId)}`;
+  fetch(endpoint)
+  .then(response => response.json())
+  .then(data => {
+      if (!data.message) {
+          document.getElementById('flavor_rating_value').innerText = formatRating(data.flavor_rating);
+          document.getElementById('overall_rating_value').innerText = formatRating(data.overall_score);
+          document.getElementById('effects_rating_value').innerText = formatRating(data.effects_rating);
+          document.getElementById('roll_rating_value').innerText = formatRating(data.roll_rating);
+          document.getElementById('airflow_rating_value').innerText = formatRating(data.airflow_rating);
+          document.getElementById('burn_rating_value').innerText = formatRating(data.burn_rating);
+          document.getElementById('ease_to_light_rating_value').innerText = formatRating(data.ease_to_light_rating);
+      } else {
+          console.error('Error fetching data:', data.error);
+      }
+  })
+  .catch(error => console.error('Error:', error));
 }

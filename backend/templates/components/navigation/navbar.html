@@ -23,91 +23,78 @@
           </li>
         </form>
         <script>
-          document.addEventListener('DOMContentLoaded', () => {
-              let searchTimeoutToken;
-          
-              function updateSearchResults(searchTerm) {
-                  // Check if the search term has at least 3 characters
-                  if (searchTerm.trim().length < 3) {
-                      document.getElementById('search-results').innerHTML = '';
-                      $('#navbarDropdown').dropdown('hide');
-                      return;
-                  }
-          
-                  if (searchTimeoutToken) {
-                      clearTimeout(searchTimeoutToken);
-                  }
-          
-                  searchTimeoutToken = setTimeout(() => {
-                      fetch(`/search/all/${encodeURIComponent(searchTerm)}`)
-                          .then(response => {
-                              if (!response.ok) {
-                                  throw new Error('Network response was not ok');
-                              }
-                              return response.json();
-                          })
-                          .then(data => {
-                              const resultList = document.getElementById('search-results');
-                              resultList.innerHTML = '';
-
-                              // Organize results by product type
-                              const categorizedResults = {
-                                  Flower: [],
-                                  Concentrate: [],
-                                  Edible: [],
-                                  Pre_Roll: [],
-                              };
-          
-                              data.forEach(item => {
-                                  if (item.type in categorizedResults) {
-                                      categorizedResults[item.type].push(item);
-                                  }
-                              });
-          
-                              // Display results
-                              Object.keys(categorizedResults).forEach(type => {
-                                  if (categorizedResults[type].length > 0) {
-                                  
-                                      const typeHeading = document.createElement('li');
-                                      typeHeading.classList.add('dropdown-header');
-                                      typeHeading.textContent = type;
-                                      resultList.appendChild(typeHeading);
-                                      
-                                      categorizedResults[type].forEach(item => {
-                                          const listItem = document.createElement('li');
-                                          listItem.classList.add('dropdown-item');
-                                          let link;
-                                          if (item.type === 'Flower') {
-                                              link = `/get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
-                                          } else if (item.type === 'Concentrate') {
-                                              link = `/concentrate-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
-                                          } else if (item.type === 'Edible') {
-                                              link = `/edible-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
-                                          } else if (item.type === 'Pre_Roll') {
-                                              link = `/pre-roll-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
-                                          }
-                                          listItem.innerHTML = `<a href="${link}" style="text-decoration: none; color: inherit;">${item.strain} by ${item.cultivator}</a>`;
-                                          resultList.appendChild(listItem);
-                                      });
-                                  }
-                              });
-                              if (data.length) {
-                                  new bootstrap.Dropdown(document.getElementById('navbarDropdown')).show();
-                              } else {
-                                  new bootstrap.Dropdown(document.getElementById('navbarDropdown')).hide();
-                              }
-                          })
-                          .catch(error => {
-                              console.error('Error fetching search results:', error);
-                              new bootstrap.Dropdown(document.getElementById('navbarDropdown')).hide();
-                          });
-                  }, 300);
+          let searchTimeoutToken;
+          async function updateSearchResults(searchTerm) {
+              if (searchTerm.trim().length < 3) {
+                  document.getElementById('search-results').innerHTML = '';
+                  $('#navbarDropdown').dropdown('hide');
+                  return;
               }
-          
+              if (searchTimeoutToken) {
+                  clearTimeout(searchTimeoutToken);
+              }
+              searchTimeoutToken = setTimeout(() => {
+                  fetch(`/search/all/${encodeURIComponent(searchTerm)}`)
+                      .then(response => {
+                          if (!response.ok) {
+                              throw new Error('Network response was not ok');
+                          }
+                          return response.json();
+                      })
+                      .then(data => {
+                          const resultList = document.getElementById('search-results');
+                          resultList.innerHTML = '';
+                          const categorizedResults = {
+                              Flower: [],
+                              Concentrate: [],
+                              Edible: [],
+                              Pre_Roll: [],
+                          };
+                          data.forEach(item => {
+                              if (item.type in categorizedResults) {
+                                  categorizedResults[item.type].push(item);
+                              }
+                          });
+                          Object.keys(categorizedResults).forEach(type => {
+                              if (categorizedResults[type].length > 0) {
+                                  const typeHeading = document.createElement('li');
+                                  typeHeading.classList.add('dropdown-header');
+                                  typeHeading.textContent = type;
+                                  resultList.appendChild(typeHeading);
+                                  
+                                  categorizedResults[type].forEach(item => {
+                                      const listItem = document.createElement('li');
+                                      listItem.classList.add('dropdown-item');
+                                      let link;
+                                      if (item.type === 'Flower') {
+                                          link = `/get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                      } else if (item.type === 'Concentrate') {
+                                          link = `/concentrate-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                      } else if (item.type === 'Edible') {
+                                          link = `/edible-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                      } else if (item.type === 'Pre_Roll') {
+                                          link = `/pre-roll-get-review?strain_selected=${item.strain.replace(/ /g, '+')}&cultivator_selected=${item.cultivator.replace(/ /g, '+')}`;
+                                      }
+                                      listItem.innerHTML = `<a href="${link}" style="text-decoration: none; color: inherit;">${item.strain} by ${item.cultivator}</a>`;
+                                      resultList.appendChild(listItem);
+                                  });
+                              }
+                          });
+                          if (data.length) {
+                              new bootstrap.Dropdown(document.getElementById('navbarDropdown')).show();
+                          } else {
+                              new bootstrap.Dropdown(document.getElementById('navbarDropdown')).hide();
+                          }
+                      })
+                      .catch(error => {
+                          console.error('Error fetching search results:', error);
+                          new bootstrap.Dropdown(document.getElementById('navbarDropdown')).hide();
+                      });
+                  }, 300);
+              };
               document.getElementById('search-input').addEventListener('input', (event) => {
                   updateSearchResults(event.target.value);
               });
-          });
         </script>
       </div>
     </div>

@@ -6,16 +6,13 @@ Created on Sun Jan 21 13:53:38 2024
 @author: dale
 """
 
-from sqlalchemy import func
+from sqlalchemy import func, not_
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from typing import Optional, List, Dict, Any
-from db.models.pre_rolls import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking
+from db.base import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking, User
 from schemas.pre_rolls import PreRollRankingSchema
-from db._supabase.connect_to_storage import (
-    return_image_url_from_supa_storage,
-    get_image_from_results,
-)
+from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 import traceback
 from pathlib import Path
 from core.config import settings
@@ -33,7 +30,6 @@ def calculate_overall_score(
 ):
     values_list = [*vals]
     return get_average_of_list(values_list)
-
 
 
 async def get_pre_roll_data_and_path(db: Session, strain: str) -> Optional[Dict[str, Any]]:
@@ -55,13 +51,9 @@ async def get_pre_roll_data_and_path(db: Session, strain: str) -> Optional[Dict[
     return None
 
 
-async def get_pre_roll_by_strain_and_cultivator(
-    db: Session, strain: str, cultivator: str
-) -> Optional[Dict[str, Any]]:
+async def get_pre_roll_by_strain_and_cultivator(db: Session, strain: str, cultivator: str) -> Optional[Dict[str, Any]]:
     try:
-        result = db.execute(
-            select(Pre_Roll).where(Pre_Roll.strain == strain, Pre_Roll.cultivator == cultivator)
-        )
+        result = db.execute(select(Pre_Roll).where(Pre_Roll.strain == strain, Pre_Roll.cultivator == cultivator))
         pre_roll = result.scalars().first()
         if pre_roll:
             return {
@@ -148,7 +140,7 @@ async def create_preroll_ranking(ranking: PreRollRankingSchema, db: Session):
         created_ranking = Pre_Roll_Ranking(**ranking_data_dict)
         db.add(created_ranking)
         db.commit()
-    except:
+    except Exception:
         db.rollback()
         raise
     else:
@@ -185,10 +177,7 @@ async def update_or_create_pre_roll_ranking(ranking_dict: PreRollRankingSchema, 
     return {"pre_roll_ranking": True}
 
 
-async def get_pre_roll_ranking_data_and_path_from_id(
-    db: Session, id_selected: int
-) -> Pre_Roll_Ranking:
-
+async def get_pre_roll_ranking_data_and_path_from_id(db: Session, id_selected: int) -> Pre_Roll_Ranking:
     ranking = db.query(Pre_Roll_Ranking).filter(Pre_Roll_Ranking.pre_roll_id == id_selected).first()
     ranking_vals = [val for key, val in vars(ranking).items() if key.endswith("rating")]
     overall_score = round(sum(filter(None, ranking_vals)) / (len(ranking_vals)), 2)
@@ -216,11 +205,7 @@ async def get_all_strains(db: Session) -> List[str]:
 
 
 async def get_all_strains_for_cultivator(cultivator_selected: str, db: Session) -> List[str]:
-    all_strains = (
-        db.query(Pre_Roll_Ranking.strain)
-        .filter(Pre_Roll_Ranking.cultivator == cultivator_selected)
-        .all()
-    )
+    all_strains = db.query(Pre_Roll_Ranking.strain).filter(Pre_Roll_Ranking.cultivator == cultivator_selected).all()
     return sorted([result[0] for result in all_strains])
 
 
@@ -230,11 +215,7 @@ async def get_all_cultivators(db: Session) -> List[str]:
 
 
 async def get_all_cultivators_for_strain(strain_selected: str, db: Session) -> List[str]:
-    all_cultivators = (
-        db.query(Pre_Roll_Ranking.cultivator)
-        .filter(Pre_Roll_Ranking.strain == strain_selected)
-        .all()
-    )
+    all_cultivators = db.query(Pre_Roll_Ranking.cultivator).filter(Pre_Roll_Ranking.strain == strain_selected).all()
     return sorted(set([result[0] for result in all_cultivators]))
 
 
@@ -251,12 +232,13 @@ async def get_top_pre_roll_strains(db: Session) -> List[Dict]:
             func.avg(Pre_Roll_Ranking.tightness_rating),
             func.avg(Pre_Roll_Ranking.ease_to_light_rating),
         )
-        .filter(Pre_Roll_Ranking.cultivator != "Connoisseur")
-        .filter(Pre_Roll_Ranking.strain.ilike("%Test%") == False)
+        .filter(
+            Pre_Roll_Ranking.cultivator != "Connoisseur",
+            not_(Pre_Roll_Ranking.strain.ilike("%Test%"))
+        )
         .group_by(Pre_Roll_Ranking.strain, Pre_Roll_Ranking.cultivator)
         .all()
     )
-
     scored_strains = []
     for strain in avg_rankings:
         vals_list = strain[2:]
@@ -315,3 +297,35 @@ async def get_pre_roll_ratings_by_id(pre_roll_id: int, db: Session) -> Dict:
     }
 
     return pre_roll_data
+
+
+async def return_all_available_descriptions_from_preroll_id(db: Session, pre_roll_id: int) -> List[Dict[str, Any]]:
+    try:
+        query = (
+            db.query(
+                Pre_Roll_Description,
+                User.username
+            )
+            .outerjoin(User, Pre_Roll_Description.cultivar_email == User.email)
+            .filter(Pre_Roll_Description.pre_roll_id == pre_roll_id)
+            .all()
+        )
+        if not query:
+            return []
+        descriptions = []
+        for description, username in query:
+            descriptions.append({
+                "pre_roll_id": pre_roll_id,
+                "description_id": description.description_id,
+                "description_text": description.description,
+                "effects": description.effects,
+                "lineage": description.lineage,
+                "terpenes_list": description.terpenes_list,
+                "username": username or "Cultivar",
+                "strain_category": description.strain_category if description.strain_category else "cult_pack",
+            })
+        return descriptions
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching all descriptions for pre_roll_id {pre_roll_id}: {e}")
+        return []
