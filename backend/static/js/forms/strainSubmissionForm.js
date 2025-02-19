@@ -14,7 +14,10 @@ function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
                     reviewUrl = `/concentrate-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 case "pre_rollSubmission":
-                    reviewUrl = `/pre-roll-get-review?strain=${strain}&cultivator=${cultivator}&cultivar_email=${cultivar_email}`;
+                    reviewUrl = `/pre-roll-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
+                    break;
+                case "edibleSubmission":
+                    reviewUrl = `/edible-get-review?strain_selected=${strain}&cultivator_selected=${cultivator}&cultivar_email=${cultivar_email}`;
                     break;
                 default:
                     console.error("Unknown product type:", ptElement.value);
