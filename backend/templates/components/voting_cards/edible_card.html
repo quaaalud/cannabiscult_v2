@@ -15,7 +15,7 @@
                   </h3>
                   <div class="row my-auto mx-auto justify-content-center">
                     <div class="col-xs-11 col-10 mx-auto">
-                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#FlowerRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
+                      <button type="button" id="startReviewBtn" class="btn btn-lg btn-info w-100 fs-6" data-bs-target="#EdibleRankingsDisplay" style="border: 3px solid black;" {% if not strain %}disabled{% endif %}>
                         <i class="fas fa-arrow-right pe-2 d-none d-sm-inline"></i> <strong><span class="flex-shrink-0">Start Review</span></strong>
                       </button>
                     </div>
@@ -39,7 +39,7 @@
                     </div>
                   </div>
                 </div>
-                <a data-bs-target="#FlowerRankingsDisplay"></a>
+                <a data-bs-target="#EdibleRankingsDisplay"></a>
                 <div class="container card-body">
                   <div class="col-10 col-sm-9 mx-auto">
                     <button type="button" id="addToListBtn" class="btn btn-lg btn-light w-100 fs-6" style="border: 3px solid black;">
@@ -65,18 +65,18 @@
         </button>
       </div>
       <h3 class="display-4 text-center my-3"></h3>
-      {% include "components/forms/ratings/flower_rating_form.html" %}
+      {% include "components/forms/ratings/edible_rating_form.html" %}
     </div>
   </div>
 </div>
 {% block scripts %}
 <script>
-const productType = "flower";
+const productType = "edible";
 const strainValue = "{{ strain }}";
 const cultivatorValue = "{{ cultivator }}";
-let flowerIdValue = "{{ flower_id }}";
-if (!flowerIdValue) {
-  flowerIdValue = "{{ id }}";
+let edibleIdValue = "{{ edible_id }}";
+if (!edibleIdValue) {
+  edibleIdValue = "{{ id }}";
 }
 document.addEventListener('DOMContentLoaded', async (event) => {
   const startReviewBtn = document.getElementById('startReviewBtn');
@@ -178,7 +178,7 @@ async function initializeButtonState(email, strain, cultivator, type, button) {
 }
 
 window.addEventListener('supabaseClientReady', async function() {
-  const imageUrls = await window.supabaseClient.fetchImageUrls("flower", flowerIdValue);
+  const imageUrls = await window.supabaseClient.fetchImageUrls("edible", edibleIdValue);
   if (imageUrls && imageUrls.length > 0) {
     await window.supabaseClient.updateCarouselWithImages(imageUrls);
   }
@@ -194,5 +194,5 @@ window.addEventListener('supabaseClientReady', async function() {
 
 </script>
 
-<script type="module" src="{{ url_for('static', path='js/forms/generate_flower_rating_questions.js') }}" async></script>
+<script type="module" src="{{ url_for('static', path='js/forms/generate_edible_rating_questions.js') }}" async></script>
 {% endblock %}

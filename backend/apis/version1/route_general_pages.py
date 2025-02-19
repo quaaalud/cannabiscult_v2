@@ -14,7 +14,7 @@ from sqlalchemy.orm import Session
 from typing import Optional, Dict
 from db.session import get_db
 from core.config import settings, Config
-from db.repository.edibles import get_vibe_edible_data_by_strain
+from db.repository import edibles as edibles_repo
 from db.repository import pre_rolls
 from db.repository.concentrates import get_concentrate_data_and_path
 from schemas.mystery_voters import MysteryVoterCreate
@@ -273,8 +273,54 @@ async def vibe_hash_hole_route(request: Request, db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@general_pages_router.get("/get-vibe-edible", response_class=HTMLResponse)
+# Edible Review and Voting Pages
+async def process_edible_request(
+    request: Request, strain_selected: str, cultivator_selected: str, cultivar_email: str, db: Session
+):
+    try:
+        user_is_logged_in = get_current_users_email() is not None
+        review_dict = await edibles_repo.get_edible_and_description(
+            db=db, strain=strain_selected, cultivar_email=cultivar_email, cultivator=cultivator_selected
+        )
+        request_dict = {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        }
+        response_dict = {**request_dict, **review_dict}
+        return templates.TemplateResponse(
+            str(Path("general_pages", "ranking_pages", "connoisseur_edibles.html")), response_dict
+        )
+    except Exception:
+        return templates.TemplateResponse(str(Path("general_pages", "voting-home.html")), {"request": request})
+
+
+@general_pages_router.post("/edible-get-review", response_class=HTMLResponse)
+async def handle_edible_review_get(
+    request: Request,
+    *,
+    strain_selected: str = Form(None),
+    cultivator_selected: str = Form(None),
+    cultivar_email: str = Form("aaron.childs@thesocialoutfitus.com"),
+    product_type_selected_selected: str = Form("edible"),
+    db: Session = Depends(get_db),
+):
+    return await process_edible_request(request, strain_selected, cultivator_selected, db)
+
+
 @general_pages_router.get("/edible-get-review", response_class=HTMLResponse)
+async def handle_edible_review_post(
+    request: Request,
+    *,
+    strain: str = Query(None, alias="strain_selected"),
+    cultivator: str = Query(None, alias="cultivator_selected"),
+    cultivar_email: str = Query("aaron.childs@thesocialoutfitus.com"),
+    product_type_selected: str = Query("edible"),
+    db: Session = Depends(get_db),
+):
+    return await process_edible_request(request, strain, cultivator, cultivar_email, db)
+
+
+@general_pages_router.get("/get-vibe-edible", response_class=HTMLResponse)
 async def handle_vibe_edible_post(
     request: Request,
     edible_strain: str = Query(None, alias="edible_strain"),
@@ -285,7 +331,7 @@ async def handle_vibe_edible_post(
 ):
     strain_to_use = strain_selected if strain_selected else edible_strain
 
-    edible_dict = get_vibe_edible_data_by_strain(
+    edible_dict = edibles_repo.get_vibe_edible_data_by_strain(
         db,
         edible_strain=strain_to_use,
     )

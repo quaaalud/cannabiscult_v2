@@ -188,27 +188,26 @@ def create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Session) -> Cre
 
 @settings.retry_db
 def update_or_create_flower_ranking(ranking_dict: CreateFlowerRanking, db: Session) -> CreateFlowerRanking:
-    existing_ranking = (
-        db.query(Flower_Ranking)
-        .filter(
-            Flower_Ranking.cultivator == ranking_dict.cultivator,
-            Flower_Ranking.strain == ranking_dict.strain,
-            Flower_Ranking.connoisseur == ranking_dict.connoisseur,
+    try:
+        existing_ranking = (
+            db.query(Flower_Ranking)
+            .filter(
+                Flower_Ranking.cultivator == ranking_dict.cultivator,
+                Flower_Ranking.strain == ranking_dict.strain,
+                Flower_Ranking.connoisseur == ranking_dict.connoisseur,
+            )
+            .first()
         )
-        .first()
-    )
-    if existing_ranking:
+        if not existing_ranking:
+            return create_flower_ranking(ranking_dict, db)
         for key, value in ranking_dict.dict().items():
             setattr(existing_ranking, key, value)
-        try:
-            db.commit()
-            db.refresh(existing_ranking)
-            return existing_ranking
-        except Exception:
-            db.rollback()
-            raise
-    else:
-        return create_flower_ranking(ranking_dict, db)
+        db.commit()
+        db.refresh(existing_ranking)
+        return existing_ranking
+    except Exception:
+        db.rollback()
+        raise
 
 
 async def return_average_flower_ratings(db: Session) -> List:

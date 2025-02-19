@@ -52,11 +52,11 @@
 />
 <meta 
   property="twitter:image:alt"
-  content="Cannabis Cult Cultivar Review Card for {{ strain }} Flower"
+  content="Cannabis Cult Cultivar Review Card for {{ strain }} Edible"
 />
 <link 
   rel="canonical" 
-  href="https://cannabiscult.co/connoisseur-flowers{% if strain %}/get-flower?{{ strain }}{% endif %}"
+  href="https://cannabiscult.co/edible-get-review?cultivator_selected={{ cultivator }}&strain_selected={{ strain }}"
 />
 {% endblock %}
 
@@ -69,12 +69,12 @@
     <section draggable="false" class="container pt-3">
       <section class="mb-10">
         <div class="row mx-auto">
-          <h1 class="fw-bold mb-5 text-center">Cultivar Flower Ratings</h1>
+          <h1 class="fw-bold mb-5 text-center">Cultivar Edible Ratings</h1>
         </div>
         <div class="row gx-lg-5 align-items-start d-flex">
           <div class="col-lg-6 col-12 mb-5 mb-lg-0">
             <div class="container">
-              {% include "components/voting_cards/flower_card.html" %}
+              {% include "components/voting_cards/edible_card.html" %}
               <div class="container d-flex align-items-center justify-content-center text-center">
                 <div class="lineage-container">
                   <div id="lineageChart" class="mx-auto"></div>
@@ -201,22 +201,22 @@
             <h6 class="fw-normal mb-0">Appearance<br></h6>
             <hr class="divider-vertical">
           </div>
-          <div class="col-lg-3 col-6 mb-5 mb-md-5 mb-lg-0 position-relative">
-            <i class="fas fa-cannabis fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="smell_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Aroma</h6>
-            <hr class="divider-vertical d-none d-lg-block">
-          </div>
           <div class="col-lg-3 col-6 mb-5 mb-md-0 position-relative">
             <i class="fas fa-fill-drip fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="harshess_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Harshness</h6>
+            <h5 id="feel_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Feel</h6>
             <hr class="divider-vertical">
           </div>
           <div class="col-lg-3 col-6 mb-5 mb-md-0 position-relative">
             <i class="fas fa-arrow-trend-up fa-3x  mb-4" aria-controls="#picker-editor"></i>
-            <h5 id="freshness_rating_value" class="text-info fw-bold mb-3">?</h5>
-            <h6 class="fw-normal mb-0">Freshness</h6>
+            <h5 id="chew_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Chew</h6>
+          </div>
+          <div class="col-lg-3 col-6 mb-5 mb-md-5 mb-lg-0 position-relative">
+            <i class="fas fa-cannabis fa-3x  mb-4" aria-controls="#picker-editor"></i>
+            <h5 id="aftertaste_rating_value" class="text-info fw-bold mb-3">?</h5>
+            <h6 class="fw-normal mb-0">Aftertaste</h6>
+            <hr class="divider-vertical d-none d-lg-block">
           </div>
         </div>
       </section>
@@ -246,17 +246,17 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
   import { 
-    populateDescriptionSelect, fetchFlowerDescriptions, fetchAndUpdateFlowerRankings
+    populateDescriptionSelect, fetchEdibleDescriptions, fetchAndUpdateEdibleStrainRankings
   } from "{{ url_for('static', path='js/utils/descriptionSelect.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
-      const flowerId = {{ flower_id }};
+      const edibleId = {{ edible_id }};
       const strain = `{{ strain }}`;
       const cultivator = `{{ cultivator }}`;
       const urlPath = `{{ url_path }}`;
       const isMystery = {{ is_mystery | tojson | safe }};
       if (isMystery) { return; };
-      await fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath);
-      await fetchAndUpdateFlowerRankings(flowerId);
+      await fetchEdibleDescriptions(edibleId, strain, cultivator, urlPath);
+      fetchAndUpdateEdibleStrainRankings(edibleId);
   });
   
 </script>

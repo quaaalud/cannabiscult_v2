@@ -62,7 +62,7 @@ class EdibleRankingBase(BaseModel):
 
 
 class GetEdibleRanking(BaseModel):
-    vibe_edible_id: int = Field(...)
+    edible_id: int = Field(...)
     connoisseur: EmailStr = Field(...)
     cultivator: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=199)
     strain: Annotated[str, StringConstraints(max_length=500)] = Field(..., max_length=200)
@@ -84,25 +84,29 @@ class GetEdibleRanking(BaseModel):
 
 
 class CreateEdibleRanking(BaseModel):
-    vibe_edible_id: int = Field(...)
+    edible_id: int = Field(...)
     connoisseur: EmailStr = Field(...)
     cultivator: Optional[Annotated[str, StringConstraints(max_length=500)]] = Field(None, max_length=199)
     strain: Annotated[str, StringConstraints(max_length=500)] = Field(..., max_length=200)
-    flavor: Annotated[str, StringConstraints(max_length=1500)] = Field(..., max_length=200)
 
-    appearance_rating: confloat = Field(..., gt=0, lt=10.1)
-    flavor_rating: confloat = Field(..., gt=0, lt=10.1)
-    feel_rating: confloat = Field(..., gt=0, lt=10.1)
-    chew_rating: confloat = Field(..., gt=0, lt=10.1)
-    effects_rating: confloat = Field(..., gt=0, lt=10.1)
+    appearance_rating: float = Field(..., gt=0, lt=10.1)
+    aftertaste_rating: float = Field(..., gt=0, lt=10.1)
+    flavor_rating: float = Field(..., gt=0, lt=10.1)
+    feel_rating: float = Field(..., gt=0, lt=10.1)
+    chew_rating: float = Field(..., gt=0, lt=10.1)
+    effects_rating: float = Field(..., gt=0, lt=10.1)
     appearance_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
     flavor_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
     feel_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
     chew_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
+    aftertaste_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
     effects_explanation: Optional[Annotated[str, StringConstraints(max_length=1500)]] = Field(None, max_length=1500)
 
     class Config:
         from_attributes = True
+        populate_by_name = True
+        exclude_unset = True
+        strip_whitespace = True
 
 
 class GetVibeEdibleRanking(GetEdibleRanking):

@@ -53,7 +53,7 @@ export function populateDescriptionSelect(descriptions, strain, cultivator, urlP
     }
 }
 
-async function fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath) {
+export async function fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath) {
     if (!flowerId) {
         console.error("Flower ID not found!");
         return;
@@ -68,7 +68,7 @@ async function fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath) {
     }
 }
 
-function fetchAndUpdateFlowerRankings(flowerId) {
+export async function fetchAndUpdateFlowerRankings(flowerId) {
     let endpoint = `/flowers/get_strain_ratings_by_id/${flowerId}/`;
     fetch(endpoint)
     .then(response => response.json())
@@ -145,7 +145,7 @@ export async function fetchPreRollDescriptions(preRollId, strain, cultivator, ur
 
 
 export async function fetchAndUpdatePreRollStrainRankings(pre_rollId) {
-  var endpoint = `/prerolls/get_pre_roll_rating_by_id/${parseInt(pre_rollId)}`;
+  var endpoint = `/prerolls/get_strain_ratings_by_id/${parseInt(pre_rollId)}`;
   fetch(endpoint)
   .then(response => response.json())
   .then(data => {
@@ -157,6 +157,43 @@ export async function fetchAndUpdatePreRollStrainRankings(pre_rollId) {
           document.getElementById('airflow_rating_value').innerText = formatRating(data.airflow_rating);
           document.getElementById('burn_rating_value').innerText = formatRating(data.burn_rating);
           document.getElementById('ease_to_light_rating_value').innerText = formatRating(data.ease_to_light_rating);
+      } else {
+          console.error('Error fetching data:', data.error);
+      }
+  })
+  .catch(error => console.error('Error:', error));
+}
+
+
+export async function fetchEdibleDescriptions(edibleId, strain, cultivator, urlPath) {
+    if (!edibleId) {
+        console.error("Edible ID not found!");
+        return;
+    }
+    try {
+        const response = await fetch(`/edibles/all_descriptions?edible_id=${edibleId}`);
+        if (!response.ok) throw new Error("Failed to fetch descriptions");
+        const descriptions = await response.json();
+        populateDescriptionSelect(descriptions, strain, cultivator, urlPath);
+    } catch (error) {
+        console.error("Error fetching edible descriptions:", error);
+    }
+}
+
+
+export async function fetchAndUpdateEdibleStrainRankings(edibleId) {
+  var endpoint = `/edibles/get_strain_ratings_by_id/${parseInt(edibleId)}`;
+  fetch(endpoint)
+  .then(response => response.json())
+  .then(data => {
+      if (!data.message) {
+          document.getElementById('flavor_rating_value').innerText = formatRating(data.flavor_rating);
+          document.getElementById('overall_rating_value').innerText = formatRating(data.overall_score);
+          document.getElementById('effects_rating_value').innerText = formatRating(data.effects_rating);
+          document.getElementById('aftertaste_rating_value').innerText = formatRating(data.aftertaste_rating);
+          document.getElementById('appearance_rating_value').innerText = formatRating(data.appearance_rating);
+          document.getElementById('feel_rating_value').innerText = formatRating(data.aftertaste_rating);
+          document.getElementById('chew_rating_value').innerText = formatRating(data.appearance_rating);
       } else {
           console.error('Error fetching data:', data.error);
       }

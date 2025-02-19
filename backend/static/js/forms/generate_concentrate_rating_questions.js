@@ -1,4 +1,4 @@
-import QuestionBuilder from './QuestionBuilder.js';
+import QuestionBuilder from '../QuestionBuilder.js';
 
 const strain =  strainValue;
 const cultivator =  cultivatorValue;
