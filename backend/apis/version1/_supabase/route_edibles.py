@@ -93,7 +93,6 @@ async def get_strain_ratings_by_id(edible_id: int, db: Session = Depends(get_db)
         .filter(Edible_Ranking.edible_id == int(edible_id))
         .first()
     )
-    print(avg_ratings)
     if not avg_ratings or any(rating is None for rating in avg_ratings):
         return {"strain": "no match found", "message": "Edible not found or incomplete data for rankings."}
     return {

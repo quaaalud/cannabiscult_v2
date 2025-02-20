@@ -104,6 +104,7 @@
                   <option value="alpha_zingiberene">Alpha Zingiberene</option>
                   <option value="beta_asarone">Beta Asarone</option>
                   <option value="beta_bisabolene">Beta Bisabolene</option>
+                  <option value="beta_caryophyllene">Beta Caryophyllene</option>
                   <option value="beta_caryophyllene_oxide">Beta Caryophyllene Oxide</option>
                   <option value="beta_farnesene">Beta Farnesene</option>
                   <option value="beta_myrcene">Beta Myrcene</option>
@@ -139,7 +140,6 @@
                   <option value="trans_nerolidol">Trans Nerolidol</option>
                   <option value="trans_ocimene">Trans Ocimene</option>
                   <option value="y_terpinene">Y Terpinene</option>
-                  <option value="beta_caryophyllene">Beta Caryophyllene</option>
                 </select>
               </div>
               <div class="row">
@@ -201,6 +201,37 @@
         <div class="col-12 mx-auto">
           <button type="button" class="btn btn-lg btn-dark w-100" data-bs-dismiss="modal" aria-label="Close">Close</button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div 
+  class="modal fade"
+  id="terpenePercentModal"
+  tabindex="-1"
+  aria-labelledby="terpenePercentModalLabel"
+  aria-hidden="true"
+  data-bs-backdrop="false"
+>
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="terpenePercentModalLabel">Add Terpene Percentages</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="terpenePercentForm">
+          <div id="terpeneInputsContainer" class="row"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button 
+          type="button"
+          class="btn btn-lg btn-dark w-100"
+          id="saveTerpenePercentagesBtn"
+        >
+          Save Terps
+        </button>
       </div>
     </div>
   </div>

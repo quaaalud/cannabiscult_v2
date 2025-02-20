@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from typing import List
 from db.session import get_db
+from db.repository.search_class import upsert_terp_profile
 from schemas.product_types import ProductSubmission
 from db.models import concentrates, edibles, flowers, pre_rolls
 from core.config import settings
@@ -60,7 +61,7 @@ async def submit_strain(
             db.commit()
             db.refresh(new_submission)
     product_type_id = getattr(new_submission, f"{submission.product_type[:-10]}_id")
-    await add_description_to_db(
+    product_description = await add_description_to_db(
         db,
         submission.product_type,
         product_type_id,
@@ -70,6 +71,13 @@ async def submit_strain(
         submission.lineage,
         submission.terpenes_list,
         submission.strain_category.value
+    )
+    await upsert_terp_profile(
+        db,
+        product_description.description_id,
+        product_type_id,
+        submission.product_type[:-10],
+        submission.terpenes_map
     )
     return {
         "message": "Submission successful",
@@ -81,24 +89,15 @@ async def submit_strain(
 
 
 def parse_terpenes(terpenes_array: List[str]) -> list:
-    # Split the string on commas to create a list
     terpenes_list = terpenes_array[0].split(",")
-
-    # Replace underscores with spaces and specific substrings with symbols
     processed_terpenes = []
     for terpene in terpenes_list:
-        # Replace underscores with spaces
         clean_terpene = terpene.replace("_", " ")
-
-        # Replace specific substrings with Greek symbols
         clean_terpene = clean_terpene.replace("alpha", "α")
         clean_terpene = clean_terpene.replace("beta", "β")
         clean_terpene = clean_terpene.replace("gamma", "γ")
         clean_terpene = clean_terpene.replace("delta", "δ")
-
-        # Add the processed terpene to the list
         processed_terpenes.append(clean_terpene.strip())
-
     return processed_terpenes
 
 

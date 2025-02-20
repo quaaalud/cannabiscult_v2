@@ -1,6 +1,40 @@
 let fieldsCompletedWatched = false;
 let lineageContainer
 
+function createChip() {
+    if (window.lineageList.length === 0) {
+      lineageContainer = document.getElementById('lineageChipsContainer');
+      lineageContainer.innerHTML = ""
+    }
+    const input = document.getElementById('lineageInput');
+    const value = input.value.trim();
+    if (value) {
+      const chipContainer = document.createElement('div');
+      chipContainer.className = 'col-6';
+      const chip = document.createElement('div');
+      chip.className = 'chip chip-outline btn-outline-dark';
+      chip.setAttribute('data-mdb-chip-init', '');
+      chip.setAttribute('data-mdb-ripple-color', 'dark');
+      chip.textContent = value;
+      chip.id = value;
+      chip.value = value;
+      const closeIcon = document.createElement('i');
+      closeIcon.className = 'close fas fa-times';
+      closeIcon.addEventListener('click', function() {
+        chipContainer.remove();
+        const index = window.lineageList.indexOf(value);
+        if (index > -1) {
+          window.lineageList.splice(index, 1);
+        }
+      });
+      chip.appendChild(closeIcon);
+      chipContainer.appendChild(chip);
+      document.getElementById('lineageChipsContainer').appendChild(chipContainer);
+      window.lineageList.push(value);
+      input.value = '';
+    }
+}
+
 function getNewlyCreatedStrain(strain, cultivator, cultivar_email) {
     const productTypeElements = document.getElementsByName("inlineRadioOptions");
     for (const ptElement of productTypeElements) {
@@ -113,114 +147,131 @@ function setupSubmitButtonFieldWatcher() {
 }
 
 async function submitStrainForm(event) {
-    event.preventDefault();
-    const form = document.getElementById("strainSubmissionForm");
-    const modalBody = document.querySelector('#missingInfoModal .modal-body');
-    const submitButton = form.querySelector('button[type="submit"]');
-
-    const strainValue = document.getElementById("strainSubmission").value.trim();
-    const cultivatorValue = document.getElementById("cultivatorSubmission").value.trim();
-    const strainCategoryValue = document.getElementById("strainCategorySubmission").value.trim();
-    const emailAddressValue = document.getElementById("emailAddress").value.trim();
-    const descriptionValue = document.getElementById("strainDescription").value.trim();
-    const effectsValue = document.getElementById("effectsSubmission").value.trim();
-    const lineageValues = window.lineageList;
-    const terpenesElement = document.getElementById("terpenesSubmission");
-    const selectedTerpenes = Array.from(terpenesElement.selectedOptions).map(option => option.value);
-
-    const productTypeElements = document.getElementsByName("inlineRadioOptions");
-    let productTypeValue = '';
-    for (const ptElement of productTypeElements) {
-        if (ptElement.checked) {
-            productTypeValue = ptElement.value;
-            break;
-        }
-    }
-    const missingFields = updateSubmitButtonState();
-    if (missingFields.length > 0) {
-        modalBody.innerHTML = `<p>Please complete the following fields:</p><ul>${missingFields.map(field => `<li>${field}</li>`).join('')}</ul>`;
-        const missingInfoModal = new bootstrap.Modal(document.getElementById('missingInfoModal'));
-        missingInfoModal.show();
-        setupSubmitButtonFieldWatcher();
-    } else {
-        const cleanCultivatorString = window.supabaseClient.sanitizeInputString(cultivatorValue);
-        const cleanStrainString = window.supabaseClient.sanitizeInputString(strainValue);
-        
-        let lineageFormSubmission = lineageValues.join(' X ');
-        const formData = new FormData();
-        
-        formData.append('strain', cleanStrainString);
-        formData.append('cultivator', cleanCultivatorString);
-        formData.append('cultivar_email', emailAddressValue);
-        formData.append('description', descriptionValue || 'Coming Soon');
-        formData.append('effects', effectsValue || 'Coming Soon');
-        formData.append('product_type', productTypeValue);
-        formData.append('lineage', lineageFormSubmission);
-        formData.append('terpenes_list', selectedTerpenes);
-        formData.append('strain_category', strainCategoryValue);
-        
-        const root = window.location.origin;
-        const url = new URL('/submit/submit_strain/', root);
-        
-        const authToken = await window.supabaseClient.getAccessToken();
-    
-        const response = await fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${authToken}`,
-            }
-        });
-        if (response.ok) {
-            const responseData = await response.json();
-            getNewlyCreatedStrain(responseData.submission_strain, responseData.submission_cultivator, responseData.cultivar_email);
-            return;
-        } else {
-            console.error("Form submission failed:", response.status, response.statusText);
-            alert('The submission failed, check your inputs and try again.');
-            return;
-        }
-    }
+  event.preventDefault();
+  const form = document.getElementById("strainSubmissionForm");
+  const modalBody = document.querySelector('#missingInfoModal .modal-body');
+  // 1) Check for missing fields
+  const missingFields = getMissingFieldNames();
+  if (missingFields.length > 0) {
+    modalBody.innerHTML = `<p>Please complete the following fields:</p>
+                           <ul>${missingFields.map(field => `<li>${field}</li>`).join('')}</ul>`;
+    const missingInfoModal = new bootstrap.Modal(document.getElementById('missingInfoModal'));
+    missingInfoModal.show();
+    setupSubmitButtonFieldWatcher();
+    return;
+  }
+  const terpenesElement = document.getElementById("terpenesSubmission");
+  const selectedTerpenes = Array.from(terpenesElement.selectedOptions).map(opt => opt.value);
+  if (selectedTerpenes.length > 0) {
+    showTerpenePercentageModal(selectedTerpenes);
+    return;
+  }
+  await finalizeStrainSubmission();
 }
 
-function createChip() {
-    if (window.lineageList.length === 0) {
-      lineageContainer = document.getElementById('lineageChipsContainer');
-      lineageContainer.innerHTML = ""
-    }
-    const input = document.getElementById('lineageInput');
-    const value = input.value.trim();
 
-    if (value) {
-      const chipContainer = document.createElement('div');
-      chipContainer.className = 'col-6';
-
-      const chip = document.createElement('div');
-      chip.className = 'chip chip-outline btn-outline-dark';
-      chip.setAttribute('data-mdb-chip-init', '');
-      chip.setAttribute('data-mdb-ripple-color', 'dark');
-      chip.textContent = value;
-      chip.id = value;
-      chip.value = value;
-
-      const closeIcon = document.createElement('i');
-      closeIcon.className = 'close fas fa-times';
-      closeIcon.addEventListener('click', function() {
-        chipContainer.remove(); // Remove the entire column on close
-        const index = window.lineageList.indexOf(value);
-        if (index > -1) {
-          window.lineageList.splice(index, 1);
-        }
-      });
-
-      chip.appendChild(closeIcon);
-      chipContainer.appendChild(chip);
-      document.getElementById('lineageChipsContainer').appendChild(chipContainer);
-      window.lineageList.push(value);
-      input.value = '';
-    }
+function showTerpenePercentageModal(selectedTerpenes) {
+  const terpeneInputsContainer = document.getElementById('terpeneInputsContainer');
+  terpeneInputsContainer.innerHTML = '';
+  selectedTerpenes.forEach(terp => {
+    const terpeneInputCol = document.createElement('div');
+    terpeneInputCol.className = 'col-sm-6 col-md-4 mb-3';
+    terpeneInputCol.innerHTML = `
+      <label class="form-label" for="terpInput_${terp}">${terp}</label>
+      <input
+        type="number"
+        step="0.01"
+        min="0.01"
+        max="99.99"
+        class="form-control terp-percent-input"
+        id="terpInput_${terp}"
+        data-terpene="${terp}"
+        placeholder="Enter %"
+        required
+      />
+    `;
+    terpeneInputsContainer.appendChild(terpeneInputCol);
+  });
+  const terpenePercentModal = new bootstrap.Modal(document.getElementById('terpenePercentModal'));
+  terpenePercentModal.show();
 }
+
+async function finalizeStrainSubmission() {
+  const strainValue = document.getElementById("strainSubmission").value.trim();
+  const cultivatorValue = document.getElementById("cultivatorSubmission").value.trim();
+  const strainCategoryValue = document.getElementById("strainCategorySubmission").value.trim();
+  const emailAddressValue = document.getElementById("emailAddress").value.trim();
+  const descriptionValue = document.getElementById("strainDescription").value.trim();
+  const effectsValue = document.getElementById("effectsSubmission").value.trim();
+  const lineageValues = window.lineageList || [];
+  const terpenesElement = document.getElementById("terpenesSubmission");
+  const selectedTerpenes = Array.from(terpenesElement.selectedOptions).map(option => option.value);
+  const productTypeElements = document.getElementsByName("inlineRadioOptions");
+  let productTypeValue = '';
+  for (const ptElement of productTypeElements) {
+    if (ptElement.checked) {
+      productTypeValue = ptElement.value;
+      break;
+    }
+  }
+  const cleanCultivatorString = window.supabaseClient.sanitizeInputString(cultivatorValue);
+  const cleanStrainString = window.supabaseClient.sanitizeInputString(strainValue);
+  let lineageFormSubmission = lineageValues.join(' X ');
+  const formData = new FormData();
+  formData.append('strain', cleanStrainString);
+  formData.append('cultivator', cleanCultivatorString);
+  formData.append('cultivar_email', emailAddressValue);
+  formData.append('description', descriptionValue || 'Coming Soon');
+  formData.append('effects', effectsValue || 'Coming Soon');
+  formData.append('product_type', productTypeValue);
+  formData.append('lineage', lineageFormSubmission);
+  formData.append('terpenes_list', selectedTerpenes);
+  formData.append('strain_category', strainCategoryValue);
+  const terpeneMap = window.selectedTerpenePercentages || {};
+  formData.append('terpenes_map', JSON.stringify(terpeneMap));
+  try {
+    const root = window.location.origin;
+    const url = new URL('/submit/submit_strain/', root);
+    const authToken = await window.supabaseClient.getAccessToken();
+    const response = await fetch(url, {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
+    });
+    if (!response.ok) {
+      console.error("Form submission failed:", response.status, response.statusText);
+      alert('The submission failed, check your inputs and try again.');
+      return;
+    }
+    const responseData = await response.json();
+    getNewlyCreatedStrain(
+      responseData.submission_strain,
+      responseData.submission_cultivator,
+      responseData.cultivar_email
+    );
+  } catch (error) {
+    console.error("Submission error:", error);
+    alert('An error occurred while submitting the form. Please try again.');
+  }
+}
+
+document.getElementById('saveTerpenePercentagesBtn').addEventListener('click', async function() {
+  const inputElements = document.querySelectorAll('.terp-percent-input');
+  const terpeneMap = {};
+  inputElements.forEach(input => {
+    const terpName = input.getAttribute('data-terpene');
+    const val = parseFloat(input.value);
+    terpeneMap[terpName] = val;
+  });
+  window.selectedTerpenePercentages = terpeneMap;
+  const terpenePercentModal = bootstrap.Modal.getInstance(document.getElementById('terpenePercentModal'));
+  terpenePercentModal.hide();
+  await finalizeStrainSubmission();
+});
+
 
 window.addEventListener('supabaseClientReady', async (event) => {
     const maxChars = 1500;

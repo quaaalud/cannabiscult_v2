@@ -6,10 +6,11 @@ Created on Sun Nov  5 16:47:38 2023
 @author: dale
 """
 
+import json
 import enum
 from fastapi import Form
 from pydantic import BaseModel, Json, Field, EmailStr, field_validator, StringConstraints
-from typing import Optional, Annotated, List, Any
+from typing import Optional, Annotated, List, Any, Dict
 
 StrainType = Annotated[str, Annotated[str, StringConstraints(min_length=1, max_length=500)]]
 
@@ -54,6 +55,7 @@ class ProductSubmission(ProductTypes):
     lineage: Annotated[str, Field(max_length=1500, description="Lineage or ancestry information")] = "Coming Soon!"
     terpenes_list: List[Annotated[str, Field(max_length=1500, description="Name of a terpene")]] = ["Coming", "Soon!"]
     strain_category: StrainCategoryEnum = Field(StrainCategoryEnum.cult_pack, description="Category of the strain")
+    terpenes_map: Dict[str, float] = Field(default_factory={})
 
     @field_validator("strain", "cultivator", mode="before")
     @classmethod
@@ -103,8 +105,13 @@ class ProductSubmission(ProductTypes):
         lineage: str = Form("Coming Soon!"),
         terpenes_list: List[str] = Form(["Coming", "Soon!"]),
         strain_category: StrainCategoryEnum = Form(StrainCategoryEnum.cult_pack),
+        terpenes_map: Optional[str] = Form(None),
         extra_data: Optional[str] = Form(None),
     ) -> "ProductSubmission":
+        if terpenes_map:
+            parsed_terps = json.loads(terpenes_map)
+        else:
+            parsed_terps = {}
         return cls(
             product_type=product_type,
             strain=strain,
@@ -116,6 +123,7 @@ class ProductSubmission(ProductTypes):
             terpenes_list=terpenes_list,
             strain_category=strain_category,
             extra_data=extra_data,
+            terpenes_map=parsed_terps,
         )
 
     class Config:

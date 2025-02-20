@@ -24,7 +24,7 @@ from schemas.search_class import (
     ProductResultSchema,
     DescriptionResultSchema,
     TerpProfileResultSchema,
-    ProductWithTerpProfileSchema
+    ProductWithTerpProfileSchema,
 )
 from db.base import (
     Base,
@@ -560,3 +560,42 @@ async def get_product_with_terp_profile(db: Session, product_id: int, product_ty
         description=description_result,
         terp_profile=terp_result,
     )
+
+
+async def upsert_terp_profile(
+    db: Session,
+    description_id: int,
+    product_id: int,
+    product_type: str,
+    terpenes_map: Dict[str, float],
+) -> TerpProfile:
+    try:
+        existing_profile = (
+            db.query(TerpProfile)
+            .filter_by(
+                description_id=description_id,
+                product_id=product_id,
+                product_type=product_type,
+            )
+            .first()
+        )
+        if not existing_profile:
+            new_profile = TerpProfile(
+                description_id=description_id,
+                product_id=product_id,
+                product_type=product_type,
+            )
+            for terp_name, terp_value in terpenes_map.items():
+                setattr(new_profile, terp_name, (terp_value/100))
+            db.add(new_profile)
+            db.commit()
+            db.refresh(new_profile)
+            return new_profile
+        for terp_name, terp_value in terpenes_map.items():
+            setattr(existing_profile, terp_name, (terp_value/100))
+        db.commit()
+        db.refresh(existing_profile)
+        return existing_profile
+    except Exception as e:
+        db.rollback()
+        raise e
