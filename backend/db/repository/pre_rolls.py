@@ -6,11 +6,11 @@ Created on Sun Jan 21 13:53:38 2024
 @author: dale
 """
 
-from sqlalchemy import func, not_
+from sqlalchemy import func, not_, and_
 from sqlalchemy.orm import Session
 from sqlalchemy.future import select
 from typing import Optional, List, Dict, Any
-from db.base import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking, User
+from db.base import Pre_Roll, Pre_Roll_Description, Pre_Roll_Ranking, User, TerpProfile
 from schemas.pre_rolls import PreRollRankingSchema
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 import traceback
@@ -168,7 +168,7 @@ async def update_or_create_pre_roll_ranking(ranking_dict: PreRollRankingSchema, 
             db.commit()
             db.refresh(existing_ranking)
             return {"pre_roll_ranking": True}
-        except:
+        except Exception:
             db.rollback()
             raise
     else:
@@ -304,16 +304,33 @@ async def return_all_available_descriptions_from_preroll_id(db: Session, pre_rol
         query = (
             db.query(
                 Pre_Roll_Description,
-                User.username
+                User.username,
+                TerpProfile
             )
             .outerjoin(User, Pre_Roll_Description.cultivar_email == User.email)
+            .outerjoin(
+                TerpProfile,
+                and_(
+                    TerpProfile.description_id == Pre_Roll_Description.description_id,
+                    TerpProfile.product_id == Pre_Roll_Description.pre_roll_id,
+                    TerpProfile.product_type == "pre_roll",
+                )
+            )
             .filter(Pre_Roll_Description.pre_roll_id == pre_roll_id)
             .all()
         )
         if not query:
             return []
         descriptions = []
-        for description, username in query:
+        for description, username, terp_profile in query:
+            terpenes_map = {}
+            if terp_profile:
+                for col in TerpProfile.__table__.columns:
+                    if col.name in ("description_id", "product_type", "product_id"):
+                        continue
+                    value = getattr(terp_profile, col.name, 0.0)
+                    if value is not None and value != 0.0:
+                        terpenes_map[col.name] = value
             descriptions.append({
                 "pre_roll_id": pre_roll_id,
                 "description_id": description.description_id,
@@ -323,6 +340,7 @@ async def return_all_available_descriptions_from_preroll_id(db: Session, pre_rol
                 "terpenes_list": description.terpenes_list,
                 "username": username or "Cultivar",
                 "strain_category": description.strain_category if description.strain_category else "cult_pack",
+                "terpenes_map": terpenes_map
             })
         return descriptions
     except Exception as e:

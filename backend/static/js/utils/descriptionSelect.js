@@ -5,6 +5,18 @@ const formatRating = (rating) => {
     return rating !== null ? parseFloat(rating).toFixed(2) : '?';
 };
 
+function buildTerpeneChartData(terpenesList, terpenesMap) {
+  if (terpenesMap && Object.keys(terpenesMap).length > 0) {
+    const labels = Object.keys(terpenesMap);
+    const dataValues = Object.values(terpenesMap);
+    return [labels, dataValues];
+  }
+  return [
+    terpenesList,
+    terpenesList.map(() => 1),
+  ];
+}
+
 function updateDisplayedDescription(description, strain, cultivator, urlPath) {
     document.getElementById("description_text").textContent = description.description_text || "Coming Soon";
     document.getElementById("effects_text").textContent = description.effects || "Coming Soon";
@@ -12,10 +24,12 @@ function updateDisplayedDescription(description, strain, cultivator, urlPath) {
 
     const terpeneDiv = document.getElementById("terpene_text");
     terpeneDiv.innerHTML = ""; 
-
-    if (description.terpenes_list && description.terpenes_list.length) {
-        const dataValues = description.terpenes_list.map(() => 1);
-        initTerpeneChart(description.terpenes_list, dataValues);
+    const [labels, dataValues] = buildTerpeneChartData(
+        description.terpenes_list || [],
+        description.terpenes_map || {}
+    );
+    if (labels.length > 0) {
+        initTerpeneChart(labels, dataValues);
     } else {
         terpeneDiv.innerHTML = "<p>Coming Soon</p>";
     }

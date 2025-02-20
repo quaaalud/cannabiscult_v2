@@ -19,38 +19,37 @@ function attachResizeListener(canvas) {
   });
 }
 export default function initTerpeneChart(labels, dataValues) {
-  const canvasContainer = document.getElementById('terpene_text');
-  const existingCanvas = document.getElementById('terpeneChart');
-  if (existingCanvas) {
-    existingCanvas.remove();
-  }
-  const newCanvas = document.createElement('canvas');
-  newCanvas.id = 'terpeneChart';
-  canvasContainer.appendChild(newCanvas);
-
-  const ctx = newCanvas.getContext('2d');
-  if (terpeneChartInstance) {
-    terpeneChartInstance.destroy();
-  }
-
-  terpeneChartInstance = new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: labels,
-      datasets: [{
-        label: 'Terpenes',
-        data: dataValues,
-        backgroundColor: generateColors(labels.length),
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: {
-        duration: 500,
-      },
+    const canvasContainer = document.getElementById('terpene_text');
+    const existingCanvas = document.getElementById('terpeneChart');
+    if (existingCanvas) {
+        existingCanvas.remove();
     }
-  });
-  attachResizeListener(newCanvas);
+    const newCanvas = document.createElement('canvas');
+    newCanvas.id = 'terpeneChart';
+    canvasContainer.appendChild(newCanvas);
+
+    const ctx = newCanvas.getContext('2d');
+    if (terpeneChartInstance) {
+        terpeneChartInstance.destroy();
+    }
+    terpeneChartInstance = new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Terpenes',
+                data: dataValues,
+                backgroundColor: generateColors(labels.length),
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 500,
+            },
+        }
+    });
+    attachResizeListener(newCanvas);
 }
 

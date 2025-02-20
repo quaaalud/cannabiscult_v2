@@ -3,7 +3,7 @@
 import base64
 import traceback
 from pathlib import Path
-from sqlalchemy import func, not_
+from sqlalchemy import func, not_, and_
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List, Union
 from core.config import settings
@@ -12,6 +12,7 @@ from db.base import (
     Flower_Description,
     Flower_Ranking,
     User,
+    TerpProfile,
 )
 from schemas.flowers import (
     CreateFlowerRanking,
@@ -268,16 +269,33 @@ async def return_all_available_descriptions_from_strain_id(db: Session, flower_i
         query = (
             db.query(
                 Flower_Description,
-                User.username
+                User.username,
+                TerpProfile
             )
             .outerjoin(User, Flower_Description.cultivar_email == User.email)
+            .outerjoin(
+                TerpProfile,
+                and_(
+                    TerpProfile.description_id == Flower_Description.description_id,
+                    TerpProfile.product_id == Flower_Description.flower_id,
+                    TerpProfile.product_type == "flower",  # must match the DB’s product_type
+                )
+            )
             .filter(Flower_Description.flower_id == flower_id)
             .all()
         )
         if not query:
             return []
         descriptions = []
-        for description, username in query:
+        for description, username, terp_profile in query:
+            terpenes_map = {}
+            if terp_profile:
+                for col in TerpProfile.__table__.columns:
+                    if col.name in ("description_id", "product_type", "product_id"):
+                        continue
+                    value = getattr(terp_profile, col.name, 0.0)
+                    if value is not None and value != 0.0:
+                        terpenes_map[col.name] = value
             descriptions.append({
                 "flower_id": flower_id,
                 "description_id": description.description_id,
@@ -287,8 +305,10 @@ async def return_all_available_descriptions_from_strain_id(db: Session, flower_i
                 "terpenes_list": description.terpenes_list,
                 "username": username or "Cultivar",
                 "strain_category": description.strain_category if description.strain_category else "cult_pack",
+                "terpenes_map": terpenes_map
             })
         return descriptions
+
     except Exception as e:
         traceback.print_exc()
         print(f"Error fetching all descriptions for flower_id {flower_id}: {e}")

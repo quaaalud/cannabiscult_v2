@@ -5,7 +5,7 @@ from pathlib import Path
 from sqlalchemy import func, not_, or_, and_
 from sqlalchemy.orm import Session
 from typing import Optional, Any, Dict, List
-from db.base import Edible, VibeEdible, Edible_Description, Edible_Ranking, Vibe_Edible_Ranking, User
+from db.base import Edible, VibeEdible, Edible_Description, Edible_Ranking, Vibe_Edible_Ranking, User, TerpProfile
 from schemas.edibles import CreateEdibleRanking, CreateVibeEdibleRanking
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 from core.config import settings
@@ -198,16 +198,33 @@ async def return_all_available_descriptions_from_strain_id(db: Session, edible_i
         query = (
             db.query(
                 Edible_Description,
-                User.username
+                User.username,
+                TerpProfile
             )
             .outerjoin(User, Edible_Description.cultivar_email == User.email)
+            .outerjoin(
+                TerpProfile,
+                and_(
+                    TerpProfile.description_id == Edible_Description.description_id,
+                    TerpProfile.product_id == Edible_Description.edible_id,
+                    TerpProfile.product_type == "edible"
+                )
+            )
             .filter(Edible_Description.edible_id == edible_id)
             .all()
         )
         if not query:
             return []
         descriptions = []
-        for description, username in query:
+        for description, username, terp_profile in query:
+            terpenes_map = {}
+            if terp_profile:
+                for col in TerpProfile.__table__.columns:
+                    if col.name in ("description_id", "product_type", "product_id"):
+                        continue
+                    value = getattr(terp_profile, col.name, 0.0)
+                    if value is not None and value != 0.0:
+                        terpenes_map[col.name] = value
             descriptions.append({
                 "edible_id": edible_id,
                 "description_id": description.description_id,
@@ -217,6 +234,7 @@ async def return_all_available_descriptions_from_strain_id(db: Session, edible_i
                 "terpenes_list": description.terpenes_list,
                 "username": username or "Cultivar",
                 "strain_category": description.strain_category if description.strain_category else "cult_pack",
+                "terpenes_map": terpenes_map,
             })
         return descriptions
     except Exception as e:
