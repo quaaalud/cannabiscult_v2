@@ -41,6 +41,10 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "CultFlower2": ("Vibe", "RKO"),
             "CultFlower3": ("Sinse", "Cap Junky"),
             "CultFlower4": ("C4", "Lemon Drip"),
+            "CHAMPIONSHIP CP1": ("Sundro", "Lemon Oreoz"),
+            "CHAMPIONSHIP CP2": ("Local", "RS11"),
+            "CHAMPIONSHIP CP3": ("Vibe", "Guava Tart"),
+            "CHAMPIONSHIP CP4": ("Amaze", "Blue Zushi"),
         }
         query_params = dict(request.query_params)
         strain_selected = query_params.get("strain_selected")
