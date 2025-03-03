@@ -1,0 +1,216 @@
+{% extends "shared/base.html" %}
+
+{% block title %}
+  <title>Cannabis Cult and Mo Luv Rankings</title>
+{% endblock %}
+
+{% block head %}
+  <meta 
+    property="og:image"
+    content="Cannabis Cult and Mo Luv Rankings"
+  />
+  <meta 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+    name="description"
+  />
+  <meta 
+    property="og:description"
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    property="og:title"
+    content="The Cannabis Cult"
+  />
+  <meta 
+    name="twitter:card"
+    content="summary_large_image"
+  />
+  <meta 
+    property="twitter:url"
+    content="https://cannabiscult.co"
+  />
+  <meta 
+    property="twitter:title"
+    content="The Cannabis Cult Connoisseur Flower Pack November Success"
+  />
+  <meta 
+    property="twitter:description"
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    name="twitter:site"
+    content="https://cannabiscult.co/"
+  />
+  <meta 
+    property="twitter:image"
+    content=""
+  />
+{% endblock %}
+{% block content %}
+<style>
+  #allContent {
+    background-image: url('');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    margin: 0;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  #allContent::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.75);
+    pointer-events: none;
+    z-index: 1;
+  }
+ #content {
+    position: relative;
+    z-index: 2;
+  }
+  .cascading-right { margin-right: -50px; }
+
+  @media ( max-width: 991.98px ){
+    .cascading-right { margin-right: 0; }
+  }
+</style>
+<div id="allContent">
+  <div id="content">
+    <div id="preview" class="preview pt-md-5" style="min-height: 100vh">
+      <div>
+        <div style="position: relative;" data-draggable="true" draggable="false">
+          <section draggable="false" class="container pt-0" data-v-271253ee="">
+            <section class="mb-5 text-center text-lg-start">
+              <div class="container py-4 pt-lg-4 pb-lg-0">
+                <div class="row g-0 align-items-center my-auto">
+                  <div class="col-lg-6 mb-5 mb-lg-0 mx-auto-md">
+                    <div class="card cascading-right" style=" background: hsla(0, 0%, 100%, 0.55); backdrop-filter: blur(30px); ">
+                      <div class="card-body px-4 pb-5 pt-md-0 px-md-5 shadow-5">
+                        <h1 class="my-5 display-4 fw-bold ls-tight">
+                          Mo Luv & Cannabis Cult Collab
+                        </h1>
+                        <div class="row g-2">
+                          <div class="col-12 col-lg-11">
+                            <div class="card">
+                              <div class="card-body">
+                                <h5 class="card-title text-center">Get Cultivar Reviews</h5>
+                                <form method="GET" action="/get-review" id="review-form">
+                                  <!-- Product Type Select Box -->
+                                  <div class="mb-3">
+                                    <label for="product_type_selected" class="form-label">Product Type</label>
+                                    <select class="form-select" id="product_type_selected" name="product_type_selected">
+                                    </select>
+                                  </div>
+                                  <!-- Strain Select Box -->
+                                  <div class="mb-3">
+                                    <label for="strain_selected" class="form-label">Strain Number</label>
+                                    <select class="form-select" id="strain_selected" name="strain_selected">
+                                    </select>
+                                  </div>
+                                  <div class="d-grid gap-2">
+                                    <button class="btn btn-info w-100" type="submit">Submit</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <h2 class="text-dark py-3">Select a Strain Above to Start Review</h2>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-6 mb-5 mb-lg-0">
+                    <div id="carouselSuccessImages" class="carousel slide carousel-fade pb-5" data-mdb-ride="carousel" data-mdb-carousel-init>
+                      <div class="carousel-inner rounded-5 shadow-4-strong">
+                        <div class="carousel-item active">
+                          <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/Connoisseur_Transitions/championship_rounds/results/champ_pack_results_placing.webp"
+                            class="d-block w-100 rounded-4 shadow-4"
+                            alt=""
+                            aria-controls="#carouselSuccessImages"
+                            data-mdb-interval="5000"
+                          >
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div class="container align-items-center justify-items-center py-4">
+      {% include "components/homepage_elements/homepage_features.html" %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+window.addEventListener('DOMContentLoaded', function() {
+  const productTypeSelect = document.getElementById('product_type_selected');
+  const cultivatorSelect = document.getElementById('cultivator_selected');
+  const strainSelect = document.getElementById('strain_selected');
+  const reviewForm = document.getElementById('review-form');
+  function getFormAction() {
+    switch (productTypeSelect.value.toLowerCase()) {
+      case 'concentrate':
+        return '/concentrate-get-review';
+      default:
+        return '/get-review';
+    }
+  }
+  function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  function fetchAndPopulateSelect(url, selectElement, callback, sortNumerically = false) {
+      fetch(url)
+          .then(response => response.json())
+          .then(data => {
+              selectElement.innerHTML = '';
+              if (sortNumerically) {
+                  data.sort((a, b) => {
+                      const numA = parseInt(a.startsWith("MOLUV") ? a.substring(5) : a, 10);
+                      const numB = parseInt(b.startsWith("MOLUV") ? b.substring(5) : b, 10);
+                      return numA - numB;
+                  });
+              } else {
+                  data.sort((a, b) => a.localeCompare(b));
+              }
+              data.forEach(item => {
+                  const option = document.createElement('option');
+                  option.value = item;
+                  let text = capitalizeFirstLetter(item);
+                  if (text.startsWith("MOLUV")) {
+                      text = text.substring(5);
+                  }
+                  option.text = text;
+                  selectElement.add(option);
+              });
+              if (callback) callback();
+          })
+          .catch(error => console.error('Error:', error));
+  }
+  function updateStrainOptions() {
+    let selectedProductType = capitalizeFirstLetter(productTypeSelect.value);
+    let url = '/search/strains/' + selectedProductType + '/moluv/';
+    fetchAndPopulateSelect(url, strainSelect, null, true);
+    reviewForm.action = getFormAction();
+  }
+  productTypeSelect.addEventListener('change', updateStrainOptions);
+  fetchAndPopulateSelect('/search/product-types/moluv/', productTypeSelect, function() {
+    reviewForm.action = getFormAction();
+    updateStrainOptions();
+  });
+});
+</script>
+{% endblock %}

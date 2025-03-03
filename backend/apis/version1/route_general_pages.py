@@ -519,6 +519,18 @@ async def rosin_championship_2025_landing_route(request: Request):
     )
 
 
+@general_pages_router.get("/moluv-cult-collab", response_class=HTMLResponse)
+async def moluv_cult_collab_route(request: Request):
+    user_is_logged_in = await async_get_current_users_email() is not None
+    return templates.TemplateResponse(
+        str(Path("general_pages", "pack_transition_pages", "moluv-cult-collab.html")),
+        {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+        },
+    )
+
+
 @general_pages_router.get("/success/{file_name}", response_class=HTMLResponse)
 async def general_transition_page_request(request: Request, file_name: str):
     file_path = Path(

@@ -264,6 +264,21 @@ def get_strains_by_cultivator(db: Session, model: Type[Base], cultivator: str) -
         return None
 
 
+def get_strains_for_moluv_collab(db: Session, model: Type[Base]) -> Optional[List[str]]:
+    try:
+        result = db.execute(
+            select(model.strain)
+            .where(model.cultivator == "Connoisseur")
+            .filter(model.strain.ilike("%MOLUV%"))
+        )
+        strains = result.scalars().all()
+        return strains
+    except Exception as e:
+        traceback.print_exc()
+        print(f"Error fetching moluv strains for {model.__name__}: {e}")
+        return None
+
+
 def get_random_cultivator(db: Session, model: Type[Base]) -> str:
     try:
         result = db.execute(select(model.cultivator).distinct().order_by(func.random()).limit(1))

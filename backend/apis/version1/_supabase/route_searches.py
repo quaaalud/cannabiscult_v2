@@ -36,6 +36,7 @@ from db.repository.search_class import (
     get_all_product_types,
     get_cultivators_by_product_type,
     get_strains_by_cultivator,
+    get_strains_for_moluv_collab,
     get_random_cultivator,
     aggregate_ratings_by_strain,
     get_all_card_paths,
@@ -178,6 +179,17 @@ async def get_product_types(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@router.get("/product-types/moluv/", response_model=List[Any])
+async def get_product_types_for_moluv(db: Session = Depends(get_db)):
+    try:
+        product_types = await get_all_product_types(db)
+        if not product_types:
+            raise HTTPException(status_code=404, detail="No product types found")
+        return [p for p in product_types if p in ["flower", "concentrate"]]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get("/cultivators/{product_type}", response_model=List[Any], include_in_schema=False)
 async def get_cultivators(
     product_type: str,
@@ -226,6 +238,29 @@ async def get_strains(
     if not all_strains:
         raise HTTPException(status_code=500, detail="An error occurred")
     return all_strains
+
+
+@router.get(
+    "/strains/{product_type}/moluv/",
+    response_model=List[str],
+    include_in_schema=False,
+)
+async def get_strains_for_moliv_collab(
+    product_type: str,
+    db: Session = Depends(get_db),
+):
+    global product_type_to_model
+    models = product_type_to_model.get(product_type)
+    if not models:
+        raise HTTPException(status_code=404, detail="Product type not found")
+    all_strains = []
+    for model in models:
+        strains = get_strains_for_moluv_collab(db, model)
+        if strains:
+            all_strains.extend(strains)
+    if not all_strains:
+        raise HTTPException(status_code=500, detail="An error occurred")
+    return [s for s in set(all_strains)]
 
 
 @router.get(
