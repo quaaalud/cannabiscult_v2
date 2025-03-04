@@ -519,7 +519,7 @@ async def rosin_championship_2025_landing_route(request: Request):
     )
 
 
-@general_pages_router.get("/moluv-cult-collab", response_class=HTMLResponse)
+@general_pages_router.get("/moluv-headstash-bowl", response_class=HTMLResponse)
 async def moluv_cult_collab_route(request: Request):
     return templates.TemplateResponse(
         str(Path("general_pages", "pack_transition_pages", "moluv-cult-collab.html")),
