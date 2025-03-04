@@ -110,11 +110,11 @@
                                     <select class="form-select" id="strain_selected" name="strain_selected">
                                     </select>
                                   </div>
-                                  <div class="form-check form-switch mb-3 d-none" id="voteSwitchContainer">
+                                  <div class="form-check form-switch py-3 d-none" id="voteSwitchContainer">
                                     <input class="form-check-input" type="checkbox" id="vote-switch" name="vote_switch">
                                     <label class="form-check-label" for="vote-switch">Submit As Favorite Strain Vote</label>
                                   </div>
-                                  <div class="d-grid gap-2">
+                                  <div class="d-grid gap-2 py-3">
                                     <button class="btn btn-info w-100" type="submit" id="moLuvButton">Start Rating</button>
                                   </div>
                                 </form>
@@ -160,84 +160,126 @@
 {% block scripts %}
 <script>
 window.addEventListener('DOMContentLoaded', async function() {
-  let userId
-  window.addEventListener('supabaseClientReady', async function() {
-      userId = await window.supabaseClient.getCurrentUserId();
-      if (userId) {
-        showOrRemoveFavoriteVote(true);
-      }
-      const voteSwitch = document.getElementById('vote-switch');
-      voteSwitch.addEventListener('change', function() {
-        if (voteSwitch.checked) {
-          moLuvButton.textContent = "Submit Favorite Vote";
-        } else {
-          moLuvButton.textContent = "Start Rating";
+    let userId
+    const productTypeSelect = document.getElementById('product_type_selected');
+    const cultivatorSelect = document.getElementById('cultivator_selected');
+    const strainSelect = document.getElementById('strain_selected');
+    const reviewForm = document.getElementById('review-form');
+    function getFormAction() {
+        switch (productTypeSelect.value.toLowerCase()) {
+            case 'concentrate':
+                return '/concentrate-get-review';
+            default:
+                return '/get-review';
         }
-      });
-  });
-  const productTypeSelect = document.getElementById('product_type_selected');
-  const cultivatorSelect = document.getElementById('cultivator_selected');
-  const strainSelect = document.getElementById('strain_selected');
-  const reviewForm = document.getElementById('review-form');
-  function getFormAction() {
-    switch (productTypeSelect.value.toLowerCase()) {
-      case 'concentrate':
-        return '/concentrate-get-review';
-      default:
-        return '/get-review';
     }
-  }
-  function capitalizeFirstLetter(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  }
-  function showOrRemoveFavoriteVote(showVoteSwitch = true) {
-    const voteSwitchContainer = document.getElementById('voteSwitchContainer');
-    if (showVoteSwitch) {
-      voteSwitchContainer.classList.remove('d-none');
-      return;
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
     }
-    voteSwitchContainer.classList.add('d-none');
-    return;
-  }
-  function fetchAndPopulateSelect(url, selectElement, callback, sortNumerically = false) {
-      fetch(url)
-          .then(response => response.json())
-          .then(data => {
-              selectElement.innerHTML = '';
-              if (sortNumerically) {
-                  data.sort((a, b) => {
-                      const numA = parseInt(a.startsWith("MOLUV") ? a.substring(5) : a, 10);
-                      const numB = parseInt(b.startsWith("MOLUV") ? b.substring(5) : b, 10);
-                      return numA - numB;
-                  });
-              } else {
-                  data.sort((a, b) => a.localeCompare(b));
-              }
-              data.forEach(item => {
-                  const option = document.createElement('option');
-                  option.value = item;
-                  let text = capitalizeFirstLetter(item);
-                  if (text.startsWith("MOLUV")) {
-                      text = text.substring(5);
-                  }
-                  option.text = text;
-                  selectElement.add(option);
-              });
-              if (callback) callback();
-          })
-          .catch(error => console.error('Error:', error));
-  }
-  function updateStrainOptions() {
-    let selectedProductType = capitalizeFirstLetter(productTypeSelect.value);
-    let url = '/search/strains/' + selectedProductType + '/moluv/';
-    fetchAndPopulateSelect(url, strainSelect, null, true);
-    reviewForm.action = getFormAction();
-  }
-  productTypeSelect.addEventListener('change', updateStrainOptions);
-  fetchAndPopulateSelect('/search/product-types/moluv/', productTypeSelect, function() {
-    reviewForm.action = getFormAction();
-    updateStrainOptions();
-  });
+    function showOrRemoveFavoriteVote(showVoteSwitch = true) {
+        const voteSwitchContainer = document.getElementById('voteSwitchContainer');
+        if (showVoteSwitch) {
+            voteSwitchContainer.classList.remove('d-none');
+            const voteSwitch = document.getElementById('vote-switch');
+            voteSwitch.checked = false;
+            voteSwitch.addEventListener('change', function() {
+                if (voteSwitch.checked) {
+                    moLuvButton.textContent = "Submit Favorite Vote";
+                } else {
+                    moLuvButton.textContent = "Start Rating";
+                }
+            });
+            reviewForm.addEventListener('submit', async function(event) {
+                if (voteSwitch.checked) {
+                    await submitFavoriteStrainVote(event);
+                } else {
+                    getReview();
+                }
+            });
+            return;
+        }
+        voteSwitchContainer.classList.add('d-none');
+        return;
+    }
+    async function submitFavoriteStrainVote(event) {
+        event.preventDefault();
+        const userId = await window.supabaseClient.getCurrentUserId();
+        if (!userId) {
+            alert("Please log in to submit a vote.");
+            return;
+        }
+        const productType = productTypeSelect.value;
+        const productId = strainSelect.value;
+        const payload = {
+            user_id: userId,
+            product_type: productType,
+            product_id: parseInt(productId.substring(5), 10)
+        };
+        try {
+            const response = await fetch('/users/moluv/favorite/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (response.ok) {
+                const result = await response.json();
+                alert("Vote submitted successfully!");
+            } else {
+                const errorData = await response.json();
+                alert("Error submitting vote: " + errorData.detail);
+            }
+        } catch (error) {
+            console.error("Error submitting vote:", error);
+            alert("An error occurred while submitting your vote.");
+        }
+    }
+    function fetchAndPopulateSelect(url, selectElement, callback, sortNumerically = false) {
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                selectElement.innerHTML = '';
+                if (sortNumerically) {
+                    data.sort((a, b) => {
+                        const numA = parseInt(a.startsWith("MOLUV") ? a.substring(5) : a, 10);
+                        const numB = parseInt(b.startsWith("MOLUV") ? b.substring(5) : b, 10);
+                        return numA - numB;
+                    });
+                } else {
+                    data.sort((a, b) => a.localeCompare(b));
+                }
+                data.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item;
+                    let text = capitalizeFirstLetter(item);
+                    if (text.startsWith("MOLUV")) {
+                        text = text.substring(5);
+                    }
+                    option.text = text;
+                    selectElement.add(option);
+                });
+                if (callback) callback();
+            })
+            .catch(error => console.error('Error:', error));
+    }
+    function updateStrainOptions() {
+        let selectedProductType = capitalizeFirstLetter(productTypeSelect.value);
+        let url = '/search/strains/' + selectedProductType + '/moluv/';
+        fetchAndPopulateSelect(url, strainSelect, null, true);
+        reviewForm.action = getFormAction();
+    }
+    productTypeSelect.addEventListener('change', updateStrainOptions);
+    fetchAndPopulateSelect('/search/product-types/moluv/', productTypeSelect, function() {
+        reviewForm.action = getFormAction();
+        updateStrainOptions();
+    });
+    window.addEventListener('supabaseClientReady', async function() {
+        userId = await window.supabaseClient.getCurrentUserId();
+        if (userId) {
+          showOrRemoveFavoriteVote(true);
+        }
+    });
 });
 </script>
 {% endblock %}

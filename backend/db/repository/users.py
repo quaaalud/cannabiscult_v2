@@ -248,7 +248,7 @@ async def delete_strain_from_list(strain_to_remove: UserStrainListRemove, db: Se
 
 
 @settings.retry_db
-def upsert_moluv_headstash_vote(db: Session, user_id: UUID, product_type: str, product_id: int) -> Dict[str, str]:
+async def upsert_moluv_headstash_vote(db: Session, user_id: UUID, product_type: str, product_id: int) -> Dict[str, str]:
     try:
         stmt = insert(MoluvHeadstashBowl).values(
             user_id=user_id,

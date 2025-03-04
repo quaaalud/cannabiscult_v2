@@ -231,19 +231,25 @@ async def delete_strain_from_strain_list(strain_to_remove: UserStrainListCreate,
         raise HTTPException(status_code=404, detail=str(e))
 
 
-@router.post("/moluv-collab/favorite", response_model=MoluvHeadstashFavoriteVoteResult)
+@router.post(
+    "/moluv/favorite/",
+    response_model=MoluvHeadstashFavoriteVoteResult,
+    dependencies=[Depends(settings.jwt_auth_dependency)]
+)
 async def upsert_moluv_headstash_vote_route(
+    request: Request,
     moluv_vote: MoluvHeadstashFavoriteVoteSchema,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ) -> MoluvHeadstashFavoriteVoteResult:
     try:
-        result = await upsert_moluv_headstash_vote_route(
+        result = await upsert_moluv_headstash_vote(
             db,
             moluv_vote.user_id,
             moluv_vote.product_type,
             moluv_vote.product_id
         )
         if not result:
-            raise HTTPException(status_code=400, detail="No vote result returned for Moluv collab.")
+            raise HTTPException(status_code=400, detail="No result returned for Moluv collab favorite vote.")
+        return result
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
