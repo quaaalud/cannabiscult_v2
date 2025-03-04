@@ -1,26 +1,22 @@
 {% extends "shared/base.html" %}
 
 {% block title %}
-  <title>Cannabis Cult and Mo Luv Rankings</title>
+  <<title>Cannabis Cult | Moluv Headstash Bowl 2025</title>
 {% endblock %}
 
 {% block head %}
   <meta 
     property="og:image"
-    content="Cannabis Cult and Mo Luv Rankings"
+    content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/Connoisseur_Transitions/moluv_headstash_collab/headstash_cult_collab.png"
   />
   <meta 
-    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
-    name="description"
+    property="og:image:alt"
+    content="MoLuv Headstash Bowl 2025 promo with Cannabis Cult text only logo"
   />
-  <meta 
-    property="og:description"
-    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
-  />
-  <meta 
-    property="og:title"
-    content="The Cannabis Cult"
-  />
+  <meta name="description" content="Use the Cannabis Cult rating system to complete your Moluv Headstash Bowl 2025 ratings.">
+  <meta name="keywords" content="Cannabis Cult, Moluv Headstash Bowl 2025, rating system, cannabis ratings">
+  <meta property="og:title" content="Cannabis Cult | Moluv Headstash Bowl 2025">
+  <meta property="og:description" content="Use the Cannabis Cult rating system to complete your Moluv Headstash Bowl 2025 ratings.">
   <meta 
     name="twitter:card"
     content="summary_large_image"
@@ -31,11 +27,11 @@
   />
   <meta 
     property="twitter:title"
-    content="The Cannabis Cult Connoisseur Flower Pack November Success"
+    content="Cannabis Cult | Moluv Headstash Bowl 2025"
   />
   <meta 
     property="twitter:description"
-    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+    content="Use the Cannabis Cult rating system to complete your Moluv Headstash Bowl 2025 ratings."
   />
   <meta 
     name="twitter:site"
@@ -43,7 +39,7 @@
   />
   <meta 
     property="twitter:image"
-    content=""
+    content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/Connoisseur_Transitions/moluv_headstash_collab/headstash_cult_collab.png"
   />
 {% endblock %}
 {% block content %}
@@ -91,13 +87,12 @@
                     <div class="card cascading-right" style=" background: hsla(0, 0%, 100%, 0.55); backdrop-filter: blur(30px); ">
                       <div class="card-body px-4 pb-5 pt-md-0 px-md-5 shadow-5">
                         <h1 class="my-5 display-4 fw-bold ls-tight">
-                          MoLuv Headstash Bowl
+                          MoLuv Headstash Bowl 2025
                         </h1>
                         <div class="row g-2">
                           <div class="col-12 col-lg-11">
                             <div class="card">
                               <div class="card-body">
-                                <h5 class="card-title text-center">MoLuv Headstash Bowl</h5>
                                 <form method="GET" action="/get-review" id="review-form">
                                   <div class="mb-3">
                                     <label for="product_type_selected" class="form-label">Product Type</label>
@@ -131,9 +126,9 @@
                     <div id="carouselSuccessImages" class="carousel slide carousel-fade pb-5" data-mdb-ride="carousel" data-mdb-carousel-init>
                       <div class="carousel-inner rounded-5 shadow-4-strong">
                         <div class="carousel-item active">
-                          <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/Connoisseur_Transitions/championship_rounds/results/champ_pack_results_placing.webp"
+                          <img src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/webiste_assests/Connoisseur_Transitions/moluv_headstash_collab/headstash_cult_collab.png"
                             class="d-block w-100 rounded-4 shadow-4"
-                            alt=""
+                            alt="MoLuv Headstash Bowl 2025 Logo with the Cannabis Cult text only logo shown."
                             aria-controls="#carouselSuccessImages"
                             data-mdb-interval="5000"
                           >
@@ -185,8 +180,12 @@ window.addEventListener('DOMContentLoaded', async function() {
             voteSwitch.addEventListener('change', function() {
                 if (voteSwitch.checked) {
                     moLuvButton.textContent = "Submit Favorite Vote";
+                    moLuvButton.classList.remove('btn-info');
+                    moLuvButton.classList.add('btn-success');
                 } else {
                     moLuvButton.textContent = "Start Rating";
+                    moLuvButton.classList.remove('btn-success');
+                    moLuvButton.classList.add('btn-info');
                 }
             });
             reviewForm.addEventListener('submit', async function(event) {
