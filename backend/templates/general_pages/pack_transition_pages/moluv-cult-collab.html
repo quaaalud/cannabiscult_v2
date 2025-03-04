@@ -105,6 +105,7 @@
                                     </select>
                                   </div>
                                   <!-- Strain Select Box -->
+                                  <input type="hidden" name="cultivator_selected" value="Connoisseur">
                                   <div class="mb-3">
                                     <label for="strain_selected" class="form-label">Strain Number</label>
                                     <select class="form-select" id="strain_selected" name="strain_selected">
@@ -162,7 +163,6 @@
 window.addEventListener('DOMContentLoaded', async function() {
     let userId
     const productTypeSelect = document.getElementById('product_type_selected');
-    const cultivatorSelect = document.getElementById('cultivator_selected');
     const strainSelect = document.getElementById('strain_selected');
     const reviewForm = document.getElementById('review-form');
     function getFormAction() {
@@ -193,7 +193,7 @@ window.addEventListener('DOMContentLoaded', async function() {
                 if (voteSwitch.checked) {
                     await submitFavoriteStrainVote(event);
                 } else {
-                    getReview();
+                    reviewForm.action = getFormAction();
                 }
             });
             return;

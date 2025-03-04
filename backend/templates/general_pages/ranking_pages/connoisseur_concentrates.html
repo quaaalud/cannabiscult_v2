@@ -101,7 +101,8 @@
           </button>
         </div>
         <div class="d-flex flex-column justify-content-evenly">
-          <div class="mb-4">
+          
+          <div class="mb-4 {% if is_mystery %}d-none{% endif %}">
             <label for="descriptionSelect" class="form-label fw-bold">Select Cultivar Description</label>
             <select class="form-select" id="descriptionSelect" data-mdb-select-init>
               <option value="" disabled selected>Loading descriptions...</option>
