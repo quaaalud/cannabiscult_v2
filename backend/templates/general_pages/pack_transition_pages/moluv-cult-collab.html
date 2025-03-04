@@ -209,11 +209,13 @@ window.addEventListener('DOMContentLoaded', async function() {
             return;
         }
         const productType = productTypeSelect.value;
-        const productId = strainSelect.value;
+        const productIdStr = strainSelect.value;
+        const productId = parseInt(productIdStr.substring(5), 10);
+        if (!window.confirm(`Do you want to submit strain ${productId} as your favorite ${productType}?`)) { return; };
         const payload = {
             user_id: userId,
             product_type: productType,
-            product_id: parseInt(productId.substring(5), 10)
+            product_id: productId
         };
         try {
             const response = await fetch('/users/moluv/favorite/', {
