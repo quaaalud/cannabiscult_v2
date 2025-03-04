@@ -10,9 +10,11 @@ Created on Fri Mar 10 21:13:37 2023
 import base64
 from uuid import UUID
 from supabase import Client
+from sqlalchemy import func
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Union
+from typing import Union, Dict
 from schemas.users import (
     UserCreate,
     UserStrainListCreate,
@@ -21,7 +23,7 @@ from schemas.users import (
     UserStrainListRemove,
     AddUserStrainListNotes,
 )
-from db.base import User, UserStrainList
+from db.base import User, UserStrainList, MoluvHeadstashBowl
 from core.config import settings
 
 
@@ -243,3 +245,26 @@ async def delete_strain_from_list(strain_to_remove: UserStrainListRemove, db: Se
     else:
         db.commit()
     return {"data": f"removed {strain_to_remove.strain}"}
+
+
+@settings.retry_db
+def upsert_moluv_headstash_vote(db: Session, user_id: UUID, product_type: str, product_id: int) -> Dict[str, str]:
+    try:
+        stmt = insert(MoluvHeadstashBowl).values(
+            user_id=user_id,
+            product_type=product_type,
+            product_id=product_id,
+        )
+        stmt = stmt.on_conflict_do_update(
+            constraint="uq_user_product",
+            set_={
+                "product_id": product_id,
+                "updated_at": func.now()
+            }
+        )
+        db.execute(stmt)
+        db.commit()
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise e
+    return {"product_type": product_type, "product_id": str(product_id)}

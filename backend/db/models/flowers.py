@@ -13,12 +13,12 @@ from sqlalchemy import (
     Boolean,
     ForeignKey,
     Text,
-    ARRAY,
-    CheckConstraint,
     Enum,
     Integer,
     Float,
     func,
+    ARRAY,
+    CheckConstraint,
 )
 from db.base_class import Base, StrainCategory
 

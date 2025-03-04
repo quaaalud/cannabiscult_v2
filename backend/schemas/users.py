@@ -229,3 +229,32 @@ class AddUserStrainListNotes(BaseModel):
         exclude_unset = True
         populate_by_name = True
         strip_whitespace = True
+
+
+class MoluvHeadstashFavoriteVoteSchema(BaseModel):
+    user_id: Union[UUID, str] = Field(..., description="User ID from the auth.users table.")
+    product_type: str = Field(..., description="Product type for the Mo Luv favorite strain vote.")
+    product_id: int = Field(..., description="Unique identifier for the strain list entry")
+
+    @validator("user_id", pre=True)
+    def check_not_empty(cls, v):
+        if isinstance(v, UUID):
+            v
+        return UUID(v)
+
+    class Config:
+        from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
+
+
+class MoluvHeadstashFavoriteVoteResult(BaseModel):
+    product_type: str = Field(..., description="Product type for the Mo Luv favorite strain vote.")
+    product_id: int = Field(..., description="Unique identifier for the strain list entry")
+
+    class Config:
+        from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True

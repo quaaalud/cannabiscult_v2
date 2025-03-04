@@ -7,7 +7,7 @@ Created on Fri Mar 10 20:48:11 2023
 """
 
 from db.base_class import Base
-from db.models.users import User, UserStrainList, MysteryVoter
+from db.models.users import User, UserStrainList, MysteryVoter, MoluvHeadstashBowl
 from db.models.subscribers import Subscriber
 from db.models.calendar_events import (
     CalendarEvent,

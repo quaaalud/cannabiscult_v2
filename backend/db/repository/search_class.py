@@ -498,11 +498,8 @@ def get_all_strains_by_product_type(db: Session, product_type: str) -> List[Dict
 
 
 def build_strains_family_tree_graph(db: Session):
-    # Fetch all strain entries
     strains = db.query(Current_Lineages).all()
-    # Create a directed graph
     G = nx.DiGraph()
-    # Process each strain to build the graph
     for strain in strains:
         current_strain = strain.strain.strip()
         if current_strain not in G:

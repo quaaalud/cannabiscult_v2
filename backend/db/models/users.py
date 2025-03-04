@@ -9,6 +9,7 @@ from sqlalchemy import (
     TIMESTAMP,
     Date,
     UUID,
+    UniqueConstraint
 )
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -98,3 +99,29 @@ class Vibe_Edible_Voter(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement="auto")
     mystery_voter_email = Column(String, ForeignKey("mysteryvoter.email"), nullable=False)
     mystery_voter = relationship("MysteryVoter", back_populates="vibe_edible_voters")
+
+
+class MoluvHeadstashBowl(Base):
+    __tablename__ = "moluv_headstash_bowl"
+    id = Column(
+        Integer,
+        primary_key=True,
+        index=True,
+        autoincrement="auto",
+    )
+    product_id = Column(Integer, nullable=False)
+    product_type = Column(String(20), nullable=False)
+    user_id = Column(UUID(as_uuid=True), nullable=False)
+    date_posted = Column(
+        Date,
+        server_default=func.now(),
+        nullable=False,
+    )
+    updated_at = Column(
+        Date,
+        server_default=func.now(),
+        nullable=False,
+    )
+    __table_args__ = (
+        UniqueConstraint('user_id', 'product_type', name='uq_user_product'),
+    )

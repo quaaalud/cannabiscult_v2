@@ -91,15 +91,14 @@
                     <div class="card cascading-right" style=" background: hsla(0, 0%, 100%, 0.55); backdrop-filter: blur(30px); ">
                       <div class="card-body px-4 pb-5 pt-md-0 px-md-5 shadow-5">
                         <h1 class="my-5 display-4 fw-bold ls-tight">
-                          Mo Luv & Cannabis Cult Collab
+                          MoLuv Headstash Bowl
                         </h1>
                         <div class="row g-2">
                           <div class="col-12 col-lg-11">
                             <div class="card">
                               <div class="card-body">
-                                <h5 class="card-title text-center">Get Cultivar Reviews</h5>
+                                <h5 class="card-title text-center">MoLuv Headstash Bowl</h5>
                                 <form method="GET" action="/get-review" id="review-form">
-                                  <!-- Product Type Select Box -->
                                   <div class="mb-3">
                                     <label for="product_type_selected" class="form-label">Product Type</label>
                                     <select class="form-select" id="product_type_selected" name="product_type_selected">
@@ -111,8 +110,12 @@
                                     <select class="form-select" id="strain_selected" name="strain_selected">
                                     </select>
                                   </div>
+                                  <div class="form-check form-switch mb-3 d-none" id="voteSwitchContainer">
+                                    <input class="form-check-input" type="checkbox" id="vote-switch" name="vote_switch">
+                                    <label class="form-check-label" for="vote-switch">Submit As Favorite Strain Vote</label>
+                                  </div>
                                   <div class="d-grid gap-2">
-                                    <button class="btn btn-info w-100" type="submit">Submit</button>
+                                    <button class="btn btn-info w-100" type="submit" id="moLuvButton">Start Rating</button>
                                   </div>
                                 </form>
                               </div>
@@ -156,7 +159,22 @@
 
 {% block scripts %}
 <script>
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', async function() {
+  let userId
+  window.addEventListener('supabaseClientReady', async function() {
+      userId = await window.supabaseClient.getCurrentUserId();
+      if (userId) {
+        showOrRemoveFavoriteVote(true);
+      }
+      const voteSwitch = document.getElementById('vote-switch');
+      voteSwitch.addEventListener('change', function() {
+        if (voteSwitch.checked) {
+          moLuvButton.textContent = "Submit Favorite Vote";
+        } else {
+          moLuvButton.textContent = "Start Rating";
+        }
+      });
+  });
   const productTypeSelect = document.getElementById('product_type_selected');
   const cultivatorSelect = document.getElementById('cultivator_selected');
   const strainSelect = document.getElementById('strain_selected');
@@ -171,6 +189,15 @@ window.addEventListener('DOMContentLoaded', function() {
   }
   function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  function showOrRemoveFavoriteVote(showVoteSwitch = true) {
+    const voteSwitchContainer = document.getElementById('voteSwitchContainer');
+    if (showVoteSwitch) {
+      voteSwitchContainer.classList.remove('d-none');
+      return;
+    }
+    voteSwitchContainer.classList.add('d-none');
+    return;
   }
   function fetchAndPopulateSelect(url, selectElement, callback, sortNumerically = false) {
       fetch(url)

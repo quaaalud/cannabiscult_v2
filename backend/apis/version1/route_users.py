@@ -26,6 +26,8 @@ from schemas.users import (
     UserStrainListSubmit,
     AddUserStrainListNotes,
     UserIdSchema,
+    MoluvHeadstashFavoriteVoteSchema,
+    MoluvHeadstashFavoriteVoteResult,
 )
 from db.session import get_db
 from db.repository.users import (
@@ -38,6 +40,7 @@ from db.repository.users import (
     update_strain_review_status,
     add_strain_notes_to_list,
     delete_strain_from_list,
+    upsert_moluv_headstash_vote,
 )
 from core.config import settings
 from db._supabase.connect_to_auth import SupaAuth
@@ -226,3 +229,21 @@ async def delete_strain_from_strain_list(strain_to_remove: UserStrainListCreate,
         return {"message": "Strain deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/moluv-collab/favorite", response_model=MoluvHeadstashFavoriteVoteResult)
+async def upsert_moluv_headstash_vote_route(
+    moluv_vote: MoluvHeadstashFavoriteVoteSchema,
+    db: Session = Depends(get_db)
+) -> MoluvHeadstashFavoriteVoteResult:
+    try:
+        result = await upsert_moluv_headstash_vote_route(
+            db,
+            moluv_vote.user_id,
+            moluv_vote.product_type,
+            moluv_vote.product_id
+        )
+        if not result:
+            raise HTTPException(status_code=400, detail="No vote result returned for Moluv collab.")
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
