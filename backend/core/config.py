@@ -10,6 +10,7 @@ import os
 import datetime
 import sys
 import jwt
+import sentry_sdk
 from fastapi import Request, HTTPException, status
 from jwt import ExpiredSignatureError, InvalidTokenError
 from uuid import uuid4
@@ -31,9 +32,11 @@ load_dotenv()
 
 class PosthogMonitoring:
     _posthog_client: Posthog = None
+    _sentry_sdk: sentry_sdk = None
 
     def __init__(self):
         self.posthog = self._return_posthog_client()
+        self._set_sentry_sdk()
 
     @classmethod
     def _return_posthog_client(cls):
@@ -45,6 +48,18 @@ class PosthogMonitoring:
                 disable_geoip=False,
             )
         return cls._posthog_client
+
+    @classmethod
+    def _set_sentry_sdk(cls):
+        if not cls._sentry_sdk:
+            sentry_sdk.init(
+                dsn="https://a5299021dec7811949190fa7bdd78a9f@o4508927465029632.ingest.us.sentry.io/4508927468175360",
+                send_default_pii=True,
+                traces_sample_rate=1.0,
+                _experiments={
+                    "continuous_profiling_auto_start": True,
+                },
+            )
 
     @staticmethod
     def extract_initial_url(request: Request) -> str:
