@@ -56,9 +56,7 @@ class PosthogMonitoring:
                 dsn="https://a5299021dec7811949190fa7bdd78a9f@o4508927465029632.ingest.us.sentry.io/4508927468175360",
                 send_default_pii=True,
                 traces_sample_rate=1.0,
-                _experiments={
-                    "continuous_profiling_auto_start": True,
-                },
+                profiles_sample_rate=1.0,
             )
 
     @staticmethod

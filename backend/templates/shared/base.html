@@ -66,6 +66,19 @@
       ]
     }
     </script>
+    <script src="https://js.sentry-cdn.com/a5299021dec7811949190fa7bdd78a9f.min.js" crossorigin="anonymous"></script>
+    <script defer>
+      Sentry.onLoad(function() {
+        Sentry.init({
+          integrations: [
+            Sentry.replayIntegration(),
+          ],
+          // Session Replay
+          replaysSessionSampleRate: 0.1,
+          replaysOnErrorSampleRate: 1.0,
+        });
+      });
+    </script>
     {% block title %}
     {% endblock %}
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-E9FRJKXKF7" rel="dns-prefetch"></script>
