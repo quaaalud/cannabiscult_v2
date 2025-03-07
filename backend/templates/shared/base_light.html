@@ -32,6 +32,11 @@
       type="text/javascript" 
       src="{{ url_for('static', path='src/auth/auth.js') }}"
     ></script>
+    <!-- MDB -->
+    <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+    <!-- Custom scripts -->
+    <script type="text/javascript"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script src="https://js.sentry-cdn.com/a5299021dec7811949190fa7bdd78a9f.min.js" crossorigin="anonymous"></script>
     <script defer>
       Sentry.onLoad(function() {
@@ -58,25 +63,22 @@
     
     {% block footer %}
     {% endblock %}
-    <!-- MDB -->
-    <script type="text/javascript" src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
-    <!-- Custom scripts -->
-    <script type="text/javascript"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
     <script>
-      var offsetValue;
-      if (window.innerWidth <= 500) {
-        offsetValue = 725;
-      } else if (window.innerWidth <= 768) {
-        offsetValue = 650;
-      } else {
-        offsetValue = 225;
-      }
-  
-      AOS.init({
-        offset: offsetValue,
-        mirror: false,
-        once: true
+      $(document).ready(function() {
+        var offsetValue;
+        if (window.innerWidth <= 500) {
+          offsetValue = 725;
+        } else if (window.innerWidth <= 768) {
+          offsetValue = 650;
+        } else {
+          offsetValue = 225;
+        }
+    
+        AOS.init({
+          offset: offsetValue,
+          mirror: false,
+          once: true
+        });
       });
     </script>
     {% block scripts %}

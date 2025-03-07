@@ -33,7 +33,7 @@
     {% block head %}
     <meta name="robots" content="index, follow">
     {%  endblock %}
-    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="icon" href="{{ url_for('static', path='images/favicon.ico') }}" type="image/x-icon" />
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
@@ -43,7 +43,6 @@
     <link rel="stylesheet" href="{{ url_for('static', path='plugins/css/all.min.css') }}" />
     <link href="{{ url_for('static', path='css/mdb.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', path='src/aos/aos.css') }}" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
     <script 
       type="text/javascript" 
@@ -66,18 +65,25 @@
       ]
     }
     </script>
+    <!-- MDB -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
+    <script src="{{ url_for('static', path='js/mdb.umd.min.js') }}"></script>
+    <script src="{{ url_for('static', path='plugins/js/all.min.js') }}"></script>
     <script src="https://js.sentry-cdn.com/a5299021dec7811949190fa7bdd78a9f.min.js" crossorigin="anonymous"></script>
     <script defer>
-      Sentry.onLoad(function() {
-        Sentry.init({
-          integrations: [
-            Sentry.replayIntegration(),
-          ],
-          // Session Replay
-          replaysSessionSampleRate: 0.1,
-          replaysOnErrorSampleRate: 1.0,
+      if (window.Sentry) {
+        Sentry.onLoad(function() {
+          Sentry.init({
+            integrations: [
+              Sentry.replayIntegration(),
+            ],
+            // Session Replay
+            replaysSessionSampleRate: 0.1,
+            replaysOnErrorSampleRate: 1.0,
+          });
         });
-      });
+      };
     </script>
     {% block title %}
     {% endblock %}
@@ -103,13 +109,9 @@
     {% block footer %}
     {% endblock %}
     {% include "components/navigation/footer.html" %}
-    <!-- MDB -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    <script src="{{ url_for('static', path='js/mdb.min.js') }}"></script>
-    <script type="text/javascript" src="{{ url_for('static', path='js/mdb.umd.min.js') }}"></script>
-    <script src="{{ url_for('static', path='plugins/js/all.min.js') }}"></script>
     <!-- Custom scripts -->
     <script>
+    $(document).ready(function() {
       var offsetValue;
       if (window.innerWidth <= 500) {
         offsetValue = 725;
@@ -124,6 +126,7 @@
         mirror: false,
         once: true
       });
+    });
     </script>
     {% block scripts %}
     {% endblock %}
