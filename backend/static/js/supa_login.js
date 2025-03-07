@@ -388,7 +388,7 @@ class SupabaseClient {
         if (logoutLink) {
             logoutLink.parentNode.remove();
         }
-        removeStrainSubmissionLink();
+        this.removeStrainSubmissionLink();
     }
     async removeStrainSubmissionLink() {
         const submissionLink = document.getElementById('myRankingsLink');
