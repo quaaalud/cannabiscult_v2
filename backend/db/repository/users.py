@@ -128,7 +128,9 @@ def update_user_password_in_db(
 ) -> User:
     if new_password.strip() == repeated_password.strip():
         try:
-            user = db.query(User).filter(User.email == user_email.lower().strip()).first()
+            user = db.query(User).filter(User.email.lower().strip() == user_email.lower().strip()).first()
+            if not user:
+                return None
             user.password = new_password
             db.commit()
             db.refresh(user)
