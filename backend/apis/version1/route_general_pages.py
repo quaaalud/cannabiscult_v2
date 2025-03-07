@@ -435,7 +435,7 @@ def check_mystery_voter_email_by_get(
     return {"exists": True}
 
 
-@general_pages_router.post("/submit-new-voter")
+@general_pages_router.post("/submit-new-voter", response_model=Dict[str, bool])
 async def submit_mystery_voter_create(
     voter_name: str = Form(None),
     voter_email: str = Form(...),
