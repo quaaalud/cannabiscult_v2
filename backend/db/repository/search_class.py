@@ -142,21 +142,16 @@ async def get_user_ranking_for_product(
     return RankingSchema(**schema_dict)
 
 
-def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) -> Union[
+async def get_terp_profile_by_type(db: Session, product_type: str, product_id: int) -> Union[
     FlowerTerpTableSchema,
     ConcentrateTerpTableSchema,
     EdibleTerpTableSchema,
     PreRollTerpTableSchema,
 ]:
-    model_dict = PRODUCT_TABLE_MAPPINGS.get(product_type.lower())
-    model, schema = model_dict.get("product", None), model_dict.get("schema", None)
-    if not model or not schema:
-        raise ValueError("Invalid product type provided")
-    primary_key = [key.name for key in inspect(model).primary_key][0]
-    data = db.query(model).filter(getattr(model, primary_key) == product_id).first()
-    if data is None:
+    product_data = await get_product_with_terp_profile(db, product_id, product_type.lower().strip())
+    if product_data is None:
         return None
-    return schema.from_orm(data)
+    return product_data
 
 
 async def get_data_by_strain(
@@ -168,16 +163,16 @@ async def get_data_by_strain(
         result = db.execute(
             select(model)
             .filter(
-                or_(
-                    model.cultivator.ilike(f"%{strain}%"),
-                    model.strain.ilike(f"%{strain}%"),
-                )
-            )
-            .filter(
                 and_(
-                    not_(model.strain.ilike("%Test%")),
-                    not_(model.cultivator.ilike("%Cultivar%")),
-                    not_(model.cultivator.ilike("%Connoisseur%")),
+                    or_(
+                        model.cultivator.ilike(f"%{strain}%"),
+                        model.strain.ilike(f"%{strain}%"),
+                    ),
+                    and_(
+                        not_(model.strain.ilike("%Test%")),
+                        not_(model.cultivator.ilike("%Cultivar%")),
+                        not_(model.cultivator.ilike("%Connoisseur%")),
+                    )
                 )
             )
         )
@@ -238,7 +233,8 @@ def get_cultivators_by_product_type(db: Session, model: Type[Base]) -> List[str]
     try:
         result = db.execute(
             select(model.cultivator)
-            .filter(and_(model.cultivator != "Cultivar", model.cultivator != "Connoisseur"))
+            .where(model.cultivator != "Connoisseur")
+            .filter(and_(model.cultivator != "Cultivar", not_(model.cultivator.ilike("%Connoisseur%"))))
             .distinct()
         )
         cultivators = result.scalars().all()
@@ -253,8 +249,16 @@ def get_strains_by_cultivator(db: Session, model: Type[Base], cultivator: str) -
     try:
         result = db.execute(
             select(model.strain)
-            .where(model.cultivator == cultivator)
-            .filter(model.cultivator.not_in(["Connoisseur", "Cultivar"]), not_(model.strain.ilike("%Test%")))
+            .where(model.cultivator == cultivator, model.cultivator.not_in(["Connoisseur", "Cultivar"]))
+            .filter(
+                not_(model.strain.ilike("%Test%")),
+                not_(model.strain.ilike("%MOLUV%")),
+                and_(
+                    not_(model.strain.ilike("%Test%")),
+                    not_(model.cultivator.ilike("%Cultivar%")),
+                    not_(model.cultivator.ilike("%Connoisseur%")),
+                )
+            )
         )
         strains = result.scalars().all()
         return [strain for strain in strains if "test" not in strain.lower()]
@@ -267,9 +271,7 @@ def get_strains_by_cultivator(db: Session, model: Type[Base], cultivator: str) -
 def get_strains_for_moluv_collab(db: Session, model: Type[Base]) -> Optional[List[str]]:
     try:
         result = db.execute(
-            select(model.strain)
-            .where(model.cultivator == "Connoisseur")
-            .filter(model.strain.ilike("%MOLUV%"))
+            select(model.strain).where(model.cultivator == "Connoisseur").filter(model.strain.ilike("%MOLUV%"))
         )
         strains = result.scalars().all()
         return strains
@@ -598,13 +600,13 @@ async def upsert_terp_profile(
                 product_type=product_type,
             )
             for terp_name, terp_value in terpenes_map.items():
-                setattr(new_profile, terp_name, (terp_value/100))
+                setattr(new_profile, terp_name, (terp_value / 100))
             db.add(new_profile)
             db.commit()
             db.refresh(new_profile)
             return new_profile
         for terp_name, terp_value in terpenes_map.items():
-            setattr(existing_profile, terp_name, (terp_value/100))
+            setattr(existing_profile, terp_name, (terp_value / 100))
         db.commit()
         db.refresh(existing_profile)
         return existing_profile

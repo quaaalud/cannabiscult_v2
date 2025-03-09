@@ -10,6 +10,7 @@ import base64
 import random
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
 from fastapi.responses import StreamingResponse
+from sqlalchemy import not_
 from sqlalchemy.orm import Session
 from uuid import uuid4
 from db.session import get_db
@@ -114,7 +115,12 @@ async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> D
             ratings = (
                 db.query(model, User.username)
                   .outerjoin(User, model.connoisseur == User.email)
-                  .filter(model.connoisseur.ilike(user_email))
+                  .filter(
+                      model.connoisseur.ilike(user_email),
+                      not_(model.strain.ilike("%Test%")),
+                      not_(model.cultivator.ilike("%Cultivar%")),
+                      not_(model.cultivator.ilike("%Connoisseur%")),
+                  )
                   .all()
             )
             ratings_list = []
@@ -245,7 +251,7 @@ async def get_strains(
     response_model=List[str],
     include_in_schema=False,
 )
-async def get_strains_for_moliv_collab(
+async def get_strains_for_molov_collab_route(
     product_type: str,
     db: Session = Depends(get_db),
 ):
@@ -372,6 +378,7 @@ async def get_list_of_strains_for_terp_profile(product_type: str, db: Session = 
 @router.get(
     "/terps/{product_type}/{product_id}",
     response_model=Union[
+        ProductWithTerpProfileSchema,
         FlowerTerpTableSchema,
         ConcentrateTerpTableSchema,
         EdibleTerpTableSchema,
@@ -380,9 +387,10 @@ async def get_list_of_strains_for_terp_profile(product_type: str, db: Session = 
 )
 async def get_product_terp_profile(product_type: str, product_id: int, db: Session = Depends(get_db)):
     try:
-        profile = get_terp_profile_by_type(db, product_type, product_id)
+        profile = await get_terp_profile_by_type(db, product_type, product_id)
         if profile is None:
             raise HTTPException(status_code=404, detail="Product not found")
+        print(profile)
         return profile
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

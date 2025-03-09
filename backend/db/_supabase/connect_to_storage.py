@@ -6,6 +6,7 @@ Created on Sun Jul  2 22:54:46 2023
 @author: dale
 """
 
+from functools import lru_cache
 from db._supabase import supa_client
 import base64
 

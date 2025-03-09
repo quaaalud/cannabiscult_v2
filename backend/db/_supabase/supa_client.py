@@ -6,30 +6,49 @@ Created on Sun Jul  2 22:55:43 2023
 @author: dale
 """
 
+import time
+from functools import wraps
 from core.config import settings
 from supabase import create_client, Client
 
 
-def return_created_client(
-    url: str = settings.SUPA_STORAGE_URL, key: str = settings.SUPA_PRIVATE_KEY
-) -> Client:
+def return_created_client(url: str = settings.SUPA_STORAGE_URL, key: str = settings.SUPA_PRIVATE_KEY) -> Client:
     return create_client(url, key)
 
 
 def get_cc_bucket():
     client = return_created_client()
-    return client.storage.get_bucket(
-        settings.POSTGRES_DB,
-    )
+    return client.storage.get_bucket(settings.POSTGRES_DB)
 
 
-def get_signed_url_from_storage(file_path: str, life_span: int = 6000):
+def ttl_cache(ttl: int):
+    def decorator(func):
+        cache = {}
+
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            key = args + tuple(sorted(kwargs.items()))
+            now = time.time()
+            if key in cache:
+                result, timestamp = cache[key]
+                if now - timestamp < ttl:
+                    return result
+            result = func(*args, **kwargs)
+            cache[key] = (result, now)
+            return result
+        return wrapper
+    return decorator
+
+
+@ttl_cache(ttl=5400)
+def get_cached_signed_url_from_storage(file_path: str, life_span: int = 3000) -> str:
     client = return_created_client()
-    return (
-        client.storage.from_(settings.POSTGRES_DB)
-        .create_signed_url(file_path, life_span)
-        .get("signedURL")
-    )
+    return client.storage.from_(settings.POSTGRES_DB).create_signed_url(file_path, life_span).get("signedURL")
+
+
+def get_signed_url_from_storage(file_path: str, life_span: int = 3000) -> str:
+    file_path = file_path.replace("'", "")
+    return get_cached_signed_url_from_storage(file_path, life_span)
 
 
 if __name__ == "__main__":
