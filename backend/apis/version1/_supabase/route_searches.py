@@ -164,13 +164,13 @@ async def check_existence(product_type: str, entry: StrainCultivator, db: Sessio
     return {"exists": False}
 
 
-@router.get("/all/{search_term}", response_model=List[SearchResultItem])
+@router.get("/all/{search_term}", response_model=List[Optional[SearchResultItem]])
 async def get_search_matches(search_term: str, with_images_flag: bool = False, db: Session = Depends(get_db)):
     if not search_term or len(search_term) < 3:
         return []
     results = await search_strain(db, search_term, with_images_flag)
     if not results:
-        raise HTTPException(status_code=404, detail="No matches found")
+        return []
     return results
 
 
@@ -331,9 +331,7 @@ async def get_task_result(
 @router.get("/get-all-image-urls/", response_model=List[Any])
 async def get_all_image_urls_route(limit=10, db: Session = Depends(get_db)):
     try:
-        # Fetch data using the synchronous function
         product_data = get_all_card_paths(db, limit)
-        # Asynchronously generate and stream URLs
         return StreamingResponse(generate_signed_urls(product_data), media_type="application/json")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -390,7 +388,6 @@ async def get_product_terp_profile(product_type: str, product_id: int, db: Sessi
         profile = await get_terp_profile_by_type(db, product_type, product_id)
         if profile is None:
             raise HTTPException(status_code=404, detail="Product not found")
-        print(profile)
         return profile
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -59,11 +59,12 @@ class AllRatingsDatatable {
             localStorage.setItem(cacheKey, JSON.stringify({ url: imgUrl, timestamp: Date.now() }));
             return imgUrl;
         } catch (error) {
-            const imgUrl = 'https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z';
+            const imgUrl = 'https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/reviews/Connoisseur_Pack/CP_strains.webp';
             localStorage.setItem(cacheKey, JSON.stringify({ url: imgUrl, timestamp: Date.now() }));
             return imgUrl;
         }
     }
+    
     async waitForTaskCompletion(taskId) {
         return new Promise((resolve, reject) => {
             const intervalId = setInterval(async () => {
@@ -686,7 +687,6 @@ class AllRatingsDatatable {
             }
         });
     }
-
 }
 
 $(document).ready(function() {

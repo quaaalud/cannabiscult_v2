@@ -368,21 +368,17 @@ class RatingsDatatable {
                         }
                     }
                 },
-                indexAxis: 'y', // This makes the bar chart horizontal
+                indexAxis: 'y',
                 scales: {
                     x: {
                         stacked: true, // Optional: for stacked bar chart
-                        // Configure your x-axis options here
                     },
                     y: {
-                        // Configure your y-axis options here
                         stacked: true, // Optional: for stacked bar chart
                     }
                 },
             }
         };
-    
-        // Create the bar chart with custom tooltips
         new mdb.Chart(chartCanvas, dataBarCustomTooltip, optionsBarCustomTooltip);
     }
 

@@ -23,48 +23,39 @@ class SupaAuth:
 
     @classmethod
     def create_new_supabase_user(cls, user: UserCreate):
-        return add_user_to_supabase(
-            user,
-            cls._client
-        )
+        return add_user_to_supabase(user, cls._client)
 
     @classmethod
     def login_supabase_user_with_password(cls, user: UserLogin):
         if not cls._client.auth.get_session():
-            return cls._client.auth.sign_in_with_password(
-                {
-                    "email": user.email,
-                    "password": user.password
-                }
-            )
+            return cls._client.auth.sign_in_with_password({"email": user.email, "password": user.password})
         return cls.refresh_current_user_session()
-      
+
     @classmethod
     def get_existing_session(cls):
         return cls._client.auth.get_session()
-      
+
     @classmethod
     def logout_current_user_session(cls):
         try:
             return cls._client.auth.sign_out()
-        except:
+        except Exception:
             pass
 
     @classmethod
     def refresh_current_user_session(cls):
         return cls._client.auth.refresh_session()
-      
+
     @classmethod
     def return_current_user_email(cls):
         logged_in_user = cls.get_existing_session()
         if logged_in_user:
-            user_email = logged_in_user.dict()['user']['email']
+            user_email = logged_in_user.dict()["user"]["email"]
             return user_email
         else:
             return None
-            
 
 
-if __name__ == '__main__':
-    
+if __name__ == "__main__":
+
     print(SupaAuth.return_current_user_email())

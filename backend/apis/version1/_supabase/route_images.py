@@ -17,7 +17,7 @@ from db.session import get_db
 from db.repository.search_class import get_card_path_by_details
 from db._supabase.connect_to_auth import SupaAuth
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
-from typing import Union
+from typing import Union, List
 from pydantic import BaseModel, validator
 import magic
 
@@ -42,7 +42,7 @@ class ImageUpload(BaseModel):
     def validate_image(cls, v):
         if v:
             mime_type = magic.from_buffer(v.file.read(1024), mime=True)
-            v.file.seek(0)  # Reset the file pointer after reading
+            v.file.seek(0)
             if not mime_type.startswith("image/"):
                 raise ValueError("Invalid image file")
         return v
@@ -69,14 +69,9 @@ def delete_temporary_file(temp_file_path: str):
 
 async def update_product_image_url(product_id: str, file_path: str, supabase: Client):
     try:
-        image_url = supabase.storage.from_("additional_product_images").get_public_url(
-            file_path
-        )
+        image_url = supabase.storage.from_("additional_product_images").get_public_url(file_path)
         updated_product, count = (
-            supabase.table("additional_product_images")
-            .update({"image_url": image_url})
-            .eq("id", product_id)
-            .execute()
+            supabase.table("additional_product_images").update({"image_url": image_url}).eq("id", product_id).execute()
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -94,23 +89,16 @@ async def upload_image_to_supabase(
     image_data = ImageUpload(image=file)
     if not image_data.image:
         raise HTTPException(status_code=400, detail="Invalid image file")
-
-    # Save the validated image temporarily
     temp_file_path = save_temporary_image(file)
 
-    # List all files in the specific product directory to determine the new file's index
     dir_list = supabase.storage.from_(storage_str).list()
     if "error" in dir_list:
         raise HTTPException(status_code=500, detail=dir_list["error"]["message"])
 
-    if len(dir_list) > 0 and str(product_type) in [
-        product["name"] for product in dir_list
-    ]:
+    if len(dir_list) > 0 and str(product_type) in [product["name"] for product in dir_list]:
         dir_list = supabase.storage.from_(storage_str).list(path=product_id)
 
-    # Determine the index for the new file
     file_index = len(dir_list)
-    # Construct the file path
     file_path = f"{product_type}/{product_id}/{file_index}_{file.filename}"
     try:
         with open(temp_file_path, "rb") as f:
@@ -119,9 +107,7 @@ async def upload_image_to_supabase(
                 file=f, path=file_path, file_options={"content-type": mime_type}
             )
         if "error" in upload_response.text:
-            raise HTTPException(
-                status_code=500, detail=upload_response["error"]["message"]
-            )
+            raise HTTPException(status_code=500, detail=upload_response["error"]["message"])
         return_message = {"message": "File uploaded successfully", "path": file_path}
     except Exception as e:
         return_message = {
@@ -151,9 +137,7 @@ async def list_product_images(
     supabase: Client = Depends(_return_supabase_private_client),
 ):
     try:
-        images = supabase.storage.from_("additional_product_images").list(
-            f"{product_type}/{product_id}"
-        )
+        images = supabase.storage.from_("additional_product_images").list(f"{product_type}/{product_id}")
         if not images:
             return []
     except Exception as e:
@@ -169,22 +153,22 @@ async def list_product_images(
 async def _return_image_url(card_path: str):
     try:
         return return_image_url_from_supa_storage(card_path)
-    except Exception as e:
-        return "https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/sign/cannabiscult/reviews/Connoisseur_Pack/CP_strains.png?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1cmwiOiJjYW5uYWJpc2N1bHQvcmV2aWV3cy9Db25ub2lzc2V1cl9QYWNrL0NQX3N0cmFpbnMucG5nIiwiaWF0IjoxNzEzNzQ0Mzg4LCJleHAiOjE3NDUyODAzODh9.OHV1BzngWYDvhJE6h7ZJ8w2NeP7400g5jB06KoCjcl4&t=2024-04-22T00%3A06%3A28.960Z"
+    except Exception:
+        return "https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/reviews/Connoisseur_Pack/CP_strains.webp"
 
 
 @router.post("/get-image-url", response_model=Dict[str, str])
 async def get_image_from_file_path(
     image_request: ImagePathRequest,
-    db: Session = Depends(get_db),  # Ensure you have this dependency
+    db: Session = Depends(get_db),
     supabase: Client = Depends(_return_supabase_private_client),
 ) -> Dict[str, str]:
-    # Fetch card_path using the new function
     card_path = await get_card_path_by_details(
         db, image_request.product_type, image_request.strain, image_request.cultivator
     )
     if not card_path:
-        card_path = "reviews/Connoisseur_Pack/CP_strains.png"
-    # Get the image URL from storage
+        return {
+            "img_url": "https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/reviews/Connoisseur_Pack/CP_strains.webp"
+        }
     img_url = await _return_image_url(card_path)
     return {"img_url": img_url}

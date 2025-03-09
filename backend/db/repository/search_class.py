@@ -9,8 +9,8 @@ Created on Fri Dec 22 20:12:12 2023
 import random
 import traceback
 import networkx as nx
-from typing import Type, List, Dict, Any, Optional, Union
-from sqlalchemy import inspect, func, or_, and_, not_, union_all
+from typing import Type, List, Dict, Tuple, Any, Optional, Union
+from sqlalchemy import inspect, func, or_, and_, not_, union_all, literal
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
@@ -348,7 +348,6 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
 
 
 def get_all_card_paths(db: Session, limit=10) -> List[dict]:
-    # Prepare select statements for each product type
     select_flower = select(Flower.cultivator, Flower.strain, Flower.card_path, Flower.product_type).filter(
         Flower.strain.notilike("%Test%"), Flower.cultivator != "Connoisseur"
     )
@@ -364,19 +363,15 @@ def get_all_card_paths(db: Session, limit=10) -> List[dict]:
     select_edible = select(Edible.cultivator, Edible.strain, Edible.card_path, Edible.product_type).filter(
         Edible.strain.notilike("%Test%"), Edible.cultivator != "Connoisseur"
     )
-    # Combine queries using UNION ALL with limit and offset
     combined_query = union_all(select_flower, select_concentrate, select_pre_roll, select_edible)
-    # Create a subquery for counting
     subquery = combined_query.alias("subquery")
     total_rows = db.execute(select(func.count()).select_from(subquery)).scalar()
     if total_rows == 0:
-        return []  # Early return if no products
+        return []
     random_offset = random.randint(0, total_rows - 1)
-    # Execute the query
     result = db.execute(combined_query.offset(random_offset).limit(limit)).fetchall()
     additional_needed = int(limit) - len(result)
     if additional_needed > 0:
-        # Fetch the remainder from the beginning of the dataset
         result += db.execute(combined_query.limit(additional_needed)).fetchall()
     return [
         {
@@ -390,7 +385,7 @@ def get_all_card_paths(db: Session, limit=10) -> List[dict]:
 
 
 async def generate_signed_urls(product_data: List[dict]):
-    yield "[".encode("utf-8")  # Start of JSON array
+    yield "[".encode("utf-8")
     first = True
     for product in product_data:
         try:
@@ -400,14 +395,14 @@ async def generate_signed_urls(product_data: List[dict]):
                 strain=product["strain"],
                 signed_url=signed_url,
                 product_type=product["product_type"],
-            ).json()  # Serialize to JSON string
+            ).json()
             if not first:
-                yield ", ".encode("utf-8")  # Properly format JSON array
+                yield ", ".encode("utf-8")
             yield product_info.encode("utf-8")
             first = False
         except Exception as e:
             print(f"Failed to generate URL for {product['card_path']}: {e}")
-    yield "]".encode("utf-8")  # End of JSON array
+    yield "]".encode("utf-8")
 
 
 async def get_all_events(db: Session) -> List[CalendarEventQuery]:
