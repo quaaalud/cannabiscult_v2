@@ -2,39 +2,33 @@
 {% endblock %}
 
 {% block content %}
-<div 
-  id="calendar" 
-  class="calendar" data-mdb-calendar-init 
+<div
+  id="calendar"
+  class="calendar"
   data-mdb-readonly="true"
   data-mdb-blur="true"
   data-mdb-view-select="false"
   data-mdb-add-event-button="false"
   style="height: 600px; position: relative;"
+  data-mdb-calendar-init
 >
-  <div class="spinner-border text-primary" role="status">
-      <span class="visually-hidden">Loading...</span>
+  <div class="row align-items-center justify-content-center my-auto" id="spinnerRow">
+    <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
   </div>
 </div>
 {% endblock %}
 {% block scripts %}
-<script type="module">
-import { CalendarManager } from "{{ url_for('static', path='js/cultCalendar.js') }}"; 
-$(document).ready(function() {
-    async function fetchEvents() {
-        try {
-            const response = await fetch('/search/get-all-events/');
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            return await response.json();
-        } catch (error) {
-            console.error("Failed to load events:", error);
-        }
+<script type="module" async>
+import { CalendarManager } from "{{ url_for('static', path='js/cultCalendar.js') }}";
+
+window.addEventListener('supabaseClientReady', async function() {
+    try {
+        const calendar = await CalendarManager.create();
+    } catch (error) {
+        console.error("Error initializing CalendarManager:", error);
     }
-  window.addEventListener('supabaseClientReady', async function() {
-    const eventsList = await fetchEvents();
-    const calendar = new CalendarManager(eventsList);
-  });
 });
 </script>
 {% endblock %}

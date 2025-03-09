@@ -44,8 +44,8 @@
     <link href="{{ url_for('static', path='css/mdb.min.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', path='src/aos/aos.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', path='css/styles.css') }}" rel="stylesheet">
-    <script 
-      type="text/javascript" 
+    <script
+      type="text/javascript"
       src="{{ url_for('static', path='src/aos/aos.js') }}"
     ></script>
     <script type="module" src="{{ url_for('static', path='js/supa_login.js') }}"></script>
@@ -61,7 +61,7 @@
         "https://twitter.com/TheCannabisCvlt",
         "https://www.instagram.com/missouricannabisreviews",
         "https://www.reddit.com/r/thecannabiscult/"
-        
+
       ]
     }
     </script>
@@ -92,20 +92,20 @@
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-    
+
       gtag('config', 'G-E9FRJKXKF7');
     </script>
   </head>
   {% include "components/navigation/navbar.html" %}
-  
+
   {% block header %}
   {%  endblock %}
-  
+
   <body class="stage">
     {% include "components/auth/are_you_21.html" %}
     {% block content %}
     {% endblock %}
-    
+
     {% block footer %}
     {% endblock %}
     {% include "components/navigation/footer.html" %}
@@ -120,7 +120,7 @@
       } else {
         offsetValue = 225;
       }
-  
+
       AOS.init({
         offset: offsetValue,
         mirror: false,
