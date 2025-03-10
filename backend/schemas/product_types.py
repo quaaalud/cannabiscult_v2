@@ -8,18 +8,46 @@ Created on Sun Nov  5 16:47:38 2023
 
 import json
 import enum
+from typing import Optional, Annotated, List, Any, Dict, Type
+from sqlalchemy.inspection import inspect
 from fastapi import Form
-from pydantic import BaseModel, Json, Field, EmailStr, field_validator, StringConstraints
-from typing import Optional, Annotated, List, Any, Dict
+from pydantic import (
+    BaseModel,
+    Json,
+    Field,
+    EmailStr,
+    field_validator,
+    StringConstraints,
+    create_model,
+    ValidationError,
+)
 
 StrainType = Annotated[str, Annotated[str, StringConstraints(min_length=1, max_length=500)]]
 
 
+base_fields = {
+    "product_type": (StrainType, ...),
+    "strain": (StrainType, ...),
+    "cultivator": (StrainType, ...),
+    "cult_rating": (Optional[float], None),
+}
+
+
+def create_rating_schema(model: Type) -> Type[BaseModel]:
+    columns = inspect(model).c
+    rating_fields = {
+        col.name: (Optional[float], Field(None, gt=-1, lt=11)) for col in columns if col.name.endswith("_rating")
+    }
+    all_fields = {**base_fields, **rating_fields}
+    schema_name = f"{model.__name__}RatingSchema"
+    return create_model(schema_name, **all_fields)
+
+
 class StrainCategoryEnum(str, enum.Enum):
     indica = "indica"
-    indica_dominant_hybrid = "indica_dominant_hybrid"  # fixed spelling
+    indica_dominant_hybrid = "indica_dominant_hybrid"
     hybrid = "hybrid"
-    sativa_dominant_hybrid = "sativa_dominant_hybrid"  # fixed spelling
+    sativa_dominant_hybrid = "sativa_dominant_hybrid"
     sativa = "sativa"
     cult_pack = "cult_pack"
 
@@ -132,3 +160,51 @@ class ProductSubmission(ProductTypes):
         populate_by_name = True
         strip_whitespace = True
         extra = "forbid"
+
+
+class AggregatedStrainRatingSchema(BaseModel):
+    product_type: str = Field(..., min_length=1, max_length=50)
+    strain: str = Field(..., min_length=1, max_length=500)
+    cultivator: str = Field(..., min_length=1, max_length=500)
+    cult_rating: float | None = Field(None, ge=0, le=10)
+    ratings: dict[str, float | None]
+
+    class Config:
+        from_attributes = True
+        json_schema_extra = {
+            "example": {
+                "product_type": "Concentrate",
+                "strain": "Guava Tart",
+                "cultivator": "Vibe",
+                "cult_rating": 8.54,
+                "ratings": {
+                    "color_rating": 8.21,
+                    "flavor_rating": 8.08,
+                    "effects_rating": 8.33,
+                    "consistency_rating": 8.75,
+                    "residuals_rating": 8.00,
+                    "smell_rating": 8.50,
+                },
+            }
+        }
+
+
+def convert_to_aggregated_rating_schema(data: List[Dict[str, Any]]) -> List[AggregatedStrainRatingSchema]:
+    converted_ratings = []
+    for item in data:
+        base_data = {
+            "product_type": item.get("product_type", ""),
+            "strain": item.get("strain", ""),
+            "cultivator": item.get("cultivator", ""),
+            "cult_rating": item.get("cult_rating"),
+        }
+        ratings = {key: value for key, value in item.items() if key.endswith("_rating") and key != "cult_rating"}
+        base_data["ratings"] = ratings
+
+        try:
+            validated_schema = AggregatedStrainRatingSchema(**base_data)
+            converted_ratings.append(validated_schema)
+        except ValidationError as e:
+            print(f"Validation error for {base_data['strain']} - {base_data['cultivator']}: {e}")
+            pass
+    return converted_ratings

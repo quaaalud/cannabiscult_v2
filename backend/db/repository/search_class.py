@@ -9,8 +9,10 @@ Created on Fri Dec 22 20:12:12 2023
 import random
 import traceback
 import networkx as nx
-from typing import Type, List, Dict, Tuple, Any, Optional, Union
-from sqlalchemy import inspect, func, or_, and_, not_, union_all, literal
+from datetime import datetime
+from typing import Type, List, Dict, Any, Optional, Union
+from sqlalchemy import inspect, func, or_, and_, not_, union_all
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import ProgrammingError, SQLAlchemyError
 from sqlalchemy.future import select
@@ -26,6 +28,7 @@ from schemas.search_class import (
     TerpProfileResultSchema,
     ProductWithTerpProfileSchema,
 )
+from schemas.product_types import AggregatedStrainRatingSchema, create_rating_schema
 from db.base import (
     Base,
     Flower,
@@ -50,6 +53,7 @@ from db.base import (
     CalendarEvent,
     CalendarEventQuery,
     SimpleProductSchema,
+    AggregatedStrainRating,
     User,
 )
 from schemas.flowers import GetFlowerRanking
@@ -345,6 +349,87 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
                     rating_data["cult_rating"] = None
                 all_ratings.append(rating_data)
     return all_ratings
+
+
+async def aggregate_strain_ratings_by_model(
+    db: Session, model: Type, product_type: str
+):
+    columns = [c.name for c in inspect(model).c]
+    rating_columns = [col for col in columns if col.endswith("_rating")]
+    selection = [
+        model.strain,
+        model.cultivator,
+        *(func.avg(func.nullif(getattr(model, col), None)).label(col) for col in rating_columns),
+    ]
+    query = (
+        db.query(*selection)
+        .filter(
+            not_(model.cultivator.ilike("%Cultivar")),
+            not_(model.cultivator.ilike("Connoisseur")),
+            not_(model.strain.ilike("%Test%")),
+            or_(*(getattr(model, col).isnot(None) for col in rating_columns)),
+        )
+        .group_by(model.strain, model.cultivator)
+    )
+    results = query.all()
+    Schema = create_rating_schema(model)
+    aggregated_ratings = []
+    for result in results:
+        rating_dict = {
+            "product_type": product_type,
+            "strain": result.strain,
+            "cultivator": result.cultivator,
+        }
+        sum_ratings = 0
+        count_ratings = 0
+
+        for col in rating_columns:
+            rating_value = getattr(result, col)
+            rounded_value = round(rating_value, 2) if rating_value is not None else None
+            rating_dict[col] = rounded_value
+            if rounded_value is not None:
+                sum_ratings += rounded_value
+                count_ratings += 1
+
+        rating_dict["cult_rating"] = round(sum_ratings / count_ratings, 2) if count_ratings else None
+        aggregated_ratings.append(Schema(**rating_dict))
+    return aggregated_ratings
+
+
+async def batch_aggregate_all_strains(
+    db: Session, model_dict: Dict[str, List[Type]]
+) -> List[Dict]:
+    all_aggregated_ratings = []
+    for product_type, models in model_dict.items():
+        for model in models:
+            ratings = await aggregate_strain_ratings_by_model(db, model, product_type)
+            all_aggregated_ratings.extend([rating.dict() for rating in ratings])
+    return all_aggregated_ratings
+
+
+def upsert_aggregated_strain_ratings(
+    db: Session, ratings: List[AggregatedStrainRatingSchema]
+) -> None:
+    stmt = insert(AggregatedStrainRating).values([
+        {
+            "product_type": rating.product_type,
+            "strain": rating.strain,
+            "cultivator": rating.cultivator,
+            "cult_rating": rating.cult_rating,
+            "ratings": rating.ratings,
+        }
+        for rating in ratings
+    ])
+    update_dict = {
+        "cult_rating": stmt.excluded.cult_rating,
+        "ratings": stmt.excluded.ratings,
+    }
+    stmt = stmt.on_conflict_do_update(
+        index_elements=["product_type", "strain", "cultivator"],
+        set_=update_dict,
+    )
+    db.execute(stmt)
+    db.commit()
 
 
 def get_all_card_paths(db: Session, limit=10) -> List[dict]:

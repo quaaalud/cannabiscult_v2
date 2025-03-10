@@ -6,8 +6,9 @@ Created on Sun Nov  5 17:09:03 2023
 @author: dale
 """
 
-from sqlalchemy import Column, String, Integer, Float, BigInteger, Double, Text, CheckConstraint
-from sqlalchemy.dialects.postgresql import JSONB
+import uuid
+from sqlalchemy import Column, String, Integer, Float, BigInteger, Double, Text, CheckConstraint, UniqueConstraint
+from sqlalchemy.dialects.postgresql import JSONB, UUID
 from db.base_class import Base
 
 
@@ -429,3 +430,16 @@ class TerpProfile(Base):
     beta_caryophyllene = Column(Double, nullable=True, default=0.0)
     humulene = Column(Double, nullable=True, default=0.0)
     nerolidol_2 = Column(Double, nullable=True, default=0.0)
+
+
+class AggregatedStrainRating(Base):
+    __tablename__ = "aggregated_strain_ratings"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    product_type = Column(String(50), index=True, nullable=False)
+    strain = Column(String(255), index=True, nullable=False)
+    cultivator = Column(String(255), nullable=False)
+    ratings = Column(JSONB, nullable=False)
+    cult_rating = Column(Float, nullable=True)
+
+    __table_args__ = (UniqueConstraint('product_type', 'strain', 'cultivator'),)

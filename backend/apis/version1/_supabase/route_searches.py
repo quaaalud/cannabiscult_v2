@@ -50,6 +50,8 @@ from db.repository.search_class import (
     get_product_with_terp_profile,
     serialize_graph,
     get_user_ranking_for_product,
+    batch_aggregate_all_strains,
+    upsert_aggregated_strain_ratings
 )
 from schemas.search_class import (
     SearchResultItem,
@@ -60,6 +62,7 @@ from schemas.search_class import (
     PreRollTerpTableSchema,
     ProductWithTerpProfileSchema,
 )
+from schemas.product_types import convert_to_aggregated_rating_schema
 from core.config import settings
 
 tasks = {}
@@ -425,3 +428,18 @@ async def get_user_ranking_for_product_route(
 ):
     user_ranking = await get_user_ranking_for_product(db, product_type, user_email, product_id, strain, cultivator)
     return user_ranking
+
+
+@router.get("/aggregated_ratings", response_model=List[Any])
+async def get_aggregated_strain_ratings_batch_route(db: Session = Depends(get_db)):
+    aggregated_ratings = await batch_aggregate_all_strains(db, product_type_to_ranking_model)
+    formatted_ratings = convert_to_aggregated_rating_schema(aggregated_ratings)
+    return formatted_ratings
+
+
+@router.post("/aggregated_ratings", response_model=List[Any])
+async def update_aggregated_strain_ratings_batch_route(db: Session = Depends(get_db)):
+    aggregated_ratings = await batch_aggregate_all_strains(db, product_type_to_ranking_model)
+    formatted_ratings = convert_to_aggregated_rating_schema(aggregated_ratings)
+    upsert_aggregated_strain_ratings(db, formatted_ratings)
+    return formatted_ratings

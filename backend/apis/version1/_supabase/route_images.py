@@ -17,7 +17,7 @@ from db.session import get_db
 from db.repository.search_class import get_card_path_by_details
 from db._supabase.connect_to_auth import SupaAuth
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
-from typing import Union, List
+from typing import Union
 from pydantic import BaseModel, validator
 import magic
 

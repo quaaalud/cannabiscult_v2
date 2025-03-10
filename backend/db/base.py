@@ -17,7 +17,17 @@ from db.models.calendar_events import (
 from db.models.pre_rolls import *
 from db.models.edibles import Edible, VibeEdible, Vibe_Edible_Ranking, Edible_Ranking, Edible_Description
 from db.models.concentrates import Concentrate, Concentrate_Ranking, Concentrate_Description, Vibe_Concentrate_Ranking
-from db.models.product_types import Terp_Table, Product_Types, TerpProfile, FlowerTerpTable, ConcentrateTerpTable, EdibleTerpTable, PreRollTerpTable, Current_Lineages
+from db.models.product_types import (
+    Terp_Table,
+    Product_Types,
+    TerpProfile,
+    FlowerTerpTable,
+    ConcentrateTerpTable,
+    EdibleTerpTable,
+    PreRollTerpTable,
+    Current_Lineages,
+    AggregatedStrainRating,
+)
 from db.models.flowers import (
     Flower,
     Flower_Description,
