@@ -51,7 +51,7 @@ from db.repository.search_class import (
     serialize_graph,
     get_user_ranking_for_product,
     batch_aggregate_all_strains,
-    upsert_aggregated_strain_ratings
+    upsert_aggregated_strain_ratings,
 )
 from schemas.search_class import (
     SearchResultItem,
@@ -117,14 +117,14 @@ async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> D
         for model in models:
             ratings = (
                 db.query(model, User.username)
-                  .outerjoin(User, model.connoisseur == User.email)
-                  .filter(
-                      model.connoisseur.ilike(user_email),
-                      not_(model.strain.ilike("%Test%")),
-                      not_(model.cultivator.ilike("%Cultivar%")),
-                      not_(model.cultivator.ilike("%Connoisseur%")),
-                  )
-                  .all()
+                .outerjoin(User, model.connoisseur == User.email)
+                .filter(
+                    model.connoisseur.ilike(user_email),
+                    not_(model.strain.ilike("%Test%")),
+                    not_(model.cultivator.ilike("%Cultivar%")),
+                    not_(model.cultivator.ilike("%Connoisseur%")),
+                )
+                .all()
             )
             ratings_list = []
             for ranking_record, username in ratings:
@@ -424,7 +424,7 @@ async def get_user_ranking_for_product_route(
     product_id: Optional[int] = Query(None),
     strain: Optional[str] = Query(None),
     cultivator: Optional[str] = Query(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     user_ranking = await get_user_ranking_for_product(db, product_type, user_email, product_id, strain, cultivator)
     return user_ranking

@@ -233,7 +233,7 @@ class AllRatingsDatatable {
                 return `
                   <div id="lightbox${rating.strain}" class="lightbox">
                     <img
-                      src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/card_assets/Cult%20Classic%20%20Cultivar%20Emblem.webp
+                      src="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/cannabiscult/reviews/Connoisseur_Pack/CP_strains.webp"
                       alt="Fallback Image"
                       style="width: 40px; max-height: 40px"
                       class="rounded-circle"
