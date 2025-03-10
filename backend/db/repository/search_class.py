@@ -165,8 +165,7 @@ async def get_data_by_strain(
         return []
     try:
         result = db.execute(
-            select(model)
-            .filter(
+            select(model).filter(
                 and_(
                     or_(
                         model.cultivator.ilike(f"%{strain}%"),
@@ -176,7 +175,7 @@ async def get_data_by_strain(
                         not_(model.strain.ilike("%Test%")),
                         not_(model.cultivator.ilike("%Cultivar%")),
                         not_(model.cultivator.ilike("%Connoisseur%")),
-                    )
+                    ),
                 )
             )
         )
@@ -261,7 +260,7 @@ def get_strains_by_cultivator(db: Session, model: Type[Base], cultivator: str) -
                     not_(model.strain.ilike("%Test%")),
                     not_(model.cultivator.ilike("%Cultivar%")),
                     not_(model.cultivator.ilike("%Connoisseur%")),
-                )
+                ),
             )
         )
         strains = result.scalars().all()
@@ -351,9 +350,7 @@ async def aggregate_ratings_by_strain(db: Session, model_dict: dict) -> List[Rat
     return all_ratings
 
 
-async def aggregate_strain_ratings_by_model(
-    db: Session, model: Type, product_type: str
-):
+async def aggregate_strain_ratings_by_model(db: Session, model: Type, product_type: str):
     columns = [c.name for c in inspect(model).c]
     rating_columns = [col for col in columns if col.endswith("_rating")]
     selection = [
@@ -396,9 +393,7 @@ async def aggregate_strain_ratings_by_model(
     return aggregated_ratings
 
 
-async def batch_aggregate_all_strains(
-    db: Session, model_dict: Dict[str, List[Type]]
-) -> List[Dict]:
+async def batch_aggregate_all_strains(db: Session, model_dict: Dict[str, List[Type]]) -> List[Dict]:
     all_aggregated_ratings = []
     for product_type, models in model_dict.items():
         for model in models:
@@ -407,19 +402,19 @@ async def batch_aggregate_all_strains(
     return all_aggregated_ratings
 
 
-def upsert_aggregated_strain_ratings(
-    db: Session, ratings: List[AggregatedStrainRatingSchema]
-) -> None:
-    stmt = insert(AggregatedStrainRating).values([
-        {
-            "product_type": rating.product_type,
-            "strain": rating.strain,
-            "cultivator": rating.cultivator,
-            "cult_rating": rating.cult_rating,
-            "ratings": rating.ratings,
-        }
-        for rating in ratings
-    ])
+def upsert_aggregated_strain_ratings(db: Session, ratings: List[AggregatedStrainRatingSchema]) -> None:
+    stmt = insert(AggregatedStrainRating).values(
+        [
+            {
+                "product_type": rating.product_type,
+                "strain": rating.strain,
+                "cultivator": rating.cultivator,
+                "cult_rating": rating.cult_rating,
+                "ratings": rating.ratings,
+            }
+            for rating in ratings
+        ]
+    )
     update_dict = {
         "cult_rating": stmt.excluded.cult_rating,
         "ratings": stmt.excluded.ratings,
@@ -543,7 +538,8 @@ async def update_calendar_event(db: Session, summary: str, start_date: str, new_
 
 
 async def get_card_path_by_details(db: Session, product_type: str, strain: str, cultivator: str) -> Optional[str]:
-    model_mapping = PRODUCT_TABLE_MAPPINGS.get(product_type.lower())
+    product_type = product_type.lower().replace("-", "_")
+    model_mapping = PRODUCT_TABLE_MAPPINGS.get(product_type)
     if not model_mapping:
         return None
     model = model_mapping.get("product", None)
@@ -566,13 +562,23 @@ async def get_card_path_by_details(db: Session, product_type: str, strain: str, 
 
 
 def get_all_strains_by_product_type(db: Session, product_type: str) -> List[Dict[str, any]]:
+    product_type = product_type.replace("-", "_")
     model_mapping = PRODUCT_TABLE_MAPPINGS.get(product_type.lower())
     model = model_mapping.get("product", None)
     if not model_mapping or not model:
         raise ValueError("Invalid product type provided")
     try:
         primary_key = [key.name for key in inspect(model).primary_key][0]
-        data = db.query(getattr(model, primary_key), model.strain, model.cultivator).order_by(model.strain).all()
+        data = (
+            db.query(getattr(model, primary_key), model.strain, model.cultivator)
+            .where(
+                model.strain.notilike("%Test%"),
+                model.cultivator.notilike("%Connoisseur%"),
+                model.cultivator.notilike("%Cultivar%"),
+            )
+            .order_by(model.strain)
+            .all()
+        )
         return [{"product_id": item[0], "strain": item[1], "cultivator": item[2]} for item in data]
     except Exception as e:
         print(f"Error fetching strains for {product_type}: {e}")
@@ -603,6 +609,7 @@ def serialize_graph(graph):
 
 
 async def get_product_with_terp_profile(db: Session, product_id: int, product_type: str, description_id: int = None):
+    product_type = product_type.lower().replace("-", "_")
     if product_type not in PRODUCT_TABLE_MAPPINGS:
         raise ValueError(f"Invalid product type: {product_type}")
     product_mapping = PRODUCT_TABLE_MAPPINGS[product_type]

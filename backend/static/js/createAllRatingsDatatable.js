@@ -607,7 +607,7 @@ class AllRatingsDatatable {
         this.fetchStrains(productType)
             .then(strains => {
                 strains.forEach(strain => {
-                    if (strain.strain.includes("MOLUV") || strain.cultivator === "Connoisseur") {
+                    if (strain.strain.includes("MOLUV") || strain.cultivator === "Connoisseur" || strain.cultivator === "Cultivar") {
                         return;
                     }
                     const option = document.createElement('option');
