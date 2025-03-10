@@ -603,7 +603,6 @@ class AllRatingsDatatable {
         defaultOption.selected = true;
         defaultOption.disabled = true;
         dropdown.appendChild(defaultOption);
-
         this.fetchStrains(productType)
             .then(strains => {
                 strains.forEach(strain => {
@@ -633,7 +632,7 @@ class AllRatingsDatatable {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            return data.terp_profile?.terp_values || null;
+            return data.terp_profile?.terp_values || {"coming_soon": 1};
         } catch (error) {
             console.error('Error fetching terpene profile:', error);
             return null;
