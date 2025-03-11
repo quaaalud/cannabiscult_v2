@@ -88,8 +88,8 @@ def is_image_safe(response, filters=DEFAULT_IMAGE_FILTERS):
     return True
 
 
-async def check_image_against_default_filters(file_path: Union[Path, str]):
-    files = {'media': open(file_path, 'rb')}
+async def check_image_against_default_filters(file_bytes: bytes):
+    files = {'media': file_bytes}
     r = requests.post('https://api.sightengine.com/1.0/check.json', files=files, data=settings.SIGHTENGINE_PARAMS)
     output = json.loads(r.text)
     return is_image_safe(output)
@@ -142,33 +142,32 @@ async def upload_image_to_supabase(
     if not image_data.image:
         raise HTTPException(status_code=400, detail="Invalid image file")
     temp_file_path = save_temporary_image(file)
-    image_is_safe = await check_image_against_default_filters(temp_file_path)
-    if not image_is_safe:
-        return_message = {
-            "message": "Error uploading file: ",
-            "path": str(file.filename),
-            "error": "Image was deemed unsafe or low quality.",
-        }
-        delete_temporary_file(temp_file_path)
-        return return_message
     dir_list = supabase.storage.from_(storage_str).list()
     if "error" in dir_list:
         raise HTTPException(status_code=500, detail=dir_list["error"]["message"])
 
     if len(dir_list) > 0 and str(product_type) in [product["name"] for product in dir_list]:
         dir_list = supabase.storage.from_(storage_str).list(path=product_id)
-
     file_index = len(dir_list)
     file_path = f"{product_type}/{product_id}/{file_index}_{file.filename}"
     try:
         with open(temp_file_path, "rb") as f:
+            image_is_safe = await check_image_against_default_filters(f)
+            if not image_is_safe:
+                return_message = {
+                    "message": "Error uploading file: ",
+                    "path": str(file.filename),
+                    "error": "Image was deemed unsafe or low quality.",
+                }
+                delete_temporary_file(temp_file_path)
+                return return_message
             mime_type = magic.from_buffer(f.read(1024), mime=True)
             upload_response = supabase.storage.from_(storage_str).upload(
                 file=f, path=file_path, file_options={"content-type": mime_type}
             )
-        if "error" in upload_response.text:
-            raise HTTPException(status_code=500, detail=upload_response["error"]["message"])
-        return_message = {"message": "File uploaded successfully", "path": file_path}
+            if "error" in upload_response.text:
+                raise HTTPException(status_code=500, detail=upload_response["error"]["message"])
+            return_message = {"message": "File uploaded successfully", "path": file_path}
     except Exception as e:
         return_message = {
             "message": "Error uploading file",
