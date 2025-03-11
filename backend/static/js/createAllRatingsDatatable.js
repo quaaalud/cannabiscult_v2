@@ -324,7 +324,7 @@ class AllRatingsDatatable {
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
-        if (productType.toLowerCase() == "concentrate" || productType.toLowerCase() == "flower") {
+        if (productType.toLowerCase() == "concentrate" || productType.toLowerCase() == "flower" || productType.toLowerCase() == "pre-roll") {
           this.createTerpProfileTab(productType, tabList, tabContent);
         }
         this.initializeLightboxes();
@@ -632,13 +632,13 @@ class AllRatingsDatatable {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            return data.terp_profile?.terp_values || {"coming_soon": 1};
+            return data
         } catch (error) {
             console.error('Error fetching terpene profile:', error);
             return null;
         }
     }
-    async extractTerpeneData(terpeneProfile) {
+    async extractTerpeneData(terpeneProfile, terpenesArray) {
         const labels = [];
         const values = [];
         const excludeKeys = new Set(["description_id", "product_id", "product_type"]);
@@ -648,6 +648,12 @@ class AllRatingsDatatable {
                 values.push(parseFloat(value));
             }
         }
+        if (labels.length === 0) {
+           for (const terp of terpenesArray) {
+               labels.push(this.formatLabel(terp));
+               values.push(parseFloat(1.0));
+           }
+        }
         return { labels, values };
     }
     async createPolarChart(productType, productId, canvas) {
@@ -655,12 +661,13 @@ class AllRatingsDatatable {
             canvas.chartInstance.dispose();
         }
 
-        const terpeneData = await this.fetchTerpeneProfile(productType, productId);
+        const terpeneResponse = await this.fetchTerpeneProfile(productType, productId);
+        let terpeneData = terpeneResponse.terp_profile?.terp_values || null;
         if (!terpeneData) {
             console.error('No data available to create the chart.');
             return;
         }
-        const data = await this.extractTerpeneData(terpeneData);
+        const data = await this.extractTerpeneData(terpeneData, terpeneResponse.description.terpenes_list);
         canvas.chartInstance = new mdb.Chart(canvas, {
             type: 'polarArea',
             data: {
