@@ -142,6 +142,15 @@ class Settings:
     )
     ALGO: str = os.getenv("ALGO")
     PRIMARY_BUCKET: str = os.getenv("POSTGRES_DB")
+    SIGHTENGINE_MODELS: str = os.getenv("SIGHTENGINE_MODELS")
+    SIGHTENGINE_USER: str = os.getenv("SIGHTENGINE_USER")
+    SIGHTENGINE_KEY: str = os.getenv("SIGHTENGINE_KEY")
+
+    SIGHTENGINE_PARAMS = {
+      'models': os.getenv("SIGHTENGINE_MODELS"),
+      'api_user': os.getenv("SIGHTENGINE_USER"),
+      'api_secret': os.getenv("SIGHTENGINE_KEY")
+    }
 
     core_dir = Path(__file__).parents[0]
     backend_dir = Path(__file__).parents[1]

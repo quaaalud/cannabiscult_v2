@@ -1,5 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import tempfile
+import shutil
+import os
+import magic
+import requests
+import json
 from fastapi import (
     APIRouter,
     HTTPException,
@@ -7,22 +13,30 @@ from fastapi import (
     UploadFile,
     File,
 )
-from typing import Dict
-import tempfile
-import shutil
-import os
+from pathlib import Path
+from typing import Dict, Union
+from pydantic import BaseModel, validator
 from supabase import Client
 from sqlalchemy.orm import Session
+from core.config import settings
 from db.session import get_db
 from db.repository.search_class import get_card_path_by_details
 from db._supabase.connect_to_auth import SupaAuth
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
-from typing import Union
-from pydantic import BaseModel, validator
-import magic
 
 
 router = APIRouter()
+
+
+DEFAULT_IMAGE_FILTERS = {
+    "nudity": {"none": 0.95},
+    "type": {"photo": 0.0, "illustration": 0.0, "ai_generated": 0.5},
+    "quality": 0.5,
+    "offensive": 0.01,
+    "scam": 0.1,
+    "violence": 0.01,
+    "self-harm": 0.01,
+}
 
 
 class ImagePathRequest(BaseModel):
@@ -53,7 +67,45 @@ async def _return_supabase_private_client() -> Client:
     return supabase
 
 
+def is_image_safe(response, filters=DEFAULT_IMAGE_FILTERS):
+    if response.get("nudity", {}).get("none", 1) < filters["nudity"]["none"]:
+        return False
+    type_data = response.get("type", {})
+    if type_data.get("photo", 0) < filters["type"]["photo"]:
+        return False
+    if type_data.get("ai_generated", 1) > filters["type"]["ai_generated"]:
+        return False
+    if response.get("quality", {}).get("score", 1) < filters["quality"]:
+        return False
+    if any(val > filters["offensive"] for val in response.get("offensive", {}).values()):
+        return False
+    if response.get("scam", {}).get("prob", 0) > filters["scam"]:
+        return False
+    if response.get("violence", {}).get("prob", 0) > filters["violence"]:
+        return False
+    if response.get("self-harm", {}).get("prob", 0) > filters["self-harm"]:
+        return False
+    return True
+
+
+async def check_image_against_default_filters(file_path: Union[Path, str]):
+    files = {'media': open(file_path, 'rb')}
+    r = requests.post('https://api.sightengine.com/1.0/check.json', files=files, data=settings.SIGHTENGINE_PARAMS)
+    output = json.loads(r.text)
+    return is_image_safe(output)
+
+
 def save_temporary_image(file: UploadFile) -> str:
+    try:
+        with tempfile.NamedTemporaryFile(delete=False) as tmp:
+            shutil.copyfileobj(file.file, tmp)
+            temp_file_path = tmp.name
+        return temp_file_path
+    finally:
+        file.file.close()
+
+
+async def save_temporary_image_async(file: UploadFile) -> str:
     try:
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
             shutil.copyfileobj(file.file, tmp)
@@ -90,7 +142,15 @@ async def upload_image_to_supabase(
     if not image_data.image:
         raise HTTPException(status_code=400, detail="Invalid image file")
     temp_file_path = save_temporary_image(file)
-
+    image_is_safe = await check_image_against_default_filters(temp_file_path)
+    if not image_is_safe:
+        return_message = {
+            "message": "Error uploading file: ",
+            "path": str(file.filename),
+            "error": "Image was deemed unsafe or low quality.",
+        }
+        delete_temporary_file(temp_file_path)
+        return return_message
     dir_list = supabase.storage.from_(storage_str).list()
     if "error" in dir_list:
         raise HTTPException(status_code=500, detail=dir_list["error"]["message"])
