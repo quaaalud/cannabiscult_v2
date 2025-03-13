@@ -40,13 +40,13 @@ def ttl_cache(ttl: int):
     return decorator
 
 
-@ttl_cache(ttl=5400)
-def get_cached_signed_url_from_storage(file_path: str, life_span: int = 3000) -> str:
+@ttl_cache(ttl=2900)
+def get_cached_signed_url_from_storage(file_path: str, life_span: int = 6000) -> str:
     client = return_created_client()
     return client.storage.from_(settings.POSTGRES_DB).create_signed_url(file_path, life_span).get("signedURL")
 
 
-def get_signed_url_from_storage(file_path: str, life_span: int = 3000) -> str:
+def get_signed_url_from_storage(file_path: str, life_span: int = 6000) -> str:
     file_path = file_path.replace("'", "")
     return get_cached_signed_url_from_storage(file_path, life_span)
 
