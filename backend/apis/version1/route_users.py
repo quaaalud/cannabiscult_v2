@@ -113,7 +113,7 @@ def update_user_password(
         repeated_password=repeated_password,
         db=db,
     )
-    return {"current_user_profile": user}
+    return {"current_user_profile": ShowUser.from_orm(user)}
 
 
 @router.get("/logout", response_model=None)
