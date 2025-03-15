@@ -121,8 +121,6 @@ async def gather_user_ratings_by_product_type(user_email: str, db: Session) -> D
                 .filter(
                     model.connoisseur.ilike(user_email),
                     not_(model.strain.ilike("%Test%")),
-                    not_(model.cultivator.ilike("%Cultivar%")),
-                    not_(model.cultivator.ilike("%Connoisseur%")),
                 )
                 .all()
             )
