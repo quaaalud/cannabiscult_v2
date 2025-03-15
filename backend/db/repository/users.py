@@ -10,7 +10,7 @@ Created on Fri Mar 10 21:13:37 2023
 import base64
 from uuid import UUID
 from supabase import Client
-from sqlalchemy import func
+from sqlalchemy import func, delete
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -123,9 +123,7 @@ async def get_user_by_email(user_email: str, db: Session) -> User:
 
 
 @settings.retry_db
-def update_user_password_in_db(
-    user_email: str, new_password: str, repeated_password: str, db: Session
-) -> User:
+def update_user_password_in_db(user_email: str, new_password: str, repeated_password: str, db: Session) -> User:
     if new_password.strip() == repeated_password.strip():
         try:
             user = db.query(User).filter(User.email == user_email.lower().strip()).first()
@@ -143,21 +141,7 @@ def update_user_password_in_db(
 
 @settings.retry_db
 async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
-    strain = (
-        db.query(UserStrainList)
-        .filter(
-            UserStrainList.email == strain_data.email
-            and UserStrainList.cultivator == strain_data.cultivator
-            and UserStrainList.strain == strain_data.strain
-            and UserStrainList.product_type == strain_data.product_type
-        )
-        .first()
-    )
-    if strain:
-        if strain.strain == strain_data.strain:  # this should not be required but works
-            return UserStrainListSchema.from_orm(strain)
-
-    strain = UserStrainList(
+    stmt = insert(UserStrainList).values(
         email=strain_data.email,
         strain=strain_data.strain,
         cultivator=strain_data.cultivator,
@@ -165,15 +149,19 @@ async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
         product_type=strain_data.product_type,
         strain_notes="",
     )
+    stmt = stmt.on_conflict_do_update(
+        index_elements=["email", "strain", "cultivator", "product_type"],
+        set_={"to_review": strain_data.to_review}
+    ).returning(UserStrainList)
     try:
-        db.add(strain)
+        result = db.execute(stmt)
+        upserted_record = result.scalar_one()
     except SQLAlchemyError:
         db.rollback()
         raise
     else:
         db.commit()
-        db.refresh(strain)
-    return UserStrainListSchema.from_orm(strain)
+    return UserStrainListSchema.from_orm(upserted_record)
 
 
 @settings.retry_db
@@ -229,28 +217,27 @@ async def add_strain_notes_to_list(strain_notes: AddUserStrainListNotes, db: Ses
 
 @settings.retry_db
 async def delete_strain_from_list(strain_to_remove: UserStrainListRemove, db: Session):
+    print(strain_to_remove)
     try:
-        strain = (
-            db.query(UserStrainList)
-            .filter(
-                UserStrainList.strain == strain_to_remove.strain
-                and UserStrainList.cultivator == strain_to_remove.cultivator
-                and UserStrainList.email == strain_to_remove.email
-                and UserStrainList.product_type == strain_to_remove.product_type
-            )
-            .one()
+        stmt = delete(UserStrainList).where(
+            UserStrainList.strain.ilike(f"%{strain_to_remove.strain}%"),
+            UserStrainList.cultivator.ilike(f"%{strain_to_remove.cultivator}"),
+            UserStrainList.email == strain_to_remove.email,
+            UserStrainList.product_type == strain_to_remove.product_type.lower(),
         )
-        db.delete(strain)
+        result = db.execute(stmt)
     except SQLAlchemyError:
         db.rollback()
         raise
     else:
         db.commit()
-    return {"data": f"removed {strain_to_remove.strain}"}
+    return {"data": f"removed {result.rowcount} record(s)"}
 
 
 @settings.retry_db
-async def upsert_moluv_headstash_vote(db: Session, user_id: UUID, product_type: str, product_id: int) -> Dict[str, str]:
+async def upsert_moluv_headstash_vote(
+    db: Session, user_id: UUID, product_type: str, product_id: int
+) -> Dict[str, str]:
     try:
         stmt = insert(MoluvHeadstashBowl).values(
             user_id=user_id,
@@ -258,11 +245,7 @@ async def upsert_moluv_headstash_vote(db: Session, user_id: UUID, product_type: 
             product_id=product_id,
         )
         stmt = stmt.on_conflict_do_update(
-            constraint="uq_user_product",
-            set_={
-                "product_id": product_id,
-                "updated_at": func.now()
-            }
+            constraint="uq_user_product", set_={"product_id": product_id, "updated_at": func.now()}
         )
         db.execute(stmt)
         db.commit()

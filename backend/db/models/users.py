@@ -44,6 +44,9 @@ class User(Base):
 
 class UserStrainList(Base):
     __tablename__ = "user_strain_list"
+    __table_args__ = (
+        UniqueConstraint("email", "strain", "cultivator", "product_type", name="uq_user_strain"),
+    )
 
     id = Column(BigInteger, primary_key=True, index=True, autoincrement=True)
     created_at = Column(TIMESTAMP, nullable=False, default=func.now())

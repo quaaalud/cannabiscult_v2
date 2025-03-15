@@ -206,10 +206,15 @@ class UserStrainListSchema(BaseModel):
     product_type: str = Field(..., description="Product type for the strain notes")
     strain_notes: str = Field("N/A", description="User's strain notes")
 
+    @validator("product_type", pre=True)
+    def convert_product_type_to_lower(cls, v):
+        return str(v).lower()
+
     class Config:
         from_attributes = True
         populate_by_name = True
         exclude_unset = True
+        strip_whitespace = True
 
 
 class AddUserStrainListNotes(BaseModel):
