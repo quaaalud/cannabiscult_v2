@@ -1,6 +1,13 @@
-<div class="card">
-  <div class="card-body">
-    <h5 class="card-title text-center">Manage Strain Images</h5>
+<div class="card d-none p-3" id="manageImagesFormCard">
+  <div class="card-body p-3 col-12 mx-auto pt-3">
+    <div class="row d-flex align-items-center justify-content-between pb-3 pt-5">
+      <div class="col-auto">
+        <h3 class="card-title" id="cardTitle">Manage Strain Images</h3>
+      </div>
+      <div class="col-auto align-conent-end">
+        <button id="toggleStrainsFormButton" class="btn btn-link text-secondary btn-sm">Show Add a Strain Form</button>
+      </div>
+    </div>
     <form id="manageImagesForm">
       <!-- Product Type Select Box -->
       <div class="mb-3">
@@ -134,7 +141,7 @@ window.addEventListener('DOMContentLoaded', function() {
           images.forEach(image => {
               const option = document.createElement('option');
               option.value = image.imageUrl;
-              option.text = image.imagePath;
+              option.text = image.imagePath.split('/').pop();;
               option.setAttribute('data-product-type', image.productType);
               option.setAttribute('data-product-id', image.productId);
               option.setAttribute('data-image-path', image.imagePath);
@@ -225,9 +232,15 @@ window.addEventListener('DOMContentLoaded', function() {
     const cardPath = selectedOption.getAttribute('data-image-path');
 
     const url = `/images/make_primary?product_type=${encodeURIComponent(productType)}&product_id=${encodeURIComponent(productId)}&card_path=${encodeURIComponent(cardPath)}`;
-
+    const authToken = await window.supabaseClient.getAccessToken();
     try {
-      const response = await fetch(url, { method: 'POST' });
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
@@ -240,6 +253,16 @@ window.addEventListener('DOMContentLoaded', function() {
     }
   }
   document.getElementById('getImagesButton').addEventListener('click', fetchProductImages);
+  document.addEventListener('click', function (e) {
+    if (e.target && e.target.id === 'toggleImagesFormButton') {
+      document.getElementById('strainSubmissionFormCard').classList.add('d-none');
+      document.getElementById('manageImagesFormCard').classList.remove('d-none');
+    }
+    if (e.target && e.target.id === 'toggleStrainsFormButton') {
+      document.getElementById('manageImagesFormCard').classList.add('d-none');
+      document.getElementById('strainSubmissionFormCard').classList.remove('d-none');
+    }
+  });
 });
 </script>
 {% endblock %}

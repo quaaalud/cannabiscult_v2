@@ -31,12 +31,11 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('supabaseClientReady', () => {
   const uploadBtn = document.getElementById('submit-image-upload');
   const form = document.getElementById('image-upload-form');
   const alertBox = document.getElementById('upload-alert');
 
-  // Assume these variables are globally available or set appropriately on your page
   const productType = document.getElementById('product_type_selected').value;
   const productId = document.getElementById('strain_selected').value;
 
@@ -48,10 +47,14 @@ document.addEventListener('DOMContentLoaded', () => {
       showAlert('Please select an image to upload.', 'danger');
       return;
     }
-
+    const authToken = await window.supabaseClient.getAccessToken();
     fetch(`/${productType}/${productId}/upload/`, {
       method: 'POST',
       body: formData,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
     })
     .then(response => response.json())
     .then(data => {

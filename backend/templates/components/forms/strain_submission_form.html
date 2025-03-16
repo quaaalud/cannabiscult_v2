@@ -3,11 +3,19 @@
     <button id="toggleFormButton" class="btn btn-secondary btn-lg w-100">Show 'Add a Strain' Form</button>
   </div>
   <div class="container justify-content-center" id="strainSubmissionContainerRow" style="display: none;">
-    <div class="col-12 col-lg-9 col-xl-7 mx-auto pt-3">
-      <div class="card">
+    <div class="col-12 col-lg-9 col-xl-7 mx-auto pt-3 pt-lg-0">
+      <!-- Strain Submission Form -->
+      <div class="card" id="strainSubmissionFormCard">
         <div class="card-body p-2 p-md-5">
           <div class="card-body p-4 p-md-5">
-            <h3 class="mb-4 pb-2">Add a Strain</h3>
+            <div class="row d-flex align-items-center justify-content-between pb-3">
+              <div class="col-auto">
+                <h3 id="cardTitle">Add a Strain</h3>
+              </div>
+              <div class="col-auto d-none" id="manageImagesButtonContainer">
+                <button id="toggleImagesFormButton" class="btn btn-link text-secondary btn-sm">Manage Images</button>
+              </div>
+            </div>
             <form action="#" id="strainSubmissionForm">
               <div class="row">
                 <div class="col-12 mb-4">
@@ -188,6 +196,8 @@
           </div>
         </div>
       </div>
+      <!-- Image Update Form -->
+      {% include "components/forms/admin/manage_images.html" %}
     </div>
   </div>
 </section>

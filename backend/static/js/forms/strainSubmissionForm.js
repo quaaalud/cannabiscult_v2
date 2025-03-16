@@ -175,12 +175,17 @@ async function uploadImagesAfterSubmission(productType, productId, files) {
     alert('You may upload up to 3 images only.');
     return;
   }
+  const authToken = await window.supabaseClient.getAccessToken();
   const uploadPromises = Array.from(files).map(file => {
     const formData = new FormData();
     formData.append('file', file);
     return fetch(uploadUrl, {
       method: 'POST',
-      body: formData
+      body: formData,
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      }
     })
     .then(resp => resp.json())
     .then(data => {
@@ -352,4 +357,8 @@ window.addEventListener('supabaseClientReady', async (event) => {
             textarea.addEventListener('input', updateCounter);
         }
     });
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (userEmail === "aaron.childs@thesocialoutfitus.com" || userEmail === "dludwins@outlook.com") {
+        document.getElementById('manageImagesButtonContainer').classList.remove("d-none");
+    }
 });
