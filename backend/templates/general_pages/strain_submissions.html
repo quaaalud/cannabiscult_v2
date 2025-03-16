@@ -1,61 +1,61 @@
 {% extends "shared/base.html" %}
 
-{% block title %} 
+{% block title %}
   <title>Cannabis Cult Home</title>
-{% endblock %} 
+{% endblock %}
 
 {% block head %}
-<meta 
-  content="View upcoming events and your prior ratings in the Cannabiscult.co review system. If you are interested in submitting your own detailed reviews please send us an email at members@cannabiscult.co" 
+<meta
+  content="View upcoming events and your prior ratings in the Cannabiscult.co review system. If you are interested in submitting your own detailed reviews please send us an email at members@cannabiscult.co"
   name="description"
 />
-<meta 
+<meta
   name="keywords"
   content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Strain Submission, Submit a Strain, Submit a Cannabis Review, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
 />
-<meta 
-  property="og:image" 
+<meta
+  property="og:image"
   content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
   alt="Cannabis Cult Member Home"
 />
-<meta 
-  property="og:description" 
-  content="" 
+<meta
+  property="og:description"
+  content=""
 />
-<meta 
-  property="og:title" 
+<meta
+  property="og:title"
   content="Cannabis Cult Member Home"
 />
-<meta 
-  name="twitter:card" 
+<meta
+  name="twitter:card"
   content="summary_large_image"
 />
-<meta 
-  property="twitter:url" 
+<meta
+  property="twitter:url"
   content="https://cannabiscult.co"
 />
-<meta 
-  property="twitter:site" 
+<meta
+  property="twitter:site"
   content="@cannabiscult"
 />
-<meta 
-  property="twitter:title" 
-  content="Cannabis Cult Member Home" 
+<meta
+  property="twitter:title"
+  content="Cannabis Cult Member Home"
 />
-<meta 
-  property="twitter:description" 
-  content="Cannabis Cult Member Homepage with your ratings on CannabisCult.co" 
+<meta
+  property="twitter:description"
+  content="Cannabis Cult Member Homepage with your ratings on CannabisCult.co"
 />
-<meta 
-  property="twitter:image" 
+<meta
+  property="twitter:image"
   content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
 />
-<meta 
+<meta
   property="twitter:image:alt"
   content="Cannabis Cult Cultivar Logo"
 />
-<link 
-  rel="canonical" 
+<link
+  rel="canonical"
   href="https://cannabiscult.co/home"
 />
 {% endblock %}
@@ -75,7 +75,7 @@
     <div class="container container-sm py-5" style="background-color: transparent;" data-aos="fade-in" data-aos-anchor-placement="top-center">
       <div class="row text-center pt-5 pt-lg-3">
         <div class="py-3 pt-lg-5">
-          <a 
+          <a
             href="#data-table-container"
             class="pt-2 text-decoration-none text-dark fs-6"
             data-mdb-collapse-init
@@ -93,6 +93,7 @@
     </div>
     <div class="container container-sm py-5 d-none" id="strainSubmissionContainer">
       {% include "components/forms/strain_submission_form.html" %}
+      {% include "components/forms/admin/manage_images.html" %}
     </div>
     <div class="modal fade" id="notAuthorizedModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">

@@ -15,24 +15,15 @@ from sqlalchemy.orm import Session
 from uuid import uuid4
 from db.session import get_db
 from typing import List, Optional, Any, Dict, Union
-from schemas.flowers import GetFlowerRanking
-from schemas.concentrates import GetConcentrateRanking
-from schemas.pre_rolls import GetPreRollRanking
-from schemas.edibles import GetVibeEdibleRanking
 from db.base import (
-    Flower,
-    Flower_Ranking,
-    Concentrate,
-    Edible,
-    VibeEdible,
-    Pre_Roll,
-    Pre_Roll_Ranking,
-    Concentrate_Ranking,
-    Vibe_Edible_Ranking,
     CalendarEventQuery,
     User,
 )
 from db.repository.search_class import (
+    product_type_to_ranking_model,
+    product_type_to_model,
+    model_to_dict,
+    convert_to_schema,
     search_strain,
     get_all_product_types,
     get_cultivators_by_product_type,
@@ -68,42 +59,6 @@ from core.config import settings
 tasks = {}
 
 router = APIRouter()
-
-
-product_type_to_model = {
-    "Flower": [Flower],
-    "Concentrate": [Concentrate],
-    "Edible": [Edible, VibeEdible],
-    "Pre-Roll": [Pre_Roll],
-    # Add other product types here
-}
-
-
-product_type_to_ranking_model = {
-    "Flower": [Flower_Ranking],
-    "Concentrate": [Concentrate_Ranking],
-    "Edible": [Vibe_Edible_Ranking],
-    "Pre-Roll": [Pre_Roll_Ranking],
-    # Add other product types here
-}
-
-
-def convert_to_schema(product_type: str, data: List[dict]):
-    schema_map = {
-        "Flower": GetFlowerRanking,
-        "Concentrate": GetConcentrateRanking,
-        "Edible": GetVibeEdibleRanking,
-        "Pre-Roll": GetPreRollRanking,
-    }
-    schema_class = schema_map.get(product_type)
-    if not schema_class:
-        raise ValueError(f"Unsupported product type: {product_type}")
-    return [schema_class(**item) for item in data]
-
-
-def model_to_dict(model_instance):
-    """Converts an SQLAlchemy model instance to a dictionary."""
-    return {column.name: getattr(model_instance, column.name) for column in model_instance.__table__.columns}
 
 
 def decode_email(encoded_email: str) -> str:

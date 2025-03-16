@@ -12,15 +12,16 @@ from fastapi import (
     Depends,
     UploadFile,
     File,
+    Query,
 )
-from pathlib import Path
-from typing import Dict, Union
+from typing import Dict, Union, Any, Optional
 from pydantic import BaseModel, validator
 from supabase import Client
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from core.config import settings
 from db.session import get_db
-from db.repository.search_class import get_card_path_by_details
+from db.repository.search_class import get_card_path_by_details, RANKING_LOOKUP, product_type_to_model
 from db._supabase.connect_to_auth import SupaAuth
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
@@ -209,6 +210,48 @@ async def list_product_images(
         )
         for img in images
     ]
+
+
+@router.get("/get_all", response_model=Optional[Dict[str, Any]])
+async def get_all_product_images_by_product_match(
+    product_type: str = Query(None),
+    strain: str = Query(None),
+    cultivator: str = Query(None),
+    supabase: Client = Depends(_return_supabase_private_client),
+    db: Session = Depends(get_db)
+):
+    product_type = product_type.capitalize()
+    if product_type == "Pre-roll":
+        product_type = "Pre-Roll"
+    model_list = product_type_to_model.get(product_type)
+    if not model_list:
+        raise HTTPException(status_code=404, detail="Product type not found")
+    model = model_list[0]
+    stmt = select(model).filter(model.strain.ilike(f"%{strain}%"), model.cultivator.ilike(f"%{cultivator}%"))
+    result = db.execute(stmt)
+    product = result.scalars().first()
+    if not product:
+        raise HTTPException(status_code=404, detail="Product not found")
+    lookup = RANKING_LOOKUP.get(product_type.replace("-", "_").lower())
+    if not lookup:
+        return None
+    RankingModel, id_field_name, email_field_name, RankingSchema = lookup
+    product_id = getattr(product, id_field_name)
+    primary_card_path = getattr(product, "card_path")
+    primary_image_url = await _return_image_url(primary_card_path)
+    primary_image = {primary_card_path: primary_image_url}
+    try:
+        images = supabase.storage.from_("additional_product_images").list(f"{product_type}/{product_id}")
+        if not images:
+            return {product_type.replace("-", "_").lower(): {str(product_id): primary_image}}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    extra_images = {}
+    for img in images:
+        extra_img_path = f"{product_type.lower()}/{product_id}/{img['name']}"
+        extra_img_url = supabase.storage.from_("additional_product_images").get_public_url(extra_img_path)
+        extra_images[extra_img_path] = extra_img_url
+    return {product_type.replace("-", "_").lower(): {str(product_id): {**primary_image, **extra_images}}}
 
 
 async def _return_image_url(card_path: str):

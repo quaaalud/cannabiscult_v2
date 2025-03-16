@@ -9,7 +9,6 @@ Created on Fri Dec 22 20:12:12 2023
 import random
 import traceback
 import networkx as nx
-from datetime import datetime
 from typing import Type, List, Dict, Any, Optional, Union
 from sqlalchemy import inspect, func, or_, and_, not_, union_all
 from sqlalchemy.dialects.postgresql import insert
@@ -39,6 +38,7 @@ from db.base import (
     Concentrate_Ranking,
     Edible,
     VibeEdible,
+    Vibe_Edible_Ranking,
     Edible_Description,
     Pre_Roll,
     Pre_Roll_Description,
@@ -59,6 +59,7 @@ from db.base import (
 from schemas.flowers import GetFlowerRanking
 from schemas.concentrates import GetConcentrateRanking
 from schemas.pre_rolls import GetPreRollRanking
+from schemas.edibles import GetVibeEdibleRanking
 from db._supabase.connect_to_storage import return_image_url_from_supa_storage
 
 
@@ -101,6 +102,41 @@ RANKING_LOOKUP = {
         GetPreRollRanking,
     ),
 }
+
+
+product_type_to_model = {
+    "Flower": [Flower],
+    "Concentrate": [Concentrate],
+    "Edible": [Edible, VibeEdible],
+    "Pre-Roll": [Pre_Roll],
+}
+
+
+product_type_to_ranking_model = {
+    "Flower": [Flower_Ranking],
+    "Concentrate": [Concentrate_Ranking],
+    "Edible": [Vibe_Edible_Ranking],
+    "Pre-Roll": [Pre_Roll_Ranking],
+    # Add other product types here
+}
+
+
+def convert_to_schema(product_type: str, data: List[dict]):
+    schema_map = {
+        "Flower": GetFlowerRanking,
+        "Concentrate": GetConcentrateRanking,
+        "Edible": GetVibeEdibleRanking,
+        "Pre-Roll": GetPreRollRanking,
+    }
+    schema_class = schema_map.get(product_type)
+    if not schema_class:
+        raise ValueError(f"Unsupported product type: {product_type}")
+    return [schema_class(**item) for item in data]
+
+
+def model_to_dict(model_instance):
+    """Converts an SQLAlchemy model instance to a dictionary."""
+    return {column.name: getattr(model_instance, column.name) for column in model_instance.__table__.columns}
 
 
 async def get_user_ranking_for_product(
