@@ -1,0 +1,84 @@
+<!-- Image Upload Modal Trigger Button -->
+<div class="text-center my-3">
+  <button class="btn btn-primary" data-mdb-toggle="modal" data-mdb-target="#uploadImageModal">
+    Upload Image
+  </button>
+</div>
+
+<!-- Image Upload Modal -->
+<div class="modal fade" id="uploadImageModal" tabindex="-1" aria-labelledby="uploadImageModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadImageModalLabel">Upload Product Image</h5>
+        <button type="button" class="btn-close" data-mdb-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="image-upload-form">
+          <div class="mb-3">
+            <label for="imageFile" class="form-label">Select Image</label>
+            <input class="form-control" type="file" id="imageFile" name="file" accept="image/*" required>
+          </div>
+        </form>
+        <div id="upload-alert" class="alert d-none" role="alert"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-mdb-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-success" id="submit-image-upload">Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const uploadBtn = document.getElementById('submit-image-upload');
+  const form = document.getElementById('image-upload-form');
+  const alertBox = document.getElementById('upload-alert');
+
+  // Assume these variables are globally available or set appropriately on your page
+  const productType = document.getElementById('product_type_selected').value;
+  const productId = document.getElementById('strain_selected').value;
+
+  uploadBtn.addEventListener('click', () => {
+    const formData = new FormData(form);
+    const fileInput = document.getElementById('imageFile');
+
+    if (!fileInput.files.length) {
+      showAlert('Please select an image to upload.', 'danger');
+      return;
+    }
+
+    fetch(`/${productType}/${productId}/upload/`, {
+      method: 'POST',
+      body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.error || data.message.includes('unsafe')) {
+        showAlert(`Upload Failed: ${data.error || data.message}`, 'danger');
+      } else {
+        showAlert('Image uploaded successfully!', 'success');
+        form.reset();
+        setTimeout(() => location.reload(), 1500);
+      }
+    })
+    .catch(err => {
+      console.error('Upload Error:', err);
+      showAlert('An unexpected error occurred. Please try again.', 'danger');
+    });
+  });
+
+  function showAlert(message, type) {
+    alertBox.className = `alert alert-${type}`;
+    alertBox.textContent = message;
+    alertBox.classList.remove('d-none');
+  }
+
+  const modalElement = document.getElementById('uploadImageModal');
+  modalElement.addEventListener('hidden.mdb.modal', () => {
+    form.reset();
+    alertBox.classList.add('d-none');
+  });
+});
+</script>

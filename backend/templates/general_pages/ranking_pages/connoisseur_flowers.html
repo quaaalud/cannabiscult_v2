@@ -1,61 +1,61 @@
 {% extends "shared/base.html" %}
 
-{% block title %} 
+{% block title %}
   <title>Cultivar Review {{ strain }} - Cannabis Cult</title>
-{% endblock %} 
+{% endblock %}
 
 {% block head %}
-<meta 
-  content="Cannabis Cult {{ strain }} Cultivar Rating Page." 
+<meta
+  content="Cannabis Cult {{ strain }} Cultivar Rating Page."
   name="description"
 />
-<meta 
+<meta
   name="keywords"
   content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
 />
-<meta 
-  property="og:image" 
+<meta
+  property="og:image"
   content="{% if url_path %}{{ url_path }}{% else %}https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp{% endif %}"
   alt="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Card"
 />
-<meta 
-  property="og:description" 
-  content="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Page." 
+<meta
+  property="og:description"
+  content="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Page."
 />
-<meta 
-  property="og:title" 
+<meta
+  property="og:title"
   content="Cannabis Cult {% if strain %}{{ strain }} {% endif %}Cultivar Connoisseur Rating"
 />
-<meta 
-  name="twitter:card" 
+<meta
+  name="twitter:card"
   content="summary_large_image"
 />
-<meta 
-  property="twitter:url" 
+<meta
+  property="twitter:url"
   content="https://cannabiscult.co"
 />
-<meta 
-  property="twitter:site" 
+<meta
+  property="twitter:site"
   content="@cannabiscult"
 />
-<meta 
-  property="twitter:title" 
-  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Rating." 
+<meta
+  property="twitter:title"
+  content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Rating."
 />
-<meta 
-  property="twitter:description" 
-  content="{{ strain }} Cultivar Review Page on CannabisCult.co" 
+<meta
+  property="twitter:description"
+  content="{{ strain }} Cultivar Review Page on CannabisCult.co"
 />
-<meta 
-  property="twitter:image" 
+<meta
+  property="twitter:image"
   content="{{ url_path }}"
 />
-<meta 
+<meta
   property="twitter:image:alt"
   content="Cannabis Cult Cultivar Review Card for {{ strain }} Flower"
 />
-<link 
-  rel="canonical" 
+<link
+  rel="canonical"
   href="https://cannabiscult.co/connoisseur-flowers{% if strain %}/get-flower?{{ strain }}{% endif %}"
 />
 {% endblock %}
@@ -222,7 +222,6 @@
       </section>
     </section>
   </div>
-  <button id="test-error">Trigger Test Error</button>
   <div class="container align-items-center justify-items-center pt-5">
     {% include "components/homepage_elements/homepage_features.html" %}
   </div>
@@ -233,20 +232,20 @@
     {% include "components/voting_cards/simple_product_card.html" %}
   </div>
 </main>
-<style> 
-  hr.divider-vertical { 
-    position: absolute; 
-    right: 0; 
-    top: 0; 
-    width: 1px; 
-    background-image: linear-gradient( 180deg, transparent, hsl(0, 0%, 40%), transparent ); 
-    background-color: transparent; 
-    height: 100%; 
+<style>
+  hr.divider-vertical {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 1px;
+    background-image: linear-gradient( 180deg, transparent, hsl(0, 0%, 40%), transparent );
+    background-color: transparent;
+    height: 100%;
   }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script type="module">
-  import { 
+  import {
     populateDescriptionSelect, fetchFlowerDescriptions, fetchAndUpdateFlowerRankings
   } from "{{ url_for('static', path='js/utils/descriptionSelect.js') }}";
   document.addEventListener('DOMContentLoaded', async function() {
@@ -259,7 +258,7 @@
       await fetchFlowerDescriptions(flowerId, strain, cultivator, urlPath);
       await fetchAndUpdateFlowerRankings(flowerId);
   });
-  
+
 </script>
 <script type="module">
   import SocialSharing from "{{ url_for('static', path='js/socialSharing.js') }}";

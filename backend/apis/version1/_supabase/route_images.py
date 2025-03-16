@@ -92,6 +92,7 @@ async def check_image_against_default_filters(file_bytes: bytes):
     files = {'media': file_bytes}
     r = requests.post('https://api.sightengine.com/1.0/check.json', files=files, data=settings.SIGHTENGINE_PARAMS)
     output = json.loads(r.text)
+    print(output)
     return is_image_safe(output)
 
 
@@ -136,19 +137,17 @@ async def upload_image_to_supabase(
     supabase: Client = Depends(_return_supabase_private_client),
 ) -> Dict[str, str]:
     if not product_id:
-        return
+        raise HTTPException(status_code=400, detail="Product ID required")
     storage_str = "additional_product_images"
     image_data = ImageUpload(image=file)
     if not image_data.image:
         raise HTTPException(status_code=400, detail="Invalid image file")
-    temp_file_path = save_temporary_image(file)
-    dir_list = supabase.storage.from_(storage_str).list()
+    temp_file_path = await save_temporary_image_async(file)
+    dir_list = supabase.storage.from_(storage_str).list(f"{product_type}/{product_id}")
     if "error" in dir_list:
+        delete_temporary_file(temp_file_path)
         raise HTTPException(status_code=500, detail=dir_list["error"]["message"])
-
-    if len(dir_list) > 0 and str(product_type) in [product["name"] for product in dir_list]:
-        dir_list = supabase.storage.from_(storage_str).list(path=product_id)
-    file_index = len(dir_list)
+    file_index = len(dir_list) if isinstance(dir_list, list) else 0
     file_path = f"{product_type}/{product_id}/{file_index}_{file.filename}"
     try:
         with open(temp_file_path, "rb") as f:
@@ -157,36 +156,39 @@ async def upload_image_to_supabase(
                 return_message = {
                     "message": "Error uploading file: ",
                     "path": str(file.filename),
-                    "error": "Image was deemed unsafe or low quality.",
+                    "error": "Image was deemed unsafe or low quality."
                 }
-                delete_temporary_file(temp_file_path)
                 return return_message
+            f.seek(0)
             mime_type = magic.from_buffer(f.read(1024), mime=True)
-            upload_response = supabase.storage.from_(storage_str).upload(
+            f.seek(0)
+            supabase.storage.from_(storage_str).upload(
                 file=f, path=file_path, file_options={"content-type": mime_type}
             )
-            if "error" in upload_response.text:
-                raise HTTPException(status_code=500, detail=upload_response["error"]["message"])
-            return_message = {"message": "File uploaded successfully", "path": file_path}
+            return {"message": "File uploaded successfully", "path": file_path}
+
     except Exception as e:
-        return_message = {
-            "message": "Error uploading file",
-            "path": file_path,
-            "error": e,
-        }
+        raise HTTPException(status_code=500, detail=f"Error uploading file: {str(e)}")
     finally:
         delete_temporary_file(temp_file_path)
-        return return_message
 
 
-@router.post("/{prodcut_type}/{product_id}/upload/")
+@router.post("/{product_type}/{product_id}/upload/")
 async def upload_product_image(
     product_type: str,
     product_id: str,
     file: UploadFile = File(...),
     supabase: Client = Depends(_return_supabase_private_client),
 ):
-    return await upload_image_to_supabase(product_id, file, supabase)
+    if product_type == "flowerSubmission":
+        product_type = "flower"
+    elif product_type == "concentrateSubmission":
+        product_type = "concentrate"
+    elif product_type == "pre_rollSubmission":
+        product_type = "pre-roll"
+    elif product_type == "edibleSubmission":
+        product_type = "edible"
+    return await upload_image_to_supabase(product_type, product_id, file, supabase)
 
 
 @router.get("/{product_type}/{product_id}/")

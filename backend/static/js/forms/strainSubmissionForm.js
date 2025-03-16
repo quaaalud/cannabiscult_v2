@@ -169,6 +169,35 @@ async function submitStrainForm(event) {
   await finalizeStrainSubmission();
 }
 
+async function uploadImagesAfterSubmission(productType, productId, files) {
+  const uploadUrl = `/images/${productType}/${productId}/upload/`;
+  if (files.length > 3) {
+    alert('You may upload up to 3 images only.');
+    return;
+  }
+  const uploadPromises = Array.from(files).map(file => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return fetch(uploadUrl, {
+      method: 'POST',
+      body: formData
+    })
+    .then(resp => resp.json())
+    .then(data => {
+      if (data.error || data.message.includes('unsafe')) {
+        throw new Error(data.error || data.message);
+      }
+      return data;
+    });
+  });
+  try {
+    await Promise.all(uploadPromises);
+    alert('Strain and images successfully submitted!');
+  } catch (err) {
+    console.error('Image upload failed:', err);
+    alert(`Submission completed, but image upload failed: ${err}`);
+  }
+}
 
 function showTerpenePercentageModal(selectedTerpenes) {
   const terpeneInputsContainer = document.getElementById('terpeneInputsContainer');
@@ -247,6 +276,11 @@ async function finalizeStrainSubmission() {
       return;
     }
     const responseData = await response.json();
+    const files = document.getElementById('imageUpload').files;
+
+    if (files.length > 0) {
+      await uploadImagesAfterSubmission(productTypeValue, responseData.product_type_id, files);
+    }
     getNewlyCreatedStrain(
       responseData.submission_strain,
       responseData.submission_cultivator,
