@@ -114,7 +114,7 @@ class UserStrainListSubmit(BaseModel):
         default=True, description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
-    strain_notes: str = Field("N/A", description="User's strain notes")
+    strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
     @validator("product_type", "strain", "cultivator", "to_review", pre=True)
     def check_not_empty(cls, v):
@@ -160,7 +160,7 @@ class UserStrainListCreate(BaseModel):
         default=True, description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
-    strain_notes: str = Field("N/A", description="User's strain notes")
+    strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
     @validator("*", pre=True)
     def check_not_empty(cls, v):
@@ -204,7 +204,7 @@ class UserStrainListSchema(BaseModel):
         ..., description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
-    strain_notes: str = Field("N/A", description="User's strain notes")
+    strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
     @validator("product_type", pre=True)
     def convert_product_type_to_lower(cls, v):
@@ -227,7 +227,7 @@ class AddUserStrainListNotes(BaseModel):
         ..., description="Flag indicating if the strain needs to be reviewed"
     )
     product_type: str = Field(..., description="Product type for the strain notes")
-    strain_notes: str = Field("N/A", description="User's strain notes")
+    strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
     class Config:
         from_attributes = True
