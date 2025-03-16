@@ -23,7 +23,7 @@ from core.config import settings
 from db.session import get_db
 from db.repository.search_class import get_card_path_by_details, RANKING_LOOKUP, product_type_to_model
 from db._supabase.connect_to_auth import SupaAuth
-from db._supabase.connect_to_storage import return_image_url_from_supa_storage
+from db._supabase.connect_to_storage import return_image_url_from_supa_storage, copy_new_primary_to_reviews_directory
 
 
 router = APIRouter()
@@ -93,18 +93,7 @@ async def check_image_against_default_filters(file_bytes: bytes):
     files = {'media': file_bytes}
     r = requests.post('https://api.sightengine.com/1.0/check.json', files=files, data=settings.SIGHTENGINE_PARAMS)
     output = json.loads(r.text)
-    print(output)
     return is_image_safe(output)
-
-
-def save_temporary_image(file: UploadFile) -> str:
-    try:
-        with tempfile.NamedTemporaryFile(delete=False) as tmp:
-            shutil.copyfileobj(file.file, tmp)
-            temp_file_path = tmp.name
-        return temp_file_path
-    finally:
-        file.file.close()
 
 
 async def save_temporary_image_async(file: UploadFile) -> str:
@@ -276,3 +265,39 @@ async def get_image_from_file_path(
         }
     img_url = await _return_image_url(card_path)
     return {"img_url": img_url}
+
+
+@router.post("/make_primary", response_model=Dict[str, Any])
+async def make_primary_image(
+    product_type: str = Query(..., description="Product type, e.g. Flower, Concentrate, Pre-roll"),
+    product_id: int = Query(..., description="ID of the product in the database"),
+    card_path: str = Query(..., description="The new path to set as the primary image"),
+    supabase: Client = Depends(_return_supabase_private_client),
+    db: Session = Depends(get_db)
+):
+    try:
+        product_type = product_type.capitalize()
+        if product_type == "Pre-roll":
+            product_type = "Pre-Roll"
+        model_list = product_type_to_model.get(product_type)
+        if not model_list:
+            raise HTTPException(status_code=404, detail="Product type not found")
+        model = model_list[0]
+        lookup = RANKING_LOOKUP.get(product_type.replace("-", "_").lower())
+        if not lookup:
+            raise HTTPException(status_code=404, detail="No ranking lookup found for this product type.")
+        RankingModel, id_field_name, email_field_name, RankingSchema = lookup
+        stmt = select(model).where(getattr(model, id_field_name) == product_id)
+        result = db.execute(stmt)
+        product = result.scalars().first()
+        if not product:
+            raise HTTPException(status_code=404, detail="Product not found")
+        current_primary_img = getattr(product, "card_path")
+        new_save_path = await copy_new_primary_to_reviews_directory(current_primary_img, card_path)
+        setattr(product, "card_path", new_save_path)
+        db.commit()
+        db.refresh(product)
+        return {"detail": "Successfully updated the primary image.", "new_card_path": product.card_path}
+    except Exception as e:
+        db.rollback()
+        raise e

@@ -16,9 +16,9 @@ def return_created_client(url: str = settings.SUPA_STORAGE_URL, key: str = setti
     return create_client(url, key)
 
 
-def get_cc_bucket():
+def get_cc_bucket(bucket_name: str = settings.POSTGRES_DB):
     client = return_created_client()
-    return client.storage.get_bucket(settings.POSTGRES_DB)
+    return client.storage.get_bucket(bucket_name)
 
 
 def ttl_cache(ttl: int):

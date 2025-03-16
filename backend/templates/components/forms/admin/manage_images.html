@@ -75,7 +75,7 @@ window.addEventListener('DOMContentLoaded', function() {
   });
 
   async function fetchProductImages(event) {
-      event.preventDefault();
+      if (event) { event.preventDefault() };
       const productType = document.getElementById('productTypeSelectedImage').value;
       const strain = document.getElementById('strainSelectedImage').value;
       const cultivator = document.getElementById('cultivatorSelectedImage').value;
@@ -121,7 +121,7 @@ window.addEventListener('DOMContentLoaded', function() {
           optionsRow.classList.add("row", "align-items-center", "g-2", "mb-3");
 
           const selectCol = document.createElement('div');
-          selectCol.classList.add("col-12", "col-lg-6");
+          selectCol.classList.add("col-12", "col-md-6", "col-lg-8");
 
           const select = document.createElement('select');
           select.id = 'imageSelect';
@@ -158,10 +158,10 @@ window.addEventListener('DOMContentLoaded', function() {
           });
 
           removeImageCol.appendChild(removeImageBtn);
-          optionsRow.appendChild(removeImageCol);
+          //optionsRow.appendChild(removeImageCol);
 
           const makePrimaryCol = document.createElement('div');
-          makePrimaryCol.classList.add("col-6", "col-lg-3");
+          makePrimaryCol.classList.add("col-12", "col-md-6", "col-lg-4");
 
           const makePrimaryBtn = document.createElement('button');
           makePrimaryBtn.id = 'makePrimaryBtn';
@@ -169,9 +169,7 @@ window.addEventListener('DOMContentLoaded', function() {
           makePrimaryBtn.classList.add("btn", "btn-warning", "w-100");
           makePrimaryBtn.textContent = 'Make Primary';
           makePrimaryBtn.disabled = true;
-          makePrimaryBtn.addEventListener('click', function() {
-            alert('Make Primary action triggered!');
-          });
+          makePrimaryBtn.addEventListener('click', updatePrimaryImage);
 
           makePrimaryCol.appendChild(makePrimaryBtn);
           optionsRow.appendChild(makePrimaryCol);
@@ -207,6 +205,39 @@ window.addEventListener('DOMContentLoaded', function() {
       } catch (error) {
           console.error('Error fetching images:', error);
       }
+  }
+  async function updatePrimaryImage() {
+    const imageSelect = document.getElementById('imageSelect');
+    if (!imageSelect) {
+      alert("Image select element not found.");
+      return;
+    }
+    const selectedOption = imageSelect.options[imageSelect.selectedIndex];
+    if (!selectedOption || !selectedOption.getAttribute('data-image-path')) {
+      alert("Please select an image.");
+      return;
+    }
+
+    if (!confirm("Are you sure you wnat to update the primary image?")) {return; };
+
+    const productType = document.getElementById('productTypeSelectedImage').value;
+    const productId = selectedOption.getAttribute('data-product-id');
+    const cardPath = selectedOption.getAttribute('data-image-path');
+
+    const url = `/images/make_primary?product_type=${encodeURIComponent(productType)}&product_id=${encodeURIComponent(productId)}&card_path=${encodeURIComponent(cardPath)}`;
+
+    try {
+      const response = await fetch(url, { method: 'POST' });
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+      const result = await response.json();
+      alert("Primary image updated successfully!");
+      await fetchProductImages();
+    } catch (error) {
+      console.error("Error updating primary image:", error);
+      alert("Failed to update primary image.");
+    }
   }
   document.getElementById('getImagesButton').addEventListener('click', fetchProductImages);
 });
