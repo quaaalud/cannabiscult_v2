@@ -66,7 +66,7 @@ export class UserStrainList {
         container.innerHTML = '';
 
         if (!this.userStrainsList.length) {
-            container.innerHTML = '<h4 class="text-start mt-4">No strains found in your list. Search and add strains to your list to track products you wish to review.</h4>';
+            container.innerHTML = '<h4 class="text-center mt-4"><span class="fw-bold">No strains found in your list.</span><br>Search and add strains to your list to track products you wish to review.</h4>';
             return;
         }
 
