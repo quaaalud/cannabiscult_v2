@@ -187,9 +187,19 @@ class SupabaseClient {
     getAccessToken() {
         return this.session ? this.session.access_token : null;
     }
+    async signInUserToServer(email, password) {
+         const response = await fetch('/users/', {
+           method: 'POST',
+           headers: {
+               'Content-Type': 'application/json'
+           },
+           body: JSON.stringify({ email: email, password: password })
+         });      
+    }
     async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
+            await this.signInUserToServer(email, password)
             const { user, session, error } = await this.supabase.auth.signInWithPassword({ email, password }, { redirectTo: 'https://cannabiscult.co/home' });
             if (error) throw error;
             this.session = session;
@@ -241,6 +251,12 @@ class SupabaseClient {
         try {
             const { error } = await this.supabase.auth.signOut();
             if (error) throw error;
+            await fetch('/users/logout/', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+           });
         } catch (error) {
             console.error("Error in signOut:", error.message);
             throw error;

@@ -91,10 +91,10 @@ def create_supa_user(user: UserCreate) -> SupaAuth:
         return {"created_user": user}
 
 
-@router.post("/", response_model=Dict[str, LoggedInUser])
-def login_supa_user(user: UserLogin) -> SupaAuth:
+@router.post("/", response_model=Dict[str, bool])
+def login_supa_user(user: UserLogin) -> Dict[str, bool]:
     logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
-    return {"logged_in_user": logged_in_user}
+    return {"logged_in_user": True if logged_in_user else False}
 
 
 @router.post(
@@ -116,7 +116,7 @@ def update_user_password(
     return {"current_user_profile": ShowUser.from_orm(user)}
 
 
-@router.get("/logout", response_model=None)
+@router.get("/logout/", response_model=None)
 def logout_current_user() -> SupaAuth:
     SupaAuth.logout_current_user_session()
     pass

@@ -324,7 +324,7 @@ class AllRatingsDatatable {
         this.addProductTableTab(productType, tabList, tabContent, ratings);
         this.createChartTab(productType, tabList, tabContent, ratings);
         this.createOverallScoreTab(productType, tabList, tabContent, ratings);
-        if (productType.toLowerCase() == "concentrate" || productType.toLowerCase() == "flower" || productType.toLowerCase() == "pre-roll") {
+        if (productType.toLowerCase() != "edible") {
           this.createTerpProfileTab(productType, tabList, tabContent);
         }
         this.initializeLightboxes();
@@ -353,6 +353,7 @@ class AllRatingsDatatable {
         chartContent.ariaLabelledby = `chart-tab-${productType}`;
 
         const chartCanvas = document.createElement('canvas');
+        chartCanvas.className = "col-12 col-lg-9 mx-auto"
         chartCanvas.id = `chart-canvas-${productType}`;
         chartContent.appendChild(chartCanvas);
 
@@ -469,7 +470,7 @@ class AllRatingsDatatable {
         tabList.appendChild(overallScoreTab);
 
         const overallScoreContent = document.createElement('div');
-        overallScoreContent.className = 'tab-pane fade col-12 col-md-9 col-lg-6 mx-auto py-3';
+        overallScoreContent.className = 'tab-pane fade col-12 mx-auto py-3';
         overallScoreContent.id = `overall-score-${productType}`;
         overallScoreContent.role = 'tabpanel';
         overallScoreContent.ariaLabelledby = `overall-score-tab-${productType}`;
@@ -568,7 +569,7 @@ class AllRatingsDatatable {
         tabList.appendChild(tab);
 
         const terpProfileContent = document.createElement('div');
-        terpProfileContent.className = 'tab-pane fade';
+        terpProfileContent.className = 'tab-pane fade col-12 col-lg-6 mx-auto';
         terpProfileContent.id = `terp-profile-${productType}`;
         terpProfileContent.role = 'tabpanel';
         terpProfileContent.ariaLabelledby = `terp-profile-tab-${productType}`;

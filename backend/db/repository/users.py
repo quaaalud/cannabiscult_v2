@@ -217,7 +217,6 @@ async def add_strain_notes_to_list(strain_notes: AddUserStrainListNotes, db: Ses
 
 @settings.retry_db
 async def delete_strain_from_list(strain_to_remove: UserStrainListRemove, db: Session):
-    print(strain_to_remove)
     try:
         stmt = delete(UserStrainList).where(
             UserStrainList.strain.ilike(f"%{strain_to_remove.strain}%"),

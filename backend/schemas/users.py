@@ -72,7 +72,7 @@ class LoggedInUser(BaseModel):
 
 
 class UserIdSchema(BaseModel):
-    user_id: Union[UUID, str] = Field(..., description="User's email address for validations")
+    user_id: Union[UUID, str] = Field(..., description="User ID for validations")
 
     @validator("user_id", pre=True)
     def check_not_empty(cls, v):
