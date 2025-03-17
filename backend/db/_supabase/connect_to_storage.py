@@ -77,7 +77,8 @@ async def copy_new_primary_to_reviews_directory(current_primary: str, new_primar
     add_img_path = f"{os.path.dirname(new_primary)}/{old_filename}"
     try:
         _copy_file_in_storage(client, "additional_product_images", "cannabiscult", new_primary, destination_path)
-        _copy_file_in_storage(client, "cannabiscult", "additional_product_images", current_primary, add_img_path)
+        if not add_img_path.contains("CP_strains."):
+            _copy_file_in_storage(client, "cannabiscult", "additional_product_images", current_primary, add_img_path)
         return destination_path
     except Exception as e:
         raise Exception(f"Error copying new primary image to reviews directory: {e}")
