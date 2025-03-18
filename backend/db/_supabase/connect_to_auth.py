@@ -13,6 +13,7 @@ if str(Path(__file__).parents[2]) not in sys.path:
     sys.path.append(str(Path(__file__).parents[2]))
 
 from db._supabase import supa_client
+from gotrue.errors import AuthApiError
 from schemas.users import UserCreate, UserLogin
 from db.repository.users import add_user_to_supabase
 
@@ -33,7 +34,10 @@ class SupaAuth:
 
     @classmethod
     def get_existing_session(cls):
-        return cls._client.auth.get_session()
+        try:
+            return cls._client.auth.get_session()
+        except AuthApiError:
+            pass
 
     @classmethod
     def logout_current_user_session(cls):
@@ -44,15 +48,21 @@ class SupaAuth:
 
     @classmethod
     def refresh_current_user_session(cls):
-        return cls._client.auth.refresh_session()
+        try:
+            return cls._client.auth.refresh_session()
+        except AuthApiError:
+            pass
 
     @classmethod
     def return_current_user_email(cls):
-        logged_in_user = cls.get_existing_session()
-        if logged_in_user:
-            user_email = logged_in_user.dict()["user"]["email"]
-            return user_email
-        else:
+        try:
+            logged_in_user = cls.get_existing_session()
+            if logged_in_user:
+                user_email = logged_in_user.dict()["user"]["email"]
+                return user_email
+            else:
+                return None
+        except AuthApiError:
             return None
 
 
