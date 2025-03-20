@@ -142,6 +142,9 @@ class Settings:
     )
     ALGO: str = os.getenv("ALGO")
     PRIMARY_BUCKET: str = os.getenv("POSTGRES_DB")
+
+    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID")
+
     SIGHTENGINE_MODELS: str = os.getenv("SIGHTENGINE_MODELS")
     SIGHTENGINE_USER: str = os.getenv("SIGHTENGINE_USER")
     SIGHTENGINE_KEY: str = os.getenv("SIGHTENGINE_KEY")
@@ -237,6 +240,7 @@ class Config(BaseModel):
     SUPA_PUBLIC_KEY: str
     ALGO: str
     PRIMARY_BUCKET: str = os.getenv("POSTGRES_DB")
+    GOOGLE_CLIENT_ID: str = os.getenv("GOOGLE_CLIENT_ID")
 
 
 settings = Settings()

@@ -2,6 +2,7 @@ export function initializeSupabaseClient() {
     const client = new window.SupabaseClient();
     client.initialize().then(() => {
         window.supabaseClient = client;
+        window.signInWithGoogleGlobal = client.signInWithGoogle;
         window.dispatchEvent(new CustomEvent('supabaseClientReady'));
     }).catch(e => console.error("Initialization failed:", e));
 }
@@ -31,6 +32,14 @@ class SupabaseClient {
         await this.loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");
         return window.supabase;
     }
+    
+    async loadGoogleOauth() {
+        await this.loadScript("https://accounts.google.com/gsi/client");
+        window.google.accounts.id.initialize({
+            client_id: this.config.GOOGLE_CLIENT_ID,
+            callback: this.signInWithGoogle.bind(this),
+        });
+    }
 
     async getConfig() {
         try {
@@ -48,6 +57,7 @@ class SupabaseClient {
             await this.getConfig();
             await this.loadSupabase();
             await this.loadValidator();
+            await this.loadGoogleOauth();
             this.supabase = window.supabase.createClient(this.config.SUPA_STORAGE_URL, this.config.SUPA_PUBLIC_KEY);
             this.initializeAuthListeners();
         } catch (error) {
@@ -196,6 +206,15 @@ class SupabaseClient {
            body: JSON.stringify({ email: email, password: password })
          });      
     }
+    async googleCallbackAfterSignin() {
+        const response = await fetch('/users/callback/google', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: email, password: password })
+        });  
+    }
     async signInWithEmail(email, password) {
         try {
             email = this.validateAndSanitizeEmail(email);
@@ -206,6 +225,17 @@ class SupabaseClient {
             return { user, session };
         } catch (error) {
             console.error("Error in signInWithEmail:", error.message);
+            throw error;
+        }
+    }
+    async signInWithGoogle(response) {
+        try {
+              const { data, error } = await supabase.auth.signInWithIdToken({
+                provider: 'google',
+                token: response.credential,
+              });
+        } catch (error) {
+            console.error("Error in signInWithGoogle:", error.message);
             throw error;
         }
     }
@@ -326,7 +356,7 @@ class SupabaseClient {
               throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          if (data.username) {
+          if (data && data.username) {
               return true;
           }
           return false;

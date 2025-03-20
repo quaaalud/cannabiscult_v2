@@ -77,9 +77,24 @@
                       <button name="login-submit" type="submit" class="btn btn-info btn-block mb-4">Sign in</button>
                     </div>
                     <div class="row my-2">
-                      <div class="col-12 d-flex justify-content-end">
-                        <!-- Simple link -->
+                      <div class="col-12 d-flex justify-content-between align-items-center">
+                        <!-- Forgot Password Link -->
                         <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" class="text-danger">Forgot password?</a>
+                        <!-- SignIn with Google -->
+                        <div id="g_id_onload"
+                          data-client_id="1070076224478-d4kk95sfv0asq6mm04uoe1gqb293l55u.apps.googleusercontent.com"
+                          data-context="signin"
+                          data-ux_mode="popup"
+                          data-auto_prompt="false">
+                       </div>
+                        <div class="g_id_signin"
+                          data-type="standard"
+                          data-shape="pill"
+                          data-theme="outline"
+                          data-text="signin_with"
+                          data-size="large"
+                          data-logo_alignment="left">
+                        </div>
                       </div>
                     </div>
                   </form>

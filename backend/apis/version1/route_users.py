@@ -10,7 +10,6 @@ from uuid import UUID
 from pathlib import Path
 from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException, Request, Form
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
 from typing import Dict, Any, List, Union, Optional
 from sqlalchemy.orm import Session
 from schemas.users import (
@@ -18,7 +17,6 @@ from schemas.users import (
     UserCreate,
     UserLogin,
     ShowUser,
-    LoggedInUser,
     UserEmailSchema,
     UserStrainListSchema,
     UserStrainListCreate,
@@ -57,29 +55,11 @@ templates_dir = Path(
 templates = Jinja2Templates(directory=str(templates_dir))
 
 
-def background_create_user(user_details: UserCreate, initial_url: str, db: Session):
-    created_user = create_new_user(user=user_details, db=db)
-    user_id = created_user.auth_id or created_user.id
-    settings.monitoring.posthog.capture(
-        user_id=user_id,
-        event="register-submit",
-        properties={
-            "$set": {
-                "name": created_user.name,
-                "username": created_user.username,
-                "email": created_user.email,
-            },
-            "$set_once": {"initial_url": initial_url},
-        },
-    )
-
-
 @router.post("/create_user", response_model=Dict[str, ShowUser])
 def submit_create_new_user_route(
     user: UserCreate, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)
 ):
-    initial_url = settings.monitoring.extract_initial_url(request)
-    background_tasks.add_task(background_create_user, user, initial_url, db)
+    background_tasks.add_task(create_new_user, user, db)
     return {"created_user": user}
 
 
@@ -118,19 +98,28 @@ def update_user_password(
 
 @router.get("/logout/", response_model=None)
 def logout_current_user() -> SupaAuth:
-    SupaAuth.logout_current_user_session()
-    pass
+    try:
+        SupaAuth.logout_current_user_session()
+    except AuthApiError:
+        pass
+    return
 
 
 @router.get("/current_user", response_model=Dict[str, Any])
 def get_current_users_email() -> SupaAuth:
-    current_user_email = SupaAuth.return_current_user_email()
+    try:
+        current_user_email = SupaAuth.return_current_user_email()
+    except Exception:
+        current_user_email = None
     return {"current_user": current_user_email}
 
 
 @router.get("/get_current_user", response_model=Dict[str, Any])
 async def async_get_current_users_email() -> SupaAuth:
-    current_user_email = SupaAuth.return_current_user_email()
+    try:
+        current_user_email = SupaAuth.return_current_user_email()
+    except Exception:
+        current_user_email = None
     return {"current_user": current_user_email}
 
 
@@ -138,7 +127,10 @@ async def async_get_current_users_email() -> SupaAuth:
 async def async_get_user_by_id(
     user_id: UUID = Query(..., description="UUID of the user"), db: Session = Depends(get_db)
 ):
-    user = await get_user_by_user_id(user_id, db)
+    try:
+        user = await get_user_by_user_id(user_id, db)
+    except Exception:
+        user = None
     return user
 
 
@@ -253,3 +245,32 @@ async def upsert_moluv_headstash_vote_route(
         return result
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.get("/callback/google", response_model=Dict[str, str])
+async def google_auth_callback(request: Request, db: Session = Depends(get_db)):
+    try:
+        session_data = SupaAuth.get_existing_session()
+    except Exception:
+        session_data = None
+    if not session_data:
+        return {"status": "failure", "message": "User failed to authenticate with Google OAuth"}
+    email = session_data.user.email
+    google_auth_id = session_data.user.id
+    user = await get_user_by_email(email, db)
+    if user:
+        if not user.auth_id:
+            user.auth_id = google_auth_id
+            db.commit()
+    else:
+        new_user_data = UserCreate(
+            username=email.split('@')[0],
+            email=email,
+            name=session_data.user.user_metadata.get("full_name", ""),
+            password="",
+            auth_id=google_auth_id,
+            phone="",
+            zip_code=""
+        )
+        user = create_new_user(new_user_data, db)
+    return {"status": "success", "message": "User authenticated via Google OAuth"}
