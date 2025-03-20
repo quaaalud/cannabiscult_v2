@@ -39,6 +39,42 @@ class SupabaseClient {
             client_id: this.config.GOOGLE_CLIENT_ID,
             callback: this.signInWithGoogle.bind(this),
         });
+        const googleAuthButton = `
+          <div id="g_id_onload"
+            data-client_id="${this.config.GOOGLE_CLIENT_ID}"
+            data-context="signin"
+            data-ux_mode="popup"
+            data-auto_prompt="false">
+         </div>
+          <div class="g_id_signin"
+            data-type="standard"
+            data-shape="pill"
+            data-theme="outline"
+            data-text="signin_with"
+            data-size="large"
+            data-logo_alignment="left">
+          </div>
+        `
+        const loginWithGoogleContainer = document.getElementById('googleSignInContainer');
+        if (loginWithGoogleContainer) {
+            loginWithGoogleContainer.innerHTML = googleAuthButton;
+            setTimeout(() => {
+                window.google.accounts.id.renderButton(loginWithGoogleContainer.querySelector('.g_id_signin'), {
+                    theme: "outline",
+                    size: "large",
+                });
+            }, 100);
+        };
+        const signupWithGoogleContainer = document.getElementById('googleSignUpContainer');
+        if (signupWithGoogleContainer) {
+            signupWithGoogleContainer.innerHTML = googleAuthButton;
+            setTimeout(() => {
+                window.google.accounts.id.renderButton(signupWithGoogleContainer.querySelector('.g_id_signin'), {
+                    theme: "outline",
+                    size: "large",
+                });
+            }, 100);
+        };
     }
 
     async getConfig() {

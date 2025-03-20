@@ -81,20 +81,7 @@
                         <!-- Forgot Password Link -->
                         <a href="#" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal" class="text-danger">Forgot password?</a>
                         <!-- SignIn with Google -->
-                        <div id="g_id_onload"
-                          data-client_id="1070076224478-d4kk95sfv0asq6mm04uoe1gqb293l55u.apps.googleusercontent.com"
-                          data-context="signin"
-                          data-ux_mode="popup"
-                          data-auto_prompt="false">
-                       </div>
-                        <div class="g_id_signin"
-                          data-type="standard"
-                          data-shape="pill"
-                          data-theme="outline"
-                          data-text="signin_with"
-                          data-size="large"
-                          data-logo_alignment="left">
-                        </div>
+                        <div id="googleSignInContainer"></div>
                       </div>
                     </div>
                   </form>
@@ -103,6 +90,7 @@
                   <form class="pb-5" id="sign-up" name="sign-up">
                     <div class="text-center mb-3">
                       <p>Sign up:</p>
+                      <!-- SignIn with Google -->
                     <!-- Username input -->
                     <div class="row g-3 align-items-center">
                       <div class="col-12 col-md-6">
@@ -190,6 +178,9 @@
                       <!-- Submit button -->
                       <div class="col-12 mx-auto">
                         <button id="register-submit" name="register-submit" type="submit" class="btn btn-info btn-block mb-3">Sign Up</button>
+                      </div>
+                      <div class="col-12 mx-auto">
+                        <div id="googleSignUpContainer"></div>
                       </div>
                     </div>
                   </form>
