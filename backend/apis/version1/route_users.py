@@ -9,6 +9,7 @@ Created on Fri Mar 10 21:12:40 2023
 from uuid import UUID
 from pathlib import Path
 from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException, Request, Form
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from typing import Dict, Any, List, Union, Optional
 from sqlalchemy.orm import Session
@@ -41,7 +42,7 @@ from db.repository.users import (
     upsert_moluv_headstash_vote,
 )
 from core.config import settings
-from db._supabase.connect_to_auth import SupaAuth
+from db._supabase.connect_to_auth import SupaAuth, Client
 from gotrue.errors import AuthApiError
 
 router = APIRouter()
@@ -247,30 +248,39 @@ async def upsert_moluv_headstash_vote_route(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/callback/google", response_model=Dict[str, str])
+@router.post("/callback/google")
 async def google_auth_callback(request: Request, db: Session = Depends(get_db)):
     try:
+        payload = await request.json()
+        access_token = payload.get("access_token")
+        refresh_token = payload.get("refresh_token")
+        if not access_token or not refresh_token:
+            raise HTTPException(status_code=400, detail="Missing tokens")
+        SupaAuth._client.auth.set_session(access_token, refresh_token)
         session_data = SupaAuth.get_existing_session()
+        if not session_data or not session_data.user:
+            return RedirectResponse(url="/login", status_code=302)
+        user_info = session_data.user
+        email = user_info.email
+        auth_id = user_info.id
+        full_name = user_info.user_metadata.get("full_name", "")
+        user = await get_user_by_email(email, db)
+        if user:
+            if not user.auth_id:
+                user.auth_id = auth_id
+                db.commit()
+        else:
+            new_user_data = UserCreate(
+                username=email.split('@')[0],
+                email=email,
+                name=full_name,
+                password="",
+                auth_id=auth_id,
+                phone="",
+                zip_code=""
+            )
+            create_new_user(new_user_data, db)
     except Exception:
-        session_data = None
-    if not session_data:
-        return {"status": "failure", "message": "User failed to authenticate with Google OAuth"}
-    email = session_data.user.email
-    google_auth_id = session_data.user.id
-    user = await get_user_by_email(email, db)
-    if user:
-        if not user.auth_id:
-            user.auth_id = google_auth_id
-            db.commit()
+        return RedirectResponse(url="/login", status_code=302)
     else:
-        new_user_data = UserCreate(
-            username=email.split('@')[0],
-            email=email,
-            name=session_data.user.user_metadata.get("full_name", ""),
-            password="",
-            auth_id=google_auth_id,
-            phone="",
-            zip_code=""
-        )
-        user = create_new_user(new_user_data, db)
-    return {"status": "success", "message": "User authenticated via Google OAuth"}
+        return RedirectResponse(url="/home", status_code=302)

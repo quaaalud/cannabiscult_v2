@@ -233,6 +233,18 @@ class SupabaseClient {
     getAccessToken() {
         return this.session ? this.session.access_token : null;
     }
+    getTokensFromCookies() {
+        const cookieObj = document.cookie.split('; ').reduce((acc, cookieStr) => {
+            const [key, value] = cookieStr.split('=');
+            acc[key] = decodeURIComponent(value);
+            return acc;
+        }, {});
+    
+        return {
+            access_token: cookieObj['my-access-token'] || null,
+            refresh_token: cookieObj['my-refresh-token'] || null
+        };
+    }
     async signInUserToServer(email, password) {
          const response = await fetch('/users/', {
            method: 'POST',
@@ -266,10 +278,13 @@ class SupabaseClient {
     }
     async signInWithGoogle(response) {
         try {
-              const { data, error } = await supabase.auth.signInWithIdToken({
+              const { data, error } = await this.supabase.auth.signInWithIdToken({
                 provider: 'google',
                 token: response.credential,
               });
+              if (error) throw error;
+              this.session = data.session;
+              window.location.href = "/auth/callback";
         } catch (error) {
             console.error("Error in signInWithGoogle:", error.message);
             throw error;

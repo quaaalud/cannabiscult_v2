@@ -125,6 +125,16 @@ async def registration_success_transition_page(request: Request):
     )
 
 
+@general_pages_router.get("/auth/callback", response_class=HTMLResponse)
+async def get_auth_callback_page(request: Request):
+    return templates.TemplateResponse(
+        str(Path("general_pages", "auth", "auth_callback.html")),
+        {
+            "request": request,
+        },
+    )
+
+
 @general_pages_router.get("/privacy-policy", response_class=HTMLResponse)
 async def privacy_policy(request: Request):
     user_is_logged_in = get_current_users_email() is not None
