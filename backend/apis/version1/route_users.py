@@ -284,3 +284,9 @@ async def google_auth_callback(request: Request, db: Session = Depends(get_db)):
         return RedirectResponse(url="/login", status_code=302)
     else:
         return RedirectResponse(url="/home", status_code=302)
+
+
+def _check_for_google_identity(supabase: Client) -> bool:
+    response = supabase.auth.get_user_identities()
+    google_identity = next((identity for identity in response.identities if identity.provider == 'google'), None)
+    return True if google_identity else False
