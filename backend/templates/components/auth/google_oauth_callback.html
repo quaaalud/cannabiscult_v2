@@ -1,0 +1,30 @@
+{% block scripts %}
+  <script>
+    window.addEventListener('supabaseClientReady', async function() {
+        async function handleOAuthCallback() {
+          const tokens = window.supabaseClient.getTokensFromCookies() || null;
+          if (!tokens) {
+            console.error("OAuth failed");
+            window.location.href = "/login?error=oauth_failed";
+            return;
+          }
+          const response = await fetch('/users/callback/google', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              access_token: tokens.access_token,
+              refresh_token: tokens.refresh_token,
+            })
+          });
+          if (response.ok) {
+            window.location.href = "/home";
+          } else {
+            window.location.href = "/login?error=server_error";
+          }
+        }
+        handleOAuthCallback();
+    });
+  </script>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "shared/base.html" %}
+
+{% block title %} 
+  <title>Cannabis Cult Register Success</title>
+{% endblock %} 
+
+{% block head %}
+  <!--<meta http-equiv="refresh" content="1.5; url=/home">-->
+  <meta 
+    property="og:image" 
+    content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
+    alt="Cannabis Cult Main Logo with Brain"
+  />
+  <meta 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices." 
+    name="description"
+  />
+  <meta 
+    property="og:description" 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    property="og:title" 
+    content="The Cannabis Cult"
+  />
+  <meta 
+    name="twitter:card" 
+    content="summary_large_image"
+  />
+  <meta 
+    property="twitter:url" 
+    content="https://cannabiscult.co"
+  />
+  <meta 
+    property="twitter:title" 
+    content="The Cannabis Cult"
+  />
+  <meta 
+    property="twitter:description" 
+    content="The Cannbis Cult and it's members are connecting every aspect of the Cannabis supply chain, from Cultivators to Consumers, creating a network of the best available products and practices."
+  />
+  <meta 
+    name="twitter:site" 
+    content="https://cannabiscult.co/"
+  />
+  <meta 
+    property="twitter:image" 
+    content="https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp"
+    alt="Cannabis Cult Main Logo with Brain"
+  />
+{% endblock %}
+{% block content %}
+<main class="container-fluid pt-5 h-100">
+  <section class="container align-content-center pt-5 pb-5">
+    <div class="text-center pt-5 pb-5">
+      <span>
+        <h1>Your login was successful!</h1>
+      </span>
+    </div>
+  </section>       
+</main> 
+{% endblock %}  
+
+{% block footer %}
+{% endblock %}
+
+{% include "components/auth/google_oauth_callback.html" %}
