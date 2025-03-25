@@ -28,6 +28,7 @@ async def submit_strain(
         model = flowers.Flower
     elif submission.product_type == "concentrateSubmission":
         model = concentrates.Concentrate
+        card_path = "reviews/Connoisseur_Pack/CP_Rosin.webp"
     elif submission.product_type == "pre_rollSubmission":
         model = pre_rolls.Pre_Roll
     elif submission.product_type == "edibleSubmission":
@@ -41,8 +42,9 @@ async def submit_strain(
     )
     if existing_strain:
         new_submission = existing_strain
+    if not card_path:
+        card_path = "reviews/Connoisseur_Pack/CP_strains.webp"
     else:
-        card_path = "reviews/Connoisseur_Pack/CP_strains.png"
         voting_open = True
         is_mystery = False
         new_submission = model(
