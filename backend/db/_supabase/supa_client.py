@@ -42,8 +42,12 @@ def ttl_cache(ttl: int):
 
 @ttl_cache(ttl=2900)
 def get_cached_signed_url_from_storage(file_path: str, life_span: int = 6000) -> str:
+    default_img = "https://members.cannabiscult.co/storage/v1/object/public/cannabiscult/reviews/Connoisseur_Pack/CP_strains.webp"
     client = return_created_client()
-    return client.storage.from_(settings.POSTGRES_DB).create_signed_url(file_path, life_span).get("signedURL")
+    try:
+        return client.storage.from_(settings.POSTGRES_DB).create_signed_url(file_path, life_span).get("signedURL")
+    except Exception:
+        return default_img
 
 
 def get_signed_url_from_storage(file_path: str, life_span: int = 6000) -> str:
