@@ -1,6 +1,7 @@
 let fieldsCompletedWatched = false;
 let lineageContainer
 
+
 function createChip() {
     if (window.lineageList.length === 0) {
       lineageContainer = document.getElementById('lineageChipsContainer');
@@ -169,39 +170,69 @@ async function submitStrainForm(event) {
   await finalizeStrainSubmission();
 }
 
-async function uploadImagesAfterSubmission(productType, productId, files) {
-  const uploadUrl = `/images/${productType}/${productId}/upload/`;
-  if (files.length > 3) {
-    alert('You may upload up to 3 images only.');
-    return;
-  }
-  const authToken = await window.supabaseClient.getAccessToken();
-  const uploadPromises = Array.from(files).map(file => {
-    const formData = new FormData();
-    formData.append('file', file);
-    return fetch(uploadUrl, {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      }
-    })
-    .then(resp => resp.json())
-    .then(data => {
-      if (data.error || data.message.includes('unsafe')) {
-        throw new Error(data.error || data.message);
-      }
-      return data;
-    });
-  });
+async function convertAndCompressImageForUpload(file) {
+  const options = {
+    maxSizeMB: 1,
+    maxWidthOrHeight: 1024,
+    useWebWorker: true,
+    fileType: 'image/webp'
+  };
+
   try {
-    await Promise.all(uploadPromises);
-    alert('Strain and images successfully submitted!');
+    const compressedBlob = await window.imageCompression(file, options);
+    const webpFile = new File(
+      [compressedBlob],
+      file.name.replace(/\.[^/.]+$/, '') + '.webp',
+      { type: 'image/webp' }
+    );
+    return webpFile;
   } catch (err) {
-    console.error('Image upload failed:', err);
-    alert(`Submission completed, but image upload failed: ${err}`);
+    console.error('Compression failed:', err);
+    return null;
   }
+}
+
+async function uploadImagesAfterSubmission(productType, productId, files) {
+    const uploadUrl = `/images/${productType}/${productId}/upload/`;
+    const selectedFiles = Array.from(files).slice(0, 5);
+    if (files.length > 5) {
+        alert('You selected more than 5 images — only the first 5 will be uploaded.');
+    }
+    const authToken = await window.supabaseClient.getAccessToken();
+    const uploadPromises = selectedFiles.map(async (originalFile) => {
+        const formData = new FormData();
+        const validatedImage = await convertAndCompressImageForUpload(originalFile);
+
+        if (validatedImage) {
+            formData.append('file', validatedImage);
+
+            return fetch(uploadUrl, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            })
+            .then(resp => resp.json())
+            .then(data => {
+                if (data.error || (data.message && data.message.includes('unsafe'))) {
+                    throw new Error(data.error || data.message);
+                }
+                return data;
+            });
+        } else {
+            throw new Error(`Image compression failed for ${originalFile.name}`);
+        }
+    });
+
+    try {
+      await Promise.all(uploadPromises);
+      alert('Strain and images successfully submitted!');
+    } catch (err) {
+      console.error('Image upload failed:', err);
+      alert(`Submission completed, but image upload failed: ${err.message}`);
+    }
 }
 
 function showTerpenePercentageModal(selectedTerpenes) {

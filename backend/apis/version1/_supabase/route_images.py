@@ -31,8 +31,8 @@ router = APIRouter()
 
 DEFAULT_IMAGE_FILTERS = {
     "nudity": {"none": 0.95},
-    "type": {"photo": 0.0, "illustration": 0.0, "ai_generated": 0.5},
-    "quality": 0.5,
+    "type": {"photo": 0.0, "illustration": 0.0, "ai_generated": 0.7},
+    "quality": 0.35,
     "offensive": 0.01,
     "scam": 0.1,
     "violence": 0.01,
@@ -90,8 +90,8 @@ def is_image_safe(response, filters=DEFAULT_IMAGE_FILTERS):
 
 
 async def check_image_against_default_filters(file_bytes: bytes):
-    files = {'media': file_bytes}
-    r = requests.post('https://api.sightengine.com/1.0/check.json', files=files, data=settings.SIGHTENGINE_PARAMS)
+    files = {"media": file_bytes}
+    r = requests.post("https://api.sightengine.com/1.0/check.json", files=files, data=settings.SIGHTENGINE_PARAMS)
     output = json.loads(r.text)
     return is_image_safe(output)
 
@@ -135,10 +135,10 @@ async def upload_image_to_supabase(
     temp_file_path = await save_temporary_image_async(file)
     dir_list = supabase.storage.from_(storage_str).list(f"{product_type}/{product_id}")
     if "error" in dir_list:
+        print(dir_list)
         delete_temporary_file(temp_file_path)
         raise HTTPException(status_code=500, detail=dir_list["error"]["message"])
-    file_index = len(dir_list) if isinstance(dir_list, list) else 0
-    file_path = f"{product_type}/{product_id}/{file_index}_{file.filename}"
+    file_path = f"{product_type}/{product_id}/{file.filename}"
     try:
         with open(temp_file_path, "rb") as f:
             image_is_safe = await check_image_against_default_filters(f)
@@ -146,15 +146,13 @@ async def upload_image_to_supabase(
                 return_message = {
                     "message": "Error uploading file: ",
                     "path": str(file.filename),
-                    "error": "Image was deemed unsafe or low quality."
+                    "error": "Image was deemed unsafe or low quality.",
                 }
                 return return_message
             f.seek(0)
             mime_type = magic.from_buffer(f.read(1024), mime=True)
             f.seek(0)
-            supabase.storage.from_(storage_str).upload(
-                file=f, path=file_path, file_options={"content-type": mime_type}
-            )
+            supabase.storage.from_(storage_str).upload(file=f, path=file_path, file_options={"content-type": mime_type})
             return {"message": "File uploaded successfully", "path": file_path}
 
     except Exception as e:
@@ -194,9 +192,7 @@ async def list_product_images(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     return [
-        supabase.storage.from_("additional_product_images").get_public_url(
-            f"{product_type}/{product_id}/{img['name']}"
-        )
+        supabase.storage.from_("additional_product_images").get_public_url(f"{product_type}/{product_id}/{img['name']}")
         for img in images
     ]
 
@@ -207,7 +203,7 @@ async def get_all_product_images_by_product_match(
     strain: str = Query(None),
     cultivator: str = Query(None),
     supabase: Client = Depends(_return_supabase_private_client),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     product_type = product_type.capitalize()
     if product_type == "Pre-roll":
@@ -237,9 +233,10 @@ async def get_all_product_images_by_product_match(
         raise HTTPException(status_code=500, detail=str(e))
     extra_images = {}
     for img in images:
-        extra_img_path = f"{product_type.lower()}/{product_id}/{img['name']}"
-        extra_img_url = supabase.storage.from_("additional_product_images").get_public_url(extra_img_path)
-        extra_images[extra_img_path] = extra_img_url
+        if "emptyFolderPlaceholder" not in img["name"]:
+            extra_img_path = f"{product_type.lower()}/{product_id}/{img['name']}"
+            extra_img_url = supabase.storage.from_("additional_product_images").get_public_url(extra_img_path)
+            extra_images[extra_img_path] = extra_img_url
     return {product_type.replace("-", "_").lower(): {str(product_id): {**primary_image, **extra_images}}}
 
 
@@ -273,7 +270,7 @@ async def make_primary_image(
     product_id: int = Query(..., description="ID of the product in the database"),
     card_path: str = Query(..., description="The new path to set as the primary image"),
     supabase: Client = Depends(_return_supabase_private_client),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
     try:
         product_type = product_type.capitalize()
@@ -293,7 +290,11 @@ async def make_primary_image(
         if not product:
             raise HTTPException(status_code=404, detail="Product not found")
         current_primary_img = getattr(product, "card_path")
-        new_save_path = await copy_new_primary_to_reviews_directory(current_primary_img, card_path)
+        cultivator_name = getattr(product, "cultivator")
+        strain_name = getattr(product, "strain")
+        new_save_path = await copy_new_primary_to_reviews_directory(
+            current_primary_img, card_path, cultivator_name, strain_name
+        )
         setattr(product, "card_path", new_save_path)
         db.commit()
         db.refresh(product)
