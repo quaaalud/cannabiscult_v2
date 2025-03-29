@@ -45,6 +45,9 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "CHAMPIONSHIP CP2": ("Local", "RS11"),
             "CHAMPIONSHIP CP3": ("Vibe", "Guava Tart"),
             "CHAMPIONSHIP CP4": ("Amaze", "Blue Zushi"),
+            "RC 39": ("Amaze", "Blueberry Clementine Live Rosin"),
+            "RC 40": ("Vibe", "Grape Sunkist"),
+            "RC 41": ("Monopoly Melts", "Grape Sherb"),
         }
         query_params = dict(request.query_params)
         strain_selected = query_params.get("strain_selected")
