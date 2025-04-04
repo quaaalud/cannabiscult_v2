@@ -57,13 +57,17 @@ def _copy_file_in_storage(client: Client, org_bucket: str, new_bucket: str, tran
             },
         )
     except Exception as e:
-        if getattr(e, "status") == "409" and "CP_Strains." not in transfer_file:
+        if (
+            getattr(e, "status") == "409"
+            and "cp_strains." not in transfer_file.lower()
+            and "cp_rosin." not in transfer_file.lower()
+        ):
             client.storage.from_(org_bucket).remove(transfer_file)
             pass
         else:
             raise Exception(f"Error processing {transfer_file}: {e}")
     else:
-        if "CP_Strains." not in transfer_file and "CP_Rosin." not in transfer_file:
+        if "cp_strains." not in transfer_file and "cp_rosin." not in transfer_file:
             client.storage.from_(org_bucket).remove(transfer_file)
     finally:
         delete_temporary_file(temp_file_path)

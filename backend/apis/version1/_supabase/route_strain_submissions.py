@@ -11,6 +11,7 @@ from sqlalchemy.orm import Session
 from typing import List
 from db.session import get_db
 from db.repository.search_class import upsert_terp_profile
+from db.repository.images import make_primary_image
 from schemas.product_types import ProductSubmission
 from db.models import concentrates, edibles, flowers, pre_rolls
 from core.config import settings
@@ -24,6 +25,7 @@ async def submit_strain(
     submission: ProductSubmission = Depends(ProductSubmission.as_form),
     db: Session = Depends(get_db),
 ):
+    card_path = "reviews/Connoisseur_Pack/CP_strains.webp"
     if submission.product_type == "flowerSubmission":
         model = flowers.Flower
     elif submission.product_type == "concentrateSubmission":
@@ -42,8 +44,6 @@ async def submit_strain(
     )
     if existing_strain:
         new_submission = existing_strain
-    if not card_path:
-        card_path = "reviews/Connoisseur_Pack/CP_strains.webp"
     else:
         voting_open = True
         is_mystery = False
@@ -62,7 +62,8 @@ async def submit_strain(
         else:
             db.commit()
             db.refresh(new_submission)
-    product_type_id = getattr(new_submission, f"{submission.product_type[:-10]}_id")
+    product_type = submission.product_type[:-10]
+    product_type_id = getattr(new_submission, f"{product_type}_id")
     product_description = await add_description_to_db(
         db,
         submission.product_type,
@@ -78,14 +79,16 @@ async def submit_strain(
         db,
         product_description.description_id,
         product_type_id,
-        submission.product_type[:-10],
+        product_type,
         submission.terpenes_map
     )
     return {
         "message": "Submission successful",
+        "product_type": product_type,
         "product_type_id": product_type_id,
         "submission_strain": new_submission.strain,
         "submission_cultivator": new_submission.cultivator,
+        "card_path": new_submission.card_path,
         "cultivar_email": submission.cultivar_email,
     }
 

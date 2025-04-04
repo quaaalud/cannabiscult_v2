@@ -198,14 +198,18 @@ async function uploadImagesAfterSubmission(productType, productId, files) {
     if (files.length > 5) {
         alert('You selected more than 5 images — only the first 5 will be uploaded.');
     }
+
     const authToken = await window.supabaseClient.getAccessToken();
-    const uploadPromises = selectedFiles.map(async (originalFile) => {
+
+    const uploadPromises = selectedFiles.map(async (originalFile, index) => {
         const formData = new FormData();
         const validatedImage = await convertAndCompressImageForUpload(originalFile);
-
         if (validatedImage) {
             formData.append('file', validatedImage);
 
+            if (index === 0) {
+                formData.append('is_new_product', 'new_product');
+            }
             return fetch(uploadUrl, {
                 method: 'POST',
                 body: formData,
@@ -227,11 +231,11 @@ async function uploadImagesAfterSubmission(productType, productId, files) {
     });
 
     try {
-      await Promise.all(uploadPromises);
-      alert('Strain and images successfully submitted!');
+        await Promise.all(uploadPromises);
+        alert('Strain and images successfully submitted!');
     } catch (err) {
-      console.error('Image upload failed:', err);
-      alert(`Submission completed, but image upload failed: ${err.message}`);
+        console.error('Image upload failed:', err);
+        alert(`Submission completed, but image upload failed: ${err.message}`);
     }
 }
 
