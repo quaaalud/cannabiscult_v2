@@ -314,17 +314,25 @@ window.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('getImagesButton').addEventListener('click', fetchProductImages);
   document.addEventListener('click', function (e) {
-      if (e.target && e.target.id === 'toggleImagesFormButton') {
-          document.getElementById('strainSubmissionFormCard').classList.add('d-none');
-          document.getElementById('manageImagesFormCard').classList.remove('d-none');
-      }
-      if (e.target && e.target.id === 'toggleStrainsFormButton') {
-          document.getElementById('manageImagesFormCard').classList.add('d-none');
-          document.getElementById('strainSubmissionFormCard').classList.remove('d-none');
-      }
+    const strainCard = document.getElementById('strainSubmissionFormCard');
+    const imageCard = document.getElementById('manageImagesFormCard');
+
+    if (e.target && e.target.id === 'toggleImagesFormButton') {
+      strainCard.classList.add('d-none');
+      imageCard.classList.remove('d-none');
+      imageCard.style.display = 'block';
+      imageCard.offsetHeight;
+    }
+    if (e.target && e.target.id === 'toggleStrainsFormButton') {
+      imageCard.classList.add('d-none');
+      strainCard.classList.remove('d-none');
+      strainCard.style.display = 'block';
+      strainCard.offsetHeight;
+    }
   });
+  document.getElementById('getImagesButton').addEventListener('click', fetchProductImages);
   document.getElementById('uploadProductImagesButton').addEventListener('click', async () => {
-      await uploadImagesForProduct();
+    await uploadImagesForProduct();
   });
 
 });
