@@ -32,7 +32,6 @@ router = APIRouter()
 DEFAULT_IMAGE_FILTERS = {
     "nudity": {"none": 0.95},
     "type": {"photo": 0.0, "illustration": 0.0, "ai_generated": 0.7},
-    "quality": 0.35,
     "offensive": 0.01,
     "scam": 0.1,
     "violence": 0.01,
@@ -75,8 +74,6 @@ def is_image_safe(response, filters=DEFAULT_IMAGE_FILTERS):
     if type_data.get("photo", 0) < filters["type"]["photo"]:
         return False
     if type_data.get("ai_generated", 1) > filters["type"]["ai_generated"]:
-        return False
-    if response.get("quality", {}).get("score", 1) < filters["quality"]:
         return False
     if any(val > filters["offensive"] for val in response.get("offensive", {}).values()):
         return False
@@ -146,7 +143,7 @@ async def upload_image_to_supabase(
                 return_message = {
                     "message": "Error uploading file: ",
                     "path": str(file.filename),
-                    "error": "Image was deemed unsafe or low quality.",
+                    "error": "Image was deemed unsafe.",
                 }
                 return return_message
             f.seek(0)
