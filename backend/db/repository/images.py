@@ -31,12 +31,12 @@ from db._supabase.connect_to_storage import return_image_url_from_supa_storage, 
 
 
 DEFAULT_IMAGE_FILTERS = {
-    "nudity": {"none": 0.95},
-    "type": {"photo": 0.0, "illustration": 0.0, "ai_generated": 0.7},
-    "offensive": 0.01,
-    "scam": 0.1,
-    "violence": 0.01,
-    "self-harm": 0.01,
+    "nudity": {"none": 0.5},
+    "type": {"photo": 0.0, "illustration": 0.0, "ai_generated": 0.8},
+    "offensive": 0.7,
+    "scam": 0.7,
+    "violence": 0.6,
+    "self-harm": 0.6,
 }
 
 
