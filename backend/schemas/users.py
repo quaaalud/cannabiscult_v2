@@ -7,7 +7,7 @@ Created on Fri Mar 10 20:51:36 2023
 """
 
 from uuid import UUID
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any
 from pydantic import BaseModel, EmailStr, Field, validator
 
 
@@ -61,8 +61,34 @@ class ShowUser(BaseModel):
 class LoggedInUser(BaseModel):
     username: str = Field(..., description="User's username")
     email: EmailStr = Field(..., description="User's email address")
-    can_vote: bool = Field(..., description="Indicates if the user can vote")
-    role: str = Field(..., description="User's role in the system")
+    phone: Optional[str] = Field(None, description="User's phone")
+    auth_id: Union[str, UUID] = Field(..., description="Auth.User.id value for each user.")
+
+    @validator("auth_id", pre=True)
+    def convert_uuid_to_str(cls, v):
+        if not isinstance(v, UUID):
+            UUID(str(v))
+        return v
+
+    class Config:
+        from_attributes = True
+        strip_whitespace = True
+        populate_by_name = True
+        exclude_unset = True
+
+
+class UserSettingsSchema(BaseModel):
+    user_id: UUID = Field(..., description="Auth.User.id value for each user.")
+    text_settings: Dict[str, Any] = Field(default_factory=dict, description="User text settings stored as JSONB.")
+    email_settings: Dict[str, Any] = Field(default_factory=dict, description="User email settings stored as JSONB.")
+    site_settings: Dict[str, Any] = Field(default_factory=dict, description="User site settings stored as JSONB.")
+    user: LoggedInUser = Field(..., description="Related user object.")
+
+    @validator("user_id", pre=True)
+    def convert_uuid_to_str(cls, v):
+        if not isinstance(v, UUID):
+            UUID(str(v))
+        return v
 
     class Config:
         from_attributes = True
@@ -110,9 +136,7 @@ class UserEmailSchema(BaseModel):
 class UserStrainListSubmit(BaseModel):
     strain: str = Field(..., description="Name of the cannabis strain")
     cultivator: str = Field(..., description="Name of the cultivator of the strain")
-    to_review: bool = Field(
-        default=True, description="Flag indicating if the strain needs to be reviewed"
-    )
+    to_review: bool = Field(default=True, description="Flag indicating if the strain needs to be reviewed")
     product_type: str = Field(..., description="Product type for the strain notes")
     strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
@@ -130,9 +154,7 @@ class UserStrainListSubmit(BaseModel):
 
 
 class UserStrainListRemove(BaseModel):
-    email: EmailStr = Field(
-        ..., description="User's email address linked to the strain list"
-    )
+    email: EmailStr = Field(..., description="User's email address linked to the strain list")
     strain: str = Field(..., description="Name of the cannabis strain")
     cultivator: str = Field(..., description="Name of the cultivator of the strain")
     product_type: str = Field(..., description="Product type for the strain notes")
@@ -151,14 +173,10 @@ class UserStrainListRemove(BaseModel):
 
 
 class UserStrainListCreate(BaseModel):
-    email: EmailStr = Field(
-        ..., description="User's email address linked to the strain list"
-    )
+    email: EmailStr = Field(..., description="User's email address linked to the strain list")
     strain: str = Field(..., description="Name of the cannabis strain")
     cultivator: str = Field(..., description="Name of the cultivator of the strain")
-    to_review: bool = Field(
-        default=True, description="Flag indicating if the strain needs to be reviewed"
-    )
+    to_review: bool = Field(default=True, description="Flag indicating if the strain needs to be reviewed")
     product_type: str = Field(..., description="Product type for the strain notes")
     strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
@@ -176,9 +194,7 @@ class UserStrainListCreate(BaseModel):
 
 
 class UserStrainListUpdate(BaseModel):
-    to_review: bool = Field(
-        None, description="Flag indicating if the strain needs to be reviewed"
-    )
+    to_review: bool = Field(None, description="Flag indicating if the strain needs to be reviewed")
 
     @validator("*", pre=True)
     def check_not_empty(cls, v):
@@ -195,14 +211,10 @@ class UserStrainListUpdate(BaseModel):
 
 class UserStrainListSchema(BaseModel):
     id: int = Field(..., description="Unique identifier for the strain list entry")
-    email: EmailStr = Field(
-        ..., description="User's email address linked to the strain list"
-    )
+    email: EmailStr = Field(..., description="User's email address linked to the strain list")
     strain: str = Field(..., description="Name of the cannabis strain")
     cultivator: str = Field(..., description="Name of the cultivator of the strain")
-    to_review: bool = Field(
-        ..., description="Flag indicating if the strain needs to be reviewed"
-    )
+    to_review: bool = Field(..., description="Flag indicating if the strain needs to be reviewed")
     product_type: str = Field(..., description="Product type for the strain notes")
     strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 
@@ -218,14 +230,10 @@ class UserStrainListSchema(BaseModel):
 
 
 class AddUserStrainListNotes(BaseModel):
-    email: EmailStr = Field(
-        ..., description="User's email address linked to the strain list"
-    )
+    email: EmailStr = Field(..., description="User's email address linked to the strain list")
     strain: str = Field(..., description="Name of the cannabis strain")
     cultivator: str = Field(..., description="Name of the cultivator of the strain")
-    to_review: bool = Field(
-        ..., description="Flag indicating if the strain needs to be reviewed"
-    )
+    to_review: bool = Field(..., description="Flag indicating if the strain needs to be reviewed")
     product_type: str = Field(..., description="Product type for the strain notes")
     strain_notes: Optional[str] = Field("N/A", description="User's strain notes")
 

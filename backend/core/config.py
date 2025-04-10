@@ -155,6 +155,21 @@ class Settings:
       'api_secret': os.getenv("SIGHTENGINE_KEY")
     }
 
+    twilio_sid: str = os.getenv("TWILIO_SID")
+    twilio_token: str = os.getenv("TWILIO_TOKEN")
+
+    twilio_api_sid: str = os.getenv("TWILIO_API_SID")
+    twilio_api_secret: str = os.getenv("TWILIO_API_SECRET")
+
+    twilio_test_sid: str = os.getenv("TWILIO_TEST_SID")
+    twilio_test_token: str = os.getenv("TWILIO_TEST_TOKEN")
+
+    twilio_local_phone: str = "13143287574"
+    twilio_toll_free_phone: str = "18335709468"
+
+    twilio_primary_mid: str = os.getenv("TWILIO_PRIMARY_MID")
+    twilio_marketing_mid: str = os.getenv("TWILIO_MARKETING_MID")
+
     core_dir = Path(__file__).parents[0]
     backend_dir = Path(__file__).parents[1]
     main_dir = Path(__file__).parents[2]
@@ -168,6 +183,7 @@ class Settings:
         self.retry_db = self.set_retry()
         self._set_project_paths()
         self.posthog = self._return_posthog_monitoring_client()
+        self.admins_list = ["dludwins@outlook.com", "aaron.childs@thesocialoutfitus.com"]
 
     @staticmethod
     def date_handler(obj):

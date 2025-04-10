@@ -10,6 +10,7 @@ from fastapi import APIRouter
 import route_general_pages
 import route_subscribers
 import route_users
+from version1.phone import route_phone
 from _supabase import route_flowers
 from _supabase import route_concentrates
 from _supabase import route_edibles
@@ -32,3 +33,4 @@ api_router.include_router(route_mystery_voters.router, prefix="/mystery_voters",
 api_router.include_router(route_searches.router, prefix="/search", tags=["search"])
 api_router.include_router(route_strain_submissions.router, prefix="/submit", tags=["submit"])
 api_router.include_router(route_images.router, prefix="/images", tags=["images"])
+api_router.include_router(route_phone.router, prefix="/phone", tags=["phone"])

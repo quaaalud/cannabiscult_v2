@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from sqlalchemy import Column, Integer, Text, CheckConstraint
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, Integer, Text, CheckConstraint, String, LargeBinary, DateTime, UniqueConstraint
+from sqlalchemy.sql import func
 from pydantic import BaseModel, constr
 from db.base_class import Base
 
@@ -10,6 +13,7 @@ class SimpleProductSchema(BaseModel):
     signed_url: str
     product_type: str
 
+
 class CalendarEvent(Base):
     __tablename__ = "calendar_events"
 
@@ -18,9 +22,7 @@ class CalendarEvent(Base):
     description = Column(Text, nullable=True)
     start_date = Column(
         Text,
-        CheckConstraint(
-            "length(start_date) < 15", name="calendar_events_start_date_check"
-        ),
+        CheckConstraint("length(start_date) < 15", name="calendar_events_start_date_check"),
         nullable=False,
     )
     end_date = Column(
@@ -46,6 +48,26 @@ class CalendarEventQuery(BaseModel):
                 "summary": "Cult Event Title",
                 "description": "Cannabis Cult event description.",
                 "start_date": "DD/MM/YYYY",
-                "end_date": "DD/MM/YYYY"
+                "end_date": "DD/MM/YYYY",
             }
         }
+
+
+# PDF For downloads table
+class PDFFile(Base):
+    __tablename__ = "pdf_files"
+
+    id = Column(
+        UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid.uuid4,
+        unique=True,
+        nullable=False,
+    )
+    file_name = Column(String(255), nullable=False)
+    file_data = Column(LargeBinary, nullable=False)
+    file_hash = Column(String(64), nullable=False, unique=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    __table_args__ = (UniqueConstraint("file_hash", name="_file_hash_uc"),)

@@ -7,12 +7,13 @@ Created on Fri Mar 10 20:48:11 2023
 """
 
 from db.base_class import Base
-from db.models.users import User, UserStrainList, MysteryVoter, MoluvHeadstashBowl
+from db.models.users import User, UserStrainList, MysteryVoter, MoluvHeadstashBowl, UserSettings
 from db.models.subscribers import Subscriber
 from db.models.calendar_events import (
     CalendarEvent,
     CalendarEventQuery,
     SimpleProductSchema,
+    PDFFile,
 )
 from db.models.pre_rolls import *
 from db.models.edibles import Edible, VibeEdible, Vibe_Edible_Ranking, Edible_Ranking, Edible_Description
@@ -34,3 +35,4 @@ from db.models.flowers import (
     StrainCategory,
     Flower_Ranking,
 )
+from db.models.phone import TwilioTextTemplates, MessagesToUsers

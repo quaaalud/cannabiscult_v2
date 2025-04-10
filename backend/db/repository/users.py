@@ -12,9 +12,9 @@ from uuid import UUID
 from supabase import Client
 from sqlalchemy import func, delete
 from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Union, Dict
+from typing import Union, Dict, List
 from schemas.users import (
     UserCreate,
     UserStrainListCreate,
@@ -23,7 +23,7 @@ from schemas.users import (
     UserStrainListRemove,
     AddUserStrainListNotes,
 )
-from db.base import User, UserStrainList, MoluvHeadstashBowl
+from db.base import User, UserStrainList, MoluvHeadstashBowl, UserSettings
 from core.config import settings
 
 
@@ -123,6 +123,63 @@ async def get_user_by_email(user_email: str, db: Session) -> User:
 
 
 @settings.retry_db
+async def get_all_users_with_settings(user_email: str, db: Session) -> List[UserSettings] | None:
+    if not user_email or not isinstance(user_email, str):
+        return []
+    # decoded_email = decode_email(user_email)
+    # if decoded_email not in settings.admins_list:
+    #    return []
+    try:
+        users = db.query(UserSettings).all()
+        return users
+    except Exception:
+        db.rollback()
+        return None
+
+
+@settings.retry_db
+async def get_all_users_with_text_enabled(user_email: str, db: Session) -> List[UserSettings] | None:
+    if not user_email or not isinstance(user_email, str):
+        return []
+    # decoded_email = decode_email(user_email)
+    # if decoded_email not in settings.admins_list:
+    #    return []
+    try:
+        users = (
+            db.query(UserSettings)
+            .options(joinedload(UserSettings.user))
+            .join(User, UserSettings.user_id == User.auth_id)
+            .filter(UserSettings.text_settings["enabled"].astext == "yes")
+            .all()
+        )
+        return users
+    except Exception:
+        db.rollback()
+        return []
+
+
+@settings.retry_db
+async def get_all_users_with_email_enabled(user_email: str, db: Session) -> List[UserSettings] | None:
+    if not user_email or not isinstance(user_email, str):
+        return []
+    # decoded_email = decode_email(user_email)
+    # if decoded_email not in settings.admins_list:
+    #    return []
+    try:
+        users = (
+            db.query(UserSettings)
+            .options(joinedload(UserSettings.user))
+            .join(User, UserSettings.user_id == User.auth_id)
+            .filter(UserSettings.email_settings["enabled"].astext == "yes")
+            .all()
+        )
+        return users
+    except Exception:
+        db.rollback()
+        return None
+
+
+@settings.retry_db
 def update_user_password_in_db(user_email: str, new_password: str, repeated_password: str, db: Session) -> User:
     if new_password.strip() == repeated_password.strip():
         try:
@@ -150,8 +207,7 @@ async def add_strain_to_list(strain_data: UserStrainListCreate, db: Session):
         strain_notes="",
     )
     stmt = stmt.on_conflict_do_update(
-        index_elements=["email", "strain", "cultivator", "product_type"],
-        set_={"to_review": strain_data.to_review}
+        index_elements=["email", "strain", "cultivator", "product_type"], set_={"to_review": strain_data.to_review}
     ).returning(UserStrainList)
     try:
         result = db.execute(stmt)
@@ -234,9 +290,7 @@ async def delete_strain_from_list(strain_to_remove: UserStrainListRemove, db: Se
 
 
 @settings.retry_db
-async def upsert_moluv_headstash_vote(
-    db: Session, user_id: UUID, product_type: str, product_id: int
-) -> Dict[str, str]:
+async def upsert_moluv_headstash_vote(db: Session, user_id: UUID, product_type: str, product_id: int) -> Dict[str, str]:
     try:
         stmt = insert(MoluvHeadstashBowl).values(
             user_id=user_id,
