@@ -4,9 +4,12 @@ import hashlib
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.sql import func
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Optional
+from sqlalchemy.orm import Session
+from datetime import datetime
+from typing import Optional, Dict, List
 from uuid import UUID
-from db.base import MessagesToUsers
+from db.base import MessagesToUsers, TwilioMessageRecord
+from backend.twilio.twilio_base import twilio_client
 from core.config import settings
 
 
@@ -87,3 +90,56 @@ async def update_message_status(
     except SQLAlchemyError as e:
         db.rollback()
         raise e
+
+
+@settings.retry_db
+async def get_latest_twilio_message_created_at(db: Session) -> datetime:
+    """
+    Returns the newest created_at datetime from the TwilioMessageRecord table.
+    If no records exist, returns a sensible default (e.g., datetime(2025, 1, 1)).
+    """
+    try:
+        latest_created_at = db.query(func.max(TwilioMessageRecord.created_at)).scalar()
+        if not latest_created_at:
+            latest_created_at = datetime(2025, 1, 1)
+        return latest_created_at
+    except Exception as e:
+        db.rollback()
+        raise e
+
+
+async def get_new_twilio_messages(db: Session) -> Dict | None:
+    newest_message_date = await get_latest_twilio_message_created_at(db)
+    new_messages = await twilio_client._get_new_messages(newest_message_date=newest_message_date)
+    return new_messages
+
+
+async def upsert_twilio_message(db, message_data: dict):
+    stmt = insert(TwilioMessageRecord).values(**message_data)
+    stmt = stmt.on_conflict_do_update(
+        constraint="uq_twilio_message_message_id",
+        set_={
+            "body": message_data.get("body"),
+            "status": message_data.get("status"),
+            "date_updated": func.now(),
+        }
+    )
+    db.execute(stmt)
+    db.commit()
+
+
+async def bulk_upsert_twilio_messages(db: Session, validated_messages: List) -> None:
+    if not validated_messages:
+        return
+    messages = [msg.model_dump() for msg in validated_messages]
+    stmt = insert(TwilioMessageRecord).values(messages)
+    stmt = stmt.on_conflict_do_update(
+        constraint="uq_twilio_message_message_id",
+        set_={
+            "body": stmt.excluded.body,
+            "status": stmt.excluded.status,
+            "date_updated": func.now(),
+        }
+    )
+    db.execute(stmt)
+    db.commit()

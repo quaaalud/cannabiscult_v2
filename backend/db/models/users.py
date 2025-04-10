@@ -89,6 +89,7 @@ class MysteryVoter(Base):
     industry_job_title = Column(String, nullable=True, unique=False)
     agree_tos = Column(Boolean(), default=True)
     date_posted = Column(Date)
+    uuid = Column(UUID(as_uuid=True), ForeignKey("user.id"), unique=True, index=True)
 
     vibe_edible_voters = relationship("Vibe_Edible_Voter", back_populates="mystery_voter")
 

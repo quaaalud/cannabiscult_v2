@@ -16,14 +16,98 @@ import twilio
 from twilio.rest import Client
 from twilio.http.async_http_client import AsyncTwilioHttpClient
 from datetime import datetime, timedelta
-from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional
+from pydantic import BaseModel, Field, field_validator, model_validator
+from typing import List, Optional, Any
 
 try:
     from backend.core.config import settings
 except ModuleNotFoundError:
     sys.path.append(str(Path(__file__).parents[3]))
     from backend.core.config import settings
+
+
+class TwilioMessageResultsSchema(BaseModel):
+    version: Optional[str] = Field(
+        None, description="Twilio API version, flattened from _version."
+    )
+    body: str = Field(..., description="The text message body.")
+    num_segments: Optional[int] = Field(
+        None, description="Number of segments that the message is split into."
+    )
+    direction: str = Field(..., description="Message direction: inbound/outbound.")
+    from_: str = Field(..., alias="from_", description="Sender phone number.")
+    to: str = Field(..., description="Recipient phone number.")
+    date_updated: datetime = Field(..., description="Date when the message was last updated.")
+    error_message: Optional[str] = Field(None, description="Error message if any.")
+    uri: str = Field(..., description="URI of the message resource.")
+    account_sid: str = Field(..., description="Account SID associated with the message.")
+    num_media: Optional[int] = Field(
+        None, description="Number of media elements associated with the message."
+    )
+    status: str = Field(..., description="Status of the message.")
+    messaging_service_sid: Optional[str] = Field(
+        None, description="Messaging Service SID if applicable."
+    )
+    # Replace the sid field with message_id using alias
+    message_id: str = Field(..., alias="sid", description="Unique SID of the message, renamed to message_id.")
+    date_sent: datetime = Field(..., description="When the message was sent.")
+    date_created: datetime = Field(..., description="When the message was created.")
+    error_code: Optional[int] = Field(None, description="Error code, if applicable.")
+    api_version: str = Field(..., description="Twilio API version used.")
+    # Flattened fields from nested dictionaries:
+    feedback_uri: Optional[str] = Field(
+        None, description="Flattened URI for message feedback from subresource_uris."
+    )
+    media_uri: Optional[str] = Field(
+        None, description="Flattened URI for message media from subresource_uris."
+    )
+    solution_account_sid: Optional[str] = Field(
+        None, description="Flattened account_sid from _solution."
+    )
+    solution_sid: Optional[str] = Field(
+        None, description="Flattened sid from _solution."
+    )
+    context: Optional[str] = Field(None, description="Renamed _context field.")
+
+    @model_validator(mode="before")
+    def flatten_nested_fields(cls, data: Any) -> dict:
+        # If data isn’t a dict, attempt to convert it.
+        if not isinstance(data, dict):
+            try:
+                data = data.__dict__
+            except Exception as e:
+                raise TypeError(f"Expected dict-like data input, got {type(data)}: {e}")
+
+        # Flatten subresource_uris
+        subresources = data.get("subresource_uris")
+        if isinstance(subresources, dict):
+            data["feedback_uri"] = subresources.get("feedback")
+            data["media_uri"] = subresources.get("media")
+            data.pop("subresource_uris", None)
+
+        # Flatten _solution dictionary
+        solution = data.get("_solution")
+        if isinstance(solution, dict):
+            data["solution_account_sid"] = solution.get("account_sid")
+            data["solution_sid"] = solution.get("sid")
+            data.pop("_solution", None)
+
+        # Convert _version to a string and assign to version.
+        if "_version" in data:
+            data["version"] = str(data.pop("_version"))
+
+        # Rename _context to context
+        if "_context" in data:
+            data["context"] = data.pop("_context")
+
+        return data
+
+    model_config = {
+        "populate_by_name": True,
+        "strip_whitespace": True,
+        "from_attributes": True,
+        "exclude_unset": True,
+    }
 
 
 class TwilioMessageSchema(BaseModel):
@@ -180,7 +264,7 @@ class TwilioClient:
     _client: Client = None
 
     _sid: str = settings.twilio_sid
-    _sid: str = settings.twilio_token
+    _key: str = settings.twilio_token
     _mid: str = settings.twilio_primary_mid
 
     _marketing_mid: str = settings.twilio_marketing_mid
@@ -194,11 +278,12 @@ class TwilioClient:
     twilio_local_phone: str = settings.twilio_local_phone
     twilio_toll_free_phone: str = settings.twilio_toll_free_phone
 
-    TwilioMessageSchema = TwilioMessageSchema
-    TwilioTextMessageSendSchema = TwilioTextMessageSendSchema
-    TwilioMMSMessageSendSchema = TwilioMMSMessageSendSchema
-    TwilioScheduledMessageSchema = TwilioScheduledMessageSchema
-    TwilioPhoneNumberSchema = TwilioPhoneNumberSchema
+    TwilioMessageSchema: BaseModel = TwilioMessageSchema
+    TwilioTextMessageSendSchema: BaseModel = TwilioTextMessageSendSchema
+    TwilioMMSMessageSendSchema: BaseModel = TwilioMMSMessageSendSchema
+    TwilioScheduledMessageSchema: BaseModel = TwilioScheduledMessageSchema
+    TwilioPhoneNumberSchema: BaseModel = TwilioPhoneNumberSchema
+    TwilioMessageResultsSchema: BaseModel = TwilioMessageResultsSchema
 
     def __init__(self):
         pass
@@ -215,8 +300,7 @@ class TwilioClient:
         return f"+{v}"
 
     @classmethod
-    async def _return_authenticated_twilio_client(cls, is_dev: bool = False):
-        # Need to implement check for development to use 800 number and test credentials
+    async def _return_authenticated_twilio_client(cls):
         try:
             if not cls._http_client:
                 cls._http_client = AsyncTwilioHttpClient()
@@ -227,27 +311,56 @@ class TwilioClient:
         return cls._client
 
     @classmethod
-    async def _get_all_messages(
-        cls, to_phone_number: str = None, newest_message_date: Optional[datetime] = None
+    async def _get_all_local_messages(
+        cls, newest_message_date: Optional[datetime] = None
     ) -> List:
+        phone_num = cls.twilio_local_phone
         client = await cls._return_authenticated_twilio_client()
         newest_message_date = newest_message_date if newest_message_date else datetime(2025, 1, 1)
-        received_messages = await client.api.messages.list_async(
-            to=to_phone_number,
+        past_local_messages = await client.api.messages.list_async(
+            to=phone_num,
             date_sent_after=newest_message_date,
-        )
-        future_messages = await client.api.messages.list_async(
-            from_=to_phone_number,
         )
         validated_future_messages = [
             message
-            for message in future_messages
-            if (
-                to_phone_number == message.from_
+            for message in await client.api.messages.list_async(
+                from_=phone_num,
+            ) if (
+                cls.twilio_local_phone == message.from_
                 and (message.sid is not None and message.date_sent is None and message.status != "canceled")
             )
         ]
-        return [*validated_future_messages, *received_messages]
+        return [*validated_future_messages, *past_local_messages]
+
+    @classmethod
+    async def _get_all_toll_free_messages(
+        cls, newest_message_date: Optional[datetime] = None
+    ) -> List:
+        phone_num = cls.twilio_toll_free_phone
+        client = await cls._return_authenticated_twilio_client()
+        newest_message_date = newest_message_date if newest_message_date else datetime(2025, 1, 1)
+        past_messages = await client.api.messages.list_async(
+            to=phone_num,
+            date_sent_after=newest_message_date,
+        )
+        validated_future_messages = [
+            message
+            for message in await client.api.messages.list_async(
+                from_=phone_num,
+            ) if (
+                cls.twilio_local_phone == message.from_
+                and (message.sid is not None and message.date_sent is None and message.status != "canceled")
+            )
+        ]
+        return [*validated_future_messages, *past_messages]
+
+    @classmethod
+    async def _get_new_messages(
+        cls, newest_message_date: Optional[datetime] = None
+    ) -> List:
+        local_messages = await cls._get_all_local_messages(newest_message_date=newest_message_date)
+        toll_free_messages = await cls._get_all_toll_free_messages(newest_message_date=newest_message_date)
+        return [*local_messages, *toll_free_messages]
 
     async def _send_twilio_text_message(
         self, message_body, to_phone: str = "+13146610066", from_phone: Optional[str] = None

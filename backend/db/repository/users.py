@@ -14,7 +14,7 @@ from sqlalchemy import func, delete
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import SQLAlchemyError
-from typing import Union, Dict, List
+from typing import Union, Dict, List, Callable, Awaitable, AsyncGenerator
 from schemas.users import (
     UserCreate,
     UserStrainListCreate,
@@ -22,6 +22,7 @@ from schemas.users import (
     UserStrainListSchema,
     UserStrainListRemove,
     AddUserStrainListNotes,
+    UserSettingsSchema,
 )
 from db.base import User, UserStrainList, MoluvHeadstashBowl, UserSettings
 from core.config import settings
@@ -123,60 +124,122 @@ async def get_user_by_email(user_email: str, db: Session) -> User:
 
 
 @settings.retry_db
-async def get_all_users_with_settings(user_email: str, db: Session) -> List[UserSettings] | None:
+async def get_all_users_with_settings(
+    user_email: str,
+    db: Session,
+    chunk_size: int = 100,
+    pages: int = None
+) -> AsyncGenerator[List[UserSettings], None]:
     if not user_email or not isinstance(user_email, str):
-        return []
-    # decoded_email = decode_email(user_email)
-    # if decoded_email not in settings.admins_list:
-    #    return []
-    try:
-        users = db.query(UserSettings).all()
-        return users
-    except Exception:
-        db.rollback()
-        return None
+        return
+    decoded_email = decode_email(user_email)
+    if decoded_email not in settings.admins_list:
+        return
+    offset = 0
+    page_count = 0
+    while True:
+        if pages is not None and page_count >= pages:
+            break
+        chunk = (
+            db.query(UserSettings)
+            .options(joinedload(UserSettings.user))
+            .join(User, UserSettings.user_id == User.auth_id)
+            .limit(chunk_size)
+            .offset(offset)
+            .all()
+        )
+        if not chunk:
+            break
+        yield chunk
+        if len(chunk) < chunk_size:
+            break
+
+        offset += len(chunk)
+        page_count += 1
 
 
 @settings.retry_db
-async def get_all_users_with_text_enabled(user_email: str, db: Session) -> List[UserSettings] | None:
+async def get_all_users_with_text_enabled(
+    user_email: str,
+    db: Session,
+    chunk_size: int = 100,
+    pages: int = None
+) -> AsyncGenerator[List[UserSettings], None]:
     if not user_email or not isinstance(user_email, str):
-        return []
-    # decoded_email = decode_email(user_email)
-    # if decoded_email not in settings.admins_list:
-    #    return []
-    try:
-        users = (
+        return
+    decoded_email = decode_email(user_email)
+    if decoded_email not in settings.admins_list:
+        return
+    offset = 0
+    page_count = 0
+    while True:
+        if pages is not None and page_count >= pages:
+            break
+        chunk = (
             db.query(UserSettings)
             .options(joinedload(UserSettings.user))
             .join(User, UserSettings.user_id == User.auth_id)
             .filter(UserSettings.text_settings["enabled"].astext == "yes")
+            .limit(chunk_size)
+            .offset(offset)
             .all()
         )
-        return users
-    except Exception:
-        db.rollback()
-        return []
+        if not chunk:
+            break
+        yield chunk
+        if len(chunk) < chunk_size:
+            break
+        offset += len(chunk)
+        page_count += 1
 
 
 @settings.retry_db
-async def get_all_users_with_email_enabled(user_email: str, db: Session) -> List[UserSettings] | None:
+async def get_all_users_with_email_enabled(
+    user_email: str,
+    db: Session,
+    chunk_size: int = 100,
+    pages: int = None
+) -> AsyncGenerator[List[UserSettings], None]:
     if not user_email or not isinstance(user_email, str):
-        return []
-    # decoded_email = decode_email(user_email)
-    # if decoded_email not in settings.admins_list:
-    #    return []
-    try:
-        users = (
+        return
+    decoded_email = decode_email(user_email)
+    if decoded_email not in settings.admins_list:
+        return
+    offset = 0
+    page_count = 0
+    while True:
+        if pages is not None and page_count >= pages:
+            break
+        chunk = (
             db.query(UserSettings)
             .options(joinedload(UserSettings.user))
             .join(User, UserSettings.user_id == User.auth_id)
             .filter(UserSettings.email_settings["enabled"].astext == "yes")
+            .limit(chunk_size)
+            .offset(offset)
             .all()
         )
-        return users
-    except Exception:
-        db.rollback()
-        return None
+        if not chunk:
+            break
+        yield chunk
+        if len(chunk) < chunk_size:
+            break
+        offset += len(chunk)
+        page_count += 1
+
+
+async def process_action_based_on_user_settings(
+    generator_func: Callable[..., AsyncGenerator[List[UserSettings], None]],
+    user_email: str,
+    db: Session,
+    action: Callable[[UserSettingsSchema], Awaitable[None]],
+    chunk_size: int = 100,
+    pages: int = None,
+) -> None:
+    async for chunk in generator_func(user_email=user_email, db=db, chunk_size=chunk_size, pages=pages):
+        for record in chunk:
+            validated_record = UserSettingsSchema.model_validate(record)
+            await action(validated_record)
 
 
 @settings.retry_db

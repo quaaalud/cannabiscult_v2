@@ -35,4 +35,4 @@ from db.models.flowers import (
     StrainCategory,
     Flower_Ranking,
 )
-from db.models.phone import TwilioTextTemplates, MessagesToUsers
+from db.models.phone import TwilioTextTemplates, MessagesToUsers, TwilioMessageRecord
