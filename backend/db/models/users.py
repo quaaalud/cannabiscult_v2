@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 from sqlalchemy import (
     Column,
@@ -22,6 +23,7 @@ from db.base_class import Base
 class User(Base):
     __table_args__ = {"extend_existing": True}
 
+    id = Column(UUID(as_uuid=True), default=uuid.uuid4, unique=True)
     username = Column(String, unique=True, nullable=False)
     email = Column(
         String,
