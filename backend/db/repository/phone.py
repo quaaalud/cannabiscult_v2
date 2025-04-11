@@ -125,7 +125,6 @@ async def upsert_twilio_message(db, message_data: dict):
         }
     )
     db.execute(stmt)
-    db.commit()
 
 
 async def bulk_upsert_twilio_messages(db: Session, validated_messages: List) -> None:

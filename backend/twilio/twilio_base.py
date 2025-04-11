@@ -7,8 +7,9 @@ Created on Wed Apr  9 15:55:39 2025
 """
 
 import sys
-from pathlib import Path
+import json
 import aiohttp
+from pathlib import Path
 from uuid import UUID
 from aiohttp import BasicAuth
 from zoneinfo import ZoneInfo
@@ -17,7 +18,7 @@ from twilio.rest import Client
 from twilio.http.async_http_client import AsyncTwilioHttpClient
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field, field_validator, model_validator
-from typing import List, Optional, Any
+from typing import List, Optional, Any, Dict
 
 try:
     from backend.core.config import settings
@@ -50,7 +51,7 @@ class TwilioMessageResultsSchema(BaseModel):
     )
     # Replace the sid field with message_id using alias
     message_id: str = Field(..., alias="sid", description="Unique SID of the message, renamed to message_id.")
-    date_sent: datetime = Field(..., description="When the message was sent.")
+    date_sent: Optional[datetime] = Field(None, description="When the message was sent.")
     date_created: datetime = Field(..., description="When the message was created.")
     error_code: Optional[int] = Field(None, description="Error code, if applicable.")
     api_version: str = Field(..., description="Twilio API version used.")
@@ -259,6 +260,20 @@ class TwilioPhoneNumberSchema(BaseModel):
         exclude_unset = True
 
 
+class TwilioTemplateSchema(BaseModel):
+    sid: str = Field(..., description="Unique identifier of the template")
+    name: str = Field(..., description="Template name text")
+    body: str = Field(..., description="Template body text")
+    variables: Optional[Dict] = Field(None, description="Template variables")
+    media: Optional[str] = Field(None, description="Template media")
+    date_created: datetime = Field(..., description="When the template was created")
+    date_updated: datetime = Field(..., description="When the template was last updated")
+
+    class Config:
+        populate_by_name = True
+        strip_whitespace = True
+
+
 class TwilioClient:
     _http_client: AsyncTwilioHttpClient = None
     _client: Client = None
@@ -284,6 +299,7 @@ class TwilioClient:
     TwilioScheduledMessageSchema: BaseModel = TwilioScheduledMessageSchema
     TwilioPhoneNumberSchema: BaseModel = TwilioPhoneNumberSchema
     TwilioMessageResultsSchema: BaseModel = TwilioMessageResultsSchema
+    TwilioTemplateSchema: BaseModel = TwilioTemplateSchema
 
     def __init__(self):
         pass
@@ -316,7 +332,7 @@ class TwilioClient:
     ) -> List:
         phone_num = cls.twilio_local_phone
         client = await cls._return_authenticated_twilio_client()
-        newest_message_date = newest_message_date if newest_message_date else datetime(2025, 1, 1)
+        newest_message_date = newest_message_date - timedelta(days=30) if newest_message_date else datetime(2025, 1, 1)
         past_local_messages = await client.api.messages.list_async(
             to=phone_num,
             date_sent_after=newest_message_date,
@@ -327,7 +343,7 @@ class TwilioClient:
                 from_=phone_num,
             ) if (
                 cls.twilio_local_phone == message.from_
-                and (message.sid is not None and message.date_sent is None and message.status != "canceled")
+                and (message.sid is not None and message.date_sent is None)
             )
         ]
         return [*validated_future_messages, *past_local_messages]
@@ -338,7 +354,7 @@ class TwilioClient:
     ) -> List:
         phone_num = cls.twilio_toll_free_phone
         client = await cls._return_authenticated_twilio_client()
-        newest_message_date = newest_message_date if newest_message_date else datetime(2025, 1, 1)
+        newest_message_date = newest_message_date - timedelta(days=30) if newest_message_date else datetime(2025, 1, 1)
         past_messages = await client.api.messages.list_async(
             to=phone_num,
             date_sent_after=newest_message_date,
@@ -349,7 +365,7 @@ class TwilioClient:
                 from_=phone_num,
             ) if (
                 cls.twilio_local_phone == message.from_
-                and (message.sid is not None and message.date_sent is None and message.status != "canceled")
+                and (message.sid is not None and message.date_sent is None)
             )
         ]
         return [*validated_future_messages, *past_messages]
@@ -454,6 +470,44 @@ class TwilioClient:
         except Exception as e:
             print(f"Error creating event reminder text: {e.errors()}")
             return None
+
+    @classmethod
+    async def fetch_message_template(cls, template_id: str) -> Optional[TwilioTemplateSchema]:
+        client = await cls._return_authenticated_twilio_client()
+        try:
+            template = await client.content.v1.contents(template_id).fetch_async()
+            template_data = {
+                "sid": template.sid,
+                "name": template.friendly_name,
+                "variables": template.variables,
+                "body": template.types.get('twilio/media').get('body'),
+                "links": template.types.get('twilio/media').get('links'),
+                "date_created": template.date_created,
+                "date_updated": template.date_updated,
+            }
+            return cls.TwilioTemplateSchema.model_validate(template_data)
+        except Exception as e:
+            print(f"Error fetching template with id {template_id}: {e}")
+            return None
+
+    async def send_sms_content_template(self, template_id: str, user_data: dict, use_local_phone: bool = True):
+        to_phone = user_data.pop("phone")
+        client = await self._return_authenticated_twilio_client()
+        if not await self._verify_valid_mobile_phone(to_phone):
+            return None
+        message = await client.messages.create_async(
+            messaging_service_sid=self._marketing_mid if use_local_phone else self._mid,
+            content_sid=template_id,
+            to=to_phone,
+            from_=self.twilio_local_phone if use_local_phone else self.twilio_toll_free_phone,
+            content_variables=json.dumps(user_data),
+        )
+        return message
+
+    async def cancel_queued_message(self, message_sid: str) -> None:
+        client = await self._return_authenticated_twilio_client()  # using your method to get the async client
+        cancelled_message = await client.messages(message_sid).update_async(status="canceled")
+        return cancelled_message
 
 
 def get_twilio_client():

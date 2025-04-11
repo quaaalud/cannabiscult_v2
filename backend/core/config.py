@@ -179,11 +179,12 @@ class Settings:
 
     monitoring: Posthog = None
 
+    admins_list = ["dludwins@outlook.com", "aaron.childs@thesocialoutfitus.com"]
+
     def __init__(self):
         self.retry_db = self.set_retry()
         self._set_project_paths()
         self.posthog = self._return_posthog_monitoring_client()
-        self.admins_list = ["dludwins@outlook.com", "aaron.childs@thesocialoutfitus.com"]
 
     @staticmethod
     def date_handler(obj):
@@ -249,6 +250,40 @@ class Settings:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token expired")
         except InvalidTokenError:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+    @classmethod
+    def jwt_admin_auth_dependency(cls, request: Request):
+        token = None
+        auth_header = request.headers.get("Authorization")
+        if auth_header and auth_header.startswith("Bearer"):
+            token = auth_header.split("Bearer ")[1].strip()
+        if not token:
+            token = request.cookies.get("my-access-token")
+        if not token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Missing or invalid Authorization header"
+            )
+        try:
+            payload = jwt.decode(token, cls.SUPA_JWT, algorithms=["HS256"], audience="authenticated")
+            user_email = payload.get("email")
+            if not user_email:
+                raise HTTPException(
+                    status_code=status.HTTP_401_UNAUTHORIZED,
+                    detail="Email claim missing from token"
+                )
+            is_admin = user_email in cls.admins_list
+            return {"email": user_email, "is_admin": is_admin}
+        except ExpiredSignatureError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token expired"
+            )
+        except InvalidTokenError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
 
 
 class Config(BaseModel):

@@ -14,6 +14,7 @@ from sqlalchemy import func, delete
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import SQLAlchemyError
+from pydantic import ValidationError
 from typing import Union, Dict, List, Callable, Awaitable, AsyncGenerator
 from schemas.users import (
     UserCreate,
@@ -25,6 +26,7 @@ from schemas.users import (
     UserSettingsSchema,
 )
 from db.base import User, UserStrainList, MoluvHeadstashBowl, UserSettings
+from backend.twilio.twilio_base import twilio_client
 from core.config import settings
 
 
@@ -125,16 +127,8 @@ async def get_user_by_email(user_email: str, db: Session) -> User:
 
 @settings.retry_db
 async def get_all_users_with_settings(
-    user_email: str,
-    db: Session,
-    chunk_size: int = 100,
-    pages: int = None
+    db: Session, chunk_size: int = 100, pages: int = None
 ) -> AsyncGenerator[List[UserSettings], None]:
-    if not user_email or not isinstance(user_email, str):
-        return
-    decoded_email = decode_email(user_email)
-    if decoded_email not in settings.admins_list:
-        return
     offset = 0
     page_count = 0
     while True:
@@ -160,16 +154,8 @@ async def get_all_users_with_settings(
 
 @settings.retry_db
 async def get_all_users_with_text_enabled(
-    user_email: str,
-    db: Session,
-    chunk_size: int = 100,
-    pages: int = None
+    db: Session, chunk_size: int = 100, pages: int = None
 ) -> AsyncGenerator[List[UserSettings], None]:
-    if not user_email or not isinstance(user_email, str):
-        return
-    decoded_email = decode_email(user_email)
-    if decoded_email not in settings.admins_list:
-        return
     offset = 0
     page_count = 0
     while True:
@@ -195,16 +181,8 @@ async def get_all_users_with_text_enabled(
 
 @settings.retry_db
 async def get_all_users_with_email_enabled(
-    user_email: str,
-    db: Session,
-    chunk_size: int = 100,
-    pages: int = None
+    db: Session, chunk_size: int = 100, pages: int = None
 ) -> AsyncGenerator[List[UserSettings], None]:
-    if not user_email or not isinstance(user_email, str):
-        return
-    decoded_email = decode_email(user_email)
-    if decoded_email not in settings.admins_list:
-        return
     offset = 0
     page_count = 0
     while True:
@@ -230,16 +208,32 @@ async def get_all_users_with_email_enabled(
 
 async def process_action_based_on_user_settings(
     generator_func: Callable[..., AsyncGenerator[List[UserSettings], None]],
-    user_email: str,
     db: Session,
     action: Callable[[UserSettingsSchema], Awaitable[None]],
     chunk_size: int = 100,
     pages: int = None,
 ) -> None:
-    async for chunk in generator_func(user_email=user_email, db=db, chunk_size=chunk_size, pages=pages):
-        for record in chunk:
-            validated_record = UserSettingsSchema.model_validate(record)
-            await action(validated_record)
+    sent_numbers = set()
+    try:
+        async for chunk in generator_func(db=db, chunk_size=chunk_size, pages=pages):
+            for record in chunk:
+                validated_record = UserSettingsSchema.model_validate(record)
+                try:
+                    user_phone = twilio_client.TwilioPhoneNumberSchema.validate(
+                        {"phone_number": validated_record.user.phone}
+                    ).phone_number
+                except ValidationError:
+                    continue
+                else:
+                    if user_phone not in sent_numbers:
+                        await action(validated_record)
+                        sent_numbers.add(user_phone)
+    except SQLAlchemyError:
+        db.rollback()
+    else:
+        db.commit()
+    finally:
+        sent_numbers = set()
 
 
 @settings.retry_db
