@@ -41,7 +41,7 @@ def ttl_cache(ttl: int):
 
 
 @ttl_cache(ttl=2900)
-def get_cached_signed_url_from_storage(file_path: str, life_span: int = 6000) -> str:
+def get_cached_signed_url_from_storage(file_path: str, life_span: int = 60) -> str:
     default_img = "https://members.cannabiscult.co/storage/v1/object/public/cannabiscult/reviews/Connoisseur_Pack/CP_strains.webp"
     client = return_created_client()
     try:

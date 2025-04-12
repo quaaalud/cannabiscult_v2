@@ -95,6 +95,14 @@ def create_new_user(user: UserCreate, db: Session):
             auth_id=user.auth_id,
         )
         db.add(user)
+        if user.auth_id:
+            default_settings = UserSettings(
+                user_id=user.auth_id,
+                text_settings={"enabled": "yes"},
+                email_settings={"enabled": "yes"},
+                site_settings={"dark_mode": "system"},
+            )
+            db.add(default_settings)
         db.commit()
         return user
     except Exception as e:
