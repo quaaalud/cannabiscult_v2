@@ -168,28 +168,26 @@ async function removeStrainFromList(email, strain, cultivator, type) {
   }
 }
 async function initializeButtonState(email, strain, cultivator, type, button) {
-  const myStrains = await fetchUserStrains(email);
-  const isListed = myStrains.some(item => 
-    item.strain === strain && item.cultivator === cultivator && item.product_type === type
-  );
-
-  button.textContent = isListed ? '- My List' : '+ My List';
-  button.onclick = isListed ? () => removeStrainFromList(email, strain, cultivator, type) : () => addStrainToMyList(email, strain, cultivator, type);
+    if (!email) {
+        return;
+    }
+    const myStrains = await fetchUserStrains(email);
+    const isListed = myStrains.some(item => 
+        item.strain === strain && item.cultivator === cultivator && item.product_type === type
+    );
+  
+    button.textContent = isListed ? '- My List' : '+ My List';
+    button.onclick = isListed ? () => removeStrainFromList(email, strain, cultivator, type) : () => addStrainToMyList(email, strain, cultivator, type);
 }
 
 window.addEventListener('supabaseClientReady', async function() {
-  const userEmail = await window.supabaseClient.getCurrentUserEmail();
-  const imageUrls = await window.supabaseClient.fetchImageUrls("flower", flowerIdValue);
-  if (imageUrls && imageUrls.length > 0) {
-    await window.supabaseClient.updateCarouselWithImages(imageUrls);
-  }
-  if (!userEmail) {
-    return;
-  }
-  const strainValue = "{{ strain }}";
-  await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
-  const emailInput = document.getElementById('connoisseur');
-  emailInput.value = userEmail;
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    const imageUrls = await window.supabaseClient.fetchImageUrls("flower", flowerIdValue);
+    if (imageUrls && imageUrls.length > 0) {
+        await window.supabaseClient.updateCarouselWithImages(imageUrls);
+    }
+    const strainValue = "{{ strain }}";
+    await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
 });
 
 </script>

@@ -171,28 +171,25 @@ async function removeStrainFromList(email, strain, cultivator, type) {
   }
 }
 async function initializeButtonState(email, strain, cultivator, type, button) {
+  if (!email) {
+      return;
+  }
   const myStrains = await fetchUserStrains(email);
   const isListed = myStrains.some(item => 
-    item.strain === strain && item.cultivator === cultivator && item.product_type === type
+      item.strain === strain && item.cultivator === cultivator && item.product_type === type
   );
-
   button.textContent = isListed ? 'Remove from My List' : 'Add to My List';
   button.onclick = isListed ? () => removeStrainFromList(email, strain, cultivator, type) : () => addStrainToMyList(email, strain, cultivator, type);
 }
 
 window.addEventListener('supabaseClientReady', async function() {
-  const imageUrls = await window.supabaseClient.fetchImageUrls("pre-roll", preRollIdValue);
-  if (imageUrls && imageUrls.length > 0) {
-    await window.supabaseClient.updateCarouselWithImages(imageUrls);
-  }
-  const strainValue = "{{ strain }}";
-  const userEmail = await window.supabaseClient.getCurrentUserEmail();
-  if (!userEmail) {
-    return;
-  }
-  await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
-  const emailInput = document.getElementById('connoisseur');
-  emailInput.value = userEmail;
+    const imageUrls = await window.supabaseClient.fetchImageUrls("pre-roll", preRollIdValue);
+    if (imageUrls && imageUrls.length > 0) {
+        await window.supabaseClient.updateCarouselWithImages(imageUrls);
+    }
+    const strainValue = "{{ strain }}";
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    await initializeButtonState(userEmail, strainValue, cultivatorValue, productType, addToListBtn);
 });
 </script>
 <script type="module" src="{{ url_for('static', path='js/forms/generate_preroll_rating_questions.js') }}" async></script>

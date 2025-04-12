@@ -334,7 +334,7 @@ async def handle_edible_review_post(
 async def handle_vibe_edible_post(
     request: Request,
     edible_strain: str = Query(None, alias="edible_strain"),
-    product_type_selected: str = Query(None, alias="product_type_selected"),
+    product_type_selected: str = Query("edible", alias="product_type_selected"),
     cultivator_selected: str = Query(None, alias="cultivator_selected"),
     strain_selected: str = Query(None, alias="strain_selected"),
     db: Session = Depends(get_db),

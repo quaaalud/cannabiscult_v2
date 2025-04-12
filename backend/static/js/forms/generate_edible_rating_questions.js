@@ -15,7 +15,6 @@ if (cultivator === "Connoisseur" || cultivator === "Cultivar") {
   packQuestion = QuestionBuilder.createTextInputQuestion("Please enter Pack Code listed on the product label.", "pack_code", "For example, P1, B4 etc");
 }
 const edibleQuestions = [
-  QuestionBuilder.createEmailQuestion(strain, cultivator),
   QuestionBuilder.createRatingQuestion(strain, "appearance_rating", "Appearance Rating", { startLabel: "Not Desirable", endLabel: "Desirable" }),
   QuestionBuilder.createTextInputQuestion(`${strain} - Appearance Rating Explanation`, "appearance_explanation", "Explain your appearance rating for this strain"),
   QuestionBuilder.createRatingQuestion(strain, "feel_rating", "Feel Rating", { startLabel: "Not Desireable", endLabel: "Desirable" }),
@@ -126,10 +125,7 @@ async function saveCurrentAnswer() {
     const input = document.getElementById(question.key);
     if (input) {
       var inputVal = input.value;
-      if (question.key === "connoisseur") {
-        const lowerCaseVal = inputVal.toLowerCase()
-        formState[question.key] = lowerCaseVal
-      } else if (question.key == "effects_explanation") {
+      if (question.key == "effects_explanation") {
         const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
         const combinedString = selectedOptions.join(' ');
         formState.effects_explanation = combinedString;
@@ -267,16 +263,15 @@ document.addEventListener('keydown', function(event) {
 });
 
 document.getElementById('nextBtn').addEventListener('click', async function() {
-    if (step === 0) {
-        const emailInput = document.getElementById('connoisseur');
-        if (emailInput) {
-            const lowerCaseEmail = emailInput.value.toLowerCase();
-            const voterExists = await checkVoterExists(lowerCaseEmail);
+    if (step === 0 && !formState['connoisseur']) {
+        const userEmail = await window.supabaseClient.getCurrentUserEmail();
+        if (userEmail) {
+            const voterExists = await checkVoterExists(userEmail);
             if (!voterExists) {
                 $('#FlowerVoterInfoCaptureModal').modal('show');
                 return;
             }
-            formState['connoisseur'] = lowerCaseEmail;
+            formState['connoisseur'] = userEmail;
             document.getElementById('paginationContainer').style.display = 'block';
         }
     }
@@ -300,15 +295,6 @@ document.getElementById('backBtn').addEventListener('click', function() {
 
 window.addEventListener('supabaseClientReady', async function() {
     loadQuestion();
-    document.addEventListener("DOMContentLoaded", async function() {
-        try {
-            const userEmail = await window.supabaseClient.getCurrentUserEmail();
-            const emailInput = document.getElementById('connoisseur');
-            if (!userEmail || emailInput) { return; };
-            emailInput.value = userEmail.toLowerCase();
-            return;
-        } catch { return; }
-    });
 });
 $('#FlowerVoterInfoCaptureModal').on('shown.bs.modal', function () {
     $('#FlowerVoterInfoCaptureModal').attr('aria-modal', 'true');
@@ -319,5 +305,13 @@ $('#FlowerVoterInfoCaptureModal').on('shown.bs.modal', function () {
 $('#FlowerVoterInfoCaptureModal').on('hidden.bs.modal', function () {
     $('#FlowerVoterInfoCaptureModal').removeAttr('aria-modal');
     $('#FlowerVoterInfoCaptureModal').removeAttr('role');
-    nextBtn.focus();
+    const cookieString = document.cookie.split('; ').find(row => row.startsWith('mystery_voter='));
+    const flagValue = cookieString ? cookieString.split('=')[1] : null;
+    
+    if (flagValue === 'true') {
+        saveCurrentAnswer();
+        step++;
+        loadQuestion();
+        document.cookie = "mystery_voter=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+    }
 });

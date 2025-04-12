@@ -7,8 +7,6 @@ const prerollQuestionsContainer = document.getElementById('cardBody');
 const cardTitle = document.getElementById('cardTitle');
 
 const prerollQuestions = [
-  QuestionBuilder.createEmailQuestion(strain, cultivator),
-
   QuestionBuilder.createTextInputQuestion(
     "Please enter Batch ID listed on the box COA label.",
     "pack_code",
@@ -266,50 +264,56 @@ async function submitForm(formState) {
 }
 document.getElementById('nextBtn').addEventListener('click', async function() {
   if (step === 0) {
-    const emailInput = document.getElementById('connoisseur');
-    if (emailInput) {
-      const lowerCaseEmail = emailInput.value.toLowerCase();
-      const voterExists = await checkVoterExists(lowerCaseEmail);
+    const userEmail = await window.supabaseClient.getCurrentUserEmail();
+    if (userEmail) {
+      const voterExists = await checkVoterExists(userEmail);
       if (!voterExists) {
         $('#FlowerVoterInfoCaptureModal').modal('show');
         return;
       }
-      formState['connoisseur'] = lowerCaseEmail;
+      formState['connoisseur'] = userEmail;
       document.getElementById('paginationContainer').style.display = 'block';
     }
   }
   if (step < prerollQuestions.length) {
-    saveCurrentAnswer();
-    step++;
-    loadQuestion();
+      saveCurrentAnswer();
+      step++;
+      loadQuestion();
   } else {
-    saveCurrentAnswer();
-    await submitForm(formState);
+      saveCurrentAnswer();
+      await submitForm(formState);
   }
 });
 
 document.getElementById('backBtn').addEventListener('click', function() {
-  if (step > 0) {
-    saveCurrentAnswer();
-    step--;
-    loadQuestion(step);
-  }
+    if (step > 0) {
+        saveCurrentAnswer();
+        step--;
+        loadQuestion(step);
+    }
 });
 
 window.addEventListener('supabaseClientReady', async function() {
-  loadQuestion();
-  document.addEventListener("DOMContentLoaded", async function() {
+    loadQuestion();
     await loadFormStateforPreRolls();
-    try {
-      const userEmail = await window.supabaseClient.getCurrentUserEmail();
-      if (!userEmail) {
-        return;
-      }
-      const emailInput = document.getElementById('connoisseur');
-      emailInput.value = userEmail;
-    } catch {
-      return;
+});
+
+$('#FlowerVoterInfoCaptureModal').on('shown.bs.modal', function () {
+    $('#FlowerVoterInfoCaptureModal').attr('aria-modal', 'true');
+    $('#FlowerVoterInfoCaptureModal').attr('role', 'dialog');
+    $('#FlowerVoterInfoCaptureModal input').first().focus();
+});
+
+$('#FlowerVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+    $('#FlowerVoterInfoCaptureModal').removeAttr('aria-modal');
+    $('#FlowerVoterInfoCaptureModal').removeAttr('role');
+    const cookieString = document.cookie.split('; ').find(row => row.startsWith('mystery_voter='));
+    const flagValue = cookieString ? cookieString.split('=')[1] : null;
+    
+    if (flagValue === 'true') {
+        saveCurrentAnswer();
+        step++;
+        loadQuestion();
+        document.cookie = "mystery_voter=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
     }
-    return;
-  });
 });

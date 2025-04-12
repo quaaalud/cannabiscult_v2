@@ -525,6 +525,14 @@ class SupabaseClient {
         return user.id;
       }
     }
+    parseUserMetadata(user) {
+        if (!user || typeof user !== 'object') {
+            return { email: '', name: '', phone: '', zip_code: '' };
+        }
+        const email = user.email || (user.user_metadata && user.user_metadata.email) || '';
+        const { name = '', phone = '', zip_code = '' } = user.user_metadata || {};
+        return { email, name, phone, zip_code };
+    }
     async checkUserAuthentication() {
         try {
             const { data: { user }, error } = await this.supabase.auth.getUser();

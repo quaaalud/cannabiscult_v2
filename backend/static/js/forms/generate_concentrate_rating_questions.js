@@ -8,7 +8,6 @@ const cardTitle = document.getElementById('cardTitle');
 let step = 0;
 
 const concentrateQuestions = [
-    QuestionBuilder.createEmailQuestion(strain, cultivator),
     QuestionBuilder.createRatingQuestion(
         strain,
         "color_rating",
@@ -191,10 +190,7 @@ async function saveCurrentAnswer() {
         const input = document.getElementById(question.key);
         if (input) {
           var inputVal = input.value;
-          if (question.key === "connoisseur") {
-              const lowerCaseVal = inputVal.toLowerCase()
-              formState[question.key] = lowerCaseVal
-          } else if (question.key == "effects_explanation") {
+          if (question.key == "effects_explanation") {
               const selectedOptions = Array.from(document.getElementById('effects_explanation').selectedOptions).map(option => option.value);
               const combinedString = selectedOptions.join(' ');
               formState.effects_explanation = combinedString;
@@ -299,15 +295,14 @@ async function submitForm(formState) {
 }
 document.getElementById('nextBtn').addEventListener('click', async function() {
     if (step === 0) {
-        const emailInput = document.getElementById('connoisseur');
-        if (emailInput) {
-            const lowerCaseEmail = emailInput.value.toLowerCase();
-            const voterExists = await checkVoterExists(lowerCaseEmail);
+        const userEmail = await window.supabaseClient.getCurrentUserEmail();
+        if (userEmail) {
+            const voterExists = await checkVoterExists(userEmail);
             if (!voterExists) {
                 $('#FlowerVoterInfoCaptureModal').modal('show');
                 return;
             }
-            formState['connoisseur'] = lowerCaseEmail;
+            formState['connoisseur'] = userEmail;
             document.getElementById('paginationContainer').style.display = 'block';
         }
     }
@@ -333,18 +328,23 @@ document.getElementById('backBtn').addEventListener('click', function() {
 
 window.addEventListener('supabaseClientReady', async function() {
     loadQuestion();
-    document.addEventListener("DOMContentLoaded", async function() {
-        try {
-            const userEmail = await window.supabaseClient.getCurrentUserEmail();
-            if (!userEmail) {
-              return;
-            }
-            const emailInput = document.getElementById('connoisseur');
-            emailInput.value = userEmail;
-            return;
-        } catch {
-            return;
-        }
-    });
+});
+$('#FlowerVoterInfoCaptureModal').on('shown.bs.modal', function () {
+    $('#FlowerVoterInfoCaptureModal').attr('aria-modal', 'true');
+    $('#FlowerVoterInfoCaptureModal').attr('role', 'dialog');
+    $('#FlowerVoterInfoCaptureModal input').first().focus();
 });
 
+$('#FlowerVoterInfoCaptureModal').on('hidden.bs.modal', function () {
+    $('#FlowerVoterInfoCaptureModal').removeAttr('aria-modal');
+    $('#FlowerVoterInfoCaptureModal').removeAttr('role');
+    const cookieString = document.cookie.split('; ').find(row => row.startsWith('mystery_voter='));
+    const flagValue = cookieString ? cookieString.split('=')[1] : null;
+    
+    if (flagValue === 'true') {
+        saveCurrentAnswer();
+        step++;
+        loadQuestion();
+        document.cookie = "mystery_voter=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;";
+    }
+});
