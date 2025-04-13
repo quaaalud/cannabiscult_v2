@@ -90,9 +90,22 @@ document.addEventListener('DOMContentLoaded', function () {
       myForgotPassowrdModal.hide();
     }
   }
+  function enableEnterKeySubmission(formId, submitButtonSelector) {
+    const formElement = document.getElementById(formId);
+    if (!formElement) return;
+
+    formElement.addEventListener('keydown', function(event) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        document.querySelector(submitButtonSelector).click();
+      }
+    });
+  }
   window.addEventListener('load', function() {
     handleLoginModalFormSubmission();
     submitRegistrationModalForm();
+    enableEnterKeySubmission('logInModalForm', 'button[name="login-submit"]');
+    enableEnterKeySubmission('signUpModalForm', '#signUpModalSubmit');
   }, false);
   document.querySelector('#forgotPasswordModalLink').addEventListener('click', function() {
     $('#loginModal').modal('hide');
