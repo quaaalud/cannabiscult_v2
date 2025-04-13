@@ -247,18 +247,18 @@ async def process_action_based_on_user_settings(
 @settings.retry_db
 def update_user_password_in_db(user_email: str, new_password: str, repeated_password: str, db: Session) -> User:
     if new_password.strip() == repeated_password.strip():
-        try:
-            user = db.query(User).filter(User.email == user_email.lower().strip()).first()
-            if not user:
-                return None
-            user.password = new_password
-            db.commit()
-            db.refresh(user)
-            return user
-        except SQLAlchemyError:
-            db.rollback()
-    else:
-        return None
+        raise ValueError("Password values did not match.")
+    try:
+        user = db.query(User).filter(User.email == user_email.lower().strip()).first()
+        if not user:
+            return None
+        user.password = new_password
+        db.commit()
+        db.refresh(user)
+        return user
+    except SQLAlchemyError as se:
+        db.rollback()
+        raise se
 
 
 @settings.retry_db

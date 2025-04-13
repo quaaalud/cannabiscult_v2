@@ -79,7 +79,7 @@ def login_supa_user(user: UserLogin) -> Dict[str, bool]:
 
 
 @router.post(
-    "/update_password", response_model=Dict[str, ShowUser], dependencies=[Depends(settings.jwt_auth_dependency)]
+    "/update_password", response_model=Dict[str, str], dependencies=[Depends(settings.jwt_auth_dependency)]
 )
 def update_user_password(
     request: Request,
@@ -94,7 +94,7 @@ def update_user_password(
         repeated_password=repeated_password,
         db=db,
     )
-    return {"current_user_profile": ShowUser.from_orm(user)}
+    return {"current_user_profile": "success" if user else "fail"}
 
 
 @router.get("/logout/", response_model=None)
