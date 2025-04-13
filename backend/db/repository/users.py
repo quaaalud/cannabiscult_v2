@@ -246,7 +246,7 @@ async def process_action_based_on_user_settings(
 
 @settings.retry_db
 def update_user_password_in_db(user_email: str, new_password: str, repeated_password: str, db: Session) -> User:
-    if new_password.strip() == repeated_password.strip():
+    if new_password.strip() != repeated_password.strip():
         raise ValueError("Password values did not match.")
     try:
         user = db.query(User).filter(User.email == user_email.lower().strip()).first()
