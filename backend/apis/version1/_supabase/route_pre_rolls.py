@@ -12,6 +12,7 @@ from typing import Dict, Any, Optional, List
 from db.session import get_db
 from db.repository import pre_rolls as pre_rolls_repo
 from schemas import pre_rolls as pre_rolls_schemas
+from core.config import settings
 
 
 router = APIRouter()
@@ -92,7 +93,7 @@ async def query_pre_roll_and_description(
         )
 
 
-@router.post("/ranking", response_model=Any)
+@router.post("/ranking", response_model=Any, dependencies=[Depends(settings.jwt_auth_dependency)])
 async def update_or_create_pre_roll_ranking_route(
     ranking_data: pre_rolls_schemas.PreRollRankingSchema = Body(...), db: Session = Depends(get_db)
 ):

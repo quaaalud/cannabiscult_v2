@@ -10,9 +10,11 @@ from fastapi import (
 )
 from typing import Dict, Any, Optional
 from supabase import Client
+from storage3.exceptions import StorageApiError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from db.session import get_db
+from core.config import settings
 from db._supabase.connect_to_storage import copy_new_primary_to_reviews_directory
 from db.repository.search_class import get_card_path_by_details, RANKING_LOOKUP, product_type_to_model
 from db.repository.images import (
@@ -26,7 +28,7 @@ from db.repository.images import (
 router = APIRouter()
 
 
-@router.post("/{product_type}/{product_id}/upload/")
+@router.post("/{product_type}/{product_id}/upload/", dependencies=[Depends(settings.jwt_auth_dependency)])
 async def upload_product_image(
     product_type: str,
     product_id: str,
@@ -46,7 +48,7 @@ async def upload_product_image(
     if is_new_product != "new_product":
         return results
     card_path = results.get("path")
-    supabase: Client = Depends(_return_supabase_private_client),
+    supabase: Client = Depends(_return_supabase_private_client)
     await make_primary_image(product_type, product_id, card_path)
     return results
 
@@ -59,14 +61,15 @@ async def list_product_images(
 ):
     try:
         images = supabase.storage.from_("additional_product_images").list(f"{product_type}/{product_id}")
-        if not images:
-            return []
+    except StorageApiError:
+        supabase.auth.refresh_session()
+        images = supabase.storage.from_("additional_product_images").list(f"{product_type}/{product_id}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     return [
         supabase.storage.from_("additional_product_images").get_public_url(f"{product_type}/{product_id}/{img['name']}")
         for img in images
-    ]
+    ] if images else []
 
 
 @router.get("/get_all", response_model=Optional[Dict[str, Any]])
@@ -101,6 +104,11 @@ async def get_all_product_images_by_product_match(
         images = supabase.storage.from_("additional_product_images").list(f"{product_type}/{product_id}")
         if not images:
             return {product_type.replace("-", "_").lower(): {str(product_id): primary_image}}
+    except StorageApiError:
+        supabase.auth.refresh_session()
+        images = supabase.storage.from_("additional_product_images").list(f"{product_type}/{product_id}")
+        if not images:
+            return {product_type.replace("-", "_").lower(): {str(product_id): primary_image}}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     extra_images = {}
@@ -129,7 +137,7 @@ async def get_image_from_file_path(
     return {"img_url": img_url}
 
 
-@router.post("/make_primary", response_model=Dict[str, Any])
+@router.post("/make_primary", response_model=Dict[str, Any], dependencies=[Depends(settings.jwt_auth_dependency)])
 async def make_primary_image_route(
     product_type: str = Query(..., description="Product type, e.g. Flower, Concentrate, Pre-roll"),
     product_id: int = Query(..., description="ID of the product in the database"),

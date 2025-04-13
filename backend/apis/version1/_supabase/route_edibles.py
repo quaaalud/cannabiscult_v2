@@ -21,6 +21,7 @@ from db.repository.edibles import (
 from schemas.edibles import CreateEdibleRanking, CreateVibeEdibleRanking
 from db.base import Edible_Ranking, Vibe_Edible_Ranking
 from schemas.product_types import RatingsErrorResponse
+from core.config import settings
 
 router = APIRouter()
 
@@ -53,7 +54,7 @@ async def query_vibe_edible_data_by_strain(
     )
 
 
-@router.post("/ranking", response_model=None)
+@router.post("/ranking", response_model=None, dependencies=[Depends(settings.jwt_auth_dependency)])
 def submit_edible_ranking_route(
     edible_ranking: CreateEdibleRanking, db: Session = Depends(get_db)
 ) -> Edible_Ranking:
@@ -61,7 +62,7 @@ def submit_edible_ranking_route(
     return submitted_ranking
 
 
-@router.post("/submit-vibe-edible-ranking", response_model=None)
+@router.post("/submit-vibe-edible-ranking", response_model=None, dependencies=[Depends(settings.jwt_auth_dependency)])
 def submit_vibe_edible_ranking(
     edible_ranking: CreateVibeEdibleRanking, db: Session = Depends(get_db)
 ) -> Vibe_Edible_Ranking:

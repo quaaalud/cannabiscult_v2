@@ -11,7 +11,6 @@ from sqlalchemy.orm import Session
 from typing import List
 from db.session import get_db
 from db.repository.search_class import upsert_terp_profile
-from db.repository.images import make_primary_image
 from schemas.product_types import ProductSubmission
 from db.models import concentrates, edibles, flowers, pre_rolls
 from core.config import settings

@@ -74,8 +74,11 @@ def create_supa_user(user: UserCreate) -> SupaAuth:
 
 @router.post("/", response_model=Dict[str, bool])
 def login_supa_user(user: UserLogin) -> Dict[str, bool]:
-    logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
-    return {"logged_in_user": True if logged_in_user else False}
+    try:
+        logged_in_user = SupaAuth.login_supabase_user_with_password(user=user)
+        return {"logged_in_user": True if logged_in_user else False}
+    except Exception:
+        {"logged_in_user": False}
 
 
 @router.post(

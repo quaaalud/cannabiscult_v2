@@ -108,7 +108,7 @@ async def submit_concentrate_ranking(
     return await update_or_create_concentrate_ranking(ranking=concentrate_ranking, db=db)
 
 
-@router.post("/submit-vibe-concentrate-ranking", response_model=None)
+@router.post("/submit-vibe-concentrate-ranking", response_model=None, dependencies=[Depends(settings.jwt_auth_dependency)])
 async def submit_vibe_concentrate_ranking(
     ranking: CreateConcentrateRanking, db: Session = Depends(get_db)
 ) -> Vibe_Concentrate_Ranking:
