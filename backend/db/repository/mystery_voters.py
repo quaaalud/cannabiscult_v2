@@ -31,13 +31,10 @@ def create_new_voter(voter: MysteryVoterCreate, db: Session) -> Union[MysteryVot
         "agree_tos": True,
         "date_posted": date_handler(datetime.datetime.now()),
     }
-
-    # Handle optional fields
     if voter.industry_employer is not None:
         new_voter_data["industry_employer"] = str(voter.industry_employer)
     if voter.industry_job_title is not None:
         new_voter_data["industry_job_title"] = str(voter.industry_job_title)
-
     new_voter = MysteryVoter(**new_voter_data)
     try:
         db.add(new_voter)

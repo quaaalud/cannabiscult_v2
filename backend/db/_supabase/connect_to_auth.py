@@ -15,17 +15,12 @@ if str(Path(__file__).parents[2]) not in sys.path:
 from supabase import Client
 from db._supabase import supa_client
 from gotrue.errors import AuthApiError
-from schemas.users import UserCreate, UserLogin
-from db.repository.users import add_user_to_supabase
+from schemas.users import UserLogin
 
 
 class SupaAuth:
 
     _client: Client = supa_client.return_created_client()
-
-    @classmethod
-    def create_new_supabase_user(cls, user: UserCreate) -> Client:
-        return add_user_to_supabase(user, cls._client)
 
     @classmethod
     def login_supabase_user_with_password(cls, user: UserLogin):
@@ -69,5 +64,4 @@ class SupaAuth:
 
 
 if __name__ == "__main__":
-
     print(SupaAuth.return_current_user_email())

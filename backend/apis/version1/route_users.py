@@ -56,12 +56,12 @@ templates_dir = Path(
 templates = Jinja2Templates(directory=str(templates_dir))
 
 
-@router.post("/create_user", response_model=Dict[str, ShowUser])
+@router.post("/create_user", response_model=Dict[str, str])
 def submit_create_new_user_route(
     user: UserCreate, background_tasks: BackgroundTasks, request: Request, db: Session = Depends(get_db)
 ):
     background_tasks.add_task(create_new_user, user, db)
-    return {"created_user": user}
+    return {"created_user": "completed"}
 
 
 @router.post("/new_supa_user", response_model=Dict[str, ShowUser])

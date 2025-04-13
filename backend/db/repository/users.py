@@ -35,77 +35,32 @@ def decode_email(encoded_email: str) -> str:
 
 
 @settings.retry_db
-def add_user_to_supabase(user: UserCreate, _auth: Client):
-    user = User(
-        username=user.username,
-        email=user.email,
-        name=user.name,
-        phone=user.phone,
-        zip_code=user.zip_code,
-        password=user.password,
-        agree_tos=True,
-        can_vote=False,
-        is_superuser=False,
-    )
-    try:
-        res = _auth.auth.sign_up(
-            {
-                "email": user.email,
-                "password": user.password,
-                "options": {
-                    "data": {
-                        "username": user.username,
-                        "name": user.name,
-                        "zip_code": user.zip_code,
-                        "agree_tos": user.agree_tos,
-                        "phone": user.phone,
-                        "can_vote": user.can_vote,
-                        "is_superuser": user.is_superuser,
-                    }
-                },
-            }
-        )
-        return res
-    except Exception:
-        pass
-
-
-@settings.retry_db
 def create_new_user(user: UserCreate, db: Session):
     try:
-        existing_user = db.query(User).filter(User.email == user.email).first()
-        if existing_user:
-            existing_user.username = user.username
-            existing_user.name = user.name
-            if user.auth_id:
-                existing_user.auth_id = user.auth_id
-            db.commit()
-            db.refresh(existing_user)
-            return existing_user
-        user = User(
-            username=user.username,
-            email=user.email,
-            name=user.name,
-            phone=user.phone,
-            zip_code=user.zip_code,
-            password=user.password,
-            agree_tos=True,
-            can_vote=True,
-            is_superuser=False,
-            auth_id=user.auth_id,
-        )
-        db.add(user)
+        user_data = {
+            "username": user.username,
+            "email": user.email,
+            "name": user.name,
+            "phone": user.phone,
+            "zip_code": user.zip_code,
+            "password": user.password,
+            "agree_tos": True,
+            "can_vote": True,
+            "is_superuser": False,
+            "auth_id": user.auth_id,
+        }
+        db.execute(insert(User).values(**user_data).on_conflict_do_nothing(index_elements=['email']))
         if user.auth_id:
-            default_settings = UserSettings(
+            settings_stmt = insert(UserSettings).values(
                 user_id=user.auth_id,
                 text_settings={"enabled": "yes"},
                 email_settings={"enabled": "yes"},
                 site_settings={"dark_mode": "system"},
-            )
-            db.add(default_settings)
+            ).on_conflict_do_nothing(index_elements=['user_id'])
+            db.execute(settings_stmt)
         db.commit()
-        return user
-    except Exception as e:
+        return
+    except SQLAlchemyError as e:
         db.rollback()
         raise e
 

@@ -47,7 +47,7 @@ class User(Base):
     is_superuser = Column(Boolean(), default=False)
     auth_id = Column(UUID, nullable=True, unique=True)
 
-    strain_lists = relationship("UserStrainList", back_populates="user")
+    strain_lists = relationship("UserStrainList", back_populates="user", lazy="selectin")
     sent_messages = relationship(
         "MessagesToUsers", back_populates="user", cascade="all, delete-orphan", passive_deletes=True, lazy="noload"
     )
@@ -77,7 +77,7 @@ class UserStrainList(Base):
     to_review = Column(Boolean, nullable=False, default=True)
     product_type = Column(Text, nullable=True)
     strain_notes = Column(Text, nullable=True, default="N/A", server_default="N/A")
-    user = relationship("User", back_populates="strain_lists", lazy="noload")
+    user = relationship("User", back_populates="strain_lists", lazy="noload", uselist=False)
 
 
 class MysteryVoter(Base):
@@ -93,13 +93,13 @@ class MysteryVoter(Base):
     date_posted = Column(Date)
     uuid = Column(UUID(as_uuid=True), ForeignKey("user.id"), unique=True, index=True)
 
-    vibe_edible_voters = relationship("Vibe_Edible_Voter", back_populates="mystery_voter")
+    vibe_edible_voters = relationship("Vibe_Edible_Voter", back_populates="mystery_voter", lazy="noload", uselist=False)
 
 
 class Vibe_Edible_Voter(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement="auto")
     mystery_voter_email = Column(String, ForeignKey("mysteryvoter.email"), nullable=False)
-    mystery_voter = relationship("MysteryVoter", back_populates="vibe_edible_voters")
+    mystery_voter = relationship("MysteryVoter", back_populates="vibe_edible_voters", lazy="noload", uselist=False)
 
 
 class MoluvHeadstashBowl(Base):
