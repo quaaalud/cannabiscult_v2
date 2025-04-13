@@ -12,7 +12,22 @@ from core.config import settings
 from typing import Generator
 
 
-supa_engine = engine = create_engine(settings.SUPA_URL)
+supa_engine = engine = create_engine(
+    settings.SUPA_URL,
+    pool_size=5,
+    max_overflow=10,
+    pool_timeout=30,
+    pool_recycle=1800,
+    pool_pre_ping=True,
+    pool_use_lifo=True,
+    connect_args={
+        "keepalives": 1,
+        "keepalives_idle": 30,
+        "keepalives_interval": 10,
+        "keepalives_count": 5,
+        "options": "-c statement_timeout=5000"
+    }
+)
 SupaLocal = sessionmaker(autocommit=False, autoflush=False, bind=supa_engine)
 
 
