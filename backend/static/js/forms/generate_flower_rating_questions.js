@@ -176,7 +176,7 @@ async function checkVoterExists(email) {
 }
 
 async function loadQuestion() {
-
+    const nextBtn = document.getElementById('nextBtn');
     if (step < flowerQuestions.length) {
         nextBtn.textContent = 'Next';
         const question = flowerQuestions[step];
@@ -213,7 +213,7 @@ function convertToIntegers(formState, integerKeys) {
 async function submitForm(formState) {
     formState.connoisseur = formState.connoisseur.toLowerCase();
     delete formState.lastSavedIndex;
-    const integerKeys = ['appearance_rating', 'smell_rating', 'flavor_rating', 'freshness_score', 'harshness_rating', 'effects_rating'];
+    const integerKeys = ['appearance_rating', 'smell_rating', 'flavor_rating', 'freshness_rating', 'harshness_rating', 'effects_rating'];
     convertToIntegers(formState, integerKeys);
     formState.flower_id = parseInt(flowerId);
     try {
@@ -241,6 +241,7 @@ document.addEventListener('keydown', function(event) {
     const formElements = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'];
     const nonFormElements = ['startReviewBtn', 'closeBtn'];
     const startReviewButton = document.getElementById('startReviewBtn')
+    const nextBtn = document.getElementById('nextBtn');
     if (event.key === 'Enter') {
         if (activeElement.type === 'radio') {
             activeElement.checked = true;
@@ -281,6 +282,10 @@ document.getElementById('nextBtn').addEventListener('click', async function() {
         loadQuestion();
     } else {
         saveCurrentAnswer();
+        const allAnswered = await validateResponses();
+        if (!allAnswered) {
+          return alert("Please answer every rating before you submit.");
+        }
         await submitForm(formState);
     }
 });

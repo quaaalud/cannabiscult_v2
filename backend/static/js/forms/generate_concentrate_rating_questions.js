@@ -92,6 +92,7 @@ const int_keys = concentrateQuestions
 .map(question => question.key);
 
 document.addEventListener('keydown', function enterKeyHandler(event) {
+    const nextBtn = document.getElementById('nextBtn');
     if (event.keyCode === 13) {
         event.preventDefault();
         nextBtn.click();
@@ -240,6 +241,7 @@ async function checkVoterExists(email) {
 }
 
 async function loadQuestion() {
+    const nextBtn = document.getElementById('nextBtn')
     if (step < concentrateQuestions.length) {
         nextBtn.textContent = 'Next';
         const question = concentrateQuestions[step];
@@ -312,6 +314,10 @@ document.getElementById('nextBtn').addEventListener('click', async function() {
         loadQuestion();
     } else {
         saveCurrentAnswer();
+        const allAnswered = await validateResponses();
+        if (!allAnswered) {
+          return alert("Please answer every rating before you submit.");
+        }
         await submitForm(formState);
     }
 });

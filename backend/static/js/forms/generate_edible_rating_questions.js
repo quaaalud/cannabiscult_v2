@@ -175,6 +175,7 @@ async function checkVoterExists(email) {
 }
 
 async function loadQuestion() {
+    nextBtn = document.getElementById('nextBtn')
     if (step < edibleQuestions.length) {
         nextBtn.textContent = 'Next';
         const question = edibleQuestions[step];
@@ -192,9 +193,9 @@ async function loadQuestion() {
             }
         }
     } else {
-      cardTitle.innerHTML = "All Questions Completed";
-      edibleQuestionsContainer.innerHTML = "";
-      nextBtn.textContent = 'Submit';
+        cardTitle.innerHTML = "All Questions Completed";
+        edibleQuestionsContainer.innerHTML = "";
+        nextBtn.textContent = 'Submit';
     }
     await createPagination();
     document.querySelectorAll('button, input, select, textarea').forEach(element => {
@@ -241,6 +242,7 @@ document.addEventListener('keydown', function(event) {
     const formElements = ['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON'];
     const nonFormElements = ['startReviewBtn', 'closeBtn'];
     const startReviewButton = document.getElementById('startReviewBtn')
+    nextBtn = document.getElementById('nextBtn')
     if (event.key === 'Enter') {
         if (activeElement.type === 'radio') {
             activeElement.checked = true;
@@ -281,6 +283,10 @@ document.getElementById('nextBtn').addEventListener('click', async function() {
         loadQuestion();
     } else {
         saveCurrentAnswer();
+        const allAnswered = await validateResponses();
+        if (!allAnswered) {
+          return alert("Please answer every rating before you submit.");
+        }
         await submitForm(formState);
     }
 });

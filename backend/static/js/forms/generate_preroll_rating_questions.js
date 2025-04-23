@@ -53,6 +53,7 @@ const int_keys = prerollQuestions
 .map(question => question.key);
 
 document.addEventListener('keydown', function enterKeyHandler(event) {
+  nextBtn = document.getElementById('nextBtn')
   if (event.keyCode === 13) {
     event.preventDefault();
     nextBtn.click();
@@ -203,6 +204,7 @@ async function loadQuestion() {
     if (step > prerollQuestions.length) {
       step = 0
     }
+    nextBtn = document.getElementById('nextBtn')
     if (step < prerollQuestions.length) {
         nextBtn.textContent = 'Next';
         const question = prerollQuestions[step];
@@ -281,6 +283,10 @@ document.getElementById('nextBtn').addEventListener('click', async function() {
       loadQuestion();
   } else {
       saveCurrentAnswer();
+      const allAnswered = await validateResponses();
+      if (!allAnswered) {
+        return alert("Please answer every rating before you submit.");
+      }
       await submitForm(formState);
   }
 });
