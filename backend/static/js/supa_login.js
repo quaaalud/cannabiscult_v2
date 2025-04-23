@@ -284,6 +284,8 @@ class SupabaseClient {
               });
               if (error) throw error;
               this.session = data.session;
+              const returnTo = window.location.pathname + window.location.search;
+              sessionStorage.setItem("postLoginUrl", returnTo);
               window.location.href = "/auth/callback";
         } catch (error) {
             console.error("Error in signInWithGoogle:", error.message);

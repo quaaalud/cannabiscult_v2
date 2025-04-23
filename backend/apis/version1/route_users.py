@@ -7,6 +7,7 @@ Created on Fri Mar 10 21:12:40 2023
 """
 
 from uuid import UUID
+from urllib.parse import urlparse, unquote
 from pathlib import Path
 from fastapi import APIRouter, Query, BackgroundTasks, Depends, status, HTTPException, Request, Form
 from fastapi.responses import RedirectResponse
@@ -286,7 +287,12 @@ async def google_auth_callback(request: Request, db: Session = Depends(get_db)):
     except Exception:
         return RedirectResponse(url="/login", status_code=302)
     else:
-        return RedirectResponse(url="/home", status_code=302)
+        raw = request.query_params.get("return_to", "")
+        return_to = unquote(raw) if raw else "/home"
+        path = urlparse(return_to).path
+        if path in ("/login", "/register"):
+            return_to = "/home"
+        return RedirectResponse(url=return_to, status_code=status.HTTP_302_FOUND)
 
 
 def _check_for_google_identity(supabase: Client) -> bool:

@@ -19,7 +19,13 @@
             })
           });
           if (response.ok) {
-            window.location.href = "/home";
+            const returnTo = sessionStorage.getItem("postLoginUrl") || "/home";
+            const path = new URL(returnTo, window.location.origin).pathname;
+            if (["/login", "/register"].includes(path)) {
+                window.location.href = "/home";
+            } else {
+                window.location.href = returnTo;
+            }
           } else {
             window.location.href = "/login?error=server_error";
           }
