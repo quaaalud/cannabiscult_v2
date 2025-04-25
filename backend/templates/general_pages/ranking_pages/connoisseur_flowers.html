@@ -5,58 +5,58 @@
 {% endblock %}
 
 {% block head %}
-<meta
+<meta 
   content="Cannabis Cult {{ strain }} Cultivar Rating Page."
   name="description"
 />
-<meta
+<meta 
   name="keywords"
   content="Cannabis Cult, Cultivar Review, Cannabis Ratings, Cannabis Review, Weed Reviews, Cannabis Near Me, Dispensary Reviews, Edible Ratings, Edible Reviews"
 />
-<meta
+<meta 
   property="og:image"
   content="{% if url_path %}{{ url_path }}{% else %}https://tahksrvuvfznfytctdsl.supabase.co/storage/v1/object/public/partner_images/logos/black_brain_vectorized.webp{% endif %}"
   alt="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Card"
 />
-<meta
+<meta 
   property="og:description"
   content="Cannabis Cult {{ strain }} Cultivar Connoisseur Rating Page."
 />
-<meta
+<meta 
   property="og:title"
   content="Cannabis Cult {% if strain %}{{ strain }} {% endif %}Cultivar Connoisseur Rating"
 />
-<meta
+<meta 
   name="twitter:card"
   content="summary_large_image"
 />
-<meta
+<meta 
   property="twitter:url"
   content="https://cannabiscult.co"
 />
-<meta
+<meta 
   property="twitter:site"
   content="@cannabiscult"
 />
-<meta
+<meta 
   property="twitter:title"
   content="Cannabis Cult Cultivar {% if strain %}{{ strain }} {% endif %}Connoisseur Rating."
 />
-<meta
+<meta 
   property="twitter:description"
   content="{{ strain }} Cultivar Review Page on CannabisCult.co"
 />
-<meta
+<meta 
   property="twitter:image"
   content="{{ url_path }}"
 />
-<meta
+<meta 
   property="twitter:image:alt"
   content="Cannabis Cult Cultivar Review Card for {{ strain }} Flower"
 />
-<link
+<link 
   rel="canonical"
-  href="https://cannabiscult.co/connoisseur-flowers{% if strain %}/get-flower?{{ strain }}{% endif %}"
+  href="https://cannabiscult.co/get-review?product_type=flower{% if strain %}&strain_selected={{ strain }}&cultivator_selected={{ cultivator }}{% endif %}"
 />
 {% endblock %}
 

@@ -544,6 +544,21 @@ async def flower_tournament_rd1_2025_landing_route(request: Request):
     )
 
 
+@general_pages_router.get("/vibe-lemon-jeffery", response_class=HTMLResponse)
+async def vibe_lemon_jeffery_landing_route(request: Request):
+    user_is_logged_in = await async_get_current_users_email() is not None
+    config = await get_config_obj()
+    return templates.TemplateResponse(
+        str(Path("general_pages", "pack_transition_pages", "2025", "vibe-lemon-jeffery.html")),
+        {
+            "request": request,
+            "user_is_logged_in": user_is_logged_in,
+            "SUPA_URL": config.SUPA_STORAGE_URL,
+            "PUB_KEY": config.SUPA_PUBLIC_KEY,
+        },
+    )
+
+
 @general_pages_router.get("/moluv-headstash-bowl", response_class=HTMLResponse)
 async def moluv_cult_collab_route(request: Request):
     return templates.TemplateResponse(
