@@ -48,6 +48,10 @@ class LegacyURLMiddleware(BaseHTTPMiddleware):
             "RC 39": ("Amaze", "Blueberry Clementine Live Rosin"),
             "RC 40": ("Vibe", "Grape Sunkist"),
             "RC 41": ("Monopoly Melts", "Grape Sherb"),
+            "R1CP1": ("Amaze", "Bull Dance"),
+            "R1CP2": ("Camp", "California 10"),
+            "R1CP3": ("Illicit", "Chem Butter"),
+            "R1CP4": ("Notorious", "Coal Creek Kush"),
         }
         query_params = dict(request.query_params)
         strain_selected = query_params.get("strain_selected")
