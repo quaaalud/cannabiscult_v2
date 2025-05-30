@@ -6,6 +6,7 @@ Created on Fri Dec 22 20:27:46 2023
 @author: dale
 """
 
+import json
 import base64
 import random
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Query
@@ -289,6 +290,25 @@ async def get_all_image_urls_route(limit=10, db: Session = Depends(get_db)):
     try:
         product_data = get_all_card_paths(db, limit)
         return StreamingResponse(generate_signed_urls(product_data), media_type="application/json")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/get-all-image-urls/nostream/", response_model=List[Any])
+async def get_all_image_urls_route_non_stream(limit=10, db: Session = Depends(get_db)):
+    try:
+        product_data = get_all_card_paths(db, limit)
+        urls_list = []
+        async for chunk in generate_signed_urls(product_data):
+            decoded = chunk.decode("utf-8").strip()
+            if decoded not in ("[", "]", ","):
+                try:
+                    urls_list.append(json.loads(decoded))
+                except json.JSONDecodeError:
+                    if decoded.endswith(','):
+                        decoded = decoded[:-1]
+                    urls_list.append(json.loads(decoded))
+        return urls_list
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
